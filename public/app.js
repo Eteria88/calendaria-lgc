@@ -177,32 +177,24 @@
       status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
     }
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
-    document.addEventListener('DOMContentLoaded', function(){
-  // Primera ejecución para inicializar campos/valores
+document.addEventListener('DOMContentLoaded', function(){
   up();
-
-  // Recalcular cuando cambien los inputs
-  var ids = ['ref','refText','dob','dobText'];
+  var ids=['ref','refText','dob','dobText'];
   ids.forEach(function(id){
-    var el = document.getElementById(id);
+    var el=document.getElementById(id);
     if(!el) return;
-    // 'input' cubre tipeo y cambios; 'change' cubre selección de calendario
     el.addEventListener('input', up);
     el.addEventListener('change', up);
   });
-
-  // Botón "Hoy" para llevar la referencia a la fecha actual
-  var btn = document.getElementById('btnToday');
+  var btn=document.getElementById('btnToday');
   if(btn){
     btn.addEventListener('click', function(){
-      var now = new Date();
-      var iso = String(now.getFullYear()).padStart(4,'0') + '-' +
-                String(now.getMonth()+1).padStart(2,'0') + '-' +
-                String(now.getDate()).padStart(2,'0');
-      var refI = document.getElementById('ref');
-      var refT = document.getElementById('refText');
-      if(refI) refI.value = iso;
-      if(refT) refT.value = iso;
+      var now=new Date();
+      var iso=String(now.getFullYear()).padStart(4,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+      var refI=document.getElementById('ref');
+      var refT=document.getElementById('refText');
+      if(refI) refI.value=iso;
+      if(refT) refT.value=iso;
       up();
     });
   }
