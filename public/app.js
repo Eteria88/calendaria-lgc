@@ -177,6 +177,7 @@
       status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
     }
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
+    
 document.addEventListener('DOMContentLoaded', function(){
   up();
   var ids=['ref','refText','dob','dobText'];
@@ -199,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 }, {once:true});
+
   }catch(e){
     status('error init: '+e.message, false);
   }

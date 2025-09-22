@@ -102,12 +102,6 @@ body.noScroll{overflow:hidden}
   .scroll-hint{display:none}
 }
 
-
-.brand__layout{position:relative;opacity:0;pointer-events:none;user-select:none;display:inline-block}
-.brand__layout .row{font-family:"Cinzel",serif;letter-spacing:.26em;text-transform:uppercase;line-height:1.05;text-align:center;white-space:pre}
-.brand__layout .row[data-row="0"]{font-weight:600;font-size:clamp(56px,10vw,120px)}
-.brand__layout .row[data-row="1"]{font-weight:600;font-size:clamp(36px,8vw,88px)}
-
 </style>
   <!-- Splash Landing: Animación espiral/infinito para "Calendaria" / "LGC" -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -122,14 +116,17 @@ body.noScroll{overflow:hidden}
     .splash__inner{text-align:center;padding:24px}
     .brand{font-family:"Cinzel",serif;letter-spacing:.26em;text-transform:uppercase;line-height:1.05;display:inline-block;position:relative;filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
     .brand .row{display:block}
-    .brand__layout{position:absolute;inset:auto;opacity:0;pointer-events:none;user-select:none}
+    .brand__layout{position:relative;opacity:0;pointer-events:none;user-select:none;display:inline-block}
+    .brand__layout .row{font-family:"Cinzel",serif;letter-spacing:.26em;text-transform:uppercase;line-height:1.05;text-align:center;white-space:pre}
+    .brand__layout .row[data-row="0"]{font-weight:600;font-size:clamp(64px,12vw,140px)}
+    .brand__layout .row[data-row="1"]{font-weight:600;font-size:clamp(42px,9.5vw,104px)}
     .brand__stage{position:relative;width:min(94vw,1200px);height:clamp(220px,36vw,380px);margin:auto;display:grid;place-items:center}
     .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
       background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
       -webkit-background-clip:text;background-clip:text;color:transparent;
       text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15)}
-    .row-0 .char{font-size:clamp(56px,10vw,120px)}
-    .row-1 .char{font-size:clamp(36px,8vw,88px);opacity:.95}
+    .row-0 .char{font-size:clamp(64px,12vw,140px)}
+    .row-1 .char{font-size:clamp(42px,9.5vw,104px);opacity:.95}
     .enter{margin-top:28px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#cfe1ff;border:1px solid rgba(156,178,200,.4);
       background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:10px 16px;border-radius:10px;cursor:pointer;transition:transform .1s ease,opacity .3s ease;border-color}
     .enter[disabled]{opacity:.4;cursor:default}
@@ -334,50 +331,50 @@ body.noScroll{overflow:hidden}
     var btn=document.getElementById('enterBtn');
     var stage=document.getElementById('brandStage');
     var layout=document.getElementById('brandLayout');
-    var brand=document.getElementById('brand');
 
     function hide(){splash.setAttribute('hidden','');}
 
-    // If already seen, skip unless forced
+    // Force flag: ?splash=1 or #splash
     var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
+
+    // If already seen, skip unless forced
     try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
 
-    // Prepare layout spans for measuring targets
+    // Prepare layout spans for measuring targets (preserve spaces)
     function makeSpans(rowEl){
-      var text=rowEl.textContent.trim().replace(/\s+/g,''); // remove spaces
+      var text = rowEl.textContent; // keep spaces
       rowEl.textContent='';
       for(var i=0;i<text.length;i++){
+        var ch=text[i];
         var span=document.createElement('span');
-        span.textContent=text[i];
+        if(ch===' '){ span.innerHTML='&nbsp;'; span.dataset.space='1'; }
+        else { span.textContent=ch; }
         rowEl.appendChild(span);
       }
       return text;
     }
 
     var rows=[].slice.call(layout.querySelectorAll('.row'));
-    var words=rows.map(makeSpans);
-    // Center the layout in the stage box
-    // Temporarily place layout inside stage to compute relative positions
+    rows.map(makeSpans);
     stage.appendChild(layout);
 
     // Compute targets
-    var targets=[]; // array of {x,y,row,char}
+    var targets=[];
     var stageRect=stage.getBoundingClientRect();
     rows.forEach(function(rowEl,rowIdx){
       var spans=[].slice.call(rowEl.querySelectorAll('span'));
-      spans.forEach(function(sp, i){
+      spans.forEach(function(sp){
         var r=sp.getBoundingClientRect();
-        var x = r.left + r.width/2 - stageRect.left;
-        var y = r.top + r.height/2 - stageRect.top;
+        var x=r.left + r.width/2 - stageRect.left;
+        var y=r.top + r.height/2 - stageRect.top;
         targets.push({x:x,y:y,row:rowIdx,char:sp.textContent});
       });
     });
 
-    // Remove layout (we'll animate absolute chars)
+    // Remove layout and create absolute chars (letters only)
     layout.parentNode && layout.parentNode.removeChild(layout);
-
-    // Create chars
-    var chars = targets.map(function(t, idx){
+    var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
+    var chars = letters.map(function(t, idx){
       var el=document.createElement('div');
       el.className='char row-' + t.row;
       el.textContent=t.char;
@@ -385,68 +382,42 @@ body.noScroll{overflow:hidden}
       return {el:el, target:t, i:idx, settled:false};
     });
 
-    // Compute center
-    function centerOf(el){
-      var r=el.getBoundingClientRect();
-      return {x:(r.left+r.right)/2, y:(r.top+r.bottom)/2};
-    }
-    var stageCenter=centerOf(stage);
-
     // Animation params
     var t0=performance.now();
-    var swirlMs=2400;      // tiempo de espiral / infinito
-    var settleMs=800;      // tiempo de acomodarse a la posición exacta
-    var totalMs=swirlMs + settleMs;
-    var stagger=28;        // retardo por letra
-    var A0=Math.min(stage.clientWidth, stage.clientHeight)/2.3; // amplitud inicial
-    var freq=2.2;          // velocidad angular base
-
+    var swirlMs=2600, settleMs=900, stagger=24;
+    var A0=Math.min(stage.clientWidth, stage.clientHeight)*0.48;
+    var freq=1.8;
     function easeOutCubic(p){ return 1 - Math.pow(1-p,3); }
-
-    function lissajous(u){
-      // trayectoria tipo ∞ usando Lissajous; luego se amortigua
-      var x = Math.sin(u);
-      var y = Math.sin(2*u) * 0.7;
-      return {x:x, y:y};
-    }
+    function lissajous(u){ var x=Math.sin(u), y=Math.sin(2*u)*0.7; return {x:x,y:y}; }
 
     function anim(now){
       var anyRunning=false;
       chars.forEach(function(c, idx){
-        var t = Math.max(0, now - t0 - idx*stagger);
-        if (t >= totalMs){ 
+        var t=Math.max(0, now - t0 - idx*stagger);
+        if(t >= (swirlMs+settleMs)){
           if(!c.settled){
-            c.el.style.transform = 'translate(' + (c.target.x-10) + 'px,' + (c.target.y-10) + 'px)';
+            c.el.style.transform='translate(' + (c.target.x-12) + 'px,' + (c.target.y-12) + 'px)';
             c.settled=true;
           }
           return;
         }
         anyRunning=true;
-        var p = Math.min(1, t / swirlMs);
-        var damp = Math.pow(0.02, p); // decaimiento suave (A0 -> ~0)
-        var u = (t/1000)*freq + (idx*0.35); // fase por índice
-        var path = lissajous(u);
-        var cx = stage.clientWidth/2;
-        var cy = stage.clientHeight/2;
-        var px = cx + path.x * A0 * damp;
-        var py = cy + path.y * A0 * damp;
-
-        // En la segunda fase, interpolar hacia objetivo
-        if (t > swirlMs){
-          var q = easeOutCubic((t - swirlMs)/settleMs);
+        var p=Math.min(1, t/swirlMs);
+        var damp=Math.pow(0.02, p);
+        var u=(t/1000)*freq + (idx*0.35);
+        var path=lissajous(u);
+        var cx=stage.clientWidth/2, cy=stage.clientHeight/2;
+        var px=cx + path.x * A0 * damp;
+        var py=cy + path.y * A0 * damp;
+        if(t>swirlMs){
+          var q=easeOutCubic((t - swirlMs)/settleMs);
           px = px + (c.target.x - px) * q;
           py = py + (c.target.y - py) * q;
         }
-        c.el.style.transform = 'translate(' + (px-10) + 'px,' + (py-10) + 'px)';
-        c.el.style.opacity = Math.min(1, 0.2 + p*0.9);
+        c.el.style.transform='translate(' + (px-12) + 'px,' + (py-12) + 'px)';
+        c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
       });
-
-      if(anyRunning){
-        requestAnimationFrame(anim);
-      } else {
-        // done
-        btn.removeAttribute('disabled');
-      }
+      if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
     }
     requestAnimationFrame(anim);
 
