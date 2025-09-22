@@ -146,7 +146,7 @@
       el=$('#brickIdx'); if(el) el.textContent=Math.floor((qD-1)/3)+1;
       el=$('#brickDay'); if(el) el.textContent=((qD-1)%3)+1;
 
-      el=$('#lifeDays'); if(el) el.textContent = (dob ? Math.floor((ref-dob)/ms) : '—');
+      el=$('#lifeDays'); if(el) el.textContent = (dob ? (function(){ var now=new Date(); var tUTC=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()); var dobUTC=Date.UTC(Db.y,Db.m-1,Db.d); return Math.floor((tUTC-dobUTC)/ms); })() : '—');
 
       el=$('#doy'); if(el) el.textContent=doy;
       el=$('#ylen'); if(el) el.textContent=yl;
@@ -177,7 +177,28 @@
       status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
     }
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
-    document.addEventListener('DOMContentLoaded', up, {once:true});
+document.addEventListener('DOMContentLoaded', function(){
+  up();
+  var ids=['ref','refText','dob','dobText'];
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', up);
+    el.addEventListener('change', up);
+  });
+  var btn=document.getElementById('btnToday');
+  if(btn){
+    btn.addEventListener('click', function(){
+      var now=new Date();
+      var iso=String(now.getFullYear()).padStart(4,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+      var refI=document.getElementById('ref');
+      var refT=document.getElementById('refText');
+      if(refI) refI.value=iso;
+      if(refT) refT.value=iso;
+      up();
+    });
+  }
+}, {once:true});
   }catch(e){
     status('error init: '+e.message, false);
   }
