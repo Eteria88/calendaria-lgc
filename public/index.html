@@ -448,5 +448,38 @@ body.noScroll{overflow:hidden}
   })();
   </script>
 
-
+<script>
+(function(){
+  function ensureMapLink() {
+    // Desktop nav (with nav-title)
+    var navTitle = document.querySelector('div.nav-title');
+    if (navTitle) {
+      var desktopNav = navTitle.parentElement;
+      if (desktopNav && !desktopNav.querySelector('[data-maplink]')) {
+        var a = document.createElement('a');
+        a.className = 'nav-link';
+        a.href = './mapa/';
+        a.textContent = 'Mapa y codigos';
+        a.setAttribute('data-maplink','1');
+        var after = desktopNav.querySelector('a[href="./letters.html"]') || desktopNav.lastElementChild;
+        if (after && after.parentElement === desktopNav) after.insertAdjacentElement('afterend', a);
+        else desktopNav.appendChild(a);
+      }
+    }
+    // Mobile nav
+    var mobileNav = document.querySelector('nav.mobileList');
+    if (mobileNav && !mobileNav.querySelector('[data-maplink]')) {
+      var am = document.createElement('a');
+      am.className = 'mnav-link';
+      am.href = './mapa/';
+      am.textContent = 'Mapa y codigos';
+      am.setAttribute('data-maplink','1');
+      var afterM = mobileNav.querySelector('a[href="./letters.html"]') || mobileNav.lastElementChild;
+      if (afterM && afterM.parentElement === mobileNav) afterM.insertAdjacentElement('afterend', am);
+      else mobileNav.appendChild(am);
+    }
+  }
+  try { ensureMapLink(); } catch(e) { console && console.warn && console.warn('Nav inject failed', e); }
+})();
+</script>
 </body></html>
