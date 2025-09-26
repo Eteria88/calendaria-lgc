@@ -1,7 +1,7 @@
-// Calendaria · Mapa y Códigos — ITU + buscador con código en vivo
-(function () {
+// Calendaria · Mapa y Códigos — UIT completo (N3 + fallback por nombre) + precarga + badge
+(function(){
   const state = { map:null, layers:{countries:null}, selected:null, idxByName:[], saved:{}, phoneByN3:{} };
-  const $ = (sel) => document.querySelector(sel);
+  const $ = (s)=>document.querySelector(s);
   let tooltip, selectedBox, savedList, countryList, searchInput, badgeEl;
 
   document.addEventListener("DOMContentLoaded", init);
@@ -10,7 +10,7 @@
     await loadITUPhoneCodes(); initMap();
   }
 
-  
+  // --- CARGA UIT ---
   async function loadITUPhoneCodes(){
     function normName(s){
       if(!s) return "";
@@ -38,224 +38,159 @@
       }
       state.phoneByN3 = byN3;
       window._CalendariaPhoneByName = byName;
-    }catch(e){
-      console.warn("No se pudieron cargar códigos ITU:", e);
-      state.phoneByN3 = {}; window._CalendariaPhoneByName = {};
-    }
+    }catch(e){ console.warn("No se pudieron cargar códigos UIT:", e); state.phoneByN3={}; window._CalendariaPhoneByName={}; }
   }
-
 
   function initMap(){
     state.map = L.map("map", { zoomControl:true, worldCopyJump:true });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:6,minZoom:1,attribution:'&copy; OpenStreetMap contributors'}).addTo(state.map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:6,minZoom:1,attribution:"&copy; OpenStreetMap contributors"}).addTo(state.map);
     state.map.setView([15,0],2);
     loadCountries();
   }
 
   async function loadCountries(){
-    try{
-      const res = await fetch("https://unpkg.com/world-atlas@2/countries-110m.json");
-      const topo = await res.json();
-      const geo = topojson.feature(topo, topo.objects.countries);
-      geo.features.forEach(f=>{
-        const n3 = String(f.id).padStart(3,"0");
-        f.properties = f.properties || {};
-        f.properties.n3 = n3;
-        if(!f.properties.name) f.properties.name = `N3 ${n3}`;
-        let phone = state.phoneByN3[n3];
-        if (!phone && f.properties && f.properties.name && window._CalendariaPhoneByName){
-          const kk = (f.properties.name || "").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
-          phone = window._CalendariaPhoneByName[kk];
-        }
-        if (phone) f.properties.phone = phone;
-      });
-      const layer = L.geoJSON(geo, { style: baseStyle, onEachFeature: onEachCountry }).addTo(state.map);
-      state.layers.countries = layer;
-      window._CalendariaGeoFeatures = geo.features;
-      seedAllOnce(geo.features);
-      buildCountryIndex(geo.features);
-      setupSearchBadge();
-      restoreSaved();
-    }catch(err){ console.error("Error cargando países:", err); }
+    const res = await fetch("https://unpkg.com/world-atlas@2/countries-110m.json");
+    const topo = await res.json();
+    const geo = topojson.feature(topo, topo.objects.countries);
+    geo.features.forEach(f=>{
+      const n3 = String(f.id).padStart(3,"0"); f.properties=f.properties||{}; f.properties.n3=n3; if(!f.properties.name) f.properties.name=`N3 ${n3}`;
+      let phone = state.phoneByN3[n3];
+      if (!phone && f.properties && f.properties.name && window._CalendariaPhoneByName){
+        const kk = (f.properties.name||"").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+        phone = window._CalendariaPhoneByName[kk];
+      }
+      if (phone) f.properties.phone = phone;
+    });
+    const layer = L.geoJSON(geo, { style: baseStyle, onEachFeature: onEachCountry }).addTo(state.map);
+    state.layers.countries = layer;
+
+    // Precarga en localStorage (no pisa lo existente)
+    seedAllOnce(geo.features);
+
+    buildCountryIndex(geo.features);
+    setupSearchBadge();
+    restoreSaved();
   }
 
-  function baseStyle(){ return { weight:.8, color:"#2a3545", fillColor:"#14202e", fillOpacity:.6 }; }
-  function hoverStyle(){ return { weight:1.2, color:"#4a90e2", fillColor:"#19304a", fillOpacity:.8 }; }
-  function selectedStyle(){ return { weight:1.3, color:"#22d3ee", fillColor:"#0b3a4a", fillOpacity:.85 }; }
+  function baseStyle(){return{weight:.8,color:"#2a3545",fillColor:"#14202e",fillOpacity:.6};}
+  function hoverStyle(){return{weight:1.2,color:"#4a90e2",fillColor:"#19304a",fillOpacity:.8};}
+  function selectedStyle(){return{weight:1.3,color:"#22d3ee",fillColor:"#0b3a4a",fillOpacity:.85};}
 
   function onEachCountry(feature, layer){
-    layer.on({
-      mouseover:(e)=>{ const l=e.target; l.setStyle(hoverStyle()); l.bringToFront(); showTooltip(e, getLabel(feature)); },
-      mouseout:(e)=>{ const l=e.target; (state.selected===l? l.setStyle(selectedStyle()):l.setStyle(baseStyle())); hideTooltip(); },
-      mousemove:(e)=>{ showTooltip(e, getLabel(feature)); },
-      click:(e)=>{ selectCountryLayer(e.target, feature); }
-    });
+    layer.on({mouseover:(e)=>{const l=e.target;l.setStyle(hoverStyle());l.bringToFront();showTooltip(e,getLabel(feature));},
+              mouseout:(e)=>{const l=e.target;(state.selected===l?l.setStyle(selectedStyle()):l.setStyle(baseStyle()));hideTooltip();},
+              mousemove:(e)=>showTooltip(e,getLabel(feature)),
+              click:(e)=>selectCountryLayer(e.target,feature)});
   }
 
-  function getLabel(feature){ const p=feature.properties||{}; const phone=p.phone?` (${p.phone})`:""; return (p.name||p.n3||"País")+phone; }
-  function showTooltip(e,text){ tooltip.textContent=text; tooltip.style.left=e.originalEvent.clientX+"px"; tooltip.style.top=e.originalEvent.clientY+"px"; tooltip.style.display="block"; }
-  function hideTooltip(){ tooltip.style.display="none"; }
+  function getLabel(f){const p=f.properties||{};const phone=p.phone?` (${p.phone})`:"";return (p.name||p.n3||"País")+phone;}
+  function showTooltip(e,t){tooltip.textContent=t;tooltip.style.left=e.originalEvent.clientX+"px";tooltip.style.top=e.originalEvent.clientY+"px";tooltip.style.display="block";}
+  function hideTooltip(){tooltip.style.display="none";}
 
-  function selectCountryLayer(layer, feature){
-    if (state.selected && state.selected !== layer) state.selected.setStyle(baseStyle());
-    state.selected = layer; layer.setStyle(selectedStyle());
-    const p = feature.properties || {}; const name = p.name || `N3 ${p.n3}`; const defPhone = p.phone || "";
-    const current = state.saved[p.n3] || { codigos:[], notes:"" };
-    const initial = (current.codigos && current.codigos.length) ? current : { codigos: (defPhone? [defPhone]:[]), notes: current.notes||"" };
-    renderSelected(name, p.n3, initial);
-    state.map.fitBounds(layer.getBounds(), { padding:[20,20] });
+  function selectCountryLayer(layer,feature){
+    if(state.selected && state.selected!==layer) state.selected.setStyle(baseStyle());
+    state.selected=layer; layer.setStyle(selectedStyle());
+    const p=feature.properties||{}; const name=p.name||`N3 ${p.n3}`; const defPhone=p.phone||"";
+    const current = state.saved[p.n3] || {codigos:[],notes:""};
+    const initial = (current.codigos && current.codigos.length) ? current : {codigos:(defPhone?[defPhone]:[]),notes:current.notes||""};
+    renderSelected(name,p.n3,initial); state.map.fitBounds(layer.getBounds(),{padding:[20,20]});
   }
 
-  function renderSelected(name, key, data){
-    selectedBox.innerHTML = `
+  function renderSelected(name,key,data){
+    selectedBox.innerHTML=`
       <div class="row"><span class="name">${name}</span> <span class="country-code">(N3: ${key})</span></div>
       <div class="row muted" style="margin-top:4px;">Códigos UIT prellenados si existen; puedes editarlos.</div>
       <div style="margin-top:10px;"><label for="codes-input">Códigos (separados por coma)</label>
-        <input id="codes-input" type="text" placeholder="+54, +1…" value="${(data.codigos||[]).join(", ")}" /></div>
+        <input id="codes-input" type="text" placeholder="+54, +880…" value="${(data.codigos||[]).join(", ")}" /></div>
       <div style="margin-top:10px;"><label for="notes-input">Notas</label>
-        <input id="notes-input" type="text" placeholder="Notas para este país…" value="${data.notes || ""}" /></div>
-      <div style="margin-top:12px; display:flex; gap:8px;">
-        <button id="btn-save" class="btn">Guardar</button>
-        <button id="btn-clear" class="btn">Limpiar</button>
-      </div>`;
-    $("#btn-save").onclick = ()=>{ const codes=$("#codes-input").value.split(",").map(s=>s.trim()).filter(Boolean); const notes=$("#notes-input").value.trim(); saveCodes(key,{codigos:codes,notes}); flashSaved(`${name} guardado`); renderSavedList(); };
-    $("#btn-clear").onclick = ()=>{ delete state.saved[key]; persist(); renderSavedList(); flashSaved(`Se borraron los códigos de ${name}`); $("#codes-input").value=""; $("#notes-input").value=""; };
+        <input id="notes-input" type="text" placeholder="Notas para este país…" value="${data.notes||""}" /></div>
+      <div style="margin-top:12px; display:flex; gap:8px;"><button id="btn-save" class="btn">Guardar</button><button id="btn-clear" class="btn">Limpiar</button></div>`;
+    $("#btn-save").onclick=()=>{const codes=$("#codes-input").value.split(",").map(s=>s.trim()).filter(Boolean);const notes=$("#notes-input").value.trim();saveCodes(key,{codigos:codes,notes});flashSaved(`${name} guardado`);renderSavedList();};
+    $("#btn-clear").onclick=()=>{delete state.saved[key];persist();renderSavedList();flashSaved(`Se borraron los códigos de ${name}`);$("#codes-input").value="";$("#notes-input").value="";};
   }
 
-  function flashSaved(msg){ const n=document.createElement("div"); n.textContent=msg; n.style.position="fixed"; n.style.right="18px"; n.style.bottom="18px"; n.style.padding="10px 12px"; n.style.border="1px solid #243142"; n.style.background="#0f1620"; n.style.color="#e8ecf1"; n.style.borderRadius="10px"; n.style.zIndex=9999; document.body.appendChild(n); setTimeout(()=>n.remove(),1500); }
-  function saveCodes(key, data){ state.saved[key] = { codigos:data.codigos||[], notes:data.notes||"" }; persist(); }
-  function persist(){ try{ localStorage.setItem("calendaria_mapa_codigos", JSON.stringify(state.saved)); }catch(e){} }
-  function restoreSaved(){ try{ const raw=localStorage.getItem("calendaria_mapa_codigos"); if(raw) state.saved=JSON.parse(raw);}catch(e){}; renderSavedList(); }
+  function flashSaved(msg){const n=document.createElement("div");n.textContent=msg;n.style.position="fixed";n.style.right="18px";n.style.bottom="18px";n.style.padding="10px 12px";n.style.border="1px solid #243142";n.style.background="#0f1620";n.style.color="#e8ecf1";n.style.borderRadius="10px";n.style.zIndex=9999;document.body.appendChild(n);setTimeout(()=>n.remove(),1500);}
+  function saveCodes(key,data){state.saved[key]={codigos:data.codigos||[],notes:data.notes||""};persist();}
+  function persist(){try{localStorage.setItem("calendaria_mapa_codigos",JSON.stringify(state.saved));}catch(e){}}
+  function restoreSaved(){try{const raw=localStorage.getItem("calendaria_mapa_codigos");if(raw)state.saved=JSON.parse(raw);}catch(e){};renderSavedList();}
 
   function renderSavedList(){
-    const entries=Object.entries(state.saved).sort((a,b)=> a[0].localeCompare(b[0]));
-    savedList.innerHTML=""; if(!entries.length){ savedList.innerHTML='<li class="muted">No hay códigos guardados.</li>'; return; }
-    for (const [key, data] of entries){
+    const entries=Object.entries(state.saved).sort((a,b)=>a[0].localeCompare(b[0]));
+    savedList.innerHTML=entries.length?"":'<li class="muted">No hay códigos guardados.</li>';
+    for(const [key,data] of entries){
       const li=document.createElement("li"); const codes=(data.codigos||[]).join(", "); const notes=data.notes||"";
-      li.innerHTML = `<div><div><strong>N3 ${key}</strong> <span class="country-code">${codes ? "(" + codes + ")" : ""}</span></div><div class="muted" style="max-width:38ch; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${notes}</div></div><div style="display:flex; gap:6px;"><button data-key="${key}" data-action="zoom">Ir</button><button data-key="${key}" data-action="del">Borrar</button></div>`;
+      li.innerHTML=`<div><div><strong>N3 ${key}</strong> <span class="country-code">${codes? "(" + codes + ")":""}</span></div><div class="muted" style="max-width:38ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${notes}</div></div><div style="display:flex;gap:6px;"><button data-key="${key}" data-action="zoom">Ir</button><button data-key="${key}" data-action="del">Borrar</button></div>`;
       savedList.appendChild(li);
     }
-    savedList.onclick = (e)=>{ const btn=e.target.closest("button"); if(!btn) return; const key=btn.getAttribute("data-key"); const action=btn.getAttribute("data-action"); if(action==="del"){ delete state.saved[key]; persist(); renderSavedList(); } else if(action==="zoom"){ zoomToN3(key); } };
+    savedList.onclick=(e)=>{const b=e.target.closest("button");if(!b)return;const key=b.getAttribute("data-key");const a=b.getAttribute("data-action");if(a==="del"){delete state.saved[key];persist();renderSavedList();}else if(a==="zoom"){zoomToN3(key);}}
   }
 
-  function zoomToN3(n3){ state.layers.countries.eachLayer(l=>{ const f=l.feature; if(f?.properties?.n3===n3){ selectCountryLayer(l,f); }}); }
+  function zoomToN3(n3){ state.layers.countries.eachLayer(l=>{const f=l.feature; if(f?.properties?.n3===n3){selectCountryLayer(l,f);}}); }
 
   function buildCountryIndex(features){
-    state.idxByName = features.map(f=>({ name: f.properties.name || `N3 ${f.properties.n3}`, n3: f.properties.n3 })).sort((a,b)=> a.name.localeCompare(b.name));
+    state.idxByName = features.map(f=>({name:f.properties.name||`N3 ${f.properties.n3}`,n3:f.properties.n3})).sort((a,b)=>a.name.localeCompare(b.name));
     renderCountryList();
-    // Exponer estructuras para otros scripts / badge
-    window._CalendariaInternals = {
-      phoneByN3: state.phoneByN3,
-      idx: state.idxByName,
-      exposeZoom: ()=> zoomToN3
-    };
-    
   }
 
   function renderCountryList(filtered=null){
-    const list = filtered || state.idxByName;
-    countryList.innerHTML="";
-    list.forEach(item=>{
-      const li=document.createElement("li");
-      const phone=state.phoneByN3[item.n3]||"";
-      li.innerHTML = `<span>${item.name}</span> <span class="country-code">${phone}</span>`;
-      li.onclick = ()=> zoomToN3(item.n3);
-      countryList.appendChild(li);
-    });
-    updateSearchBadge();
-    const btnSeed = document.getElementById('seed-uit');
-    if (btnSeed) btnSeed.addEventListener('click', doSeedNow);
+    const list=filtered||state.idxByName; countryList.innerHTML="";
+    list.forEach(item=>{ const li=document.createElement("li"); const phone = state.phoneByN3[item.n3] || lookupByName(item.name) || ""; li.innerHTML=`<span>${item.name}</span> <span class="country-code">${phone}</span>`; li.onclick=()=>zoomToN3(item.n3); countryList.appendChild(li); });
+    setupSearchBadgeOnce();
   }
 
-  // === Buscador: badge con código + Enter ===
-  function setupSearchBadge(){
-    if(!searchInput) return;
+  // --- Precarga en localStorage ---
+  function getSavedMap(){ try{const raw=localStorage.getItem("calendaria_mapa_codigos");return raw?JSON.parse(raw):{};}catch(e){return{};} }
+  function putSavedMap(obj){ try{localStorage.setItem("calendaria_mapa_codigos",JSON.stringify(obj));}catch(e){} }
+  function seedAllOnce(features){
+    if (localStorage.getItem("_CalendariaSeedDone") === "yes") return;
+    const saved = getSavedMap(); let changed=false;
+    for (const f of features){
+      const n3=f?.properties?.n3; if(!n3) continue;
+      let phone=f?.properties?.phone || lookupByName(f?.properties?.name);
+      if (phone && !saved[n3]){ saved[n3]={codigos:[phone],notes:""}; changed=true; }
+    }
+    if (changed) putSavedMap(saved);
+    localStorage.setItem("_CalendariaSeedDone", "yes");
+  }
+  function lookupByName(name){
+    if (!name || !window._CalendariaPhoneByName) return "";
+    const k = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+    return window._CalendariaPhoneByName[k] || "";
+  }
+
+  // --- Buscador: badge con código + Enter ---
+  let badgeInit=false;
+  function setupSearchBadge(){ /* mantiene compatibilidad; ya no usado */ }
+  function setupSearchBadgeOnce(){
+    if (badgeInit) return; badgeInit=true;
+    if (!searchInput) return;
     const parent = searchInput.parentElement;
     if (parent && !parent.classList.contains("search-row")){
       const row=document.createElement("div"); row.className="search-row"; parent.insertBefore(row, searchInput); row.appendChild(searchInput);
       badgeEl=document.createElement("div"); badgeEl.id="search-code-badge"; badgeEl.textContent="—"; row.appendChild(badgeEl);
-    } else {
-      badgeEl=document.createElement("div"); badgeEl.id="search-code-badge"; badgeEl.textContent="—"; parent.appendChild(badgeEl);
-    }
-    const style=document.createElement("style");
-    style.textContent=`.search-row{display:flex;align-items:center;gap:8px} #search{flex:1} #search-code-badge{border:1px solid #1b212b;background:#0f1620;color:#e8ecf1;border-radius:10px;padding:6px 10px;font-size:12px;white-space:nowrap;min-width:64px;text-align:center}`;
-    document.head.appendChild(style);
-
-    searchInput.addEventListener("input", ()=>{ filterCountryList(searchInput.value); updateSearchBadge();
-    const btnSeed = document.getElementById('seed-uit');
-    if (btnSeed) btnSeed.addEventListener('click', doSeedNow); });
-    searchInput.addEventListener("keydown", (ev)=>{ if(ev.key==="Enter"){ const m=bestMatch(searchInput.value); if(m){ ev.preventDefault(); zoomToN3(m.n3);} } });
-    updateSearchBadge();
-    const btnSeed = document.getElementById('seed-uit');
-    if (btnSeed) btnSeed.addEventListener('click', doSeedNow);
+    } else { badgeEl=document.createElement("div"); badgeEl.id="search-code-badge"; badgeEl.textContent="—"; parent.appendChild(badgeEl); }
+    searchInput.addEventListener("input", ()=>{ filterCountryList(searchInput.value); updateBadge(); });
+    searchInput.addEventListener("keydown", (ev)=>{ if(ev.key==="Enter"){ const m=bestMatch(searchInput.value); if(m){ev.preventDefault(); zoomToN3(m.n3);} } });
+    updateBadge();
   }
-
   function bestMatch(q){
     q=(q||"").trim().toLowerCase(); if(!q) return null;
-    let m = state.idxByName.find(x => (x.name||"").toLowerCase() === q); if(m) return m;
+    let m = state.idxByName.find(x => (x.name||"").toLowerCase()===q); if(m) return m;
     m = state.idxByName.find(x => (x.name||"").toLowerCase().startsWith(q)); if(m) return m;
-    m = state.idxByName.find(x => (x.name||"").toLowerCase().includes(q)); return m || null;
+    m = state.idxByName.find(x => (x.name||"").toLowerCase().includes(q)); return m||null;
   }
-
-  function updateSearchBadge(){
+  function updateBadge(){
     if(!badgeEl) return;
-    const m = bestMatch(searchInput ? searchInput.value : "");
-    if(m){ let phone = state.phoneByN3[m.n3] || "—";
-    if (phone==="—" && window._CalendariaPhoneByName){
-      const k = (m.name||"").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
-      phone = window._CalendariaPhoneByName[k] || "—";
-    } badgeEl.textContent=phone; badgeEl.title=`${m.name} · ${phone}`; }
-    else { badgeEl.textContent="—"; badgeEl.title="Código UIT"; }
+    const m = bestMatch(searchInput ? searchInput.value : ""); 
+    let phone = m ? (state.phoneByN3[m.n3] || lookupByName(m.name) || "—") : "—";
+    badgeEl.textContent = phone; badgeEl.title = m ? (m.name + " · " + phone) : "Código UIT";
   }
 
-  // Exponer solo el filtro (compatibilidad con HTML existente)
-  
-  function getSavedMap(){
-    try{ const raw = localStorage.getItem("calendaria_mapa_codigos"); return raw? JSON.parse(raw) : {}; }catch(e){ return {}; }
-  }
-  function putSavedMap(obj){
-    try{ localStorage.setItem("calendaria_mapa_codigos", JSON.stringify(obj)); }catch(e){}
-  }
-  function seedAllOnce(geoFeatures){
-    // Prellenar TODOS los países con su código UIT si no hay datos guardados.
-    if (!window._CalendariaSeedDone){
-      const saved = getSavedMap();
-      let changed = false;
-      for (const f of geoFeatures){
-        const n3 = f?.properties?.n3; if (!n3) continue;
-        let phone = f?.properties?.phone;
-        if (!phone && window._CalendariaPhoneByName && f?.properties?.name){
-          const k = (f.properties.name || "").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
-          phone = window._CalendariaPhoneByName[k];
-        }
-        if (phone && !saved[n3]){
-          saved[n3] = { codigos: [phone], notes: "" };
-          changed = true;
-        }
-      }
-      if (changed) putSavedMap(saved);
-      window._CalendariaSeedDone = true;
-    }
-  }
-  function doSeedNow(){
-    if (!window._CalendariaGeoFeatures) return;
-    window._CalendariaSeedDone = false;
-    seedAllOnce(window._CalendariaGeoFeatures);
-    // refrescar UI
-    try{ restoreSaved(); }catch(e){}
-  }
-
+  // API pública minimal para el filtro
   window.MapaCodigos = {
     filterCountryList(q){
       q=(q||"").trim().toLowerCase();
-      if(!q){ renderCountryList();
-    // Exponer estructuras para otros scripts / badge
-    window._CalendariaInternals = {
-      phoneByN3: state.phoneByN3,
-      idx: state.idxByName,
-      exposeZoom: ()=> zoomToN3
-    };
-     return; }
+      if(!q){ renderCountryList(); return; }
       const filtered = state.idxByName.filter(x => x.name.toLowerCase().includes(q) || (x.n3||"").includes(q));
       renderCountryList(filtered);
     }

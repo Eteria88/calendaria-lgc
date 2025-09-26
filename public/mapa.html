@@ -7,25 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://unpkg.com/topojson-client@3"></script>
-  <link rel="stylesheet" href="../assets/css/mapa.css" />
-  <style>
-    :root{--bg:#0b0d10;--panel:#101419;--muted:#8b93a3;--line:#1b212b;--text:#e8ecf1;--accent:#61dafb;}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text)}
-    .site-header{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);background:rgba(11,13,16,.8);backdrop-filter:blur(8px)}
-    .nav a{color:var(--text);text-decoration:none;margin-left:12px;padding:8px 10px;border-radius:10px;transition:.15s;border:1px solid transparent}
-    .nav a:hover{border-color:var(--line);background:#0f1318}
-    .nav a.active{border-color:#213040;background:#0f1620;color:var(--accent)}
-    .layout{display:grid;grid-template-columns:320px 1fr;min-height:calc(100vh - 56px)}
-    .panel{background:var(--panel);border-right:1px solid var(--line);padding:16px;overflow:auto}
-    .country-list{list-style:none;padding:0;margin:10px 0 0 0;max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:12px}
-    .country-list li{padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer}
-    .country-list li:last-child{border-bottom:none}
-    .country-list li:hover{background:#0f1620}
-    .country-code{font-size:12px;color:var(--muted);margin-left:6px}
-    .selected-country{border:1px solid var(--line);border-radius:12px;padding:12px}
-    #map{width:100%;height:calc(100vh - 56px)}
-    .tooltip{position:absolute;pointer-events:none;background:rgba(15,22,32,.9);color:var(--text);padding:6px 10px;border-radius:8px;font-size:12px;border:1px solid var(--line);transform:translate(-50%,-120%);display:none}
-  </style>
+  <link rel="stylesheet" href="mapa.css" />
 </head>
 <body>
   <header class="site-header">
@@ -44,9 +26,8 @@
       <p class="muted">Escribí para filtrar; verás el <strong>código UIT</strong> del match junto al buscador. Enter para ir.</p>
       <div>
         <label for="search">Buscar país</label>
-        <input id="search" type="text" placeholder="Argentina, España, Chile…" />
+        <input id="search" type="text" placeholder="Argentina, España, Bangladesh…" />
         <ul id="country-list" class="country-list"></ul>
-<div style="margin-top:10px; display:flex; gap:8px;">  <button id="seed-uit" class="btn">Precargar UIT</button>  <small class="muted">Rellena todos los países con el código UIT (no pisa lo guardado).</small></div>
       </div>
       <div style="margin-top:12px;">
         <h3>País seleccionado</h3>
@@ -64,6 +45,6 @@
     </section>
   </main>
 
-  <script src="../assets/js/mapa.js"></script>
+  <script src="mapa.js"></script>
 </body>
 </html>
