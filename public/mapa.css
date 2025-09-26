@@ -13,3 +13,4 @@
 .search-row{display:flex;gap:8px;align-items:center}
 #search{flex:1}
 #search-code-badge{border:1px solid var(--line);background:#0f1620;color:#e8ecf1;border-radius:10px;padding:6px 10px;font-size:12px;min-width:64px;text-align:center}
+.muted{color:var(--muted);}
