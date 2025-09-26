@@ -128,6 +128,15 @@ body.noScroll{overflow:hidden}
   .splash .splash__inner{ padding-top: 56px; }
 }
 
+
+/* Mientras la portada está visible, ocultar cualquier header duplicado en el flujo de la página */
+.splash:not([hidden]) ~ header,
+.splash:not([hidden]) ~ .topbar,
+.splash:not([hidden]) ~ nav.site-nav,
+.splash:not([hidden]) ~ nav[role="navigation"]{
+  visibility: hidden;
+}
+
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -367,10 +376,18 @@ body.noScroll{overflow:hidden}
     var btn=document.getElementById('enterBtn');
     var stage=document.getElementById('brandStage');
     var layout=document.getElementById('brandLayout');
-    var header=document.querySelector('header');
+    var header=document.querySelector('header, .topbar, nav[role="navigation"], nav.site-nav, .site-header');
     var headerPlaceholder=null;
 
     function hide(){
+      // eliminar header clonado si existe
+      try{
+        var cloned=splash.querySelector('.in-splash-header');
+        if(cloned && (!header || cloned!==header)){
+          cloned.remove();
+        }
+      }catch(e){}
+
       try{
         if(header && headerPlaceholder){
           header.classList.remove('in-splash-header');
@@ -385,12 +402,24 @@ body.noScroll{overflow:hidden}
     var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
     try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
     try{
-      if(header && !splash.hasAttribute('hidden')){
-        headerPlaceholder=document.createElement('div');
-        headerPlaceholder.setAttribute('data-header-placeholder','');
-        header.parentNode.insertBefore(headerPlaceholder, header);
-        splash.insertBefore(header, splash.firstChild);
-        header.classList.add('in-splash-header');
+      if(!splash.hasAttribute('hidden')){
+        if(header){
+          headerPlaceholder=document.createElement('div');
+          headerPlaceholder.setAttribute('data-header-placeholder','');
+          header.parentNode && header.parentNode.insertBefore(headerPlaceholder, header);
+          splash.insertBefore(header, splash.firstChild);
+          header.classList.add('in-splash-header');
+        } else {
+          // Fallback: clonar un posible nav si no hay header
+          var navCand=document.querySelector('nav, .nav, .navbar');
+          if(navCand){
+            var clone=navCand.cloneNode(true);
+            // Evitar IDs duplicados
+            clone.querySelectorAll('[id]').forEach(function(el){ el.removeAttribute('id'); });
+            clone.classList.add('in-splash-header');
+            splash.insertBefore(clone, splash.firstChild);
+          }
+        }
       }
     }catch(e){}
 
