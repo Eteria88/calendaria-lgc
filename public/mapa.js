@@ -1,4 +1,4 @@
-// Mapa y Códigos (UIT) — nombre y código; offline-first + reverse lookup
+// Mapa y Códigos (UIT) — robusto: busca itu-codes.json en varias rutas
 (function(){
   const state={ map:null, layers:{countries:null}, idx:[], phoneByN3:{}, nameByN3:{}, phoneByName:{}, n3ByPhone:{} };
   const $=(s)=>document.querySelector(s);
@@ -15,17 +15,35 @@
   function normText(s){ if(!s) return ""; s=s.toLowerCase(); s=s.normalize("NFD").replace(/[\u0300-\u036f]/g,""); return s.replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim(); }
   function normCode(s){ if(!s) return ""; return ("+" + s.replace(/[^0-9]/g,"")); }
 
+  async function fetchJSONMulti(paths){
+    for (const p of paths){
+      try{
+        const r = await fetch(p, {cache:"no-store"});
+        if (!r.ok) throw new Error(r.statusText || ("HTTP " + r.status));
+        return await r.json();
+      }catch(e){
+        console.warn("[Calendaria] No se pudo cargar", p, e);
+      }
+    }
+    throw new Error("itu-codes.json no encontrado en rutas probadas");
+  }
+
   async function loadLocal(){
     try{
-      const r=await fetch("./itu-codes.json",{cache:"no-store"});
-      const arr=await r.json();
-      for(const x of arr){
-        const n3=x.n3; const name=x.name||n3; const phone=x.phone||"";
+      const data = await fetchJSONMulti([
+        "./itu-codes.json",         // si el HTML está en /mapa/
+        "/mapa/itu-codes.json",    // absoluto
+        "../mapa/itu-codes.json"   // por si movieron el HTML un nivel
+      ]);
+      for(const x of data){
+        const n3=String(x.n3||"").padStart(3,"0"); if (!n3) continue;
+        const name=x.name||n3; const phone=x.phone||"";
         state.phoneByN3[n3]=phone; state.nameByN3[n3]=name;
         if (name) state.phoneByName[normText(name)]=phone;
-        if (phone) state.n3ByPhone[normCode(phone)]=n3;
+        if (phone) state.n3ByPhone[normCode(phone)]=state.n3ByPhone[normCode(phone)]||n3;
       }
-    }catch(e){ /* opcional */ }
+      console.info("[Calendaria] Dataset local UIT cargado OK");
+    }catch(e){ console.warn("[Calendaria] sin dataset local (se intentará remoto):", e.message||e); }
   }
 
   async function loadRemote(){
@@ -47,7 +65,8 @@
           if (phone && !state.phoneByName[nm]) state.phoneByName[nm]=phone;
         }
       }
-    }catch(e){ /* sin red: seguimos con local */ }
+      console.info("[Calendaria] Datos UIT remotos integrados");
+    }catch(e){ console.warn("[Calendaria] Falló RestCountries (continuamos con local si existe)"); }
   }
 
   function initMap(){
@@ -95,7 +114,7 @@
     const p=feature.properties||{}; const name=p.name || `N3 ${p.n3}`; const n3=p.n3;
     const phone = p.phone || state.phoneByN3[n3] || state.phoneByName[normText(name)] || "";
 
-    // Actualiza panel lateral
+    // Actualiza panel lateral (si existen esos nodos en tu HTML)
     const nameEl=document.querySelector("#selected-country .name");
     const n3El=document.getElementById("n3-label");
     const codesInput=document.getElementById("codes-input");
@@ -103,21 +122,22 @@
     if (n3El) n3El.textContent = n3 ? `(N3: ${n3})` : "";
     if (codesInput) codesInput.value = phone || "";
 
-    // Resaltar item en lista
+    // Resalta item en lista
     highlightList(n3);
 
     state.map.fitBounds(layer.getBounds(), {padding:[20,20]});
   }
 
   function highlightList(n3){
-    const items = listEl.querySelectorAll("li");
+    const items = listEl?.querySelectorAll("li")||[];
     items.forEach(li => li.classList.remove("is-active"));
     const idx = Array.from(items).find(li => (li.dataset && li.dataset.n3 === String(n3)));
     if (idx) idx.classList.add("is-active");
   }
 
   function renderList(list=null){
-    const LST=list||state.idx; listEl.innerHTML="";
+    const LST=list||state.idx; if (!listEl) return;
+    listEl.innerHTML="";
     for(const item of LST){
       const phone = state.phoneByN3[item.n3] || state.phoneByName[normText(item.name)] || "";
       const li=document.createElement("li"); li.dataset.n3 = String(item.n3);
@@ -130,18 +150,19 @@
     state.layers.countries.eachLayer(l=>{ const f=l.feature; if(String(f.id).padStart(3,"0")===String(n3)){ select(l, f); } });
   }
 
-  // --- Buscar por NOMBRE (igual que antes) ---
+  // --- Buscar por NOMBRE ---
   function setupSearchByName(){
-    searchEl?.addEventListener("input", ()=>{
+    if (!searchEl) return;
+    searchEl.addEventListener("input", ()=>{
       const q=searchEl.value.trim().toLowerCase();
       const match = state.idx.find(x=> x.name.toLowerCase()===q) || state.idx.find(x=> x.name.toLowerCase().startsWith(q)) || state.idx.find(x=> x.name.toLowerCase().includes(q));
       const phone = match ? (state.phoneByN3[match.n3] || state.phoneByName[normText(match.name)] || "—") : "—";
-      badgeEl && (badgeEl.textContent = phone);
+      if (badgeEl) badgeEl.textContent = phone;
       if(!q) return renderList();
       const filtered = state.idx.filter(x=> x.name.toLowerCase().includes(q));
       renderList(filtered);
     });
-    searchEl?.addEventListener("keydown",(ev)=>{
+    searchEl.addEventListener("keydown",(ev)=>{
       if(ev.key==="Enter"){
         ev.preventDefault();
         const q=searchEl.value.trim().toLowerCase();
@@ -153,13 +174,14 @@
 
   // --- Buscar por CÓDIGO (+57 -> Colombia) ---
   function setupSearchByCode(){
-    searchCodeEl?.addEventListener("input", ()=>{
+    if (!searchCodeEl) return;
+    searchCodeEl.addEventListener("input", ()=>{
       const code = normCode(searchCodeEl.value);
       const n3 = state.n3ByPhone[code];
       const name = n3 ? (state.nameByN3[n3] || "—") : "—";
-      codeNameBadge && (codeNameBadge.textContent = name);
+      if (codeNameBadge) codeNameBadge.textContent = name;
     });
-    searchCodeEl?.addEventListener("keydown", (ev)=>{
+    searchCodeEl.addEventListener("keydown", (ev)=>{
       if(ev.key==="Enter"){
         ev.preventDefault();
         const code = normCode(searchCodeEl.value);
