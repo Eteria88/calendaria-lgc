@@ -10,20 +10,40 @@
     await loadITUPhoneCodes(); initMap();
   }
 
+  
   async function loadITUPhoneCodes(){
+    function normName(s){
+      if(!s) return "";
+      s = s.toLowerCase();
+      s = s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const rep = {"united states of america":"united states","russian federation":"russia","korea (democratic people's republic of)":"north korea","korea (republic of)":"south korea","iran (islamic republic of)":"iran","bolivia (plurinational state of)":"bolivia","moldova (republic of)":"moldova","viet nam":"vietnam","syrian arab republic":"syria","tanzania, united republic of":"tanzania","lao people's democratic republic":"laos","palestine, state of":"palestine","brunei darussalam":"brunei","côte d’ivoire":"cote d'ivoire","cote d’ivoire":"cote d'ivoire","côte d'ivoire":"cote d'ivoire","myanmar":"burma"};
+      if (rep[s]) return rep[s];
+      return s.replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+    }
     try{
       const res = await fetch("https://restcountries.com/v3.1/all");
       const data = await res.json();
-      const phoneByN3 = {};
+      const byN3 = {}; const byName = {};
       for (const c of data){
-        const n3 = (c.ccn3 || "").toString().padStart(3,"0"); if(!n3) continue;
+        const n3 = (c.ccn3 || "").toString().padStart(3,"0");
         const root = (c.idd && c.idd.root) ? c.idd.root : "+";
         const suf  = (c.idd && Array.isArray(c.idd.suffixes) && c.idd.suffixes.length) ? c.idd.suffixes[0] : "";
-        if (root || suf) phoneByN3[n3] = `${root}${suf}`;
+        const phone = (root || suf) ? `${root}${suf}` : "";
+        if (n3 && phone) byN3[n3] = phone;
+        const names = [];
+        if (c.name){ if (c.name.common) names.push(c.name.common); if (c.name.official) names.push(c.name.official); }
+        if (Array.isArray(c.altSpellings)) names.push(...c.altSpellings);
+        const set = new Set(names.map(normName).filter(Boolean));
+        for (const k of set){ if (phone) byName[k] = phone; }
       }
-      state.phoneByN3 = phoneByN3;
-    }catch(e){ console.warn("No se pudieron cargar códigos ITU:", e); }
+      state.phoneByN3 = byN3;
+      window._CalendariaPhoneByName = byName;
+    }catch(e){
+      console.warn("No se pudieron cargar códigos ITU:", e);
+      state.phoneByN3 = {}; window._CalendariaPhoneByName = {};
+    }
   }
+
 
   function initMap(){
     state.map = L.map("map", { zoomControl:true, worldCopyJump:true });
@@ -42,7 +62,12 @@
         f.properties = f.properties || {};
         f.properties.n3 = n3;
         if(!f.properties.name) f.properties.name = `N3 ${n3}`;
-        const phone = state.phoneByN3[n3]; if (phone) f.properties.phone = phone;
+        let phone = state.phoneByN3[n3];
+        if (!phone && f.properties && f.properties.name && window._CalendariaPhoneByName){
+          const kk = (f.properties.name || "").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+          phone = window._CalendariaPhoneByName[kk];
+        }
+        if (phone) f.properties.phone = phone;
       });
       const layer = L.geoJSON(geo, { style: baseStyle, onEachFeature: onEachCountry }).addTo(state.map);
       state.layers.countries = layer;
@@ -160,7 +185,11 @@
   function updateSearchBadge(){
     if(!badgeEl) return;
     const m = bestMatch(searchInput ? searchInput.value : "");
-    if(m){ const phone=state.phoneByN3[m.n3]||"—"; badgeEl.textContent=phone; badgeEl.title=`${m.name} · ${phone}`; }
+    if(m){ let phone = state.phoneByN3[m.n3] || "—";
+    if (phone==="—" && window._CalendariaPhoneByName){
+      const k = (m.name||"").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+      phone = window._CalendariaPhoneByName[k] || "—";
+    } badgeEl.textContent=phone; badgeEl.title=`${m.name} · ${phone}`; }
     else { badgeEl.textContent="—"; badgeEl.title="Código UIT"; }
   }
 
