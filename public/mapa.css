@@ -13,6 +13,3 @@
 .search-row{display:flex;gap:8px;align-items:center}
 #search{flex:1}
 #search-code-badge{border:1px solid var(--line);background:#0f1620;color:#e8ecf1;border-radius:10px;padding:6px 10px;font-size:12px;min-width:64px;text-align:center}
-#uit-status{border:1px solid var(--line);border-radius:50%;width:12px;height:12px}
-#uit-status.ok{background:#1ec971;border-color:#136f45} #uit-status.err{background:#ff6161;border-color:#7a2222} #uit-status.wait{background:#8b93a3}
-.muted{color:var(--muted);}

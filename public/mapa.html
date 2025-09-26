@@ -16,16 +16,36 @@
       <div class="search-row">
         <input id="search" type="text" placeholder="Buscar país…" />
         <div id="search-code-badge">—</div>
-        <div id="uit-status" title="Estado carga UIT">…</div>
       </div>
       <ul id="country-list" class="country-list"></ul>
-      <div class="selected-country" id="selected-country"><div class="muted">Elegí un país…</div></div>
+
+      <div class="selected-country" id="selected-country">
+        <div class="row"><span class="name">—</span> <span class="country-code" id="n3-label"></span></div>
+        <div class="row muted" style="margin-top:4px;">Códigos UIT prellenados si existen; puedes editarlos.</div>
+
+        <div style="margin-top:10px;">
+          <label for="codes-input">Códigos (separados por coma)</label>
+          <input id="codes-input" type="text" placeholder="+54, +1…" value="" />
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="notes-input">Notas</label>
+          <input id="notes-input" type="text" placeholder="Notas para este país…" value="" />
+        </div>
+
+        <div style="margin-top:12px; display:flex; gap:8px;">
+          <button id="btn-save" class="btn">Guardar</button>
+          <button id="btn-clear" class="btn">Limpiar</button>
+        </div>
+      </div>
     </aside>
+
     <section class="map-wrap">
       <div id="map"></div>
       <div id="tooltip" class="tooltip"></div>
     </section>
   </main>
+
   <script src="../assets/js/mapa.js"></script>
 </body>
 </html>
