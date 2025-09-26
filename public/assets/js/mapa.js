@@ -71,6 +71,8 @@
       });
       const layer = L.geoJSON(geo, { style: baseStyle, onEachFeature: onEachCountry }).addTo(state.map);
       state.layers.countries = layer;
+      window._CalendariaGeoFeatures = geo.features;
+      seedAllOnce(geo.features);
       buildCountryIndex(geo.features);
       setupSearchBadge();
       restoreSaved();
@@ -141,6 +143,13 @@
   function buildCountryIndex(features){
     state.idxByName = features.map(f=>({ name: f.properties.name || `N3 ${f.properties.n3}`, n3: f.properties.n3 })).sort((a,b)=> a.name.localeCompare(b.name));
     renderCountryList();
+    // Exponer estructuras para otros scripts / badge
+    window._CalendariaInternals = {
+      phoneByN3: state.phoneByN3,
+      idx: state.idxByName,
+      exposeZoom: ()=> zoomToN3
+    };
+    
   }
 
   function renderCountryList(filtered=null){
@@ -154,6 +163,8 @@
       countryList.appendChild(li);
     });
     updateSearchBadge();
+    const btnSeed = document.getElementById('seed-uit');
+    if (btnSeed) btnSeed.addEventListener('click', doSeedNow);
   }
 
   // === Buscador: badge con código + Enter ===
@@ -170,9 +181,13 @@
     style.textContent=`.search-row{display:flex;align-items:center;gap:8px} #search{flex:1} #search-code-badge{border:1px solid #1b212b;background:#0f1620;color:#e8ecf1;border-radius:10px;padding:6px 10px;font-size:12px;white-space:nowrap;min-width:64px;text-align:center}`;
     document.head.appendChild(style);
 
-    searchInput.addEventListener("input", ()=>{ filterCountryList(searchInput.value); updateSearchBadge(); });
+    searchInput.addEventListener("input", ()=>{ filterCountryList(searchInput.value); updateSearchBadge();
+    const btnSeed = document.getElementById('seed-uit');
+    if (btnSeed) btnSeed.addEventListener('click', doSeedNow); });
     searchInput.addEventListener("keydown", (ev)=>{ if(ev.key==="Enter"){ const m=bestMatch(searchInput.value); if(m){ ev.preventDefault(); zoomToN3(m.n3);} } });
     updateSearchBadge();
+    const btnSeed = document.getElementById('seed-uit');
+    if (btnSeed) btnSeed.addEventListener('click', doSeedNow);
   }
 
   function bestMatch(q){
@@ -194,10 +209,53 @@
   }
 
   // Exponer solo el filtro (compatibilidad con HTML existente)
+  
+  function getSavedMap(){
+    try{ const raw = localStorage.getItem("calendaria_mapa_codigos"); return raw? JSON.parse(raw) : {}; }catch(e){ return {}; }
+  }
+  function putSavedMap(obj){
+    try{ localStorage.setItem("calendaria_mapa_codigos", JSON.stringify(obj)); }catch(e){}
+  }
+  function seedAllOnce(geoFeatures){
+    // Prellenar TODOS los países con su código UIT si no hay datos guardados.
+    if (!window._CalendariaSeedDone){
+      const saved = getSavedMap();
+      let changed = false;
+      for (const f of geoFeatures){
+        const n3 = f?.properties?.n3; if (!n3) continue;
+        let phone = f?.properties?.phone;
+        if (!phone && window._CalendariaPhoneByName && f?.properties?.name){
+          const k = (f.properties.name || "").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+          phone = window._CalendariaPhoneByName[k];
+        }
+        if (phone && !saved[n3]){
+          saved[n3] = { codigos: [phone], notes: "" };
+          changed = true;
+        }
+      }
+      if (changed) putSavedMap(saved);
+      window._CalendariaSeedDone = true;
+    }
+  }
+  function doSeedNow(){
+    if (!window._CalendariaGeoFeatures) return;
+    window._CalendariaSeedDone = false;
+    seedAllOnce(window._CalendariaGeoFeatures);
+    // refrescar UI
+    try{ restoreSaved(); }catch(e){}
+  }
+
   window.MapaCodigos = {
     filterCountryList(q){
       q=(q||"").trim().toLowerCase();
-      if(!q){ renderCountryList(); return; }
+      if(!q){ renderCountryList();
+    // Exponer estructuras para otros scripts / badge
+    window._CalendariaInternals = {
+      phoneByN3: state.phoneByN3,
+      idx: state.idxByName,
+      exposeZoom: ()=> zoomToN3
+    };
+     return; }
       const filtered = state.idxByName.filter(x => x.name.toLowerCase().includes(q) || (x.n3||"").includes(q));
       renderCountryList(filtered);
     }
