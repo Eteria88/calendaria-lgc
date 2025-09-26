@@ -10,41 +10,21 @@
   <link rel="stylesheet" href="mapa.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand"><a href="../index.html" class="brand-link">Calendaria</a></div>
-    <nav class="nav">
-      <a href="../index.html">Inicio</a>
-      <a href="../range.html">Días entre fechas</a>
-      <a href="../letters.html">Letras · Números</a>
-      <a class="active" href="./">Mapa y Códigos</a>
-    </nav>
-  </header>
-
   <main class="layout">
     <aside class="panel">
-      <h2>Mapa y Códigos</h2>
-      <p class="muted">Escribí para filtrar; verás el <strong>código UIT</strong> del match junto al buscador. Enter para ir.</p>
-      <div>
-        <label for="search">Buscar país</label>
-        <input id="search" type="text" placeholder="Argentina, España, Bangladesh…" />
-        <ul id="country-list" class="country-list"></ul>
+      <h2>Mapa y Códigos (UIT)</h2>
+      <div class="search-row">
+        <input id="search" type="text" placeholder="Buscar país…" />
+        <div id="search-code-badge">—</div>
       </div>
-      <div style="margin-top:12px;">
-        <h3>País seleccionado</h3>
-        <div id="selected-country" class="selected-country"><p class="muted">Ninguno aún.</p></div>
-      </div>
-      <div style="margin-top:12px;">
-        <h3>Códigos guardados</h3>
-        <ul id="saved-codes" class="saved-codes"></ul>
-      </div>
+      <ul id="country-list" class="country-list"></ul>
+      <div class="selected-country" id="selected-country"></div>
     </aside>
-
-    <section style="position:relative">
+    <section class="map-wrap">
       <div id="map"></div>
-      <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+      <div id="tooltip" class="tooltip"></div>
     </section>
   </main>
-
   <script src="mapa.js"></script>
 </body>
 </html>
