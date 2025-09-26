@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://unpkg.com/topojson-client@3"></script>
-  <link rel="stylesheet" href="mapa.css" />
+  <link rel="stylesheet" href="../assets/css/mapa.css" />
 </head>
 <body>
   <main class="layout">
@@ -16,6 +16,7 @@
       <div class="search-row">
         <input id="search" type="text" placeholder="Buscar país…" />
         <div id="search-code-badge">—</div>
+        <div id="uit-status" title="Estado carga UIT">…</div>
       </div>
       <ul id="country-list" class="country-list"></ul>
       <div class="selected-country" id="selected-country"><div class="muted">Elegí un país…</div></div>
@@ -25,6 +26,6 @@
       <div id="tooltip" class="tooltip"></div>
     </section>
   </main>
-  <script src="mapa.js"></script>
+  <script src="../assets/js/mapa.js"></script>
 </body>
 </html>
