@@ -111,47 +111,6 @@ body.noScroll{overflow:hidden}
   .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
 }
 
-
-/* Header dentro de la portada (splash) */
-.in-splash-header{
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 10000;
-  padding-top: max(8px, env(safe-area-inset-top));
-  background: rgba(11,13,16,.45);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(156,178,200,.25);
-}
-.splash .splash__inner{ padding-top: 64px; }
-@media (max-width: 480px){
-  .splash .splash__inner{ padding-top: 56px; }
-}
-
-
-/* Mientras la portada está visible, ocultar cualquier header duplicado en el flujo de la página */
-.splash:not([hidden]) ~ header,
-.splash:not([hidden]) ~ .topbar,
-.splash:not([hidden]) ~ nav.site-nav,
-.splash:not([hidden]) ~ nav[role="navigation"]{
-  visibility: hidden;
-}
-
-
-/* Splash con sidebar a la izquierda */
-.splash{place-items:stretch}
-.splash__inner{width:min(1100px,96vw);margin:auto}
-.splash-grid{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:center}
-.splash-sidebar{border-right:1px solid rgba(156,178,200,.25);padding-right:16px;min-height:260px;display:flex;flex-direction:column;gap:10px}
-.splash-sidebar .splash-menu{background:rgba(255,255,255,.04);border:1px solid rgba(156,178,200,.25);border-radius:12px;padding:12px;overflow:auto;max-height:60dvh}
-.splash-sidebar .splash-menu a{display:block;padding:8px 10px;border-radius:8px;text-decoration:none;color:#dbe8ff;letter-spacing:.06em}
-.splash-sidebar .splash-menu a:hover{background:rgba(255,255,255,.06)}
-@media (max-width: 800px){
-  .splash-grid{grid-template-columns:1fr;gap:18px;align-items:stretch}
-  .splash-sidebar{border-right:none;border-bottom:1px solid rgba(156,178,200,.25);padding-right:0;padding-bottom:12px}
-  .brand__stage{height:clamp(240px,46dvh,520px)}
-}
-
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -197,9 +156,6 @@ body.noScroll{overflow:hidden}
 
   <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
     <div class="splash__inner">
-      <div class="splash-grid">
-        <aside id="splashSidebar" class="splash-sidebar"><div class="splash-menu" id="splashMenuMount">Cargando menú…</div></aside>
-        <div class="splash-main">
       <div id="brand" class="brand">
         <div id="brandLayout" class="brand__layout" aria-hidden="true">
           <div class="row" data-row="0">CALENDARIA</div>
@@ -208,8 +164,6 @@ body.noScroll{overflow:hidden}
         <div id="brandStage" class="brand__stage" aria-hidden="true"></div>
       </div>
       <div><button id="enterBtn" class="enter" disabled>Entrar</button></div>
-            </div>
-      </div>
     </div>
   </div>
 
@@ -227,9 +181,7 @@ body.noScroll{overflow:hidden}
         <a class="mnav-link" href="./letters.html">Letras → Números</a>
       </nav>
     </div>
-    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1">        </div>
-      </div>
-    </div>
+    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
   </div>
 
   <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
@@ -330,8 +282,6 @@ body.noScroll{overflow:hidden}
           
         </div>
       </div>
-            </div>
-      </div>
     </div>
   </div>
 
@@ -401,81 +351,10 @@ body.noScroll{overflow:hidden}
     var stage=document.getElementById('brandStage');
     var layout=document.getElementById('brandLayout');
 
-    // --- Clonar el menú al sidebar de la portada ---
-    try{
-      var mount=document.getElementById('splashMenuMount');
-      if(mount){
-        // candidatos de menú en la página
-        var candidates = Array.prototype.slice.call(document.querySelectorAll('aside, nav, .sidebar, .menu, #menu, .left-menu, nav[role="navigation"], .site-nav'));
-        // Filtrar por texto esperable
-        var pick = null;
-        for(var i=0;i<candidates.length;i++){
-          var el=candidates[i];
-          var txt=(el.innerText||'').toLowerCase();
-          if(txt.includes('inicio') && (txt.includes('días entre fechas') || txt.includes('dias entre fechas') || txt.includes('letras') || txt.includes('números') || txt.includes('numeros'))){
-            pick=el; break;
-          }
-        }
-        if(!pick && candidates.length){ pick=candidates[0]; }
-        if(pick){
-          var clone=pick.cloneNode(true);
-          // evitar IDs duplicados
-          Array.prototype.forEach.call(clone.querySelectorAll('[id]'), function(n){ n.removeAttribute('id'); });
-          mount.innerHTML='';
-          mount.appendChild(clone);
-        }else{
-          // fallback simple
-          mount.innerHTML='<a href="#">Inicio</a><a href="#">Días entre fechas</a><a href="#">Letras - Números</a>';
-        }
-      }
-    }catch(e){ console.warn('Sidebar menu clone fail', e); }
-
-    var header=document.querySelector('header, .topbar, nav[role="navigation"], nav.site-nav, .site-header');
-    var headerPlaceholder=null;
-
-    function hide(){
-      // eliminar header clonado si existe
-      try{
-        var cloned=splash.querySelector('.in-splash-header');
-        if(cloned && (!header || cloned!==header)){
-          cloned.remove();
-        }
-      }catch(e){}
-
-      try{
-        if(header && headerPlaceholder){
-          header.classList.remove('in-splash-header');
-          headerPlaceholder.parentNode.insertBefore(header, headerPlaceholder);
-          headerPlaceholder.remove();
-          headerPlaceholder=null;
-        }
-      }catch(e){}
-      splash.setAttribute('hidden','');
-    }
+    function hide(){splash.setAttribute('hidden','');}
 
     var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
     try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
-    try{
-      if(!splash.hasAttribute('hidden')){
-        if(header){
-          headerPlaceholder=document.createElement('div');
-          headerPlaceholder.setAttribute('data-header-placeholder','');
-          header.parentNode && header.parentNode.insertBefore(headerPlaceholder, header);
-          splash.insertBefore(header, splash.firstChild);
-          header.classList.add('in-splash-header');
-        } else {
-          // Fallback: clonar un posible nav si no hay header
-          var navCand=document.querySelector('nav, .nav, .navbar');
-          if(navCand){
-            var clone=navCand.cloneNode(true);
-            // Evitar IDs duplicados
-            clone.querySelectorAll('[id]').forEach(function(el){ el.removeAttribute('id'); });
-            clone.classList.add('in-splash-header');
-            splash.insertBefore(clone, splash.firstChild);
-          }
-        }
-      }
-    }catch(e){}
 
     function makeSpans(rowEl){
       var text = rowEl.textContent;
