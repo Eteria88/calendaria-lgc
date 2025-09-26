@@ -111,6 +111,23 @@ body.noScroll{overflow:hidden}
   .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
 }
 
+
+/* Header dentro de la portada (splash) */
+.in-splash-header{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 10000;
+  padding-top: max(8px, env(safe-area-inset-top));
+  background: rgba(11,13,16,.45);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(156,178,200,.25);
+}
+.splash .splash__inner{ padding-top: 64px; }
+@media (max-width: 480px){
+  .splash .splash__inner{ padding-top: 56px; }
+}
+
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -350,11 +367,32 @@ body.noScroll{overflow:hidden}
     var btn=document.getElementById('enterBtn');
     var stage=document.getElementById('brandStage');
     var layout=document.getElementById('brandLayout');
+    var header=document.querySelector('header');
+    var headerPlaceholder=null;
 
-    function hide(){splash.setAttribute('hidden','');}
+    function hide(){
+      try{
+        if(header && headerPlaceholder){
+          header.classList.remove('in-splash-header');
+          headerPlaceholder.parentNode.insertBefore(header, headerPlaceholder);
+          headerPlaceholder.remove();
+          headerPlaceholder=null;
+        }
+      }catch(e){}
+      splash.setAttribute('hidden','');
+    }
 
     var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
     try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
+    try{
+      if(header && !splash.hasAttribute('hidden')){
+        headerPlaceholder=document.createElement('div');
+        headerPlaceholder.setAttribute('data-header-placeholder','');
+        header.parentNode.insertBefore(headerPlaceholder, header);
+        splash.insertBefore(header, splash.firstChild);
+        header.classList.add('in-splash-header');
+      }
+    }catch(e){}
 
     function makeSpans(rowEl){
       var text = rowEl.textContent;
