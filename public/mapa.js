@@ -1,23 +1,25 @@
-// Calendaria · Mapa y Códigos (UIT) — COMPAT: autoprefill del input + badge en buscador
+// Mapa y Códigos (UIT) — usa dataset local primero y RestCountries como fallback
 (function(){
-  const state={ map:null, layers:{countries:null}, idx:[], phoneByN3:{}, nameByN3:{}, phoneByName:{}, saved:{} };
+  const state={ map:null, layers:{countries:null}, idx:[], phoneByN3:{}, nameByN3:{}, phoneByName:{} };
   const $=(s)=>document.querySelector(s);
-  let tooltip, listEl, searchEl, badgeEl;
-  let nameEl, n3El, inputCodesEl, inputNotesEl;
+  let tooltip, listEl, selectedEl, searchEl, badgeEl;
 
   document.addEventListener("DOMContentLoaded", init);
   async function init(){
-    tooltip=$("#tooltip"); listEl=$("#country-list"); searchEl=$("#search"); badgeEl=$("#search-code-badge");
-    nameEl=document.querySelector("#selected-country .name");
-    n3El=$("#n3-label"); inputCodesEl=$("#codes-input"); inputNotesEl=$("#notes-input");
-
-    await loadRestCountries(); initMap(); setupSaveButtons();
+    tooltip=$("#tooltip"); listEl=$("#country-list"); selectedEl=$("#selected-country"); searchEl=$("#search"); badgeEl=$("#search-code-badge");
+    await loadLocal(); await loadRemote(); initMap();
   }
 
   function norm(s){ if(!s) return ""; s=s.toLowerCase(); s=s.normalize("NFD").replace(/[\u0300-\u036f]/g,""); return s.replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim(); }
 
-  async function loadRestCountries(){
-    const byN3={}, byName={}, nameByN3={};
+  async function loadLocal(){
+    try{
+      const r=await fetch("./itu-codes.json",{cache:"no-store"}); const arr=await r.json();
+      for(const x of arr){ state.phoneByN3[x.n3]=x.phone||""; state.nameByN3[x.n3]=x.name||x.n3; state.phoneByName[norm(x.name)]=x.phone||""; }
+    }catch(e){ console.warn("Local dataset missing", e); }
+  }
+
+  async function loadRemote(){
     try{
       const r=await fetch("https://restcountries.com/v3.1/all?fields=ccn3,idd,name,altSpellings",{cache:"no-store"});
       const data=await r.json();
@@ -25,13 +27,12 @@
         const n3=(c.ccn3||"").toString().padStart(3,"0");
         const root=(c.idd&&c.idd.root)?c.idd.root:"+"; const suf=(c.idd&&Array.isArray(c.idd.suffixes)&&c.idd.suffixes.length)?c.idd.suffixes[0]:"";
         const phone=(root||suf)? `${root}${suf}` : "";
-        if(n3){ byN3[n3]=phone; nameByN3[n3]=(c.name&&c.name.common)||n3; }
+        if(n3){ if(phone) state.phoneByN3[n3]=state.phoneByN3[n3]||phone; state.nameByN3[n3]=state.nameByN3[n3]||(c.name&&c.name.common)||n3; }
         const names=[]; if(c.name){ if(c.name.common) names.push(c.name.common); if(c.name.official) names.push(c.name.official); }
         if(Array.isArray(c.altSpellings)) names.push(...c.altSpellings);
-        for(const nm of new Set(names.map(norm).filter(Boolean))) byName[nm]=phone;
+        for(const nm of new Set(names.map(norm).filter(Boolean))){ if(phone) state.phoneByName[nm]=state.phoneByName[nm]||phone; }
       }
-    }catch(e){ console.warn("RestCountries error", e); }
-    state.phoneByN3=byN3; state.nameByN3=nameByN3; state.phoneByName=byName;
+    }catch(e){ /* offline fallback ok */ }
   }
 
   function initMap(){
@@ -49,12 +50,9 @@
 
     state.idx = geo.features.map(f=>{
       const n3=String(f.id).padStart(3,"0"); f.properties=f.properties||{}; f.properties.n3=n3;
-      // nombre y código por N3 (RestCountries)
-      const rcName=state.nameByN3[n3]; const rcPhone=state.phoneByN3[n3];
-      if (rcName) f.properties.name=rcName;
-      if (rcPhone) f.properties.phone=rcPhone;
-      if (!f.properties.phone && f.properties.name) f.properties.phone = state.phoneByName[norm(f.properties.name)] || "";
-      const name = f.properties.name || `N3 ${n3}`;
+      const name = state.nameByN3[n3] || f.properties.name || `N3 ${n3}`;
+      const phone = state.phoneByN3[n3] || state.phoneByName[norm(name)] || "";
+      f.properties.name = name; f.properties.phone = phone;
       return { name, n3 };
     }).sort((a,b)=> a.name.localeCompare(b.name));
 
@@ -74,27 +72,27 @@
   }
 
   function label(f){ const p=f.properties||{}; const ph=p.phone?` (${p.phone})`:""; return (p.name||p.n3||"País")+ph; }
-  function showTip(e,t){ tooltip.textContent=t; tooltip.style.left=e.originalEvent.clientX+"px"; tooltip.style.top=e.originalEvent.clientY+"px"; tooltip.style.display="block"; }
-  function hideTip(){ tooltip.style.display="none"; }
+  function showTip(e,t){ if(!tooltip) return; tooltip.textContent=t; tooltip.style.left=e.originalEvent.clientX+"px"; tooltip.style.top=e.originalEvent.clientY+"px"; tooltip.style.display="block"; }
+  function hideTip(){ if(tooltip) tooltip.style.display="none"; }
 
   function select(layer, feature){
-    const p=feature.properties||{}; const name=p.name || `N3 ${p.n3}`; const n3=p.n3;
-    const phone = p.phone || state.phoneByN3[n3] || state.phoneByName[norm(name)] || "";
-    // Actualiza encabezado
-    nameEl.textContent = name;
-    n3El.textContent = n3 ? `(N3: ${n3})` : "";
-    // AUTOPREFILL: sobreescribe el input SIEMPRE con el UIT
-    inputCodesEl.value = phone ? phone : "";
-    // Zoom
+    const p=feature.properties||{}; const name=p.name || `N3 ${p.n3}`;
+    const phone = p.phone || state.phoneByN3[p.n3] || state.phoneByName[norm(name)] || "—";
+    const codesInput = document.getElementById("codes-input");
+    if (codesInput) codesInput.value = phone || "";
+    const titleName = document.querySelector("#selected-country .name");
+    const n3lab = document.getElementById("n3-label");
+    if (titleName) titleName.textContent = name;
+    if (n3lab) n3lab.textContent = p.n3 ? `(N3: ${p.n3})` : "";
     state.map.fitBounds(layer.getBounds(), {padding:[20,20]});
   }
 
   function renderList(list=null){
-    const LST=list||state.idx; listEl.innerHTML="";
+    const LST=list||state.idx; const el=document.getElementById("country-list"); el.innerHTML="";
     for(const item of LST){
       const phone = state.phoneByN3[item.n3] || state.phoneByName[norm(item.name)] || "";
       const li=document.createElement("li"); li.innerHTML=`<span>${item.name}</span><span class="country-code">${phone}</span>`;
-      li.onclick=()=> zoomTo(item.n3); listEl.appendChild(li);
+      li.onclick=()=> zoomTo(item.n3); el.appendChild(li);
     }
   }
 
@@ -103,37 +101,17 @@
   }
 
   function setupSearch(){
-    searchEl.addEventListener("input", ()=>{
-      const q=searchEl.value.trim().toLowerCase();
-      updateBadge(q);
+    const el=document.getElementById("search");
+    const badge=document.getElementById("search-code-badge");
+    el.addEventListener("input", ()=>{
+      const q=el.value.trim().toLowerCase();
+      const match = state.idx.find(x=> x.name.toLowerCase()===q) || state.idx.find(x=> x.name.toLowerCase().startsWith(q)) || state.idx.find(x=> x.name.toLowerCase().includes(q));
+      const phone = match ? (state.phoneByN3[match.n3] || state.phoneByName[norm(match.name)] || "—") : "—";
+      badge.textContent = phone;
       if(!q) return renderList();
       const filtered = state.idx.filter(x=> x.name.toLowerCase().includes(q));
       renderList(filtered);
     });
-    searchEl.addEventListener("keydown",(ev)=>{
-      if(ev.key==="Enter"){ ev.preventDefault();
-        const q=searchEl.value.trim().toLowerCase();
-        const m = state.idx.find(x=> x.name.toLowerCase()===q) || state.idx.find(x=> x.name.toLowerCase().startsWith(q)) || state.idx.find(x=> x.name.toLowerCase().includes(q));
-        if(m) zoomTo(m.n3);
-      }
-    });
-    updateBadge("");
-  }
-
-  function updateBadge(q){
-    const m = q? (state.idx.find(x=> x.name.toLowerCase()===q) || state.idx.find(x=> x.name.toLowerCase().startsWith(q)) || state.idx.find(x=> x.name.toLowerCase().includes(q))) : null;
-    const phone = m ? (state.phoneByN3[m.n3] || state.phoneByName[norm(m.name)] || "—") : "—";
-    badgeEl.textContent = phone;
-  }
-
-  // Guardar / Limpiar (opcional)
-  function setupSaveButtons(){
-    const btnSave=$("#btn-save"); const btnClear=$("#btn-clear");
-    btnSave?.addEventListener("click", ()=>{
-      alert("Guardado (demo). El input de códigos siempre se rellena automáticamente con el UIT al seleccionar país.");
-    });
-    btnClear?.addEventListener("click", ()=>{
-      inputCodesEl.value=""; inputNotesEl.value="";
-    });
+    el.addEventListener("keydown",(ev)=>{ if(ev.key==="Enter"){ ev.preventDefault(); const q=el.value.trim().toLowerCase(); const m=state.idx.find(x=> x.name.toLowerCase()===q) || state.idx.find(x=> x.name.toLowerCase().startsWith(q)) || state.idx.find(x=> x.name.toLowerCase().includes(q)); if(m) zoomTo(m.n3); } });
   }
 })();
