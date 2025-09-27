@@ -1,63 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calendaria · Mapa y Códigos</title>
-
-  <!-- Leaflet & TopoJSON -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="https://unpkg.com/topojson-client@3"></script>
-
-  <!-- IMPORTANTES: rutas absolutas para Vercel (todo en /public) -->
-  <link rel="stylesheet" href="/mapa.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Calendaria · Mapa (OpenLayers)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol/ol.css">
+  <link rel="stylesheet" href="/mapa_ol.css">
 </head>
 <body>
   <main class="layout">
     <aside class="panel">
-      <h2>Mapa y Códigos (UIT)</h2>
-
+      <h2>Mapa (OpenLayers)</h2>
       <div class="search-row">
-        <input id="search" type="text" placeholder="Buscar país por nombre…" />
-        <div id="search-code-badge">—</div>
+        <input id="search" type="text" placeholder="Buscar país por nombre…">
+        <div id="search-badge">—</div>
       </div>
-
-      <div class="search-row" style="margin-top:10px;">
-        <input id="search-code" type="text" placeholder="Buscar por código: +57, 54, +1…" />
-        <div id="search-code-name">—</div>
-      </div>
-
       <ul id="country-list" class="country-list"></ul>
-
       <div class="selected-country" id="selected-country">
-        <div class="row"><span class="name">—</span> <span class="country-code" id="n3-label" style="display:none"></span></div>
-        <div class="row muted" style="margin-top:4px;">Códigos UIT prellenados si existen; puedes editarlos.</div>
-
-        <div style="margin-top:10px;">
-          <label for="codes-input">Códigos (separados por coma)</label>
-          <input id="codes-input" type="text" placeholder="+54, +1…" value="" />
-        </div>
-
-        <div style="margin-top:10px;">
-          <label for="notes-input">Notas</label>
-          <input id="notes-input" type="text" placeholder="Notas para este país…" value="" />
-        </div>
-
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button id="btn-save" class="btn">Guardar</button>
-          <button id="btn-clear" class="btn">Limpiar</button>
-        </div>
+        <div class="row"><span class="name">—</span></div>
       </div>
     </aside>
-
     <section class="map-wrap">
-      <div id="map"></div>
+      <div id="map" class="map"></div>
       <div id="tooltip" class="tooltip"></div>
     </section>
   </main>
 
-  <!-- Lógica consolidada -->
-  <script src="/mapa.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ol/dist/ol.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+  <script src="/mapa_ol.js"></script>
 </body>
 </html>
