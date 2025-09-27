@@ -33,17 +33,17 @@
 
   function initMap(){
     const map=L.map("map",{worldCopyJump:false}); state.map=map;
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:6,minZoom:1,noWrap:true,tileSize:512,zoomOffset:-1,updateWhenIdle:true,keepBuffer:3,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:6, minZoom:1, noWrap:true, tileSize:512, zoomOffset:-1, updateWhenIdle:true, keepBuffer:3, attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
     map.setView([15,0],2);
     loadCountries();
   }
 
   async function loadCountries(){
-    const r=await fetch("https://unpkg.com/world-atlas@2/countries-110m.json",{cache:"no-store"});
+    const r=await fetch("https://unpkg.com/world-atlas@2/countries-50m.json",{cache:"no-store"});
     const topo=await r.json();
     const geo=topojson.feature(topo, topo.objects.countries);
 
-    const canvasRenderer=L.canvas(); const layer=L.geoJSON(geo,{renderer:canvasRenderer,style:baseStyle,onEachFeature:onEach}); layer.addTo(state.map); state.layers.countries=layer;
+    const canvasRenderer=L.canvas(); const layer=L.geoJSON(geo,{renderer:canvasRenderer,style:baseStyle,onEachFeature:onEachClickOnly}); layer.addTo(state.map); state.layers.countries=layer;
 
     state.idx = geo.features.map(f=>{
       const n3=String(f.id).padStart(3,"0"); f.properties=f.properties||{}; f.properties.n3=n3;
@@ -60,7 +60,15 @@
   function hoverStyle(){return{weight:1.2,color:"#4a90e2",fillColor:"#19304a",fillOpacity:.8,fillRule:"evenodd"};}
   function selectedStyle(){return{weight:1.3,color:"#22d3ee",fillColor:"#0b3a4a",fillOpacity:.85,fillRule:"evenodd"};}
 
-  function onEach(feature, layer){
+  
+// Solo click (sin hover) para evitar bandas horizontales por geometrías complejas
+function onEachClickOnly(feature, layer){
+  layer.on({
+    click:(e)=> select(layer, feature)
+  });
+}
+
+function onEach(feature, layer){
     layer.on({
       mouseover:(e)=>{const l=e.target; l.setStyle(hoverStyle()); l.bringToFront(); showTip(e, label(feature));},
       mouseout:(e)=>{const l=e.target; (l===_selectedLayer? l.setStyle(selectedStyle()): l.setStyle(baseStyle())); hideTip();},
