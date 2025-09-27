@@ -15,7 +15,12 @@
   }
 
   function exposeDebug(){
-    window.MapaDebug = { phoneByN3: state.phoneByN3, phoneByName: state.phoneByName, n3ByPhone: state.n3ByPhone };
+    window.MapaDebug = {
+      phoneByN3: state.phoneByN3,
+      phoneByName: state.phoneByName,
+      n3ByPhone: state.n3ByPhone,
+      listMissing: ()=> (state.layers.countries ? state.layers.countries.toGeoJSON().features : []).filter(f=>!(f.properties&&f.properties.phone)).map(f=>({n3:String(f.id).padStart(3,"0"), name:(f.properties&&f.properties.name)||("N3 "+f.id)}))
+    };
   }
 
   function normText(s){ if(!s) return ""; s=s.toLowerCase(); s=s.normalize("NFD").replace(/[\u0300-\u036f]/g,""); return s.replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim(); }
@@ -48,7 +53,7 @@
     state.idx = geo.features.map(f=>{
       const n3=String(f.id).padStart(3,"0"); f.properties=f.properties||{}; f.properties.n3=n3;
       const name = state.nameByN3[n3] || f.properties.name || `N3 ${n3}`;
-      const phone = state.phoneByN3[n3] || state.phoneByName[normText(name)] || "";
+      let phone = state.phoneByN3[n3] || state.phoneByName[normText(name)] || ""; if(!phone && state.phoneByN3[n3]) phone = state.phoneByN3[n3];
       f.properties.name = name; f.properties.phone = phone;
       return { name, n3 };
     }).sort((a,b)=> a.name.localeCompare(b.name));
