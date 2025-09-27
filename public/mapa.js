@@ -32,8 +32,8 @@
   }
 
   function initMap(){
-    const map=L.map("map",{worldCopyJump:true}); state.map=map;
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:6,minZoom:1,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+    const map=L.map("map",{worldCopyJump:false}); state.map=map;
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:6,minZoom:1,noWrap:true,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
     map.setView([15,0],2);
     loadCountries();
   }
@@ -57,7 +57,7 @@
   }
 
   function baseStyle(){return{weight:.8,color:"#2a3545",fillColor:"#14202e",fillOpacity:.6};}
-  function hoverStyle(){return{weight:1.2,color:"#4a90e2",fillColor:"#19304a",fillOpacity:.8};}
+  function hoverStyle(){return{weight:1.2,color:"#4a90e2",fill:false};}
   function selectedStyle(){return{weight:1.3,color:"#22d3ee",fillColor:"#0b3a4a",fillOpacity:.85};}
 
   function onEach(feature, layer){
