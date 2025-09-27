@@ -1,63 +1,139 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calendaria · Mapa y Códigos</title>
-
-  <!-- Leaflet & TopoJSON -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="https://unpkg.com/topojson-client@3"></script>
-
-  <!-- IMPORTANTES: rutas absolutas para Vercel (todo en /public) -->
-  <link rel="stylesheet" href="/mapa.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Mapa (MapLibre GL · Standalone)</title>
+  <link href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <style>
+    :root{--bg:#0b0d10;--panel:#101419;--muted:#8b93a3;--line:#1b212b;--text:#e8ecf1;}
+    *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    .layout{display:grid;grid-template-columns:320px 1fr;min-height:100vh}
+    .panel{background:var(--panel);border-right:1px solid var(--line);padding:16px;overflow:auto}
+    .map-wrap{position:relative}
+    #map{height:100vh;width:100%}
+    .tooltip{position:absolute;pointer-events:none;background:rgba(15,22,32,.9);color:#e8ecf1;padding:6px 10px;border-radius:8px;font-size:12px;border:1px solid var(--line);transform:translate(-50%,-120%);display:none}
+    .country-list{list-style:none;margin:10px 0 0 0;padding:0;border:1px solid var(--line);border-radius:12px;max-height:260px;overflow:auto}
+    .country-list li{padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+    .country-list li:last-child{border-bottom:none}
+    .country-list li.is-active{background:#13202f}
+    .search-row{display:flex;gap:8px;align-items:center}
+    #search{flex:1}
+    #search-badge{border:1px solid var(--line);background:#0f1620;color:#e8ecf1;border-radius:10px;padding:6px 10px;font-size:12px;min-width:64px;text-align:center}
+    .selected-country{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px;min-height:90px}
+  </style>
 </head>
 <body>
   <main class="layout">
     <aside class="panel">
-      <h2>Mapa y Códigos (UIT)</h2>
-
+      <h2>Mapa (MapLibre GL) · Standalone</h2>
       <div class="search-row">
-        <input id="search" type="text" placeholder="Buscar país por nombre…" />
-        <div id="search-code-badge">—</div>
+        <input id="search" type="text" placeholder="Buscar país por nombre…">
+        <div id="search-badge">—</div>
       </div>
-
-      <div class="search-row" style="margin-top:10px;">
-        <input id="search-code" type="text" placeholder="Buscar por código: +57, 54, +1…" />
-        <div id="search-code-name">—</div>
-      </div>
-
       <ul id="country-list" class="country-list"></ul>
-
       <div class="selected-country" id="selected-country">
-        <div class="row"><span class="name">—</span> <span class="country-code" id="n3-label" style="display:none"></span></div>
-        <div class="row muted" style="margin-top:4px;">Códigos UIT prellenados si existen; puedes editarlos.</div>
-
-        <div style="margin-top:10px;">
-          <label for="codes-input">Códigos (separados por coma)</label>
-          <input id="codes-input" type="text" placeholder="+54, +1…" value="" />
-        </div>
-
-        <div style="margin-top:10px;">
-          <label for="notes-input">Notas</label>
-          <input id="notes-input" type="text" placeholder="Notas para este país…" value="" />
-        </div>
-
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button id="btn-save" class="btn">Guardar</button>
-          <button id="btn-clear" class="btn">Limpiar</button>
-        </div>
+        <div class="row"><span class="name">—</span></div>
       </div>
     </aside>
-
     <section class="map-wrap">
       <div id="map"></div>
       <div id="tooltip" class="tooltip"></div>
     </section>
   </main>
 
-  <!-- Lógica consolidada -->
-  <script src="/mapa.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+  <script>
+  (async function(){
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+      center: [0, 15],
+      zoom: 2,
+      maxZoom: 6,
+      minZoom: 1,
+      hash: false,
+      dragRotate: false,
+      pitchWithRotate: false
+    });
+
+    // Cargar países (50m) y añadir como GeoJSON source/layers
+    const topo = await fetch('https://unpkg.com/world-atlas@2/countries-50m.json').then(r=>r.json());
+    const geo = topojson.feature(topo, topo.objects.countries);
+
+    map.on('load', () => {
+      map.addSource('countries', {
+        type: 'geojson',
+        data: geo
+      });
+      map.addLayer({
+        id: 'countries-fill',
+        type: 'fill',
+        source: 'countries',
+        paint: {
+          'fill-color': '#39424a',
+          'fill-opacity': 0.85
+        }
+      });
+      map.addLayer({
+        id: 'countries-outline',
+        type: 'line',
+        source: 'countries',
+        paint: {
+          'line-color': '#2a3545',
+          'line-width': 1.2
+        }
+      });
+
+      // Interacción: hover sin relleno extra
+      let hoveredId = null;
+      map.addLayer({
+        id: 'countries-hover',
+        type: 'line',
+        source: 'countries',
+        paint: {
+          'line-color': '#0ea5b7',
+          'line-width': 1.6
+        },
+        filter: ['==', ['id'], -1]
+      });
+      map.addLayer({
+        id: 'countries-selected',
+        type: 'line',
+        source: 'countries',
+        paint: {
+          'line-color': '#22d3ee',
+          'line-width': 1.6
+        },
+        filter: ['==', ['id'], -2]
+      });
+
+      map.on('mousemove', 'countries-fill', (e) => {
+        if (!e.features?.length) return;
+        const f = e.features[0];
+        hoveredId = f.id;
+        map.setFilter('countries-hover', ['==', ['id'], hoveredId]);
+      });
+      map.on('mouseleave', 'countries-fill', () => {
+        hoveredId = null;
+        map.setFilter('countries-hover', ['==', ['id'], -1]);
+      });
+
+      map.on('click', 'countries-fill', (e) => {
+        if (!e.features?.length) return;
+        const f = e.features[0];
+        map.setFilter('countries-selected', ['==', ['id'], f.id]);
+        const bbox = turf.bbox(f);
+        map.fitBounds([[bbox[0], bbox[1]],[bbox[2], bbox[3]]], { padding: 20, duration: 200 });
+        const nameEl = document.querySelector('#selected-country .name');
+        if (nameEl) nameEl.textContent = f.properties.name || ('N3 ' + f.id);
+      });
+    });
+
+  })();
+  </script>
+  <!-- turf bbox for fitBounds -->
+  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 </body>
 </html>
