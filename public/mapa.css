@@ -21,3 +21,6 @@
 .leaflet-tile{image-rendering:auto;outline:1px solid transparent}
 
 .leaflet-pane,.leaflet-overlay-pane{transform:translateZ(0)}
+
+/* Override: remove outlines on tiles (could render as lines on some GPUs) */
+.leaflet-tile{outline:none!important;border:0!important}

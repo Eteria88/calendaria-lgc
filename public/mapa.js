@@ -35,7 +35,6 @@
 
   function initMap(){
     const map=L.map("map",{preferCanvas:true, zoomSnap:1, zoomDelta:1, wheelDebounceTime:40, wheelPxPerZoomLevel:120}); state.map=map;
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:6,minZoom:1,noWrap:true,updateWhenIdle:true,keepBuffer:2,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
     map.setMaxBounds([[-85,-180],[85,180]]);
     map.setView([15,0],2);
     loadCountries();

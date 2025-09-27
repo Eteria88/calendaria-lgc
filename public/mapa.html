@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calendaria · Mapa y Códigos</title>
+  <title>Calendaria · Mapa (sin fondo raster)</title>
 
-  <!-- Leaflet & TopoJSON -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://unpkg.com/topojson-client@3"></script>
 
-  <!-- IMPORTANTES: rutas absolutas para Vercel (todo en /public) -->
   <link rel="stylesheet" href="/mapa.css" />
+  <style>
+    /* Agua fija por CSS para este modo sin tiles */
+    #map{background:#9ed8e2;} /* mismo celeste del mar */
+  </style>
 </head>
 <body>
   <main class="layout">
     <aside class="panel">
-      <h2>Mapa y Códigos (UIT)</h2>
+      <h2>Mapa y Códigos (UIT) · Modo sin fondo</h2>
 
       <div class="search-row">
         <input id="search" type="text" placeholder="Buscar país por nombre…" />
@@ -57,7 +59,6 @@
     </section>
   </main>
 
-  <!-- Lógica consolidada -->
-  <script src="/mapa.js"></script>
+  <script src="/mapa_nofondo.js"></script>
 </body>
 </html>
