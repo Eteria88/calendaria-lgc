@@ -14,3 +14,18 @@
 .search-row{display:flex;gap:8px;align-items:center}
 #search,#search-code{flex:1}
 #search-code-badge,#search-code-name{border:1px solid var(--line);background:#0f1620;color:#e8ecf1;border-radius:10px;padding:6px 10px;font-size:12px;min-width:64px;text-align:center}
+
+
+/* Link "Volver al inicio" */
+.home-link{
+  display:inline-block;
+  margin-top:8px;
+  padding:8px 10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  text-decoration:none;
+  color:var(--text);
+  background:#0f1620;
+  font-size:14px;
+}
+.home-link:hover{ background:#14202e; }
