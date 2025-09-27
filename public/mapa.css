@@ -1,4 +1,3 @@
-
 :root{--bg:#0b0d10;--panel:#101419;--muted:#8b93a3;--line:#1b212b;--text:#e8ecf1;--accent:#61dafb;}
 *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
 .layout{display:grid;grid-template-columns:320px 1fr;min-height:100vh}
