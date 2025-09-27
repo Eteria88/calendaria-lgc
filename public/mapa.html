@@ -3,19 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mapa aislado (iframe)</title>
+  <title>Mapa aislado (iframe fijo)</title>
   <style>
-    html,body{height:100%;margin:0;background:#111}
-    .wrap{height:100vh;display:flex;flex-direction:column}
-    header{color:#eee;font:16px/1.3 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; padding:10px}
-    iframe{flex:1;border:0;width:100%}
+    html,body{height:100%;margin:0;background:#111;color:#eee;font:16px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    header{padding:10px}
+    iframe{display:block;width:100%;height:90vh;border:0;background:#222}
+    .warn{color:#ffdd57;padding:10px}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>Mapa dentro de un iframe (aislado del CSS global del sitio)</header>
-    <!-- Cambia la ruta si tu archivo se llama distinto -->
-    <iframe src="/mapa.html" sandbox="allow-scripts allow-same-origin allow-pointer-lock"></iframe>
-  </div>
+  <header>Mapa dentro de un iframe (aislado del CSS global del sitio)</header>
+  <!-- Cambia el src si tu archivo se llama distinto -->
+  <iframe id="mapFrame" src="/mapa.html"></iframe>
+  <div id="status" class="warn"></div>
+  <script>
+    const f=document.getElementById('mapFrame');
+    const status=document.getElementById('status');
+    let timer=setTimeout(()=>{ status.textContent='⚠️ Si no ves nada, verifica que /mapa.html exista en /public y que no haya un 404.'; }, 2000);
+    f.addEventListener('load', ()=>{ clearTimeout(timer); status.textContent=''; });
+  </script>
 </body>
 </html>
