@@ -28,3 +28,18 @@
   font-size:13px;
 }
 .btn.btn-secondary:hover{ background:#14202e; }
+
+
+/* Link "Volver al inicio" */
+.home-link{
+  display:inline-block;
+  margin-top:8px;
+  padding:8px 10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  text-decoration:none;
+  color:var(--text);
+  background:#0f1620;
+  font-size:14px;
+}
+.home-link:hover{ background:#14202e; }

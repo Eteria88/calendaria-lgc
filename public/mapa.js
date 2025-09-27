@@ -120,14 +120,9 @@
   ];
 
   const state={ map:null, layers:{countries:null}, idx:[], phoneByN3:Object.create(null), nameByN3:Object.create(null), phoneByName:Object.create(null), n3ByPhone:Object.create(null) };
-  // ---- Persistencia local y utilidades ----
-  const STORE_KEY = "CalendariaEdits_v1";
-  const CalendariaStore = {
-    load(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)||"{}"); }catch(e){ return {}; } },
-    save(obj){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(obj)); }catch(e){} }
-  };
-  function getEdits(){ return CalendariaStore.load(); }
-  function setEdit(n3, data){
+
+  function { return CalendariaStore.load(); }
+  function {
     const all = CalendariaStore.load(); all[n3] = Object.assign(all[n3]||{}, data);
     CalendariaStore.save(all);
   }
@@ -204,7 +199,7 @@
       return { name, n3 };
     }).sort((a,b)=> a.name.localeCompare(b.name));
 
-    renderList(); setupSearchByName(); setupSearchByCode(); setupButtons(); applyDeepLink();
+    renderList(); setupSearchByName(); setupSearchByCode();
   }
 
   function baseStyle(){return{weight:.8,color:"#2a3545",fillColor:"#14202e",fillOpacity:.6};}
@@ -226,22 +221,21 @@
 
   let _selectedLayer=null;
   function select(layer, feature){
-    if (_selectedLayer && _selectedLayer !== layer) _selectedLayer.setStyle(baseStyle());
-    _selectedLayer = layer; layer.setStyle(selectedStyle());
-
-    const p=feature.properties||{}; const name=p.name || `N3 ${p.n3}`; const n3=p.n3;
-    const phone = p.phone || state.phoneByN3[n3] || state.phoneByName[normText(name)] || "";
-
-    const nameEl=document.querySelector("#selected-country .name");
-    const n3El=document.getElementById("n3-label");
-    const codesInput=document.getElementById("codes-input");
-    if (nameEl) nameEl.textContent = name;
-    if (n3El) n3El.textContent = ""; // oculto por HTML/CSS, de todos modos
-    if (codesInput) codesInput.value = phone || "";
-
-    highlightList(n3);
-    state.map.fitBounds(layer.getBounds(), {padding:[20,20]});
-  }
+  if (_selectedLayer && _selectedLayer !== layer) _selectedLayer.setStyle(baseStyle());
+  _selectedLayer = layer; layer.setStyle(selectedStyle());
+  const p = feature.properties || {};
+  const name = p.name || `N3 ${p.n3}`;
+  const n3 = p.n3;
+  const phone = p.phone || state.phoneByN3[n3] || state.phoneByName[normText(name)] || "";
+  const nameEl = document.querySelector("#selected-country .name");
+  const n3El = document.getElementById("n3-label");
+  const codesInput = document.getElementById("codes-input");
+  if (nameEl) nameEl.textContent = name;
+  if (n3El) n3El.textContent = "";
+  if (codesInput) codesInput.value = phone || "";
+  highlightList(n3);
+  state.map.fitBounds(layer.getBounds(), { padding:[20,20] });
+}
 
   function highlightList(n3){
     const items = (listEl?.querySelectorAll("li"))||[];
@@ -304,27 +298,16 @@
     });
   }
 })();
-  function setupButtons(){
-    const saveBtn=document.getElementById("btn-save");
-    const clearBtn=document.getElementById("btn-clear");
-    const copyBtn=document.getElementById("btn-copy");
-    const exportBtn=document.getElementById("btn-export");
-    const resetBtn=document.getElementById("btn-reset");
-    const codesInput=document.getElementById("codes-input");
-    const notesInput=document.getElementById("notes-input");
-    const nameEl=document.querySelector("#selected-country .name");
-
-    if (saveBtn) saveBtn.onclick = ()=>{
-      const sel = _selectedLayer?.feature?.properties || {};
+;
       const n3 = sel.n3;
       if (!n3) return;
-      setEdit(String(n3).padStart(3,"0"), { codes: codesInput?.value||"", notes: notesInput?.value||"" });
+      .padStart(3,"0"), { codes: codesInput?.value||"", notes: ?.value||"" });
     };
 
     if (clearBtn) clearBtn.onclick = ()=>{
-      if (!codesInput || !notesInput) return;
+      if (!codesInput || !) return;
       codesInput.value = "";
-      notesInput.value = "";
+      .value = "";
     };
 
     if (copyBtn) copyBtn.onclick = ()=>{
@@ -333,7 +316,7 @@
     };
 
     if (exportBtn) exportBtn.onclick = ()=>{
-      const data = getEdits();
+      const data = ;
       downloadJSON("calendaria_ediciones.json", data);
     };
 
@@ -342,11 +325,5 @@
       state.map.setView([15,0], 2);
     };
   }
-
-  function applyDeepLink(){
-    const n3 = getHashN3();
-    if (!n3) return;
-    state.layers.countries && state.layers.countries.eachLayer(l=>{
-      const f=l.feature; if(String(f.id).padStart(3,"0")===String(n3)){ select(l,f); }
-    });
+});
   }
