@@ -14,3 +14,8 @@
 .search-row{display:flex;gap:8px;align-items:center}
 #search,#search-code{flex:1}
 #search-code-badge,#search-code-name{border:1px solid var(--line);background:#0f1620;color:#e8ecf1;border-radius:10px;padding:6px 10px;font-size:12px;min-width:64px;text-align:center}
+
+
+/* Fix seams/lines between Leaflet tiles (GPU/zoom artifacts) */
+.leaflet-container{transform:translateZ(0);backface-visibility:hidden}
+.leaflet-tile{image-rendering:auto;outline:1px solid transparent}
