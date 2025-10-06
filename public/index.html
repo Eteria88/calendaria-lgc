@@ -153,9 +153,9 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (overlay pinned to panel coords) -->
+<!-- CALENDARIA: Hydrogen card CSS (overlay pinned; tweaked offsets) -->
 <style>
-  #cal-el-overlay{ position:fixed; z-index: 5000; pointer-events:none; } /* only the card captures clicks */
+  #cal-el-overlay{ position:fixed; z-index: 5000; pointer-events:none; }
   #cal-el-overlay > .cal-el-card{ pointer-events:auto; }
 
   .cal-el-card{
@@ -479,9 +479,13 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: compute-and-pin overlay inside header area of the main panel -->
+<!-- CALENDARIA: compute-and-pin overlay with tuned offsets -->
 <script>
 (function(){
+  // Offsets: negative top means move up; larger right margin moves left.
+  var OFFSET_TOP = -12;   // px (relative to previous header-aligned position)
+  var RIGHT_MARGIN = 24;  // px from panel right edge
+
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
   function parseDateVal(v){
     if(!v) return null;
@@ -510,7 +514,6 @@ body.noScroll{overflow:hidden}
     var sh = cs.boxShadow && cs.boxShadow!=='none';
     return (br>0 || rad>0 || sh);
   }
-  function ancestors(el){ var a=[]; while(el && el!==document.body){ a.push(el); el=el.parentElement; } return a; }
   function findPanel(){
     var apar = findByText(["APARATO N° 507","APARATO Nº 507","APARATO NO 507","APARATO N.O 507","APARATO N 507"]);
     if(!apar) return null;
@@ -522,14 +525,12 @@ body.noScroll{overflow:hidden}
     return apar.parentElement;
   }
   function findHeaderTop(panel){
-    // header area ends where the grid (.planeGrid) starts; otherwise, use the block that contains "Vuelta Nº"
     var grid = panel.querySelector('.planeGrid');
     if(grid){
       var pr = panel.getBoundingClientRect();
       var gr = grid.getBoundingClientRect();
-      return (gr.top - pr.top); // relative to panel
+      return (gr.top - pr.top);
     }
-    // fallback using "Vuelta Nº" line
     var vuelta = findByText(["VUELTA N","VUELTA Nº","VUELTA NO"]);
     if(vuelta){
       var pr = panel.getBoundingClientRect();
@@ -546,11 +547,9 @@ body.noScroll{overflow:hidden}
     if(!panel){ overlay.style.display='none'; return; }
     overlay.style.display='block';
     var pr = panel.getBoundingClientRect();
-    // compute top based on header top inside panel (just a few px lower)
-    var headerTop = findHeaderTop(panel) + 8;
+    var headerTop = findHeaderTop(panel) + 8 + OFFSET_TOP;
     var top = pr.top + headerTop;
-    var left = pr.right - card.offsetWidth - 12;
-    // Clamp inside the panel bounds horizontally
+    var left = pr.right - card.offsetWidth - RIGHT_MARGIN;
     var minLeft = pr.left + 12;
     if(left < minLeft) left = minLeft;
     overlay.style.top = top + 'px';
@@ -563,8 +562,7 @@ body.noScroll{overflow:hidden}
   }
 
   function init(){
-    positionOverlay(); // initial
-    // Keep pinned on resize/scroll/layout changes
+    positionOverlay();
     window.addEventListener('resize', positionOverlay);
     window.addEventListener('scroll', positionOverlay, true);
     var panel = findPanel();
@@ -572,7 +570,6 @@ body.noScroll{overflow:hidden}
       var ro = new ResizeObserver(positionOverlay);
       ro.observe(panel);
     }
-    // visibility logic
     setVisible(isJanFirst(new Date()));
     var ref = document.getElementById('fechaReferencia');
     var candidates = Array.prototype.slice.call(document.querySelectorAll('input[type="date"]'));
