@@ -153,7 +153,7 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (overlay pinned; tweaked offsets) -->
+<!-- CALENDARIA: Hydrogen card CSS (overlay pinned; higher placement) -->
 <style>
   #cal-el-overlay{ position:fixed; z-index: 5000; pointer-events:none; }
   #cal-el-overlay > .cal-el-card{ pointer-events:auto; }
@@ -479,12 +479,11 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: compute-and-pin overlay with tuned offsets -->
+<!-- CALENDARIA: compute-and-pin overlay with stronger upward offset -->
 <script>
 (function(){
-  // Offsets: negative top means move up; larger right margin moves left.
-  var OFFSET_TOP = -12;   // px (relative to previous header-aligned position)
-  var RIGHT_MARGIN = 24;  // px from panel right edge
+  var OFFSET_TOP = -48;  // raise 48px into the header space
+  var RIGHT_MARGIN = 24; // keep a neat right margin
 
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
   function parseDateVal(v){
