@@ -153,10 +153,11 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (anchored inside apparatus grid frame) -->
+<!-- CALENDARIA: Hydrogen card CSS (smart anchor) -->
 <style>
-  .cal-el-anchor{ position:relative; }
-  .cal-el-slot{ position:absolute; top:8px; right:8px; z-index:50; }
+  /* Fallback floating (will be moved inside the panel once found) */
+  #cal-el-slot{ position:fixed; top:16px; right:16px; z-index:9999; }
+  .cal-el-anchored #cal-el-slot{ position:absolute; top:8px; right:8px; z-index:60; }
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
@@ -171,8 +172,8 @@ body.noScroll{overflow:hidden}
 </style>
 </head><body>
 
-<!-- CALENDARIA: Hydrogen slot -->
-<div id="cal-el-slot" class="cal-el-slot" aria-live="polite">
+<!-- CALENDARIA: Hydrogen slot (will be re-parented into the apparatus panel) -->
+<div id="cal-el-slot" aria-live="polite">
   <div id="cal-el-card" class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008" title="Se muestra el 1 de enero">
     <div class="Z">1</div>
     <div class="symbol">H</div>
@@ -478,7 +479,7 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: robust placement inside quadrant grid frame -->
+<!-- CALENDARIA: robust anchoring + visibility by date -->
 <script>
 (function(){
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
@@ -489,92 +490,54 @@ body.noScroll{overflow:hidden}
     var t = Date.parse(v);
     return isNaN(t) ? null : new Date(t);
   }
-  function ancestors(el){
-    var a=[]; while(el && el!==document && el.nodeType===1){ a.push(el); el=el.parentElement; } return a;
-  }
-  function lcaTwo(a,b){
-    if(!a || !b) return null;
-    var A=ancestors(a), B=ancestors(b);
-    for(var i=0;i<A.length;i++){
-      if(B.indexOf(A[i])!==-1) return A[i];
+  function norm(s){
+    try{
+      return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
+    }catch(e){
+      return (s||'').toUpperCase();
     }
-    return null;
   }
-  function lcaMany(list){
-    return list.reduce(function(acc,el){ return acc? lcaTwo(acc,el): el; }, null);
+
+  function looksLikePanel(el){
+    if(!el) return false;
+    var cls = (el.className||"")+"";
+    if(/(card|frame|panel|wrap|container|box|grid|content)/i.test(cls)) return true;
+    var cs = window.getComputedStyle(el);
+    var br = parseFloat(cs.borderTopWidth)||0 + parseFloat(cs.borderLeftWidth)||0 + parseFloat(cs.borderRightWidth)||0 + parseFloat(cs.borderBottomWidth)||0;
+    var rad = parseFloat(cs.borderTopLeftRadius)||0 + parseFloat(cs.borderTopRightRadius)||0;
+    var sh = cs.boxShadow && cs.boxShadow !== 'none';
+    return (br>0 || rad>0 || sh);
   }
-  function findByTextAll(needle){
+
+  function findApparatusByHeader(){
     var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
-    var out = [];
-    var up = needle.toUpperCase();
+    var header = null;
+    var needles = ["APARATO N° 507", "APARATO Nº 507", "APARATO N.o 507", "APARATO No 507", "APARATO N 507"];
+    var needlesN = needles.map(norm);
     for(var i=0;i<nodes.length;i++){
-      var n = nodes[i];
-      var t = (n.textContent||'').toUpperCase();
-      if(t.indexOf(up)!==-1) out.push(n);
-    }
-    return out;
-  }
-  function findQuadrantFrame(){
-    // Collect candidates for four labels; use the first few of each
-    var ne = findByTextAll(" NE ");
-    if(ne.length===0) ne = findByTextAll("NE");
-    var no = findByTextAll(" NO ");
-    if(no.length===0) no = findByTextAll("NO");
-    var se = findByTextAll(" SE ");
-    if(se.length===0) se = findByTextAll("SE");
-    var so = findByTextAll(" SO ");
-    if(so.length===0) so = findByTextAll("SO");
-    // reduce to first 3 of each to cap complexity
-    ne = ne.slice(0,3); no = no.slice(0,3); se = se.slice(0,3); so = so.slice(0,3);
-
-    // Build cross combinations and choose the LCA with the smallest bounding box area (tighter container)
-    function rect(el){
-      var r = el.getBoundingClientRect();
-      return {x:r.left,y:r.top,w:r.width,h:r.height,area:Math.max(1,r.width)*Math.max(1,r.height)};
-    }
-    var best = null, bestArea = Infinity;
-    var all = ne.concat(no,se,so);
-    if(all.length<2) return null;
-
-    for(var i=0;i<ne.length;i++){
-      for(var j=0;j<no.length;j++){
-        for(var k=0;k<se.length;k++){
-          for(var l=0;l<so.length;l++){
-            var lca = lcaMany([ne[i], no[j], se[k], so[l]]);
-            if(!lca) continue;
-            var rr = rect(lca);
-            if(rr.area < bestArea && rr.area>150){ // ignore tiny labels
-              best = lca; bestArea = rr.area;
-            }
-          }
-        }
+      var t = norm(nodes[i].textContent||"");
+      for(var j=0;j<needlesN.length;j++){
+        if(t.indexOf(needlesN[j])!==-1){ header = nodes[i]; break; }
       }
+      if(header) break;
     }
-
-    // Fallback: LCA of whatever we found
-    if(!best && all.length>1){
-      best = lcaMany(all);
+    if(!header) return null;
+    // climb to first ancestor that looks like a panel
+    var el = header;
+    for(var k=0;k<10 && el && el!==document.body;k++){
+      if(looksLikePanel(el)) return el;
+      el = el.parentElement;
     }
-    return best;
+    return header.parentElement;
   }
 
-  function attachInside(){
+  function anchorInside(){
     var slot = document.getElementById('cal-el-slot');
-    if(!slot) return null;
-    // Prefer the quadrant frame
-    var frame = findQuadrantFrame();
-    // If not found, fallback to the header panel containing "APARATO Nº 507"
-    if(!frame){
-      var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
-      for(var i=0;i<nodes.length;i++){
-        var t=(nodes[i].textContent||'').toUpperCase();
-        if(t.indexOf('APARATO Nº 507')!==-1){ frame = nodes[i].parentElement; break; }
-      }
-    }
-    if(!frame) return null;
-    if(!frame.classList.contains('cal-el-anchor')) frame.classList.add('cal-el-anchor');
+    if(!slot) return;
+    var frame = findApparatusByHeader();
+    if(!frame) return;
+    frame.classList.add('cal-el-anchored');
     frame.appendChild(slot);
-    return slot;
   }
 
   function setVisible(show){
@@ -583,7 +546,11 @@ body.noScroll{overflow:hidden}
   }
 
   function init(){
-    attachInside();
+    // Try immediately and then re-try after next frame (in case panel renders later)
+    anchorInside();
+    setTimeout(anchorInside, 50);
+    setTimeout(anchorInside, 300);
+
     setVisible(isJanFirst(new Date()));
     var ref = document.getElementById('fechaReferencia');
     var candidates = Array.prototype.slice.call(document.querySelectorAll('input[type="date"]'));
@@ -607,6 +574,7 @@ body.noScroll{overflow:hidden}
     init();
   }
 
+  // manual hook
   window.__cal_setReferencia = function(d){
     if(!(d instanceof Date)) return;
     setVisible(isJanFirst(d));
