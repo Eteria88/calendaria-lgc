@@ -153,11 +153,10 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (smart anchor) -->
+<!-- CALENDARIA: Hydrogen card CSS (anchored to .plane) -->
 <style>
-  /* Fallback floating (will be moved inside the panel once found) */
-  #cal-el-slot{ position:fixed; top:16px; right:16px; z-index:9999; }
-  .cal-el-anchored #cal-el-slot{ position:absolute; top:8px; right:8px; z-index:60; }
+  .cal-el-anchor{ position:relative; }
+  .cal-el-slot{ position:absolute; top:8px; right:8px; z-index:60; }
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
@@ -172,8 +171,8 @@ body.noScroll{overflow:hidden}
 </style>
 </head><body>
 
-<!-- CALENDARIA: Hydrogen slot (will be re-parented into the apparatus panel) -->
-<div id="cal-el-slot" aria-live="polite">
+<!-- CALENDARIA: Hydrogen slot -->
+<div id="cal-el-slot" class="cal-el-slot" aria-live="polite">
   <div id="cal-el-card" class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008" title="Se muestra el 1 de enero">
     <div class="Z">1</div>
     <div class="symbol">H</div>
@@ -479,7 +478,7 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: robust anchoring + visibility by date -->
+<!-- CALENDARIA: anchor to the '.plane' container that wraps the quadrant grid -->
 <script>
 (function(){
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
@@ -490,53 +489,16 @@ body.noScroll{overflow:hidden}
     var t = Date.parse(v);
     return isNaN(t) ? null : new Date(t);
   }
-  function norm(s){
-    try{
-      return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
-    }catch(e){
-      return (s||'').toUpperCase();
-    }
-  }
 
-  function looksLikePanel(el){
-    if(!el) return false;
-    var cls = (el.className||"")+"";
-    if(/(card|frame|panel|wrap|container|box|grid|content)/i.test(cls)) return true;
-    var cs = window.getComputedStyle(el);
-    var br = parseFloat(cs.borderTopWidth)||0 + parseFloat(cs.borderLeftWidth)||0 + parseFloat(cs.borderRightWidth)||0 + parseFloat(cs.borderBottomWidth)||0;
-    var rad = parseFloat(cs.borderTopLeftRadius)||0 + parseFloat(cs.borderTopRightRadius)||0;
-    var sh = cs.boxShadow && cs.boxShadow !== 'none';
-    return (br>0 || rad>0 || sh);
-  }
-
-  function findApparatusByHeader(){
-    var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
-    var header = null;
-    var needles = ["APARATO N° 507", "APARATO Nº 507", "APARATO N.o 507", "APARATO No 507", "APARATO N 507"];
-    var needlesN = needles.map(norm);
-    for(var i=0;i<nodes.length;i++){
-      var t = norm(nodes[i].textContent||"");
-      for(var j=0;j<needlesN.length;j++){
-        if(t.indexOf(needlesN[j])!==-1){ header = nodes[i]; break; }
-      }
-      if(header) break;
-    }
-    if(!header) return null;
-    // climb to first ancestor that looks like a panel
-    var el = header;
-    for(var k=0;k<10 && el && el!==document.body;k++){
-      if(looksLikePanel(el)) return el;
-      el = el.parentElement;
-    }
-    return header.parentElement;
-  }
-
-  function anchorInside(){
+  function anchorToPlane(){
     var slot = document.getElementById('cal-el-slot');
     if(!slot) return;
-    var frame = findApparatusByHeader();
-    if(!frame) return;
-    frame.classList.add('cal-el-anchored');
+    // Prefer a container with class 'plane' that wraps '.planeGrid'
+    var grid = document.querySelector('.planeGrid');
+    var plane = grid ? grid.closest('.plane') : document.querySelector('.plane');
+    var frame = plane || grid;
+    if(!frame) return; // leave fallback position (none added; we only move if found)
+    if(!frame.classList.contains('cal-el-anchor')) frame.classList.add('cal-el-anchor');
     frame.appendChild(slot);
   }
 
@@ -546,10 +508,10 @@ body.noScroll{overflow:hidden}
   }
 
   function init(){
-    // Try immediately and then re-try after next frame (in case panel renders later)
-    anchorInside();
-    setTimeout(anchorInside, 50);
-    setTimeout(anchorInside, 300);
+    anchorToPlane();
+    // Retry a couple of times in case the grid renders later
+    setTimeout(anchorToPlane, 50);
+    setTimeout(anchorToPlane, 300);
 
     setVisible(isJanFirst(new Date()));
     var ref = document.getElementById('fechaReferencia');
@@ -574,7 +536,6 @@ body.noScroll{overflow:hidden}
     init();
   }
 
-  // manual hook
   window.__cal_setReferencia = function(d){
     if(!(d instanceof Date)) return;
     setVisible(isJanFirst(d));
