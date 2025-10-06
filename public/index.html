@@ -153,7 +153,7 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (overlay pinned; higher placement) -->
+<!-- CALENDARIA: Hydrogen card CSS (overlay pinned to header center-right) -->
 <style>
   #cal-el-overlay{ position:fixed; z-index: 5000; pointer-events:none; }
   #cal-el-overlay > .cal-el-card{ pointer-events:auto; }
@@ -479,11 +479,11 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: compute-and-pin overlay with stronger upward offset -->
+<!-- CALENDARIA: position to header center-right inside the main panel -->
 <script>
 (function(){
-  var OFFSET_TOP = -48;  // raise 48px into the header space
-  var RIGHT_MARGIN = 24; // keep a neat right margin
+  var RIGHT_MARGIN = 24;   // px desde el borde derecho del panel
+  var VERTICAL_NUDGE = -6; // ajuste fino hacia arriba dentro del header
 
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
   function parseDateVal(v){
@@ -513,44 +513,50 @@ body.noScroll{overflow:hidden}
     var sh = cs.boxShadow && cs.boxShadow!=='none';
     return (br>0 || rad>0 || sh);
   }
-  function findPanel(){
+  function ancestors(el){ var a=[]; while(el && el!==document.body){ a.push(el); el=el.parentElement; } return a; }
+  function lca(a,b){
+    if(!a || !b) return null;
+    var A=ancestors(a), B=ancestors(b);
+    for(var i=0;i<A.length;i++){ if(B.indexOf(A[i])!==-1) return A[i]; }
+    return null;
+  }
+
+  function findPanelAndHeader(){
     var apar = findByText(["APARATO N° 507","APARATO Nº 507","APARATO NO 507","APARATO N.O 507","APARATO N 507"]);
-    if(!apar) return null;
-    var el = apar;
-    for(var i=0;i<10 && el && el!==document.body;i++){
-      if(looksLikePanel(el)) return el;
-      el = el.parentElement;
+    var ciclo = findByText(["CALENDARIA · CICLO DE 16 DIAS","CALENDARIA · CICLO DE 16 DÍAS"]);
+    var header = (apar && ciclo) ? lca(apar, ciclo) : apar;
+    if(!header) return null;
+    // main panel = first ancestor that looks like a panel
+    var panel = header;
+    for(var i=0;i<10 && panel && panel!==document.body;i++){
+      if(looksLikePanel(panel)) break;
+      panel = panel.parentElement;
     }
-    return apar.parentElement;
+    if(!panel) return null;
+    return { panel: panel, header: header };
   }
-  function findHeaderTop(panel){
-    var grid = panel.querySelector('.planeGrid');
-    if(grid){
-      var pr = panel.getBoundingClientRect();
-      var gr = grid.getBoundingClientRect();
-      return (gr.top - pr.top);
-    }
-    var vuelta = findByText(["VUELTA N","VUELTA Nº","VUELTA NO"]);
-    if(vuelta){
-      var pr = panel.getBoundingClientRect();
-      var hr = vuelta.getBoundingClientRect();
-      return (hr.top - pr.top);
-    }
-    return 8;
-  }
+
   function positionOverlay(){
     var overlay = document.getElementById('cal-el-overlay');
     var card = document.getElementById('cal-el-card');
     if(!overlay || !card) return;
-    var panel = findPanel();
-    if(!panel){ overlay.style.display='none'; return; }
+    var found = findPanelAndHeader();
+    if(!found){ overlay.style.display='none'; return; }
     overlay.style.display='block';
-    var pr = panel.getBoundingClientRect();
-    var headerTop = findHeaderTop(panel) + 8 + OFFSET_TOP;
-    var top = pr.top + headerTop;
-    var left = pr.right - card.offsetWidth - RIGHT_MARGIN;
+    var pr = found.panel.getBoundingClientRect();
+    var hr = found.header.getBoundingClientRect();
+    var cardH = card.offsetHeight || 110;
+
+    // Centro vertical del header, con pequeño nudge hacia arriba
+    var headerCenter = hr.top + (hr.height - cardH)/2 + VERTICAL_NUDGE;
+
+    var top = headerCenter;
+    var left = pr.right - (card.offsetWidth || 110) - RIGHT_MARGIN;
+
+    // clamp horizontal dentro del panel
     var minLeft = pr.left + 12;
     if(left < minLeft) left = minLeft;
+
     overlay.style.top = top + 'px';
     overlay.style.left = left + 'px';
   }
@@ -564,10 +570,12 @@ body.noScroll{overflow:hidden}
     positionOverlay();
     window.addEventListener('resize', positionOverlay);
     window.addEventListener('scroll', positionOverlay, true);
-    var panel = findPanel();
-    if(panel && 'ResizeObserver' in window){
+    // observe header/panel for layout shifts
+    var found = findPanelAndHeader();
+    if(found && 'ResizeObserver' in window){
       var ro = new ResizeObserver(positionOverlay);
-      ro.observe(panel);
+      ro.observe(found.panel);
+      ro.observe(found.header);
     }
     setVisible(isJanFirst(new Date()));
     var ref = document.getElementById('fechaReferencia');
