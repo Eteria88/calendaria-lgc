@@ -152,7 +152,34 @@ body.noScroll{overflow:hidden}
     }
   </style>
 
+
+<!-- CALENDARIA: Hydrogen card CSS (non-intrusive, namespaced) -->
+<style>
+  .cal-el-wrap{position:fixed; top:16px; right:16px; z-index:9999; display:none;}
+  .cal-el-card{
+    width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
+    border:3px solid #1f2a3a; border-radius:8px; position:relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35); user-select:none;
+  }
+  .cal-el-card .Z{position:absolute; top:4px; left:6px; font-weight:800; font-size:16px;}
+  .cal-el-card .symbol{position:absolute; top:20px; left:0; right:0; font-weight:900; font-size:56px; text-align:center; line-height:1; letter-spacing:1px;}
+  .cal-el-card .name{position:absolute; bottom:20px; left:0; right:0; text-align:center; font-weight:800; font-size:16px;}
+  .cal-el-card .mass{position:absolute; bottom:4px; left:0; right:0; text-align:center; font-weight:800; font-size:14px;}
+  .cal-el-help{ margin-top:6px; text-align:center; font-size:11px; color:#9fb2c7}
+</style>
 </head><body>
+
+<!-- CALENDARIA: Hydrogen overlay (appears only on 1/01 or when reference date = 1/01) -->
+<div id="cal-el-wrap" class="cal-el-wrap" aria-live="polite">
+  <div class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008" title="Se muestra el 1 de enero">
+    <div class="Z">1</div>
+    <div class="symbol">H</div>
+    <div class="name">Hydrogen</div>
+    <div class="mass">1.008</div>
+  </div>
+  <div class="cal-el-help">1/01 (hoy o referencia)</div>
+</div>
+
 
   <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
     <div class="splash__inner">
@@ -448,5 +475,53 @@ body.noScroll{overflow:hidden}
   })();
   </script>
 
+
+
+<!-- CALENDARIA: Hydrogen logic -->
+<script>
+(function(){
+  function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
+  function parseDateVal(v){
+    if(!v) return null;
+    var m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(m){ return new Date(+m[1], +m[2]-1, +m[3]); }
+    var t = Date.parse(v);
+    return isNaN(t) ? null : new Date(t);
+  }
+  var wrap = document.getElementById('cal-el-wrap');
+  if(!wrap) return;
+
+  function setVisible(show){ wrap.style.display = show ? 'block' : 'none'; }
+  setVisible(isJanFirst(new Date()));
+
+  function hookInputs(){
+    var ref = document.getElementById('fechaReferencia');
+    var candidates = Array.prototype.slice.call(document.querySelectorAll('input[type="date"]'));
+    var list = ref ? [ref] : candidates;
+    list.forEach(function(inp){
+      if(!inp) return;
+      if(inp.value){
+        var d = parseDateVal(inp.value);
+        setVisible(isJanFirst(d));
+      }
+      inp.addEventListener('change', function(e){
+        var d = parseDateVal(e.target.value);
+        setVisible(isJanFirst(d));
+      });
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', hookInputs);
+  }else{
+    hookInputs();
+  }
+
+  window.__cal_setReferencia = function(d){
+    if(!(d instanceof Date)) return;
+    setVisible(isJanFirst(d));
+  };
+})();
+</script>
 
 </body></html>
