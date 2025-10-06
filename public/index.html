@@ -153,10 +153,10 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (anchored inside apparatus frame) -->
+<!-- CALENDARIA: Hydrogen card CSS (anchored inside apparatus grid frame) -->
 <style>
   .cal-el-anchor{ position:relative; }
-  .cal-el-slot{ position:absolute; top:8px; right:8px; z-index:25; }
+  .cal-el-slot{ position:absolute; top:8px; right:8px; z-index:50; }
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
@@ -478,7 +478,7 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: place Hydrogen inside the apparatus frame (common ancestor of header and grid) -->
+<!-- CALENDARIA: robust placement inside quadrant grid frame -->
 <script>
 (function(){
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
@@ -490,9 +490,9 @@ body.noScroll{overflow:hidden}
     return isNaN(t) ? null : new Date(t);
   }
   function ancestors(el){
-    var a=[]; while(el && el!==document){ a.push(el); el=el.parentElement; } return a;
+    var a=[]; while(el && el!==document && el.nodeType===1){ a.push(el); el=el.parentElement; } return a;
   }
-  function lowestCommonAncestor(a,b){
+  function lcaTwo(a,b){
     if(!a || !b) return null;
     var A=ancestors(a), B=ancestors(b);
     for(var i=0;i<A.length;i++){
@@ -500,44 +500,77 @@ body.noScroll{overflow:hidden}
     }
     return null;
   }
-  function findByText(needle){
-    var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
-    needle = needle.toUpperCase();
-    for(var i=0;i<nodes.length;i++){
-      var t = (nodes[i].textContent||'').toUpperCase();
-      if(t.indexOf(needle)!==-1) return nodes[i];
-    }
-    return null;
+  function lcaMany(list){
+    return list.reduce(function(acc,el){ return acc? lcaTwo(acc,el): el; }, null);
   }
+  function findByTextAll(needle){
+    var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
+    var out = [];
+    var up = needle.toUpperCase();
+    for(var i=0;i<nodes.length;i++){
+      var n = nodes[i];
+      var t = (n.textContent||'').toUpperCase();
+      if(t.indexOf(up)!==-1) out.push(n);
+    }
+    return out;
+  }
+  function findQuadrantFrame(){
+    // Collect candidates for four labels; use the first few of each
+    var ne = findByTextAll(" NE ");
+    if(ne.length===0) ne = findByTextAll("NE");
+    var no = findByTextAll(" NO ");
+    if(no.length===0) no = findByTextAll("NO");
+    var se = findByTextAll(" SE ");
+    if(se.length===0) se = findByTextAll("SE");
+    var so = findByTextAll(" SO ");
+    if(so.length===0) so = findByTextAll("SO");
+    // reduce to first 3 of each to cap complexity
+    ne = ne.slice(0,3); no = no.slice(0,3); se = se.slice(0,3); so = so.slice(0,3);
 
-  function findApparatusContainer(){
-    var header = findByText("APARATO Nº 507");
-    // Try multiple grid labels to be robust
-    var gridOne = findByText("NE"); // could be many, take first
-    var gridTwo = findByText("SO");
-    // if multiple matches exist, ensure they are not inside sidebar/menu by checking width
-    var candidate = lowestCommonAncestor(header, gridOne || gridTwo);
-    // If still not good, widen search using "SE" or "NO"
-    if(!candidate){
-      candidate = lowestCommonAncestor(header, findByText("SE") || findByText("NO"));
+    // Build cross combinations and choose the LCA with the smallest bounding box area (tighter container)
+    function rect(el){
+      var r = el.getBoundingClientRect();
+      return {x:r.left,y:r.top,w:r.width,h:r.height,area:Math.max(1,r.width)*Math.max(1,r.height)};
     }
-    // last resort: the nearest ancestor of header that visually looks like a panel
-    if(!candidate && header){
-      var el = header;
-      var keys = /(card|frame|panel|module|wrap|container|box)/i;
-      for(var i=0;i<8 && el && el!==document.body;i++){
-        if(keys.test(el.className||"")) { candidate = el; break; }
-        el = el.parentElement;
+    var best = null, bestArea = Infinity;
+    var all = ne.concat(no,se,so);
+    if(all.length<2) return null;
+
+    for(var i=0;i<ne.length;i++){
+      for(var j=0;j<no.length;j++){
+        for(var k=0;k<se.length;k++){
+          for(var l=0;l<so.length;l++){
+            var lca = lcaMany([ne[i], no[j], se[k], so[l]]);
+            if(!lca) continue;
+            var rr = rect(lca);
+            if(rr.area < bestArea && rr.area>150){ // ignore tiny labels
+              best = lca; bestArea = rr.area;
+            }
+          }
+        }
       }
-      candidate = candidate || header.parentElement;
     }
-    return candidate || null;
+
+    // Fallback: LCA of whatever we found
+    if(!best && all.length>1){
+      best = lcaMany(all);
+    }
+    return best;
   }
 
   function attachInside(){
     var slot = document.getElementById('cal-el-slot');
     if(!slot) return null;
-    var frame = findApparatusContainer();
+    // Prefer the quadrant frame
+    var frame = findQuadrantFrame();
+    // If not found, fallback to the header panel containing "APARATO Nº 507"
+    if(!frame){
+      var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
+      for(var i=0;i<nodes.length;i++){
+        var t=(nodes[i].textContent||'').toUpperCase();
+        if(t.indexOf('APARATO Nº 507')!==-1){ frame = nodes[i].parentElement; break; }
+      }
+    }
     if(!frame) return null;
     if(!frame.classList.contains('cal-el-anchor')) frame.classList.add('cal-el-anchor');
     frame.appendChild(slot);
@@ -552,7 +585,6 @@ body.noScroll{overflow:hidden}
   function init(){
     attachInside();
     setVisible(isJanFirst(new Date()));
-
     var ref = document.getElementById('fechaReferencia');
     var candidates = Array.prototype.slice.call(document.querySelectorAll('input[type="date"]'));
     var list = ref ? [ref] : candidates;
@@ -575,7 +607,6 @@ body.noScroll{overflow:hidden}
     init();
   }
 
-  // manual hook
   window.__cal_setReferencia = function(d){
     if(!(d instanceof Date)) return;
     setVisible(isJanFirst(d));
