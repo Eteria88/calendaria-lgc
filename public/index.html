@@ -153,31 +153,32 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (non-intrusive, namespaced) -->
+<!-- CALENDARIA: Hydrogen card CSS (inline, namespaced) -->
 <style>
-  .cal-el-wrap{position:fixed; top:16px; right:16px; z-index:9999; display:none;}
+  .cal-el-anchor{ position:relative; }
+  .cal-el-slot{ position:absolute; top:8px; right:8px; z-index:10; }
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
     box-shadow: 0 10px 30px rgba(0,0,0,.35); user-select:none;
+    display:none;
   }
+  .cal-el-card.show{ display:block; }
   .cal-el-card .Z{position:absolute; top:4px; left:6px; font-weight:800; font-size:16px;}
   .cal-el-card .symbol{position:absolute; top:20px; left:0; right:0; font-weight:900; font-size:56px; text-align:center; line-height:1; letter-spacing:1px;}
   .cal-el-card .name{position:absolute; bottom:20px; left:0; right:0; text-align:center; font-weight:800; font-size:16px;}
   .cal-el-card .mass{position:absolute; bottom:4px; left:0; right:0; text-align:center; font-weight:800; font-size:14px;}
-  .cal-el-help{ margin-top:6px; text-align:center; font-size:11px; color:#9fb2c7}
 </style>
 </head><body>
 
-<!-- CALENDARIA: Hydrogen overlay (appears only on 1/01 or when reference date = 1/01) -->
-<div id="cal-el-wrap" class="cal-el-wrap" aria-live="polite">
-  <div class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008" title="Se muestra el 1 de enero">
+<!-- CALENDARIA: Hydrogen slot to be moved inside the Aparato frame -->
+<div id="cal-el-slot" class="cal-el-slot" aria-live="polite">
+  <div id="cal-el-card" class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008" title="Se muestra el 1 de enero">
     <div class="Z">1</div>
     <div class="symbol">H</div>
     <div class="name">Hydrogen</div>
     <div class="mass">1.008</div>
   </div>
-  <div class="cal-el-help">1/01 (hoy o referencia)</div>
 </div>
 
 
@@ -477,7 +478,7 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: Hydrogen logic -->
+<!-- CALENDARIA: Attach Hydrogen inside the Aparato frame and toggle by date -->
 <script>
 (function(){
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
@@ -488,13 +489,49 @@ body.noScroll{overflow:hidden}
     var t = Date.parse(v);
     return isNaN(t) ? null : new Date(t);
   }
-  var wrap = document.getElementById('cal-el-wrap');
-  if(!wrap) return;
+  function findAparatoFrame(){
+    // look for any node that includes the text "APARATO Nº 507" (ignore case/accents)
+    var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
+    var target = null;
+    var needle = "APARATO Nº 507";
+    nodes.some(function(n){
+      try{
+        if((n.textContent||'').toUpperCase().indexOf(needle) !== -1){ target = n; return true; }
+      }catch(e){}
+      return false;
+    });
+    if(!target) return null;
+    // climb to a plausible frame container
+    var keys = /(card|frame|panel|module|box|container|wrap)/i;
+    var el = target;
+    for(var i=0;i<6 && el && el !== document.body;i++){
+      if(keys.test(el.className || "")) break;
+      el = el.parentElement;
+    }
+    return el || target.parentElement || null;
+  }
 
-  function setVisible(show){ wrap.style.display = show ? 'block' : 'none'; }
-  setVisible(isJanFirst(new Date()));
+  function attachInside(){
+    var slot = document.getElementById('cal-el-slot');
+    if(!slot) return null;
+    var frame = findAparatoFrame();
+    if(!frame) return null;
+    // ensure anchor
+    if(!frame.classList.contains('cal-el-anchor')) frame.classList.add('cal-el-anchor');
+    // append slot inside
+    frame.appendChild(slot);
+    return slot;
+  }
 
-  function hookInputs(){
+  function setVisible(show){
+    var card = document.getElementById('cal-el-card');
+    if(card){ card.classList.toggle('show', !!show); }
+  }
+
+  function init(){
+    attachInside();
+    setVisible(isJanFirst(new Date()));
+    // watch reference date
     var ref = document.getElementById('fechaReferencia');
     var candidates = Array.prototype.slice.call(document.querySelectorAll('input[type="date"]'));
     var list = ref ? [ref] : candidates;
@@ -512,11 +549,12 @@ body.noScroll{overflow:hidden}
   }
 
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', hookInputs);
+    document.addEventListener('DOMContentLoaded', init);
   }else{
-    hookInputs();
+    init();
   }
 
+  // manual hook
   window.__cal_setReferencia = function(d){
     if(!(d instanceof Date)) return;
     setVisible(isJanFirst(d));
