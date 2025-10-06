@@ -153,34 +153,61 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (overlay pinned in the strip between header and grid) -->
+<!-- CALENDARIA · Presentación del día (band) -->
 <style>
-  #cal-el-overlay{ position:fixed; z-index: 5000; pointer-events:none; }
-  #cal-el-overlay > .cal-el-card{ pointer-events:auto; }
+  .cal-pres-band{
+    display:none;
+    background: linear-gradient(180deg, rgba(40,56,76,.55), rgba(22,28,38,.55));
+    border:1px solid rgba(120,160,200,.18);
+    border-radius:12px;
+    padding:14px 16px;
+    margin:14px 0;
+  }
+  .cal-pres-band.show{ display:block; }
 
+  .cal-pres-row{ display:flex; align-items:center; gap:16px; }
+  .cal-pres-left{ flex:1 1 auto; min-width:200px; }
+  .cal-pres-title{ font-weight:800; font-size:18px; letter-spacing:.2px; }
+  .cal-pres-sub{ color:#a9b7c7; margin-top:4px; font-weight:600; font-size:14px; }
+
+  .cal-pres-right{ flex:0 0 auto; display:flex; align-items:center; gap:12px; }
+
+  /* tarjeta tipo tabla periódica */
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
     box-shadow: 0 10px 30px rgba(0,0,0,.35); user-select:none;
-    display:none;
   }
-  .cal-el-card.show{ display:block; }
   .cal-el-card .Z{position:absolute; top:4px; left:6px; font-weight:800; font-size:16px;}
   .cal-el-card .symbol{position:absolute; top:20px; left:0; right:0; font-weight:900; font-size:56px; text-align:center; line-height:1; letter-spacing:1px;}
   .cal-el-card .name{position:absolute; bottom:20px; left:0; right:0; text-align:center; font-weight:800; font-size:16px;}
   .cal-el-card .mass{position:absolute; bottom:4px; left:0; right:0; text-align:center; font-weight:800; font-size:14px;}
+
+  /* Responsive */
+  @media (max-width: 900px){
+    .cal-pres-row{ flex-direction:column; align-items:flex-start; }
+    .cal-pres-right{ align-self:flex-end; }
+  }
 </style>
 </head><body>
 
-<!-- CALENDARIA: Hydrogen overlay element -->
-<div id="cal-el-overlay" aria-live="polite">
-  <div id="cal-el-card" class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008" title="Se muestra el 1 de enero">
-    <div class="Z">1</div>
-    <div class="symbol">H</div>
-    <div class="name">Hydrogen</div>
-    <div class="mass">1.008</div>
+<!-- CALENDARIA · placeholder de Presentación del día (será movido dentro del panel) -->
+<section id="cal-pres-band" class="cal-pres-band" aria-live="polite">
+  <div class="cal-pres-row">
+    <div class="cal-pres-left">
+      <div class="cal-pres-title">Elemento del día</div>
+      <div class="cal-pres-sub" id="cal-pres-subtxt">01/01 · Hidrógeno (H) · Z=1 · 1.008 u</div>
+    </div>
+    <div class="cal-pres-right">
+      <div class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008">
+        <div class="Z">1</div>
+        <div class="symbol">H</div>
+        <div class="name">Hydrogen</div>
+        <div class="mass">1.008</div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
 
   <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
@@ -479,23 +506,26 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: compute position between header-bottom and grid-top (right aligned) -->
+<!-- CALENDARIA · lógica de Presentación del día -->
 <script>
 (function(){
-  var RIGHT_MARGIN = 20;   // px desde el borde derecho del panel
-  var TOP_MARGIN = 8;      // separación mínima desde el header
-  var BOTTOM_MARGIN = 8;   // separación mínima respecto al inicio de la grilla
-
+  // Utilidades de fecha
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
-  function parseDateVal(v){
-    if(!v) return null;
-    var m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if(m){ return new Date(+m[1], +m[2]-1, +m[3]); }
-    var t = Date.parse(v);
-    return isNaN(t) ? null : new Date(t);
+  function parseInputDate(val){
+    if(!val) return null;
+    var m = val.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(m) return new Date(+m[1], +m[2]-1, +m[3]);
+    var t = Date.parse(val); return isNaN(t) ? null : new Date(t);
   }
+  function fmt(d){
+    var dd = String(d.getDate()).padStart(2,'0');
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    return dd+'/'+mm;
+  }
+
+  // Hallar panel (el que contiene "Aparato N°/º 507")
   function norm(s){ try{ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase(); }catch(e){ return (s||'').toUpperCase(); } }
-  function findByText(needles){
+  function findByTextOne(needles){
     var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
     var N = needles.map(norm);
     for(var i=0;i<nodes.length;i++){
@@ -514,9 +544,8 @@ body.noScroll{overflow:hidden}
     var sh = cs.boxShadow && cs.boxShadow!=='none';
     return (br>0 || rad>0 || sh);
   }
-
-  function findPanel(){
-    var apar = findByText(["APARATO N° 507","APARATO Nº 507","APARATO NO 507","APARATO N.O 507","APARATO N 507"]);
+  function getPanel(){
+    var apar = findByTextOne(["APARATO N° 507","APARATO Nº 507","APARATO NO 507","APARATO N.O 507","APARATO N 507"]);
     if(!apar) return null;
     var el = apar;
     for(var i=0;i<10 && el && el!==document.body;i++){
@@ -526,111 +555,69 @@ body.noScroll{overflow:hidden}
     return apar.parentElement;
   }
 
-  function findHeaderBlock(panel){
-    // aprox: el bloque que contiene "Calendaria · ciclo de 16 días"
-    var header = findByText(["CALENDARIA · CICLO DE 16 DIAS","CALENDARIA · CICLO DE 16 DÍAS"]);
-    // Asegurar que header esté DENTRO del panel
-    if(header){
-      var p = header.parentElement;
-      while(p && p !== document.body){
-        if(p === panel) return header;
-        p = p.parentElement;
-      }
-    }
-    // fallback: usa el primer h o bloque antes de la grilla
+  // Posicionar la banda: insertarla antes de la grilla .planeGrid dentro del panel
+  function mountBand(){
+    var band = document.getElementById('cal-pres-band');
+    if(!band) return false;
+    var panel = getPanel();
+    if(!panel) return false;
     var grid = panel.querySelector('.planeGrid');
     if(grid){
-      var prev = grid.previousElementSibling;
-      if(prev) return prev;
+      // Insertar la banda justo antes de la grilla
+      if(band.parentElement !== panel || band.nextElementSibling !== grid){
+        panel.insertBefore(band, grid);
+      }
+    }else{
+      // si no se encuentra grilla, agregarla al final del header del panel
+      panel.insertBefore(band, panel.firstChild ? panel.firstChild.nextSibling : null);
     }
-    return panel.firstElementChild || panel;
+    return true;
   }
 
-  function findGridTop(panel){
-    var grid = panel.querySelector('.planeGrid');
-    if(!grid) return null;
-    var pr = panel.getBoundingClientRect();
-    var gr = grid.getBoundingClientRect();
-    return { y: gr.top - pr.top, el: grid };
-  }
-
-  function positionOverlay(){
-    var overlay = document.getElementById('cal-el-overlay');
-    var card = document.getElementById('cal-el-card');
-    if(!overlay || !card) return;
-    var panel = findPanel();
-    if(!panel){ overlay.style.display='none'; return; }
-    overlay.style.display='block';
-
-    var pr = panel.getBoundingClientRect();
-    var header = findHeaderBlock(panel);
-    var headerRect = header ? header.getBoundingClientRect() : pr;
-    var gridInfo = findGridTop(panel);
-
-    // región vertical disponible entre bottom del header y top de la grilla
-    var headerBottom = headerRect.bottom;
-    var gridTopAbs = gridInfo ? gridInfo.y + pr.top : (pr.top + 200);
-    var topBandStart = headerBottom + TOP_MARGIN;
-    var topBandEnd = gridTopAbs - BOTTOM_MARGIN;
-
-    // posición ideal: alinear al inicio de la banda; si hay altura, que no invada la grilla
-    var idealTop = topBandStart;
-    var cardH = card.offsetHeight || 110;
-    if(idealTop + cardH > topBandEnd){
-      // si no entra completo, colócalo centrado en la banda o justo pegado arriba
-      var bandHeight = Math.max(0, topBandEnd - topBandStart);
-      idealTop = topBandStart + Math.max(0, (bandHeight - cardH)/2);
+  // Mostrar/Ocultar según fecha
+  function refreshVisibility(d){
+    var band = document.getElementById('cal-pres-band');
+    if(!band) return;
+    if(isJanFirst(d)){
+      band.classList.add('show');
+      var sub = document.getElementById('cal-pres-subtxt');
+      if(sub){ sub.textContent = fmt(d) + ' · Hidrógeno (H) · Z=1 · 1.008 u'; }
+    }else{
+      band.classList.remove('show');
     }
-
-    var left = pr.right - (card.offsetWidth || 110) - RIGHT_MARGIN;
-    var minLeft = pr.left + 12;
-    if(left < minLeft) left = minLeft;
-
-    overlay.style.top = Math.round(idealTop) + 'px';
-    overlay.style.left = Math.round(left) + 'px';
-  }
-
-  function setVisible(show){
-    var card = document.getElementById('cal-el-card');
-    if(card){ card.classList.toggle('show', !!show); }
   }
 
   function init(){
-    positionOverlay();
-    window.addEventListener('resize', positionOverlay);
-    window.addEventListener('scroll', positionOverlay, true);
-    var panel = findPanel();
-    if(panel && 'ResizeObserver' in window){
-      var ro = new ResizeObserver(positionOverlay);
-      ro.observe(panel);
-    }
-    setVisible(isJanFirst(new Date()));
+    var ok = mountBand();
+    if(!ok){ setTimeout(mountBand, 50); setTimeout(mountBand, 200); }
+
+    // Estado inicial según hoy
+    refreshVisibility(new Date());
+
+    // Hook al input de referencia (si existe)
     var ref = document.getElementById('fechaReferencia');
     var candidates = Array.prototype.slice.call(document.querySelectorAll('input[type="date"]'));
     var list = ref ? [ref] : candidates;
     list.forEach(function(inp){
-      if(!inp) return;
       if(inp.value){
-        var d = parseDateVal(inp.value);
-        setVisible(isJanFirst(d));
+        var d = parseInputDate(inp.value);
+        if(d) refreshVisibility(d);
       }
       inp.addEventListener('change', function(e){
-        var d = parseDateVal(e.target.value);
-        setVisible(isJanFirst(d));
+        var d = parseInputDate(e.target.value);
+        if(d) refreshVisibility(d);
       });
     });
+
+    // Gancho manual global
+    window.__cal_setReferencia = function(d){
+      if(!(d instanceof Date)) return;
+      refreshVisibility(d);
+    };
   }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', init);
-  }else{
-    init();
-  }
-
-  window.__cal_setReferencia = function(d){
-    if(!(d instanceof Date)) return;
-    setVisible(isJanFirst(d));
-  };
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', init); }
+  else{ init(); }
 })();
 </script>
 
