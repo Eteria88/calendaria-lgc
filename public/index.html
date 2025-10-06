@@ -34,7 +34,7 @@ th:first-child,td:first-child{text-align:left}
 .anchors-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
 .a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02)}
 .a-dot{width:10px;height:10px;border-radius:50%}
-.plane{position:relative;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+.plane{position:relative;flex:1;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
 @media(min-width:480px){.plane{height:240px}} @media(min-width:768px){.plane{height:260px}} @media(min-width:1024px){.plane{height:300px}}
 .planeGrid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
 .cell{display:flex;align-items:center;justify-content:center;border:1px dashed var(--ol);position:relative;flex-direction:column;gap:4px}
@@ -48,6 +48,18 @@ th:first-child,td:first-child{text-align:left}
 .memRow{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:4}
 .memTag{position:relative;font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.04)}
 .memTag.active{border-color:#ffd166;box-shadow:0 0 6px rgba(255,209,102,.5)}
+
+/* Right-side quick info panel */
+.infoPanel{width:320px;max-width:360px;min-width:260px;align-self:stretch;border:1px solid var(--ol);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));box-shadow:0 10px 28px rgba(0,0,0,.25);padding:12px;display:flex;flex-direction:column;gap:10px}
+.infoPanel .title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.infoPanel .title .dot{width:8px;height:8px;border-radius:50%;background:#7cc7ff;box-shadow:0 0 10px #7cc7ff}
+.infoPanel .ap{font-weight:700;letter-spacing:.4px;color:#cfe1ff}
+.infoPanel dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 10px}
+.infoPanel dt{color:#9fb3c8;font-size:12px}
+.infoPanel dd{margin:0;font-family:ui-monospace,Menlo,Consolas,monospace}
+.infoPanel .tiny{color:#9fb3c8;font-size:12px;margin-top:-4px}
+@media(max-width:839px){.infoPanel{width:100%} .tile-flex{flex-direction:column-reverse}}
+
 .section-title{margin:6px 0 8px 0;color:#9fb3c8;font-size:14px;font-weight:700}
 .input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
 .field{display:flex;flex-direction:column}
@@ -197,26 +209,7 @@ body.noScroll{overflow:hidden}
       <div id="dbg" class="status">estado: cargando…</div>
 
       <section class="card">
-        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-          <div>
-            <div class="badge" id="apPhaseBadge">—</div>
-            <div class="small">Calendaria · ciclo de 16 días</div>
-            <div style="display:flex;gap:12px;flex-wrap:wrap">
-              <div><div class="small">Día</div><div class="mono" id="calDay" style="font-size:24px">—</div></div>
-              <div><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
-              <div><div class="small">Paso</div><div class="mono" id="calStep">—</div></div>
-              <div><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
-              <div>
-                <div class="small">Vuelta</div>
-                <div class="mono" id="calTurn">—</div>
-                <div class="small" id="calTurnRange">—</div>
-                <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
-                <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta</span><span class="mono" id="turnDay">—</span></div>
-                <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Día en bloque (1–4)</span><span class="mono" id="blockDay">—</span></div>
-              </div>
-            </div>
-          </div>
-
+        <div class="tile-flex" style="display:flex;gap:12px;align-items:stretch">
           <div class="plane">
             <!-- Hidrógeno (Elemento 1) — aparece sólo el 1/1 -->
             <div id="elementH" class="element-badge" aria-label="Elemento 1 · Hydrogen">
@@ -235,6 +228,26 @@ body.noScroll{overflow:hidden}
               <div class="cell" id="cellSE" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13–16</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
             </div>
           </div>
+
+          <!-- Right tidy info panel -->
+          <aside class="infoPanel">
+            <div class="title">
+              <span class="dot"></span>
+              <span id="apTitle" class="ap">Aparato Nº <span id="apIndex">—</span> · <span id="apYear">Año 1</span> — <span id="apPhaseText">Asume</span></span>
+            </div>
+
+            <dl>
+              <dt>Calendaria</dt><dd>ciclo de 16 días</dd>
+              <dt>Día</dt><dd class="mono" id="calDay">—</dd>
+              <dt>Cardinalidad</dt><dd class="mono" id="calCard">—</dd>
+              <dt>Paso</dt><dd class="mono" id="calStep">—</dd>
+              <dt>Memoria</dt><dd class="mono" id="calMem">—</dd>
+              <dt>Vuelta</dt><dd><span class="mono">Nº <span id="calTurn">—</span></span></dd>
+              <dt></dt><dd class="tiny" id="calTurnRange">—</dd>
+              <dt>Día en la vuelta</dt><dd class="mono" id="turnDay">—</dd>
+              <dt>Día en bloque (1–4)</dt><dd class="mono" id="blockDay">—</dd>
+            </dl>
+          </aside>
         </div>
       </section>
 
@@ -307,7 +320,7 @@ body.noScroll{overflow:hidden}
         </div>
         <div class="mcard">
           <div class="badge">Aparato (ciclo 1461)</div>
-          <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndex">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
+          <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndexInfo">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
           <div class="progress"><div class="progressInner" id="appProgressInner" style="width:0%"></div></div>
           <div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
           <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Anulación del aparato</span><span class="mono" id="annApp">—</span></div>
@@ -458,6 +471,24 @@ body.noScroll{overflow:hidden}
   // Por si app.js dispara cambios programáticos
   window.addEventListener('hashchange', updateElement);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) setTimeout(updateElement, 60); });
+})();
+
+/* --- Sincronizar título de aparato en panel (si app.js ya lo calcula) --- */
+(function(){
+  var badge = document.getElementById('apPhaseBadge'); // si app.js lo usa
+  var apIndex = document.getElementById('apIndex');
+  var apIndexInfo = document.getElementById('apIndexInfo');
+  function sync(){
+    try{
+      var t = badge && badge.textContent && badge.textContent.trim();
+      if(t && document.getElementById('apTitle')){
+        // Intento parsear: "Aparato Nº 507 · Año 1 — Asume"
+        document.getElementById('apTitle').textContent = t;
+      }
+      if(apIndex && apIndexInfo){ apIndexInfo.textContent = apIndex.textContent; }
+    }catch(e){}
+  }
+  setInterval(sync, 400);
 })();
 </script>
 
