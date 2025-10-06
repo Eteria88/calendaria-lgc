@@ -153,10 +153,10 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (inline, namespaced) -->
+<!-- CALENDARIA: Hydrogen card CSS (anchored inside apparatus frame) -->
 <style>
   .cal-el-anchor{ position:relative; }
-  .cal-el-slot{ position:absolute; top:8px; right:8px; z-index:10; }
+  .cal-el-slot{ position:absolute; top:8px; right:8px; z-index:25; }
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
@@ -171,7 +171,7 @@ body.noScroll{overflow:hidden}
 </style>
 </head><body>
 
-<!-- CALENDARIA: Hydrogen slot to be moved inside the Aparato frame -->
+<!-- CALENDARIA: Hydrogen slot -->
 <div id="cal-el-slot" class="cal-el-slot" aria-live="polite">
   <div id="cal-el-card" class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008" title="Se muestra el 1 de enero">
     <div class="Z">1</div>
@@ -478,7 +478,7 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: Attach Hydrogen inside the Aparato frame and toggle by date -->
+<!-- CALENDARIA: place Hydrogen inside the apparatus frame (common ancestor of header and grid) -->
 <script>
 (function(){
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
@@ -489,36 +489,57 @@ body.noScroll{overflow:hidden}
     var t = Date.parse(v);
     return isNaN(t) ? null : new Date(t);
   }
-  function findAparatoFrame(){
-    // look for any node that includes the text "APARATO Nº 507" (ignore case/accents)
-    var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
-    var target = null;
-    var needle = "APARATO Nº 507";
-    nodes.some(function(n){
-      try{
-        if((n.textContent||'').toUpperCase().indexOf(needle) !== -1){ target = n; return true; }
-      }catch(e){}
-      return false;
-    });
-    if(!target) return null;
-    // climb to a plausible frame container
-    var keys = /(card|frame|panel|module|box|container|wrap)/i;
-    var el = target;
-    for(var i=0;i<6 && el && el !== document.body;i++){
-      if(keys.test(el.className || "")) break;
-      el = el.parentElement;
+  function ancestors(el){
+    var a=[]; while(el && el!==document){ a.push(el); el=el.parentElement; } return a;
+  }
+  function lowestCommonAncestor(a,b){
+    if(!a || !b) return null;
+    var A=ancestors(a), B=ancestors(b);
+    for(var i=0;i<A.length;i++){
+      if(B.indexOf(A[i])!==-1) return A[i];
     }
-    return el || target.parentElement || null;
+    return null;
+  }
+  function findByText(needle){
+    var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
+    needle = needle.toUpperCase();
+    for(var i=0;i<nodes.length;i++){
+      var t = (nodes[i].textContent||'').toUpperCase();
+      if(t.indexOf(needle)!==-1) return nodes[i];
+    }
+    return null;
+  }
+
+  function findApparatusContainer(){
+    var header = findByText("APARATO Nº 507");
+    // Try multiple grid labels to be robust
+    var gridOne = findByText("NE"); // could be many, take first
+    var gridTwo = findByText("SO");
+    // if multiple matches exist, ensure they are not inside sidebar/menu by checking width
+    var candidate = lowestCommonAncestor(header, gridOne || gridTwo);
+    // If still not good, widen search using "SE" or "NO"
+    if(!candidate){
+      candidate = lowestCommonAncestor(header, findByText("SE") || findByText("NO"));
+    }
+    // last resort: the nearest ancestor of header that visually looks like a panel
+    if(!candidate && header){
+      var el = header;
+      var keys = /(card|frame|panel|module|wrap|container|box)/i;
+      for(var i=0;i<8 && el && el!==document.body;i++){
+        if(keys.test(el.className||"")) { candidate = el; break; }
+        el = el.parentElement;
+      }
+      candidate = candidate || header.parentElement;
+    }
+    return candidate || null;
   }
 
   function attachInside(){
     var slot = document.getElementById('cal-el-slot');
     if(!slot) return null;
-    var frame = findAparatoFrame();
+    var frame = findApparatusContainer();
     if(!frame) return null;
-    // ensure anchor
     if(!frame.classList.contains('cal-el-anchor')) frame.classList.add('cal-el-anchor');
-    // append slot inside
     frame.appendChild(slot);
     return slot;
   }
@@ -531,7 +552,7 @@ body.noScroll{overflow:hidden}
   function init(){
     attachInside();
     setVisible(isJanFirst(new Date()));
-    // watch reference date
+
     var ref = document.getElementById('fechaReferencia');
     var candidates = Array.prototype.slice.call(document.querySelectorAll('input[type="date"]'));
     var list = ref ? [ref] : candidates;
