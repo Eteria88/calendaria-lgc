@@ -153,10 +153,10 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (anchored to header info panel) -->
+<!-- CALENDARIA: Hydrogen card CSS (header-right placement inside main panel) -->
 <style>
-  .cal-el-header-anchor{ position:relative; }
-  #cal-el-slot{ position:absolute; right:8px; top:8px; z-index:70; }
+  .cal-el-panel-anchor{ position:relative; }
+  #cal-el-slot{ position:absolute; right:12px; z-index:72; } /* top set via JS to header's top */
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
@@ -171,7 +171,7 @@ body.noScroll{overflow:hidden}
 </style>
 </head><body>
 
-<!-- CALENDARIA: Hydrogen slot (will be re-parented into header info panel) -->
+<!-- CALENDARIA: Hydrogen slot -->
 <div id="cal-el-slot" aria-live="polite">
   <div id="cal-el-card" class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008" title="Se muestra el 1 de enero">
     <div class="Z">1</div>
@@ -478,7 +478,7 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: anchor to the header info panel (NOT the quadrants grid) -->
+<!-- CALENDARIA: place card at header-right area inside the main panel -->
 <script>
 (function(){
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
@@ -489,15 +489,18 @@ body.noScroll{overflow:hidden}
     var t = Date.parse(v);
     return isNaN(t) ? null : new Date(t);
   }
-  function norm(s){ try{ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase(); }catch(e){ return (s||'').toUpperCase(); } }
-  function findByTextOne(needles){
+  function norm(s){ try{ return s.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toUpperCase(); }catch(e){ return (s||'').toUpperCase(); } }
+  function findByText(needles){
     var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
     var N = needles.map(norm);
+    var out = [];
     for(var i=0;i<nodes.length;i++){
       var t = norm(nodes[i].textContent||"");
-      for(var j=0;j<N.length;j++){ if(t.indexOf(N[j])!==-1) return nodes[i]; }
+      for(var j=0;j<N.length;j++){
+        if(t.indexOf(N[j])!==-1){ out.push(nodes[i]); break; }
+      }
     }
-    return null;
+    return out;
   }
   function ancestors(el){ var a=[]; while(el && el!==document){ a.push(el); el=el.parentElement; } return a; }
   function lca(a,b){
@@ -506,27 +509,49 @@ body.noScroll{overflow:hidden}
     for(var i=0;i<A.length;i++){ if(B.indexOf(A[i])!==-1) return A[i]; }
     return null;
   }
-
-  // Find the header info container by LCA of the two key lines.
-  function findHeaderPanel(){
-    var apar = findByTextOne(["APARATO N° 507", "APARATO Nº 507", "APARATO NO 507", "APARATO N.O 507", "APARATO N 507"]);
-    var ciclo = findByTextOne(["CALENDARIA · CICLO DE 16 DIAS", "CALENDARIA · CICLO DE 16 DÍAS", "CICLO DE 16 DIAS", "CICLO DE 16 DÍAS"]);
-    var panel = lca(apar, ciclo);
-    // Ensure we did not pick the quadrants grid; if the panel contains .planeGrid, move to its parent
-    var grid = panel ? panel.querySelector('.planeGrid') : null;
-    if(grid && panel.parentElement){ panel = panel.parentElement; }
-    return panel || null;
+  function looksLikePanel(el){
+    if(!el) return false;
+    var cls = (el.className||"")+"";
+    if(/(card|panel|wrap|container|box|content)/i.test(cls)) return true;
+    var cs = window.getComputedStyle(el);
+    var br = (parseFloat(cs.borderTopWidth)||0)+(parseFloat(cs.borderRightWidth)||0)+(parseFloat(cs.borderBottomWidth)||0)+(parseFloat(cs.borderLeftWidth)||0);
+    var rad = (parseFloat(cs.borderTopLeftRadius)||0)+(parseFloat(cs.borderTopRightRadius)||0);
+    var sh = cs.boxShadow && cs.boxShadow!=='none';
+    return (br>0 || rad>0 || sh);
   }
 
-  function anchorToHeader(){
+  function placeInHeaderRight(){
     var slot = document.getElementById('cal-el-slot');
     if(!slot) return false;
-    var panel = findHeaderPanel();
+    // Identify header block via two lines of text:
+    var apar = findByText(["APARATO N° 507", "APARATO Nº 507", "APARATO NO 507", "APARATO N.O 507", "APARATO N 507"])[0];
+    var ciclo = findByText(["CALENDARIA · CICLO DE 16 DIAS", "CALENDARIA · CICLO DE 16 DÍAS"])[0];
+    var vuelta = findByText(["DIA EN LA VUELTA", "DÍA EN LA VUELTA"])[0]; // helps define header group
+    // The header group is the LCA of apar+ciclo (or apar+vuelta if ciclo not found).
+    var headerGroup = (apar && ciclo) ? lca(apar, ciclo) : (apar && vuelta ? lca(apar, vuelta) : null);
+    if(!headerGroup) return false;
+
+    // The main panel is the first ancestor that looks like a panel
+    var panel = headerGroup;
+    for(var i=0;i<8 && panel && panel!==document.body; i++){
+      if(looksLikePanel(panel)) break;
+      panel = panel.parentElement;
+    }
+    if(!panel) panel = headerGroup.parentElement;
     if(!panel) return false;
-    // mark anchor and move slot inside
-    if(!panel.classList.contains('cal-el-header-anchor')) panel.classList.add('cal-el-header-anchor');
+
+    // Anchor inside panel
+    if(!panel.classList.contains('cal-el-panel-anchor')) panel.classList.add('cal-el-panel-anchor');
     if(slot.parentElement !== panel) panel.appendChild(slot);
-    // top/right are already set in CSS (8px from edges)
+
+    // Position: top aligned with headerGroup's top (inside same panel) + a small offset
+    try{
+      var pr = panel.getBoundingClientRect();
+      var hr = headerGroup.getBoundingClientRect();
+      var top = (hr.top - pr.top) + 8; // 8px down from header top
+      slot.style.top = top + 'px';
+    }catch(e){}
+
     return true;
   }
 
@@ -536,8 +561,12 @@ body.noScroll{overflow:hidden}
   }
 
   function init(){
-    var ok = anchorToHeader();
-    if(!ok){ setTimeout(anchorToHeader, 50); setTimeout(anchorToHeader, 200); setTimeout(anchorToHeader, 500); }
+    var ok = placeInHeaderRight();
+    if(!ok){
+      // retry for lazy layout
+      setTimeout(placeInHeaderRight, 60);
+      setTimeout(placeInHeaderRight, 240);
+    }
 
     setVisible(isJanFirst(new Date()));
     var ref = document.getElementById('fechaReferencia');
