@@ -153,7 +153,7 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA · Presentación del día (band) -->
+<!-- CALENDARIA · Presentación del día (band) v2 -->
 <style>
   .cal-pres-band{
     display:none;
@@ -172,7 +172,6 @@ body.noScroll{overflow:hidden}
 
   .cal-pres-right{ flex:0 0 auto; display:flex; align-items:center; gap:12px; }
 
-  /* tarjeta tipo tabla periódica */
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
@@ -183,7 +182,6 @@ body.noScroll{overflow:hidden}
   .cal-el-card .name{position:absolute; bottom:20px; left:0; right:0; text-align:center; font-weight:800; font-size:16px;}
   .cal-el-card .mass{position:absolute; bottom:4px; left:0; right:0; text-align:center; font-weight:800; font-size:14px;}
 
-  /* Responsive */
   @media (max-width: 900px){
     .cal-pres-row{ flex-direction:column; align-items:flex-start; }
     .cal-pres-right{ align-self:flex-end; }
@@ -191,7 +189,7 @@ body.noScroll{overflow:hidden}
 </style>
 </head><body>
 
-<!-- CALENDARIA · placeholder de Presentación del día (será movido dentro del panel) -->
+<!-- CALENDARIA · placeholder de Presentación del día (será montado dentro del panel) -->
 <section id="cal-pres-band" class="cal-pres-band" aria-live="polite">
   <div class="cal-pres-row">
     <div class="cal-pres-left">
@@ -506,24 +504,33 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA · lógica de Presentación del día -->
+<!-- CALENDARIA · lógica de Presentación del día v2 -->
 <script>
 (function(){
-  // Utilidades de fecha
-  function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
-  function parseInputDate(val){
+  // --- Utilidades de fecha ---
+  function parseAnyDate(val){
     if(!val) return null;
-    var m = val.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    val = String(val).trim();
+    // YYYY-MM-DD
+    var m = val.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
     if(m) return new Date(+m[1], +m[2]-1, +m[3]);
+    // DD/MM/YYYY
+    m = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(m) return new Date(+m[3], +m[2]-1, +m[1]);
+    // DD-MM-YYYY
+    m = val.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+    if(m) return new Date(+m[3], +m[2]-1, +m[1]);
+    // Fallback parse
     var t = Date.parse(val); return isNaN(t) ? null : new Date(t);
   }
+  function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
   function fmt(d){
     var dd = String(d.getDate()).padStart(2,'0');
     var mm = String(d.getMonth()+1).padStart(2,'0');
     return dd+'/'+mm;
   }
 
-  // Hallar panel (el que contiene "Aparato N°/º 507")
+  // --- Búsqueda de panel y header ---
   function norm(s){ try{ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase(); }catch(e){ return (s||'').toUpperCase(); } }
   function findByTextOne(needles){
     var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
@@ -555,26 +562,61 @@ body.noScroll{overflow:hidden}
     return apar.parentElement;
   }
 
-  // Posicionar la banda: insertarla antes de la grilla .planeGrid dentro del panel
+  // --- Montaje de la franja ---
   function mountBand(){
     var band = document.getElementById('cal-pres-band');
     if(!band) return false;
     var panel = getPanel();
     if(!panel) return false;
+
+    // intentar insertarla antes de .planeGrid; si no, debajo del primer bloque de header
     var grid = panel.querySelector('.planeGrid');
     if(grid){
-      // Insertar la banda justo antes de la grilla
-      if(band.parentElement !== panel || band.nextElementSibling !== grid){
-        panel.insertBefore(band, grid);
-      }
+      panel.insertBefore(band, grid);
     }else{
-      // si no se encuentra grilla, agregarla al final del header del panel
-      panel.insertBefore(band, panel.firstChild ? panel.firstChild.nextSibling : null);
+      // Busca un bloque de encabezado visible (con "Calendaria · ciclo" o similar), o usa el primer hijo
+      var headerGuess = findByTextOne(["CALENDARIA · CICLO DE 16 DIAS","CALENDARIA · CICLO DE 16 DÍAS"]) || panel.firstElementChild;
+      if(headerGuess && headerGuess.nextSibling){
+        panel.insertBefore(band, headerGuess.nextSibling);
+      }else{
+        panel.appendChild(band);
+      }
     }
     return true;
   }
 
-  // Mostrar/Ocultar según fecha
+  // --- Detección del input de referencia ---
+  function collectReferenceInputs(){
+    var arr = [];
+    var qAll = Array.prototype.slice.call(document.querySelectorAll('input, select, textarea'));
+    qAll.forEach(function(el){
+      var id = (el.id||'').toLowerCase();
+      var name = (el.name||'').toLowerCase();
+      var aria = (el.getAttribute('aria-label')||'').toLowerCase();
+
+      function labelTextFor(el){
+        if(!el.id) return '';
+        var lbl = document.querySelector('label[for="'+el.id+'"]');
+        return (lbl && (lbl.textContent||'').toLowerCase()) || '';
+      }
+      var lab = labelTextFor(el);
+
+      var hayFecha = (id+name+aria+lab).indexOf('fecha') !== -1;
+      var hayRef = (id+name+aria+lab).indexOf('referencia') !== -1;
+
+      if(el.id==='fechaReferencia' || (hayFecha && hayRef)){
+        arr.push(el);
+      }
+    });
+    // Fallback: si no encontró, al menos el primer input[type=date]
+    if(arr.length===0){
+      var dateInput = document.querySelector('input[type="date"]');
+      if(dateInput) arr.push(dateInput);
+    }
+    return arr;
+  }
+
+  // --- Mostrar/Ocultar según fecha ---
   function refreshVisibility(d){
     var band = document.getElementById('cal-pres-band');
     if(!band) return;
@@ -588,28 +630,29 @@ body.noScroll{overflow:hidden}
   }
 
   function init(){
-    var ok = mountBand();
-    if(!ok){ setTimeout(mountBand, 50); setTimeout(mountBand, 200); }
+    var mounted = mountBand();
+    if(!mounted){ setTimeout(mountBand, 50); setTimeout(mountBand, 250); }
 
-    // Estado inicial según hoy
+    // 1) Estado inicial: hoy
     refreshVisibility(new Date());
 
-    // Hook al input de referencia (si existe)
-    var ref = document.getElementById('fechaReferencia');
-    var candidates = Array.prototype.slice.call(document.querySelectorAll('input[type="date"]'));
-    var list = ref ? [ref] : candidates;
-    list.forEach(function(inp){
-      if(inp.value){
-        var d = parseInputDate(inp.value);
-        if(d) refreshVisibility(d);
-      }
-      inp.addEventListener('change', function(e){
-        var d = parseInputDate(e.target.value);
-        if(d) refreshVisibility(d);
+    // 2) Leer referencia si ya hay valor
+    var refs = collectReferenceInputs();
+    refs.forEach(function(inp){
+      var v = (inp.value || inp.getAttribute('value') || '').trim();
+      var d = parseAnyDate(v);
+      if(d) refreshVisibility(d);
+
+      // 3) Suscribirse a cambios (input y change)
+      ['input','change'].forEach(function(evt){
+        inp.addEventListener(evt, function(e){
+          var d2 = parseAnyDate(e.target.value);
+          if(d2) refreshVisibility(d2);
+        });
       });
     });
 
-    // Gancho manual global
+    // 4) API manual
     window.__cal_setReferencia = function(d){
       if(!(d instanceof Date)) return;
       refreshVisibility(d);
