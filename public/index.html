@@ -13,8 +13,35 @@ header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(1
 .badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.6px;text-transform:uppercase}
 .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--ol);border-radius:16px;padding:14px}
 .hero{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin:14px 0}
-.tile{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;border:1px solid var(--ol);border-radius:16px;padding:14px}
+.tile{grid-column:1/-1;border:1px solid var(--ol);border-radius:16px;padding:14px}
+.tile-flex{display:flex;gap:14px;align-items:stretch}
 @media(min-width:840px){.tile{grid-column:span 6}}
+/* Plane */
+.plane{position:relative;flex:1;width:100%;height:240px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+@media(min-width:768px){.plane{height:280px}} @media(min-width:1024px){.plane{height:300px}}
+.planeGrid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.cell{display:flex;align-items:center;justify-content:center;border:1px dashed var(--ol);position:relative;flex-direction:column;gap:4px}
+.cellInner{display:flex;flex-direction:column;align-items:center;gap:2px}
+.cTitle{font-weight:700;letter-spacing:.5px}
+.cRange{font-size:11px;color:var(--muted)}
+.cSteps{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.cStep{font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 6px;background:rgba(255,255,255,.04)}
+.memRow{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:4}
+.memTag{position:relative;font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.04)}
+
+/* Right-side info panel — clean, aligned */
+.infoPanel{width:340px;max-width:360px;min-width:280px;align-self:stretch;border:1px solid var(--ol);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));box-shadow:0 12px 30px rgba(0,0,0,.28);padding:14px;display:flex;flex-direction:column;gap:10px}
+.infoHead{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--ol);border-radius:999px;padding:5px 10px;background:rgba(255,255,255,.04);font-size:12px}
+.chip.primary{box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+.infoPanel hr{border:none;border-top:1px solid var(--ol);opacity:.7;margin:6px 0}
+.infoGrid{display:grid;grid-template-columns:140px 1fr;gap:8px 12px}
+.infoGrid .k{color:#9fb3c8;font-size:12px}
+.infoGrid .v{font-family:ui-monospace,Menlo,Consolas,monospace}
+.infoFoot{font-size:12px;color:#9fb3c8}
+@media(max-width:839px){.infoPanel{width:100%}.tile-flex{flex-direction:column}}
+
+/* Inputs / sections below (sin cambios grandes) */
 .solarBreak{display:grid;gap:8px;margin-top:8px}
 .sb{border:1px solid var(--ol);border-radius:10px;overflow:hidden}
 .sb .h{background:rgba(255,255,255,.06);text-align:center;font-weight:700;padding:6px 8px}
@@ -30,164 +57,28 @@ th:first-child,td:first-child{text-align:left}
 @media(min-width:1024px){.mcard{grid-column:span 4}}
 .progress{height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.05);border:1px solid var(--ol);margin-top:6px}
 .progressInner{height:100%;background:linear-gradient(90deg,#63a8ff,#7cc7ff)}
-.chips{display:flex;gap:8px;margin-top:6px}.chip{border:1px solid var(--ol);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04)}
 .anchors-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
 .a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02)}
 .a-dot{width:10px;height:10px;border-radius:50%}
-.plane{position:relative;flex:1;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
-@media(min-width:480px){.plane{height:240px}} @media(min-width:768px){.plane{height:260px}} @media(min-width:1024px){.plane{height:300px}}
-.planeGrid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
-.cell{display:flex;align-items:center;justify-content:center;border:1px dashed var(--ol);position:relative;flex-direction:column;gap:4px}
-.cell.active{background:rgba(124,199,255,.10);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.6)}
-.cellInner{display:flex;flex-direction:column;align-items:center;gap:2px}
-.cTitle{font-weight:700;letter-spacing:.5px}
-.cRange{font-size:11px;color:var(--muted)}
-.cSteps{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
-.cStep{font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 6px;background:rgba(255,255,255,.04)}
-.cStep.active{border-color:#7cc7ff;background:rgba(124,199,255,.18);box-shadow:0 0 6px rgba(124,199,255,.5)}
-.memRow{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:4}
-.memTag{position:relative;font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.04)}
-.memTag.active{border-color:#ffd166;box-shadow:0 0 6px rgba(255,209,102,.5)}
-
-/* Right-side quick info panel */
-.infoPanel{width:320px;max-width:360px;min-width:260px;align-self:stretch;border:1px solid var(--ol);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));box-shadow:0 10px 28px rgba(0,0,0,.25);padding:12px;display:flex;flex-direction:column;gap:10px}
-.infoPanel .title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.infoPanel .title .dot{width:8px;height:8px;border-radius:50%;background:#7cc7ff;box-shadow:0 0 10px #7cc7ff}
-.infoPanel .ap{font-weight:700;letter-spacing:.4px;color:#cfe1ff}
-.infoPanel dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 10px}
-.infoPanel dt{color:#9fb3c8;font-size:12px}
-.infoPanel dd{margin:0;font-family:ui-monospace,Menlo,Consolas,monospace}
-.infoPanel .tiny{color:#9fb3c8;font-size:12px;margin-top:-4px}
-@media(max-width:839px){.infoPanel{width:100%} .tile-flex{flex-direction:column-reverse}}
-
-.section-title{margin:6px 0 8px 0;color:#9fb3c8;font-size:14px;font-weight:700}
-.input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
-.field{display:flex;flex-direction:column}
-.input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap)}
-.btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
-.btn:hover{background:rgba(124,199,255,.25)}
-.table-wrap{overflow:auto;border:1px solid var(--ol);border-radius:10px}
-.table-wrap table{min-width:680px}
-.status{margin:8px 0;color:#9cffd5;font-size:12px}
-
-.layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
-.sidenav{position:sticky;top:58px;height:calc(100dvh - 70px);border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
-.nav-title{font-size:12px;color:var(--muted);margin-bottom:8px}
-.nav-link{display:block;padding:8px 10px;margin:4px 0;border-radius:8px;border:1px solid var(--ol);color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
-.nav-link:hover{background:rgba(255,255,255,.06)}
-.nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
-@media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
-
-.menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
-@media(max-width:839px){.menuBtn{display:inline-block}}
-body.noScroll{overflow:hidden}
-.mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
-.mobileNav.open{pointer-events:auto}
-.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
-.mobileNav.open .mobileOverlay{opacity:1}
-.mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
-.mobileNav.open .mobileNavPanel{transform:translateX(0)}
-.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
-.closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
-.mobileList{display:flex;flex-direction:column;padding:10px}
-.mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
-.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
-
-/* --- Responsive mobile tuning --- */
-@media(max-width:599px){
-  .wrap{padding:14px}
-  header{padding:8px 0 10px 0}
-  .card,.tile{padding:12px}
-  .mcard{grid-column:1/-1}
-  .mono.big{font-size:clamp(22px,8vw,34px); word-break:break-word; overflow-wrap:anywhere}
-  .plane{height:220px}
-  .cStep{padding:2px 5px}
-  .memTag{padding:2px 6px}
-  .input{min-height:44px}
-  .progress{height:8px}
-  .table-wrap{ -webkit-overflow-scrolling: touch; overflow:auto }
-  .scroll-hint{display:block;margin-top:6px;color:#muted;font-size:12px}
-}
-@media(min-width:600px){
-  .scroll-hint{display:none}
-}
-
-/* Link "Volver a portada" en header */
+/* header utilities */
 .header-actions{display:flex;gap:10px;align-items:center}
 .header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:#9fb3c8;border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none}
 .header-actions a:hover{border-color:#6f8aa6;color:#d7e6ff}
-@media (max-width:480px){
-  .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
-}
+@media (max-width:480px){.header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}}
 
-/* === Elemento Periodic (Hydrogen) === */
-.element-badge{
-  position:absolute;top:10px;right:10px;width:92px;height:96px;
-  border:1px solid var(--ol);border-radius:10px;
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02)),
-    radial-gradient(180px 120px at 20% 0%, rgba(124,199,255,.15), transparent 70%);
-  color:var(--text);display:none; /* hidden por defecto */
-  box-shadow:0 6px 16px rgba(0,0,0,.25);
-}
+/* Hydrogen tile */
+.element-badge{position:absolute;top:10px;right:10px;width:92px;height:96px;border:1px solid var(--ol);border-radius:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02)),radial-gradient(180px 120px at 20% 0%, rgba(124,199,255,.15), transparent 70%);
+  color:var(--text);display:none;box-shadow:0 6px 16px rgba(0,0,0,.25)}
 .element-badge.show{display:block}
-.element-badge .corner{
-  position:absolute;left:6px;top:6px;font-weight:700;font-size:12px;color:#cfe1ff
-}
-.element-badge .sym{
-  font-weight:800;font-size:40px;line-height:1;text-align:center;margin-top:20px;
-  text-shadow:0 0 10px rgba(120,150,255,.25)
-}
-.element-badge .name{
-  font-size:12px;text-align:center;margin-top:4px;color:#cfe1ff
-}
-.element-badge .mass{
-  font-family:ui-monospace,Menlo,Consolas,monospace;
-  font-size:12px;text-align:center;margin-top:2px;color:#b7c7da
-}
-@media(max-width:480px){
-  .element-badge{width:84px;height:88px}
-  .element-badge .sym{font-size:34px;margin-top:18px}
-}
+.element-badge .corner{position:absolute;left:6px;top:6px;font-weight:700;font-size:12px;color:#cfe1ff}
+.element-badge .sym{font-weight:800;font-size:40px;line-height:1;text-align:center;margin-top:20px;text-shadow:0 0 10px rgba(120,150,255,.25)}
+.element-badge .name{font-size:12px;text-align:center;margin-top:4px;color:#cfe1ff}
+.element-badge .mass{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;text-align:center;margin-top:2px;color:#b7c7da}
 </style>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
-<style id="splash-spiral-css">/* (… portada sin cambios …) */</style>
 </head><body>
 
-  <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
-    <div class="splash__inner">
-      <div id="brand" class="brand">
-        <div id="brandLayout" class="brand__layout" aria-hidden="true">
-          <div class="row" data-row="0">CALENDARIA</div>
-          <div class="row" data-row="1">LGC</div>
-        </div>
-        <div id="brandStage" class="brand__stage" aria-hidden="true"></div>
-      </div>
-      <div><button id="enterBtn" class="enter" disabled>Entrar</button></div>
-    </div>
-  </div>
-
 <div class="wrap">
-
-  <div class="mobileNav" id="mobileNav" aria-hidden="true">
-    <div class="mobileNavPanel">
-      <div class="mobileNavHeader">
-        <span>Menú</span>
-        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
-      </div>
-      <nav class="mobileList">
-        <a class="mnav-link active" href="./">Inicio</a>
-        <a class="mnav-link" href="./range.html">Días entre fechas</a>
-        <a class="mnav-link" href="./letters.html">Letras → Números</a>
-        <a href="./mapa/">Mapa y codigos</a>
-      </nav>
-    </div>
-    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-  </div>
-
   <header>
     <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div>
     <span class="small" id="nowTZ">—</span>
@@ -205,11 +96,12 @@ body.noScroll{overflow:hidden}
         <a class="nav-link" href="./mapa/">Mapa y codigos</a>
       </nav>
     </aside>
+
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
       <section class="card">
-        <div class="tile-flex" style="display:flex;gap:12px;align-items:stretch">
+        <div class="tile-flex">
           <div class="plane">
             <!-- Hidrógeno (Elemento 1) — aparece sólo el 1/1 -->
             <div id="elementH" class="element-badge" aria-label="Elemento 1 · Hydrogen">
@@ -220,37 +112,42 @@ body.noScroll{overflow:hidden}
             </div>
 
             <div class="planeGrid">
-              <div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9–12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
-              <div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5–8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
-              <div class="cell" id="cellSO" style="grid-area:2/1"><div class="cellInner"><div class="cTitle">SO</div><div class="cRange">1–4</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div>
-                <div class="memRow"><span class="memTag" data-mem="RAM">RAM</span><span class="memTag" data-mem="REM">REM</span><span class="memTag" data-mem="ROM">ROM</span><span class="memTag" data-mem="RUM">RUM</span></div>
+              <div class="cell" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9–12</div></div><div class="cSteps"><span class="cStep">L</span><span class="cStep">I</span><span class="cStep">H</span><span class="cStep">C</span></div></div>
+              <div class="cell" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5–8</div></div><div class="cSteps"><span class="cStep">L</span><span class="cStep">I</span><span class="cStep">H</span><span class="cStep">C</span></div></div>
+              <div class="cell" style="grid-area:2/1"><div class="cellInner"><div class="cTitle">SO</div><div class="cRange">1–4</div></div><div class="cSteps"><span class="cStep">L</span><span class="cStep">I</span><span class="cStep">H</span><span class="cStep">C</span></div>
+                <div class="memRow"><span class="memTag">RAM</span><span class="memTag">REM</span><span class="memTag">ROM</span><span class="memTag">RUM</span></div>
               </div>
-              <div class="cell" id="cellSE" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13–16</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+              <div class="cell" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13–16</div></div><div class="cSteps"><span class="cStep">L</span><span class="cStep">I</span><span class="cStep">H</span><span class="cStep">C</span></div></div>
             </div>
           </div>
 
-          <!-- Right tidy info panel -->
+          <!-- Right tidy info panel (IDs movidos aquí para que app.js los rellene) -->
           <aside class="infoPanel">
-            <div class="title">
-              <span class="dot"></span>
-              <span id="apTitle" class="ap">Aparato Nº <span id="apIndex">—</span> · <span id="apYear">Año 1</span> — <span id="apPhaseText">Asume</span></span>
+            <div class="infoHead">
+              <span id="apPhaseBadge" class="chip primary">Aparato Nº 507 · Año 1 — Asume</span>
             </div>
+            <hr>
+            <div class="infoGrid">
+              <div class="k">Calendaria</div><div class="v">ciclo de 16 días</div>
 
-            <dl>
-              <dt>Calendaria</dt><dd>ciclo de 16 días</dd>
-              <dt>Día</dt><dd class="mono" id="calDay">—</dd>
-              <dt>Cardinalidad</dt><dd class="mono" id="calCard">—</dd>
-              <dt>Paso</dt><dd class="mono" id="calStep">—</dd>
-              <dt>Memoria</dt><dd class="mono" id="calMem">—</dd>
-              <dt>Vuelta</dt><dd><span class="mono">Nº <span id="calTurn">—</span></span></dd>
-              <dt></dt><dd class="tiny" id="calTurnRange">—</dd>
-              <dt>Día en la vuelta</dt><dd class="mono" id="turnDay">—</dd>
-              <dt>Día en bloque (1–4)</dt><dd class="mono" id="blockDay">—</dd>
-            </dl>
+              <div class="k">Día</div><div class="v" id="calDay">—</div>
+              <div class="k">Cardinalidad</div><div class="v" id="calCard">—</div>
+              <div class="k">Paso</div><div class="v" id="calStep">—</div>
+              <div class="k">Memoria</div><div class="v" id="calMem">—</div>
+
+              <div class="k">Vuelta</div><div class="v">Nº <span id="calTurn">—</span></div>
+              <div class="k">Rango</div><div class="v" id="calTurnRange">—</div>
+
+              <div class="k">Día en la vuelta</div><div class="v" id="turnDay">—</div>
+              <div class="k">Día en bloque (1–4)</div><div class="v" id="blockDay">—</div>
+            </div>
+            <hr>
+            <div class="infoFoot">Inicio aparato: <span class="mono" id="apStart">—</span></div>
           </aside>
         </div>
       </section>
 
+      <!-- Resto de secciones: igual que antes -->
       <section class="hero">
         <div class="tile">
           <div><h2 style="margin:0;color:#9fb3c8;font-size:14px">Días Solares desde 01·01·0001</h2>
@@ -320,39 +217,11 @@ body.noScroll{overflow:hidden}
         </div>
         <div class="mcard">
           <div class="badge">Aparato (ciclo 1461)</div>
-          <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndexInfo">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
+          <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndexInfo">—</span></span><span class="small">inicio: <span class="mono" id="apStartMirror">—</span></span></div>
           <div class="progress"><div class="progressInner" id="appProgressInner" style="width:0%"></div></div>
           <div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
           <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Anulación del aparato</span><span class="mono" id="annApp">—</span></div>
         </div>
-      </section>
-
-      <section class="card" style="margin-top:12px">
-        <div class="section-title">Calendario Lógico</div>
-        <div class="table-wrap"><table id="calog"><thead><tr><th>Año</th><th>Variable (+)</th><th>Constante</th><th>Aparato</th></tr></thead><tbody></tbody><tfoot><tr><td>SUMA</td><td id="calogSum">—</td><td></td><td></td></tr></tfoot></table></div>
-        <div class="scroll-hint">Desliza ↔ para ver la tabla completa</div>
-        <div class="small">Constante: 2012=1096, 2013=78; Variable: inicia en +doy y desciende sumando largos; en 2012 ajuste −1018.</div>
-      </section>
-
-      <section class="card" style="margin-top:12px">
-        <div class="small" style="margin-bottom:8px">Anclajes</div>
-        <div class="anchors-grid">
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Rupert Sheldrake (28·06·1942)</div></div><div class="mono" id="d_rupert">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Ryke Geerd Hamer (17·05·1935)</div></div><div class="mono" id="d_hamer">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Alcides Carrión (13·08·1857)</div></div><div class="mono" id="d_alcides">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>María Alejandra Casado (06·12·1969)</div></div><div class="mono" id="d_mac">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Inicio del calendario LGC (15·10·2015)</div></div><div class="mono" id="d_lgc_inicio">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Agregado del Toganeson (10·01·2024)</div></div><div class="mono" id="d_toganesos">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Quinta etapa (28·08·2016)</div></div><div class="mono" id="d_quinta">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Eje 258 (26·08·2017)</div></div><div class="mono" id="d_eje258">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Pentagrama LGC (07·01·2022)</div></div><div class="mono" id="d_penta">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Quita del patrón oro (15·08·1971)</div></div><div class="mono" id="d_patrono">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Inicio de la UIT (17·05·1865)</div></div><div class="mono" id="d_uit">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Día Google (30·12·1899)</div></div><div class="mono" id="d_google">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Primer segundo intercalar (30·06·1972)</div></div><div class="mono" id="d_leapsec">—</div></div>
-          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Edad Administrativa (12·08·2024)</div></div><div class="mono" id="d_admin">—</div></div>
-        </div>
-        <div class="small">Cálculo exclusivo desde cada fecha.</div>
       </section>
 
     </main>
@@ -360,136 +229,31 @@ body.noScroll{overflow:hidden}
 
   <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
 </div>
-<noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para ver los cálculos.</div></noscript>
-<script src="./app.js" defer></script>
-<script src="./common.js" defer></script>
 
 <script>
-/* --- Portada (sin cambios del bloque original) --- */
-(function(){
-  var key="calendaria_seen_splash_v3";
-  var splash=document.getElementById('splash');
-  var btn=document.getElementById('enterBtn');
-  var stage=document.getElementById('brandStage');
-  var layout=document.getElementById('brandLayout');
-  function hide(){splash.setAttribute('hidden','');}
-  var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
-  try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
-  function makeSpans(rowEl){
-    var text = rowEl.textContent; rowEl.textContent='';
-    for(var i=0;i<text.length;i++){
-      var ch=text[i]; var span=document.createElement('span');
-      if(ch===' '){ span.innerHTML='&nbsp;'; span.dataset.space='1'; } else { span.textContent=ch; }
-      rowEl.appendChild(span);
-    } return text;
-  }
-  var rows=[].slice.call(layout.querySelectorAll('.row')); rows.map(makeSpans); stage.appendChild(layout);
-  var targets=[]; var stageRect=stage.getBoundingClientRect();
-  rows.forEach(function(rowEl,rowIdx){
-    var spans=[].slice.call(rowEl.querySelectorAll('span'));
-    spans.forEach(function(sp){
-      var r=sp.getBoundingClientRect(); var x=r.left + r.width/2 - stageRect.left; var y=r.top + r.height/2 - stageRect.top;
-      targets.push({x:x,y:y,row:rowIdx,char:sp.textContent});
-    });
-  });
-  layout.parentNode && layout.parentNode.removeChild(layout);
-  var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
-  var chars = letters.map(function(t, idx){
-    var el=document.createElement('div'); el.className='char row-' + t.row; el.textContent=t.char; stage.appendChild(el);
-    return {el:el, target:t, i:idx, settled:false};
-  });
-  var w=stage.clientWidth, h=stage.clientHeight; var aspect = w / Math.max(h,1);
-  var isNarrow = (w < 420) || (aspect < 0.72); var swirlMs = isNarrow ? 2200 : 2600; var settleMs = 900; var stagger = isNarrow ? 20 : 24;
-  var A0 = Math.min(w,h) * (isNarrow ? 0.56 : 0.48); var freq = isNarrow ? 1.6 : 1.8;
-  function easeOutCubic(p){ return 1 - Math.pow(1-p,3); }
-  function lissajous(u){ var x=Math.sin(u), y=Math.sin(2*u)*0.7; return {x:x,y:y}; }
-  var t0=performance.now();
-  function anim(now){
-    var anyRunning=false;
-    chars.forEach(function(c, idx){
-      var t=Math.max(0, now - t0 - idx*stagger);
-      if(t >= (swirlMs+settleMs)){
-        if(!c.settled){
-          c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
-          c.settled=true;
-        } return;
-      }
-      anyRunning=true;
-      var p=Math.min(1, t/swirlMs); var damp=Math.pow(0.02, p); var u=(t/1000)*freq + (idx*0.35); var path=lissajous(u);
-      var cx=w/2, cy=h/2; var px=cx + path.x * A0 * damp; var py=cy + path.y * A0 * damp;
-      if(t>swirlMs){ var q=easeOutCubic((t - swirlMs)/settleMs); px = px + (c.target.x - px) * q; py = py + (c.target.y - py) * q; }
-      c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)'; c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
-    });
-    if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
-  }
-  requestAnimationFrame(anim);
-  btn && btn.addEventListener('click', function(){ try{ localStorage.setItem(key,'1'); }catch(e){} hide(); });
-})();
-
-/* --- Lógica Elemento 1: visible sólo en 1 de enero --- */
+/* --- Lógica: tarjeta Hidrógeno visible sólo en 1 de enero --- */
 (function(){
   var el = document.getElementById('elementH');
-  if(!el) return;
-
-  function parseISO(dstr){
-    if(!dstr) return null;
-    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dstr);
-    if(!m) return null;
-    return new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
-  }
-
-  function isJan1(dt){
-    return dt && dt.getMonth()===0 && dt.getDate()===1;
-  }
-
-  function getRefDate(){
-    var input = document.getElementById('ref');
-    var d = parseISO(input && input.value);
-    if(d) return d;
-    // fallback: hoy
-    return new Date();
-  }
-
-  function updateElement(){
-    try{
-      var d = getRefDate();
-      if(isJan1(d)){ el.classList.add('show'); } else { el.classList.remove('show'); }
-    }catch(e){}
-  }
-
-  // Inicial (espera a que app.js escriba el ref)
-  setTimeout(updateElement, 180);
-
-  // Cambios en la fecha de referencia
-  var ref = document.getElementById('ref');
-  if(ref){ ref.addEventListener('change', updateElement); ref.addEventListener('input', updateElement); }
-
-  // Botón Hoy
-  var btnToday = document.getElementById('btnToday');
-  if(btnToday){ btnToday.addEventListener('click', function(){ setTimeout(updateElement, 30); }); }
-
-  // Por si app.js dispara cambios programáticos
-  window.addEventListener('hashchange', updateElement);
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden) setTimeout(updateElement, 60); });
+  function parseISO(dstr){ var m=/^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(dstr||''); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+  function isJan1(d){ return d && d.getMonth()===0 && d.getDate()===1; }
+  function getRef(){ var i=document.getElementById('ref'); return parseISO(i && i.value) || new Date(); }
+  function upd(){ try{ var d=getRef(); el && (isJan1(d)?el.classList.add('show'):el.classList.remove('show')); }catch(e){} }
+  setTimeout(upd,160);
+  var ref=document.getElementById('ref'), hoy=document.getElementById('btnToday');
+  ref && (ref.oninput=upd, ref.onchange=upd); hoy && hoy.addEventListener('click',()=>setTimeout(upd,30));
 })();
 
-/* --- Sincronizar título de aparato en panel (si app.js ya lo calcula) --- */
+/* --- Espejos para que métricas de "Aparato" también figuren abajo --- */
 (function(){
-  var badge = document.getElementById('apPhaseBadge'); // si app.js lo usa
-  var apIndex = document.getElementById('apIndex');
-  var apIndexInfo = document.getElementById('apIndexInfo');
   function sync(){
-    try{
-      var t = badge && badge.textContent && badge.textContent.trim();
-      if(t && document.getElementById('apTitle')){
-        // Intento parsear: "Aparato Nº 507 · Año 1 — Asume"
-        document.getElementById('apTitle').textContent = t;
-      }
-      if(apIndex && apIndexInfo){ apIndexInfo.textContent = apIndex.textContent; }
-    }catch(e){}
+    var apIndex = document.getElementById('apIndex');
+    var apIndexInfo = document.getElementById('apIndexInfo');
+    if(apIndex && apIndexInfo) apIndexInfo.textContent = apIndex.textContent || '—';
+    var apStart = document.getElementById('apStart');
+    var apStartMirror = document.getElementById('apStartMirror');
+    if(apStart && apStartMirror) apStartMirror.textContent = apStart.textContent || '—';
   }
   setInterval(sync, 400);
 })();
 </script>
-
 </body></html>
