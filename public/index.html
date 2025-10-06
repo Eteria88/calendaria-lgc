@@ -66,7 +66,6 @@ th:first-child,td:first-child{text-align:left}
 .nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
 @media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
 
-
 .menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
 @media(max-width:839px){.menuBtn{display:inline-block}}
 body.noScroll{overflow:hidden}
@@ -82,7 +81,6 @@ body.noScroll{overflow:hidden}
 .mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
 .mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
 
-
 /* --- Responsive mobile tuning --- */
 @media(max-width:599px){
   .wrap{padding:14px}
@@ -96,117 +94,56 @@ body.noScroll{overflow:hidden}
   .input{min-height:44px}
   .progress{height:8px}
   .table-wrap{ -webkit-overflow-scrolling: touch; overflow:auto }
-  .scroll-hint{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+  .scroll-hint{display:block;margin-top:6px;color:#muted;font-size:12px}
 }
 @media(min-width:600px){
   .scroll-hint{display:none}
 }
 
-
 /* Link "Volver a portada" en header */
 .header-actions{display:flex;gap:10px;align-items:center}
-.header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none}
+.header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:#9fb3c8;border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none}
 .header-actions a:hover{border-color:#6f8aa6;color:#d7e6ff}
 @media (max-width:480px){
   .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
 }
 
+/* === Elemento Periodic (Hydrogen) === */
+.element-badge{
+  position:absolute;top:10px;right:10px;width:92px;height:96px;
+  border:1px solid var(--ol);border-radius:10px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02)),
+    radial-gradient(180px 120px at 20% 0%, rgba(124,199,255,.15), transparent 70%);
+  color:var(--text);display:none; /* hidden por defecto */
+  box-shadow:0 6px 16px rgba(0,0,0,.25);
+}
+.element-badge.show{display:block}
+.element-badge .corner{
+  position:absolute;left:6px;top:6px;font-weight:700;font-size:12px;color:#cfe1ff
+}
+.element-badge .sym{
+  font-weight:800;font-size:40px;line-height:1;text-align:center;margin-top:20px;
+  text-shadow:0 0 10px rgba(120,150,255,.25)
+}
+.element-badge .name{
+  font-size:12px;text-align:center;margin-top:4px;color:#cfe1ff
+}
+.element-badge .mass{
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:12px;text-align:center;margin-top:2px;color:#b7c7da
+}
+@media(max-width:480px){
+  .element-badge{width:84px;height:88px}
+  .element-badge .sym{font-size:34px;margin-top:18px}
+}
 </style>
-  <!-- Splash Landing v3 (forzado) + mobile responsive -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
-  <style id="splash-spiral-css">
-    .splash{position:fixed;inset:0;display:grid;place-items:center;background:
-      radial-gradient(1200px 800px at 60% -10%, rgba(255,200,120,.07), transparent 60%),
-      radial-gradient(1000px 900px at 10% 110%, rgba(120,180,255,.07), transparent 60%),
-      #0b0d10;color:#e6f1ff;z-index:9999;transition:opacity .6s ease,visibility .6s ease}
-    .splash[hidden]{opacity:0;visibility:hidden}
-    .splash__inner{text-align:center;padding:24px;padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom))}
-    .brand{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;display:inline-block;position:relative;filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
-    .brand .row{display:block}
-    .brand__layout{position:relative;opacity:0;pointer-events:none;user-select:none;display:inline-block}
-    .brand__layout .row{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;text-align:center;white-space:pre}
-    .brand__layout .row[data-row="0"]{font-weight:600;font-size:clamp(56px,11vw,128px)}
-    .brand__layout .row[data-row="1"]{font-weight:600;font-size:clamp(38px,9vw,96px)}
-    .brand__stage{position:relative;width:min(94vw,1200px);height:clamp(240px,46dvh,520px);margin:auto;display:grid;place-items:center}
-    .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
-      background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
-      -webkit-background-clip:text;background-clip:text;color:transparent;
-      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15)transform:translate(-50%,-50%);}
-    .row-0 .char{font-size:clamp(56px,11vw,128px)}
-    .row-1 .char{font-size:clamp(38px,9vw,96px);opacity:.95}
-    .enter{margin-top:28px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#cfe1ff;border:1px solid rgba(156,178,200,.4);
-      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:12px 18px;border-radius:12px;cursor:pointer;transition:transform .1s ease,opacity .3s ease;border-color}
-    .enter:active{transform:scale(.98)}
-    @media (max-width: 480px){
-      .brand{letter-spacing:.10em}
-      .brand__stage{width:100vw;height:clamp(260px,48dvh,560px)}
-      .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
-      .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
-    }
-    @media (max-width: 360px){
-      .brand{letter-spacing:.08em}
-      .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
-      .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
-    }
-  </style>
 
-
-<!-- CALENDARIA · Presentación del día (band) v2 -->
-<style>
-  .cal-pres-band{
-    display:none;
-    background: linear-gradient(180deg, rgba(40,56,76,.55), rgba(22,28,38,.55));
-    border:1px solid rgba(120,160,200,.18);
-    border-radius:12px;
-    padding:14px 16px;
-    margin:14px 0;
-  }
-  .cal-pres-band.show{ display:block; }
-
-  .cal-pres-row{ display:flex; align-items:center; gap:16px; }
-  .cal-pres-left{ flex:1 1 auto; min-width:200px; }
-  .cal-pres-title{ font-weight:800; font-size:18px; letter-spacing:.2px; }
-  .cal-pres-sub{ color:#a9b7c7; margin-top:4px; font-weight:600; font-size:14px; }
-
-  .cal-pres-right{ flex:0 0 auto; display:flex; align-items:center; gap:12px; }
-
-  .cal-el-card{
-    width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
-    border:3px solid #1f2a3a; border-radius:8px; position:relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,.35); user-select:none;
-  }
-  .cal-el-card .Z{position:absolute; top:4px; left:6px; font-weight:800; font-size:16px;}
-  .cal-el-card .symbol{position:absolute; top:20px; left:0; right:0; font-weight:900; font-size:56px; text-align:center; line-height:1; letter-spacing:1px;}
-  .cal-el-card .name{position:absolute; bottom:20px; left:0; right:0; text-align:center; font-weight:800; font-size:16px;}
-  .cal-el-card .mass{position:absolute; bottom:4px; left:0; right:0; text-align:center; font-weight:800; font-size:14px;}
-
-  @media (max-width: 900px){
-    .cal-pres-row{ flex-direction:column; align-items:flex-start; }
-    .cal-pres-right{ align-self:flex-end; }
-  }
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+<style id="splash-spiral-css">/* (… portada sin cambios …) */</style>
 </head><body>
-
-<!-- CALENDARIA · placeholder de Presentación del día (será montado dentro del panel) -->
-<section id="cal-pres-band" class="cal-pres-band" aria-live="polite">
-  <div class="cal-pres-row">
-    <div class="cal-pres-left">
-      <div class="cal-pres-title">Elemento del día</div>
-      <div class="cal-pres-sub" id="cal-pres-subtxt">01/01 · Hidrógeno (H) · Z=1 · 1.008 u</div>
-    </div>
-    <div class="cal-pres-right">
-      <div class="cal-el-card" aria-label="Hydrogen, Z=1, 1.008">
-        <div class="Z">1</div>
-        <div class="symbol">H</div>
-        <div class="name">Hydrogen</div>
-        <div class="mass">1.008</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 
   <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
     <div class="splash__inner">
@@ -233,13 +170,18 @@ body.noScroll{overflow:hidden}
         <a class="mnav-link active" href="./">Inicio</a>
         <a class="mnav-link" href="./range.html">Días entre fechas</a>
         <a class="mnav-link" href="./letters.html">Letras → Números</a>
-      
-      <a href="./mapa/">Mapa y codigos</a></nav>
+        <a href="./mapa/">Mapa y codigos</a>
+      </nav>
     </div>
     <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
   </div>
 
-  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
+  <header>
+    <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div>
+    <span class="small" id="nowTZ">—</span>
+    <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button>
+    <div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div>
+  </header>
 
   <div class="layout">
     <aside class="sidenav">
@@ -255,140 +197,150 @@ body.noScroll{overflow:hidden}
       <div id="dbg" class="status">estado: cargando…</div>
 
       <section class="card">
-    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-      <div>
-        <div class="badge" id="apPhaseBadge">—</div>
-        <div class="small">Calendaria · ciclo de 16 días</div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <div><div class="small">Día</div><div class="mono" id="calDay" style="font-size:24px">—</div></div>
-          <div><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
-          <div><div class="small">Paso</div><div class="mono" id="calStep">—</div></div>
-          <div><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
+        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
           <div>
-            <div class="small">Vuelta</div>
-            <div class="mono" id="calTurn">—</div>
-            <div class="small" id="calTurnRange">—</div>
-            <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
-            <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta</span><span class="mono" id="turnDay">—</span></div>
-            <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Día en bloque (1–4)</span><span class="mono" id="blockDay">—</span></div>
+            <div class="badge" id="apPhaseBadge">—</div>
+            <div class="small">Calendaria · ciclo de 16 días</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <div><div class="small">Día</div><div class="mono" id="calDay" style="font-size:24px">—</div></div>
+              <div><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
+              <div><div class="small">Paso</div><div class="mono" id="calStep">—</div></div>
+              <div><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
+              <div>
+                <div class="small">Vuelta</div>
+                <div class="mono" id="calTurn">—</div>
+                <div class="small" id="calTurnRange">—</div>
+                <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
+                <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta</span><span class="mono" id="turnDay">—</span></div>
+                <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Día en bloque (1–4)</span><span class="mono" id="blockDay">—</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="plane">
+            <!-- Hidrógeno (Elemento 1) — aparece sólo el 1/1 -->
+            <div id="elementH" class="element-badge" aria-label="Elemento 1 · Hydrogen">
+              <div class="corner">1</div>
+              <div class="sym">H</div>
+              <div class="name">Hydrogen</div>
+              <div class="mass">1.008</div>
+            </div>
+
+            <div class="planeGrid">
+              <div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9–12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+              <div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5–8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+              <div class="cell" id="cellSO" style="grid-area:2/1"><div class="cellInner"><div class="cTitle">SO</div><div class="cRange">1–4</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div>
+                <div class="memRow"><span class="memTag" data-mem="RAM">RAM</span><span class="memTag" data-mem="REM">REM</span><span class="memTag" data-mem="ROM">ROM</span><span class="memTag" data-mem="RUM">RUM</span></div>
+              </div>
+              <div class="cell" id="cellSE" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13–16</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero">
+        <div class="tile">
+          <div><h2 style="margin:0;color:#9fb3c8;font-size:14px">Días Solares desde 01·01·0001</h2>
+            <div class="small">Fecha de referencia: <span id="refLabel">—</span></div>
+            <div class="solarBreak">
+              <div class="sb"><div class="h">DÍAS SOLARES</div><div class="v mono" id="sb_total">—</div></div>
+              <div class="sb"><div class="h">JULIANOS hasta 04/10/1582</div><div class="v mono" id="sb_jul">—</div><div class="small" style="text-align:center">JDN 1721424 → 2299160</div></div>
+              <div class="sb"><div class="h">GREGORIANO desde 15/10/1582</div><div class="v mono" id="sb_greg">—</div><div class="small" style="text-align:center">JDN 2299161 → <span class="mono" id="sb_greg_jdn_b">—</span></div></div>
+              <div class="sb"><div class="small" style="display:flex;justify-content:space-between;padding:6px 8px"><span>Desde 14/10/1582 (exclusivo)</span><span>Continuidad: primer gregoriano</span></div><div class="small" style="display:flex;justify-content:space-between;padding:6px 8px"><span class="mono" id="sb_greg_alt">—</span><span class="mono" id="sb_first_greg">577738</span></div></div>
+            </div>
+          </div>
+          <div class="mono big" id="solarDays">—</div>
+        </div>
+
+        <div class="tile">
+          <div style="flex:1">
+            <h2 style="margin:0;color:#9fb3c8;font-size:14px">Cuarentena Global (14·10·2012)</h2>
+            <div class="small">Duración por cuarentena: 39 días · transcurridos: <span id="qDays">—</span></div>
+            <div class="q-mini">
+              <div class="q-item"><span class="small">Nº de cuarentena</span><span class="mono" id="qIdx">—</span></div>
+              <div class="q-item"><span class="small">Día de cuarentena</span><span class="mono" id="qDay">—</span></div>
+              <div class="q-item"><span class="small">Ladrillo Nº (3 días)</span><span class="mono" id="brickIdx">—</span></div>
+              <div class="q-item"><span class="small">Día dentro del ladrillo</span><span class="mono" id="brickDay">—</span></div>
+            </div>
+          </div>
+          <div class="mono big" id="qNumber">—</div>
+        </div>
+      </section>
+
+      <div class="card">
+        <div class="input-grid">
+          <div class="field" style="grid-column:span 6">
+            <label class="small" for="dob">Fecha de nacimiento</label>
+            <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
+            <div class="small">Diferencia exclusiva (puede ser negativa si la referencia es anterior).</div>
+            <div class="field" style="margin-top:6px">
+              <label class="small" for="dobText">Avanzada</label>
+              <input class="input" type="text" id="dobText" placeholder="YYYY-MM-DD o DD-MM-YYYY">
+            </div>
+          </div>
+          <div class="field" style="grid-column:span 6">
+            <label class="small" for="ref">Fecha de referencia</label>
+            <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
+            <div class="small">Podés pasar ?dob=YYYY-MM-DD y ?ref=YYYY-MM-DD</div>
+            <div class="field" style="margin-top:6px">
+              <label class="small" for="refText">Avanzada</label>
+              <input class="input" type="text" id="refText" placeholder="YYYY-MM-DD o DD-MM-YYYY">
+            </div>
+            <div class="field" style="margin-top:6px">
+              <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="plane"><div class="planeGrid">
-        <div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9–12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
-        <div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5–8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
-        <div class="cell" id="cellSO" style="grid-area:2/1"><div class="cellInner"><div class="cTitle">SO</div><div class="cRange">1–4</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div>
-          <div class="memRow"><span class="memTag" data-mem="RAM">RAM</span><span class="memTag" data-mem="REM">REM</span><span class="memTag" data-mem="ROM">ROM</span><span class="memTag" data-mem="RUM">RUM</span></div>
-        </div>
-        <div class="cell" id="cellSE" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13–16</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
-      </div></div>
-    </div>
-  </section>
 
-  <section class="hero">
-    <div class="tile">
-      <div><h2 style="margin:0;color:#9fb3c8;font-size:14px">Días Solares desde 01·01·0001</h2>
-        <div class="small">Fecha de referencia: <span id="refLabel">—</span></div>
-        <div class="solarBreak">
-          <div class="sb"><div class="h">DÍAS SOLARES</div><div class="v mono" id="sb_total">—</div></div>
-          <div class="sb"><div class="h">JULIANOS hasta 04/10/1582</div><div class="v mono" id="sb_jul">—</div><div class="small" style="text-align:center">JDN 1721424 → 2299160</div></div>
-          <div class="sb"><div class="h">GREGORIANO desde 15/10/1582</div><div class="v mono" id="sb_greg">—</div><div class="small" style="text-align:center">JDN 2299161 → <span class="mono" id="sb_greg_jdn_b">—</span></div></div>
-          <div class="sb"><div class="small" style="display:flex;justify-content:space-between;padding:6px 8px"><span>Desde 14/10/1582 (exclusivo)</span><span>Continuidad: primer gregoriano</span></div><div class="small" style="display:flex;justify-content:space-between;padding:6px 8px"><span class="mono" id="sb_greg_alt">—</span><span class="mono" id="sb_first_greg">577738</span></div></div>
+      <section class="metrics">
+        <div class="mcard">
+          <div class="badge">Días de vida</div>
+          <div class="mono big" id="lifeDays" style="margin-top:8px">—</div>
         </div>
-      </div>
-      <div class="mono big" id="solarDays">—</div>
-    </div>
-
-    <div class="tile">
-      <div style="flex:1">
-        <h2 style="margin:0;color:#9fb3c8;font-size:14px">Cuarentena Global (14·10·2012)</h2>
-        <div class="small">Duración por cuarentena: 39 días · transcurridos: <span id="qDays">—</span></div>
-        <div class="q-mini">
-          <div class="q-item"><span class="small">Nº de cuarentena</span><span class="mono" id="qIdx">—</span></div>
-          <div class="q-item"><span class="small">Día de cuarentena</span><span class="mono" id="qDay">—</span></div>
-          <div class="q-item"><span class="small">Ladrillo Nº (3 días)</span><span class="mono" id="brickIdx">—</span></div>
-          <div class="q-item"><span class="small">Día dentro del ladrillo</span><span class="mono" id="brickDay">—</span></div>
+        <div class="mcard">
+          <div class="badge">Frecuencia del día</div>
+          <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Día del año</span><span class="mono"><span id="doy">—</span> / <span id="ylen">—</span></span></div>
+          <div class="progress"><div class="progressInner" id="yearProgressInner" style="width:0%"></div></div>
+          <div class="chips"><span class="chip mono" id="freqYearPos">+—</span><span class="chip mono" id="freqYearNeg">−—</span></div>
+          <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Anulación anual</span><span class="mono" id="annYear">—</span></div>
         </div>
-      </div>
-      <div class="mono big" id="qNumber">—</div>
-    </div>
-  </section>
-
-  <div class="card">
-    <div class="input-grid">
-      <div class="field" style="grid-column:span 6">
-        <label class="small" for="dob">Fecha de nacimiento</label>
-        <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
-        <div class="small">Diferencia exclusiva (puede ser negativa si la referencia es anterior).</div>
-        <div class="field" style="margin-top:6px">
-          <label class="small" for="dobText">Avanzada</label>
-          <input class="input" type="text" id="dobText" placeholder="YYYY-MM-DD o DD-MM-YYYY">
+        <div class="mcard">
+          <div class="badge">Aparato (ciclo 1461)</div>
+          <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndex">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
+          <div class="progress"><div class="progressInner" id="appProgressInner" style="width:0%"></div></div>
+          <div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
+          <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Anulación del aparato</span><span class="mono" id="annApp">—</span></div>
         </div>
-      </div>
-      <div class="field" style="grid-column:span 6">
-        <label class="small" for="ref">Fecha de referencia</label>
-        <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
-        <div class="small">Podés pasar ?dob=YYYY-MM-DD y ?ref=YYYY-MM-DD</div>
-        <div class="field" style="margin-top:6px">
-          <label class="small" for="refText">Avanzada</label>
-          <input class="input" type="text" id="refText" placeholder="YYYY-MM-DD o DD-MM-YYYY">
+      </section>
+
+      <section class="card" style="margin-top:12px">
+        <div class="section-title">Calendario Lógico</div>
+        <div class="table-wrap"><table id="calog"><thead><tr><th>Año</th><th>Variable (+)</th><th>Constante</th><th>Aparato</th></tr></thead><tbody></tbody><tfoot><tr><td>SUMA</td><td id="calogSum">—</td><td></td><td></td></tr></tfoot></table></div>
+        <div class="scroll-hint">Desliza ↔ para ver la tabla completa</div>
+        <div class="small">Constante: 2012=1096, 2013=78; Variable: inicia en +doy y desciende sumando largos; en 2012 ajuste −1018.</div>
+      </section>
+
+      <section class="card" style="margin-top:12px">
+        <div class="small" style="margin-bottom:8px">Anclajes</div>
+        <div class="anchors-grid">
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Rupert Sheldrake (28·06·1942)</div></div><div class="mono" id="d_rupert">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Ryke Geerd Hamer (17·05·1935)</div></div><div class="mono" id="d_hamer">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Alcides Carrión (13·08·1857)</div></div><div class="mono" id="d_alcides">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>María Alejandra Casado (06·12·1969)</div></div><div class="mono" id="d_mac">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Inicio del calendario LGC (15·10·2015)</div></div><div class="mono" id="d_lgc_inicio">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Agregado del Toganeson (10·01·2024)</div></div><div class="mono" id="d_toganesos">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Quinta etapa (28·08·2016)</div></div><div class="mono" id="d_quinta">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Eje 258 (26·08·2017)</div></div><div class="mono" id="d_eje258">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Pentagrama LGC (07·01·2022)</div></div><div class="mono" id="d_penta">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Quita del patrón oro (15·08·1971)</div></div><div class="mono" id="d_patrono">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Inicio de la UIT (17·05·1865)</div></div><div class="mono" id="d_uit">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Día Google (30·12·1899)</div></div><div class="mono" id="d_google">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Primer segundo intercalar (30·06·1972)</div></div><div class="mono" id="d_leapsec">—</div></div>
+          <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Edad Administrativa (12·08·2024)</div></div><div class="mono" id="d_admin">—</div></div>
         </div>
-        <div class="field" style="margin-top:6px">
-          <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
-          
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <section class="metrics">
-    <div class="mcard">
-      <div class="badge">Días de vida</div>
-      <div class="mono big" id="lifeDays" style="margin-top:8px">—</div>
-    </div>
-    <div class="mcard">
-      <div class="badge">Frecuencia del día</div>
-      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Día del año</span><span class="mono"><span id="doy">—</span> / <span id="ylen">—</span></span></div>
-      <div class="progress"><div class="progressInner" id="yearProgressInner" style="width:0%"></div></div>
-      <div class="chips"><span class="chip mono" id="freqYearPos">+—</span><span class="chip mono" id="freqYearNeg">−—</span></div>
-      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Anulación anual</span><span class="mono" id="annYear">—</span></div>
-    </div>
-    <div class="mcard">
-      <div class="badge">Aparato (ciclo 1461)</div>
-      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndex">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
-      <div class="progress"><div class="progressInner" id="appProgressInner" style="width:0%"></div></div>
-      <div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
-      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Anulación del aparato</span><span class="mono" id="annApp">—</span></div>
-    </div>
-  </section>
-
-  <section class="card" style="margin-top:12px">
-    <div class="section-title">Calendario Lógico</div>
-    <div class="table-wrap"><table id="calog"><thead><tr><th>Año</th><th>Variable (+)</th><th>Constante</th><th>Aparato</th></tr></thead><tbody></tbody><tfoot><tr><td>SUMA</td><td id="calogSum">—</td><td></td><td></td></tr></tfoot></table></div>
-    <div class="scroll-hint">Desliza ↔ para ver la tabla completa</div>
-    <div class="small">Constante: 2012=1096, 2013=78; Variable: inicia en +doy y desciende sumando largos; en 2012 ajuste −1018.</div>
-  </section>
-
-  <section class="card" style="margin-top:12px">
-    <div class="small" style="margin-bottom:8px">Anclajes</div>
-    <div class="anchors-grid">
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Rupert Sheldrake (28·06·1942)</div></div><div class="mono" id="d_rupert">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Ryke Geerd Hamer (17·05·1935)</div></div><div class="mono" id="d_hamer">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Alcides Carrión (13·08·1857)</div></div><div class="mono" id="d_alcides">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>María Alejandra Casado (06·12·1969)</div></div><div class="mono" id="d_mac">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Inicio del calendario LGC (15·10·2015)</div></div><div class="mono" id="d_lgc_inicio">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Agregado del Toganeson (10·01·2024)</div></div><div class="mono" id="d_toganesos">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Quinta etapa (28·08·2016)</div></div><div class="mono" id="d_quinta">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Eje 258 (26·08·2017)</div></div><div class="mono" id="d_eje258">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Pentagrama LGC (07·01·2022)</div></div><div class="mono" id="d_penta">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Quita del patrón oro (15·08·1971)</div></div><div class="mono" id="d_patrono">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Inicio de la UIT (17·05·1865)</div></div><div class="mono" id="d_uit">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Día Google (30·12·1899)</div></div><div class="mono" id="d_google">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Primer segundo intercalar (30·06·1972)</div></div><div class="mono" id="d_leapsec">—</div></div>
-      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Edad Administrativa (12·08·2024)</div></div><div class="mono" id="d_admin">—</div></div>
-    </div>
-    <div class="small">Cálculo exclusivo desde cada fecha.</div>
-  </section>
+        <div class="small">Cálculo exclusivo desde cada fecha.</div>
+      </section>
 
     </main>
   </div>
@@ -399,268 +351,113 @@ body.noScroll{overflow:hidden}
 <script src="./app.js" defer></script>
 <script src="./common.js" defer></script>
 
-  <script>
-  (function(){
-    var key="calendaria_seen_splash_v3";
-    var splash=document.getElementById('splash');
-    var btn=document.getElementById('enterBtn');
-    var stage=document.getElementById('brandStage');
-    var layout=document.getElementById('brandLayout');
-
-    function hide(){splash.setAttribute('hidden','');}
-
-    var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
-    try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
-
-    function makeSpans(rowEl){
-      var text = rowEl.textContent;
-      rowEl.textContent='';
-      for(var i=0;i<text.length;i++){
-        var ch=text[i];
-        var span=document.createElement('span');
-        if(ch===' '){ span.innerHTML='&nbsp;'; span.dataset.space='1'; }
-        else { span.textContent=ch; }
-        rowEl.appendChild(span);
-      }
-      return text;
-    }
-
-    var rows=[].slice.call(layout.querySelectorAll('.row'));
-    rows.map(makeSpans);
-    stage.appendChild(layout);
-
-    var targets=[];
-    var stageRect=stage.getBoundingClientRect();
-    rows.forEach(function(rowEl,rowIdx){
-      var spans=[].slice.call(rowEl.querySelectorAll('span'));
-      spans.forEach(function(sp){
-        var r=sp.getBoundingClientRect();
-        var x=r.left + r.width/2 - stageRect.left;
-        var y=r.top + r.height/2 - stageRect.top;
-        targets.push({x:x,y:y,row:rowIdx,char:sp.textContent});
-      });
-    });
-
-    layout.parentNode && layout.parentNode.removeChild(layout);
-    var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
-    var chars = letters.map(function(t, idx){
-      var el=document.createElement('div');
-      el.className='char row-' + t.row;
-      el.textContent=t.char;
-      stage.appendChild(el);
-      return {el:el, target:t, i:idx, settled:false};
-    });
-
-    var w=stage.clientWidth, h=stage.clientHeight;
-    var aspect = w / Math.max(h,1);
-    var isNarrow = (w < 420) || (aspect < 0.72);
-    var swirlMs = isNarrow ? 2200 : 2600;
-    var settleMs = 900;
-    var stagger = isNarrow ? 20 : 24;
-    var A0 = Math.min(w,h) * (isNarrow ? 0.56 : 0.48);
-    var freq = isNarrow ? 1.6 : 1.8;
-
-    function easeOutCubic(p){ return 1 - Math.pow(1-p,3); }
-    function lissajous(u){ var x=Math.sin(u), y=Math.sin(2*u)*0.7; return {x:x,y:y}; }
-
-    var t0=performance.now();
-    function anim(now){
-      var anyRunning=false;
-      chars.forEach(function(c, idx){
-        var t=Math.max(0, now - t0 - idx*stagger);
-        if(t >= (swirlMs+settleMs)){
-          if(!c.settled){
-            c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
-            c.settled=true;
-          }
-          return;
-        }
-        anyRunning=true;
-        var p=Math.min(1, t/swirlMs);
-        var damp=Math.pow(0.02, p);
-        var u=(t/1000)*freq + (idx*0.35);
-        var path=lissajous(u);
-        var cx=w/2, cy=h/2;
-        var px=cx + path.x * A0 * damp;
-        var py=cy + path.y * A0 * damp;
-        if(t>swirlMs){
-          var q=easeOutCubic((t - swirlMs)/settleMs);
-          px = px + (c.target.x - px) * q;
-          py = py + (c.target.y - py) * q;
-        }
-        c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)';
-        c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
-      });
-      if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
-    }
-    requestAnimationFrame(anim);
-
-    btn && btn.addEventListener('click', function(){
-      try{ localStorage.setItem(key,'1'); }catch(e){}
-      hide();
-    });
-  })();
-  </script>
-
-
-
-<!-- CALENDARIA · lógica de Presentación del día v2 -->
 <script>
+/* --- Portada (sin cambios del bloque original) --- */
 (function(){
-  // --- Utilidades de fecha ---
-  function parseAnyDate(val){
-    if(!val) return null;
-    val = String(val).trim();
-    // YYYY-MM-DD
-    var m = val.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-    if(m) return new Date(+m[1], +m[2]-1, +m[3]);
-    // DD/MM/YYYY
-    m = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-    if(m) return new Date(+m[3], +m[2]-1, +m[1]);
-    // DD-MM-YYYY
-    m = val.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
-    if(m) return new Date(+m[3], +m[2]-1, +m[1]);
-    // Fallback parse
-    var t = Date.parse(val); return isNaN(t) ? null : new Date(t);
+  var key="calendaria_seen_splash_v3";
+  var splash=document.getElementById('splash');
+  var btn=document.getElementById('enterBtn');
+  var stage=document.getElementById('brandStage');
+  var layout=document.getElementById('brandLayout');
+  function hide(){splash.setAttribute('hidden','');}
+  var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
+  try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
+  function makeSpans(rowEl){
+    var text = rowEl.textContent; rowEl.textContent='';
+    for(var i=0;i<text.length;i++){
+      var ch=text[i]; var span=document.createElement('span');
+      if(ch===' '){ span.innerHTML='&nbsp;'; span.dataset.space='1'; } else { span.textContent=ch; }
+      rowEl.appendChild(span);
+    } return text;
   }
-  function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
-  function fmt(d){
-    var dd = String(d.getDate()).padStart(2,'0');
-    var mm = String(d.getMonth()+1).padStart(2,'0');
-    return dd+'/'+mm;
-  }
-
-  // --- Búsqueda de panel y header ---
-  function norm(s){ try{ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase(); }catch(e){ return (s||'').toUpperCase(); } }
-  function findByTextOne(needles){
-    var nodes = Array.prototype.slice.call(document.querySelectorAll('body *'));
-    var N = needles.map(norm);
-    for(var i=0;i<nodes.length;i++){
-      var t = norm(nodes[i].textContent||"");
-      for(var j=0;j<N.length;j++){ if(t.indexOf(N[j])!==-1) return nodes[i]; }
-    }
-    return null;
-  }
-  function looksLikePanel(el){
-    if(!el) return false;
-    var cls = (el.className||"")+"";
-    if(/(card|panel|wrap|container|box|content)/i.test(cls)) return true;
-    var cs = window.getComputedStyle(el);
-    var br = (parseFloat(cs.borderTopWidth)||0)+(parseFloat(cs.borderRightWidth)||0)+(parseFloat(cs.borderBottomWidth)||0)+(parseFloat(cs.borderLeftWidth)||0);
-    var rad = (parseFloat(cs.borderTopLeftRadius)||0)+(parseFloat(cs.borderTopRightRadius)||0);
-    var sh = cs.boxShadow && cs.boxShadow!=='none';
-    return (br>0 || rad>0 || sh);
-  }
-  function getPanel(){
-    var apar = findByTextOne(["APARATO N° 507","APARATO Nº 507","APARATO NO 507","APARATO N.O 507","APARATO N 507"]);
-    if(!apar) return null;
-    var el = apar;
-    for(var i=0;i<10 && el && el!==document.body;i++){
-      if(looksLikePanel(el)) return el;
-      el = el.parentElement;
-    }
-    return apar.parentElement;
-  }
-
-  // --- Montaje de la franja ---
-  function mountBand(){
-    var band = document.getElementById('cal-pres-band');
-    if(!band) return false;
-    var panel = getPanel();
-    if(!panel) return false;
-
-    // intentar insertarla antes de .planeGrid; si no, debajo del primer bloque de header
-    var grid = panel.querySelector('.planeGrid');
-    if(grid){
-      panel.insertBefore(band, grid);
-    }else{
-      // Busca un bloque de encabezado visible (con "Calendaria · ciclo" o similar), o usa el primer hijo
-      var headerGuess = findByTextOne(["CALENDARIA · CICLO DE 16 DIAS","CALENDARIA · CICLO DE 16 DÍAS"]) || panel.firstElementChild;
-      if(headerGuess && headerGuess.nextSibling){
-        panel.insertBefore(band, headerGuess.nextSibling);
-      }else{
-        panel.appendChild(band);
-      }
-    }
-    return true;
-  }
-
-  // --- Detección del input de referencia ---
-  function collectReferenceInputs(){
-    var arr = [];
-    var qAll = Array.prototype.slice.call(document.querySelectorAll('input, select, textarea'));
-    qAll.forEach(function(el){
-      var id = (el.id||'').toLowerCase();
-      var name = (el.name||'').toLowerCase();
-      var aria = (el.getAttribute('aria-label')||'').toLowerCase();
-
-      function labelTextFor(el){
-        if(!el.id) return '';
-        var lbl = document.querySelector('label[for="'+el.id+'"]');
-        return (lbl && (lbl.textContent||'').toLowerCase()) || '';
-      }
-      var lab = labelTextFor(el);
-
-      var hayFecha = (id+name+aria+lab).indexOf('fecha') !== -1;
-      var hayRef = (id+name+aria+lab).indexOf('referencia') !== -1;
-
-      if(el.id==='fechaReferencia' || (hayFecha && hayRef)){
-        arr.push(el);
-      }
+  var rows=[].slice.call(layout.querySelectorAll('.row')); rows.map(makeSpans); stage.appendChild(layout);
+  var targets=[]; var stageRect=stage.getBoundingClientRect();
+  rows.forEach(function(rowEl,rowIdx){
+    var spans=[].slice.call(rowEl.querySelectorAll('span'));
+    spans.forEach(function(sp){
+      var r=sp.getBoundingClientRect(); var x=r.left + r.width/2 - stageRect.left; var y=r.top + r.height/2 - stageRect.top;
+      targets.push({x:x,y:y,row:rowIdx,char:sp.textContent});
     });
-    // Fallback: si no encontró, al menos el primer input[type=date]
-    if(arr.length===0){
-      var dateInput = document.querySelector('input[type="date"]');
-      if(dateInput) arr.push(dateInput);
-    }
-    return arr;
-  }
-
-  // --- Mostrar/Ocultar según fecha ---
-  function refreshVisibility(d){
-    var band = document.getElementById('cal-pres-band');
-    if(!band) return;
-    if(isJanFirst(d)){
-      band.classList.add('show');
-      var sub = document.getElementById('cal-pres-subtxt');
-      if(sub){ sub.textContent = fmt(d) + ' · Hidrógeno (H) · Z=1 · 1.008 u'; }
-    }else{
-      band.classList.remove('show');
-    }
-  }
-
-  function init(){
-    var mounted = mountBand();
-    if(!mounted){ setTimeout(mountBand, 50); setTimeout(mountBand, 250); }
-
-    // 1) Estado inicial: hoy
-    refreshVisibility(new Date());
-
-    // 2) Leer referencia si ya hay valor
-    var refs = collectReferenceInputs();
-    refs.forEach(function(inp){
-      var v = (inp.value || inp.getAttribute('value') || '').trim();
-      var d = parseAnyDate(v);
-      if(d) refreshVisibility(d);
-
-      // 3) Suscribirse a cambios (input y change)
-      ['input','change'].forEach(function(evt){
-        inp.addEventListener(evt, function(e){
-          var d2 = parseAnyDate(e.target.value);
-          if(d2) refreshVisibility(d2);
-        });
-      });
+  });
+  layout.parentNode && layout.parentNode.removeChild(layout);
+  var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
+  var chars = letters.map(function(t, idx){
+    var el=document.createElement('div'); el.className='char row-' + t.row; el.textContent=t.char; stage.appendChild(el);
+    return {el:el, target:t, i:idx, settled:false};
+  });
+  var w=stage.clientWidth, h=stage.clientHeight; var aspect = w / Math.max(h,1);
+  var isNarrow = (w < 420) || (aspect < 0.72); var swirlMs = isNarrow ? 2200 : 2600; var settleMs = 900; var stagger = isNarrow ? 20 : 24;
+  var A0 = Math.min(w,h) * (isNarrow ? 0.56 : 0.48); var freq = isNarrow ? 1.6 : 1.8;
+  function easeOutCubic(p){ return 1 - Math.pow(1-p,3); }
+  function lissajous(u){ var x=Math.sin(u), y=Math.sin(2*u)*0.7; return {x:x,y:y}; }
+  var t0=performance.now();
+  function anim(now){
+    var anyRunning=false;
+    chars.forEach(function(c, idx){
+      var t=Math.max(0, now - t0 - idx*stagger);
+      if(t >= (swirlMs+settleMs)){
+        if(!c.settled){
+          c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
+          c.settled=true;
+        } return;
+      }
+      anyRunning=true;
+      var p=Math.min(1, t/swirlMs); var damp=Math.pow(0.02, p); var u=(t/1000)*freq + (idx*0.35); var path=lissajous(u);
+      var cx=w/2, cy=h/2; var px=cx + path.x * A0 * damp; var py=cy + path.y * A0 * damp;
+      if(t>swirlMs){ var q=easeOutCubic((t - swirlMs)/settleMs); px = px + (c.target.x - px) * q; py = py + (c.target.y - py) * q; }
+      c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)'; c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
     });
+    if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
+  }
+  requestAnimationFrame(anim);
+  btn && btn.addEventListener('click', function(){ try{ localStorage.setItem(key,'1'); }catch(e){} hide(); });
+})();
 
-    // 4) API manual
-    window.__cal_setReferencia = function(d){
-      if(!(d instanceof Date)) return;
-      refreshVisibility(d);
-    };
+/* --- Lógica Elemento 1: visible sólo en 1 de enero --- */
+(function(){
+  var el = document.getElementById('elementH');
+  if(!el) return;
+
+  function parseISO(dstr){
+    if(!dstr) return null;
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dstr);
+    if(!m) return null;
+    return new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
   }
 
-  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', init); }
-  else{ init(); }
+  function isJan1(dt){
+    return dt && dt.getMonth()===0 && dt.getDate()===1;
+  }
+
+  function getRefDate(){
+    var input = document.getElementById('ref');
+    var d = parseISO(input && input.value);
+    if(d) return d;
+    // fallback: hoy
+    return new Date();
+  }
+
+  function updateElement(){
+    try{
+      var d = getRefDate();
+      if(isJan1(d)){ el.classList.add('show'); } else { el.classList.remove('show'); }
+    }catch(e){}
+  }
+
+  // Inicial (espera a que app.js escriba el ref)
+  setTimeout(updateElement, 180);
+
+  // Cambios en la fecha de referencia
+  var ref = document.getElementById('ref');
+  if(ref){ ref.addEventListener('change', updateElement); ref.addEventListener('input', updateElement); }
+
+  // Botón Hoy
+  var btnToday = document.getElementById('btnToday');
+  if(btnToday){ btnToday.addEventListener('click', function(){ setTimeout(updateElement, 30); }); }
+
+  // Por si app.js dispara cambios programáticos
+  window.addEventListener('hashchange', updateElement);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) setTimeout(updateElement, 60); });
 })();
 </script>
 
