@@ -153,10 +153,10 @@ body.noScroll{overflow:hidden}
   </style>
 
 
-<!-- CALENDARIA: Hydrogen card CSS (panel sibling above grid) -->
+<!-- CALENDARIA: Hydrogen card CSS (anchor to .card panel above grid) -->
 <style>
-  .cal-el-panel-anchor{ position:relative; }
-  #cal-el-slot{ position:absolute; right:8px; z-index:60; } /* 'top' set via JS */
+  .cal-el-card-anchor{ position:relative; }
+  #cal-el-slot{ position:absolute; right:12px; z-index:60; } /* top set via JS */
   .cal-el-card{
     width:110px; height:110px; background:#a9c9f8; color:#0b0f14;
     border:3px solid #1f2a3a; border-radius:8px; position:relative;
@@ -478,7 +478,7 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- CALENDARIA: insert BEFORE grid inside panel and align to grid top -->
+<!-- CALENDARIA: anchor to nearest `.card` ancestor of `.planeGrid` and align to grid top -->
 <script>
 (function(){
   function isJanFirst(d){ return d && d.getMonth()===0 && d.getDate()===1; }
@@ -489,48 +489,34 @@ body.noScroll{overflow:hidden}
     var t = Date.parse(v);
     return isNaN(t) ? null : new Date(t);
   }
-  function q(s){ return document.querySelector(s); }
-  function ancestors(el){ var a=[]; while(el&&el!==document){ a.push(el); el=el.parentElement; } return a; }
-  function lca(a,b){
-    if(!a || !b) return null;
-    var A=ancestors(a), B=ancestors(b);
-    for(var i=0;i<A.length;i++){ if(B.indexOf(A[i])!==-1) return A[i]; }
-    return null;
-  }
-  function norm(s){ try{ return s.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toUpperCase(); }catch(e){ return (s||'').toUpperCase(); } }
-  function findHeader(){
-    var all = Array.prototype.slice.call(document.querySelectorAll('body *'));
-    var needles = ["APARATO N° 507", "APARATO Nº 507", "APARATO N.o 507", "APARATO No 507", "APARATO N 507"];
-    var ns = needles.map(norm);
-    for(var i=0;i<all.length;i++){
-      var t = norm(all[i].textContent||"");
-      for(var j=0;j<ns.length;j++){ if(t.indexOf(ns[j])!==-1) return all[i]; }
+  function closest(el, selector){
+    while(el && el !== document){
+      if(el.matches && el.matches(selector)) return el;
+      el = el.parentElement;
     }
     return null;
   }
 
   function placeSlot(){
+    var grid = document.querySelector('.planeGrid');
+    if(!grid) return false;
+    var panel = closest(grid, '.card') || grid.parentElement;
+    if(!panel) return false;
+
     var slot = document.getElementById('cal-el-slot');
     if(!slot) return false;
-    var grid = q('.planeGrid') || q('.quadrants') || q('[data-grid="quadrants"]');
-    var header = findHeader();
-    var panel = grid && header ? lca(grid, header) : null;
-    if(!panel || !grid) return false;
 
-    panel.classList.add('cal-el-panel-anchor');
-
-    // insert slot just BEFORE the grid so it's inside the same panel and above the quadrants
+    panel.classList.add('cal-el-card-anchor');
     if(slot.parentElement !== panel){
-      panel.insertBefore(slot, grid);
+      panel.appendChild(slot);
     }
-    // set vertical position aligned to grid top (inside the panel)
+    // align vertically with grid's top inside panel
     try{
       var pr = panel.getBoundingClientRect();
       var gr = grid.getBoundingClientRect();
-      var top = (gr.top - pr.top) + 8; // 8px padding
+      var top = (gr.top - pr.top) + 8;
       slot.style.top = top + 'px';
     }catch(e){}
-
     return true;
   }
 
@@ -541,7 +527,6 @@ body.noScroll{overflow:hidden}
 
   function init(){
     var ok = placeSlot();
-    // Retry a few times in case panel/grid render later
     if(!ok){ setTimeout(placeSlot, 50); setTimeout(placeSlot, 200); setTimeout(placeSlot, 500); }
 
     setVisible(isJanFirst(new Date()));
