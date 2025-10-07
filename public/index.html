@@ -112,14 +112,16 @@ body.noScroll{overflow:hidden}
 }
 
 
-/* Splash visibility without killing animations */
-.splash.is-hidden{
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  transition:opacity .25s ease, visibility .25s ease;
+/* --- Periodic Element badge (Hydrogen for 01/01) --- */
+.top-card{position:relative}
+.elementBadge{position:absolute;top:-10px;right:-10px;border:1px solid var(--ol);border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
+@media (max-width:599px){
+  .elementBadge{top:6px;right:6px}
+  .elementBadge img{width:64px}
 }
-.splash{transition:opacity .25s ease}
 
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
@@ -210,7 +212,10 @@ body.noScroll{overflow:hidden}
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
-      <section class="card">
+      <section class="card top-card">
+    <div class="elementBadge" title="Hydrogen — 1">
+      <img src="./hydrogen.png" alt="Hydrogen element tile">
+    </div>
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
         <div class="badge" id="apPhaseBadge">—</div>
