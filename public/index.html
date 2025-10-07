@@ -112,16 +112,14 @@ body.noScroll{overflow:hidden}
 }
 
 
-/* --- Periodic Element badge (Hydrogen for 01/01) --- */
-.top-card{position:relative}
-.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
-.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
-@media (max-width:599px){
-  .elementBadge{top:6px;right:6px}
-  .elementBadge img{width:64px}
+/* Splash visibility without killing animations */
+.splash.is-hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .25s ease, visibility .25s ease;
 }
+.splash{transition:opacity .25s ease}
 
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
@@ -166,7 +164,7 @@ body.noScroll{overflow:hidden}
 
 </head><body>
 
-  <div id="splash" class="splash" hidden role="dialog" aria-label="Portada Calendaria">
+  <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
     <div class="splash__inner">
       <div id="brand" class="brand">
         <div id="brandLayout" class="brand__layout" aria-hidden="true">
@@ -212,10 +210,7 @@ body.noScroll{overflow:hidden}
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
-      <section class="card top-card">
-    <div class="elementBadge" title="Hydrogen — 1">
-      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
-    </div>
+      <section class="card">
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
         <div class="badge" id="apPhaseBadge">—</div>
@@ -360,178 +355,108 @@ body.noScroll{overflow:hidden}
 <script src="./app.js" defer></script>
 <script src="./common.js" defer></script>
 
-  
+  <script>
+  (function(){
+    var key="calendaria_seen_splash_v3";
+    var splash=document.getElementById('splash');
+    var btn=document.getElementById('enterBtn');
+    var stage=document.getElementById('brandStage');
+    var layout=document.getElementById('brandLayout');
 
+    function hide(){splash.setAttribute('hidden','');}
 
-<script>
-(function(){
-  const badge = document.querySelector('.elementBadge');
-  const tile = document.getElementById('elementTile');
-  const ref = document.getElementById('ref');
+    var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
+    try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
 
-  function parseISO(d){
-    if(!d) return null;
-    const m = d.split('-');
-    if(m.length !== 3) return null;
-    return {y:m[0], mo:m[1], da:m[2]};
-  }
-  function todayISO(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-  // Exact mapping by day-of-year
-  function elementForDate(iso){
-    const p = parseISO(iso);
-    if(!p) return null;
-    if(p.mo === '01' && p.da === '01') return {img:'hydrogen.png', title:'Hydrogen — 1'};
-    if(p.mo === '01' && p.da === '02') return {img:'helium.png', title:'Helium — 2'};
-    return null;
-  }
-  function getActiveISO(){
-    // If reference has a value, we ONLY use it.
-    if(ref && ref.value) return ref.value;
-    // Otherwise fallback to today
-    return todayISO();
-  }
-  function renderBadge(){
-    if(!badge || !tile) return;
-    const el = elementForDate(getActiveISO());
-    if(el){
-      tile.src = `./${el.img}`;
-      badge.title = el.title;
-      badge.style.display = 'block';
-      badge.setAttribute('aria-hidden','false');
-      tile.alt = el.title + ' element tile';
-    } else {
-      badge.style.display = 'none';
-      badge.setAttribute('aria-hidden','true');
+    function makeSpans(rowEl){
+      var text = rowEl.textContent;
+      rowEl.textContent='';
+      for(var i=0;i<text.length;i++){
+        var ch=text[i];
+        var span=document.createElement('span');
+        if(ch===' '){ span.innerHTML='&nbsp;'; span.dataset.space='1'; }
+        else { span.textContent=ch; }
+        rowEl.appendChild(span);
+      }
+      return text;
     }
-  }
-  if(ref){
-    ref.addEventListener('change', renderBadge);
-    ref.addEventListener('input', renderBadge);
-  }
-  document.addEventListener('DOMContentLoaded', renderBadge);
-  window.addEventListener('load', () => setTimeout(renderBadge, 0));
-})();
-</script>
 
+    var rows=[].slice.call(layout.querySelectorAll('.row'));
+    rows.map(makeSpans);
+    stage.appendChild(layout);
 
+    var targets=[];
+    var stageRect=stage.getBoundingClientRect();
+    rows.forEach(function(rowEl,rowIdx){
+      var spans=[].slice.call(rowEl.querySelectorAll('span'));
+      spans.forEach(function(sp){
+        var r=sp.getBoundingClientRect();
+        var x=r.left + r.width/2 - stageRect.left;
+        var y=r.top + r.height/2 - stageRect.top;
+        targets.push({x:x,y:y,row:rowIdx,char:sp.textContent});
+      });
+    });
 
+    layout.parentNode && layout.parentNode.removeChild(layout);
+    var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
+    var chars = letters.map(function(t, idx){
+      var el=document.createElement('div');
+      el.className='char row-' + t.row;
+      el.textContent=t.char;
+      stage.appendChild(el);
+      return {el:el, target:t, i:idx, settled:false};
+    });
 
+    var w=stage.clientWidth, h=stage.clientHeight;
+    var aspect = w / Math.max(h,1);
+    var isNarrow = (w < 420) || (aspect < 0.72);
+    var swirlMs = isNarrow ? 2200 : 2600;
+    var settleMs = 900;
+    var stagger = isNarrow ? 20 : 24;
+    var A0 = Math.min(w,h) * (isNarrow ? 0.56 : 0.48);
+    var freq = isNarrow ? 1.6 : 1.8;
 
+    function easeOutCubic(p){ return 1 - Math.pow(1-p,3); }
+    function lissajous(u){ var x=Math.sin(u), y=Math.sin(2*u)*0.7; return {x:x,y:y}; }
 
-
-
-
-<script>
-(function(){
-  const badge = document.querySelector('.elementBadge');
-  const tile = document.getElementById('elementTile');
-  const ref = document.getElementById('ref');
-
-  function parseISO(d){
-    if(!d) return null;
-    const m = d.split('-');
-    if(m.length !== 3) return null;
-    return {y:m[0], mo:m[1], da:m[2]};
-  }
-  function todayISO(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-  // Exact mapping by day-of-year
-  function elementForDate(iso){
-    const p = parseISO(iso);
-    if(!p) return null;
-    if(p.mo === '01' && p.da === '01') return {img:'hydrogen.png', title:'Hydrogen — 1'};
-    if(p.mo === '01' && p.da === '02') return {img:'helium.png', title:'Helium — 2'};
-    return null;
-  }
-  function getActiveISO(){
-    // If reference has a value, we ONLY use it.
-    if(ref && ref.value) return ref.value;
-    // Otherwise fallback to today
-    return todayISO();
-  }
-  function renderBadge(){
-    if(!badge || !tile) return;
-    const el = elementForDate(getActiveISO());
-    if(el){
-      tile.src = `./${el.img}`;
-      badge.title = el.title;
-      badge.style.display = 'block';
-      badge.setAttribute('aria-hidden','false');
-      tile.alt = el.title + ' element tile';
-    } else {
-      badge.style.display = 'none';
-      badge.setAttribute('aria-hidden','true');
+    var t0=performance.now();
+    function anim(now){
+      var anyRunning=false;
+      chars.forEach(function(c, idx){
+        var t=Math.max(0, now - t0 - idx*stagger);
+        if(t >= (swirlMs+settleMs)){
+          if(!c.settled){
+            c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
+            c.settled=true;
+          }
+          return;
+        }
+        anyRunning=true;
+        var p=Math.min(1, t/swirlMs);
+        var damp=Math.pow(0.02, p);
+        var u=(t/1000)*freq + (idx*0.35);
+        var path=lissajous(u);
+        var cx=w/2, cy=h/2;
+        var px=cx + path.x * A0 * damp;
+        var py=cy + path.y * A0 * damp;
+        if(t>swirlMs){
+          var q=easeOutCubic((t - swirlMs)/settleMs);
+          px = px + (c.target.x - px) * q;
+          py = py + (c.target.y - py) * q;
+        }
+        c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)';
+        c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
+      });
+      if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
     }
-  }
-  if(ref){
-    ref.addEventListener('change', renderBadge);
-    ref.addEventListener('input', renderBadge);
-  }
-  document.addEventListener('DOMContentLoaded', renderBadge);
-  window.addEventListener('load', () => setTimeout(renderBadge, 0));
-})();
-</script>
+    requestAnimationFrame(anim);
 
+    btn && btn.addEventListener('click', function(){
+      try{ localStorage.setItem(key,'1'); }catch(e){}
+      hide();
+    });
+  })();
+  </script>
 
-
-
-
-<script>
-(function(){
-  const splash = document.getElementById('splash');
-  const enterBtn = document.getElementById('enterBtn');
-
-  function hasSplashParam(){
-    try {
-      const usp = new URLSearchParams(window.location.search);
-      return usp.get('splash') === '1';
-    } catch(e){ return false; }
-  }
-
-  function hideSplash(){
-    if(!splash) return;
-    splash.setAttribute('hidden','');
-    splash.style.pointerEvents = 'none';
-    document.body.style.overflow = '';
-  }
-
-  function showSplash(){
-    if(!splash) return;
-    splash.removeAttribute('hidden');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function initSplash(){
-    if(!splash) return;
-    // Default: hide unless explicitly requested (?splash=1)
-    if(hasSplashParam()){
-      showSplash();
-    } else {
-      hideSplash();
-    }
-    if(enterBtn){
-      enterBtn.removeAttribute('disabled');
-      enterBtn.addEventListener('click', hideSplash);
-    }
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initSplash);
-  } else {
-    initSplash();
-  }
-})();
-</script>
 
 </body></html>
