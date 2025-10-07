@@ -360,32 +360,125 @@ body.noScroll{overflow:hidden}
 <script src="./app.js" defer></script>
 <script src="./common.js" defer></script>
 
-  
+  <script>
+  (function(){
+    var key="calendaria_seen_splash_v3";
+    var splash=document.getElementById('splash');
+    var btn=document.getElementById('enterBtn');
+    var stage=document.getElementById('brandStage');
+    var layout=document.getElementById('brandLayout');
+
+    function hide(){splash.setAttribute('hidden','');}
+
+    var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
+    try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
+
+    function makeSpans(rowEl){
+      var text = rowEl.textContent;
+      rowEl.textContent='';
+      for(var i=0;i<text.length;i++){
+        var ch=text[i];
+        var span=document.createElement('span');
+        if(ch===' '){ span.innerHTML='&nbsp;'; span.dataset.space='1'; }
+        else { span.textContent=ch; }
+        rowEl.appendChild(span);
+      }
+      return text;
+    }
+
+    var rows=[].slice.call(layout.querySelectorAll('.row'));
+    rows.map(makeSpans);
+    stage.appendChild(layout);
+
+    var targets=[];
+    var stageRect=stage.getBoundingClientRect();
+    rows.forEach(function(rowEl,rowIdx){
+      var spans=[].slice.call(rowEl.querySelectorAll('span'));
+      spans.forEach(function(sp){
+        var r=sp.getBoundingClientRect();
+        var x=r.left + r.width/2 - stageRect.left;
+        var y=r.top + r.height/2 - stageRect.top;
+        targets.push({x:x,y:y,row:rowIdx,char:sp.textContent});
+      });
+    });
+
+    layout.parentNode && layout.parentNode.removeChild(layout);
+    var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
+    var chars = letters.map(function(t, idx){
+      var el=document.createElement('div');
+      el.className='char row-' + t.row;
+      el.textContent=t.char;
+      stage.appendChild(el);
+      return {el:el, target:t, i:idx, settled:false};
+    });
+
+    var w=stage.clientWidth, h=stage.clientHeight;
+    var aspect = w / Math.max(h,1);
+    var isNarrow = (w < 420) || (aspect < 0.72);
+    var swirlMs = isNarrow ? 2200 : 2600;
+    var settleMs = 900;
+    var stagger = isNarrow ? 20 : 24;
+    var A0 = Math.min(w,h) * (isNarrow ? 0.56 : 0.48);
+    var freq = isNarrow ? 1.6 : 1.8;
+
+    function easeOutCubic(p){ return 1 - Math.pow(1-p,3); }
+    function lissajous(u){ var x=Math.sin(u), y=Math.sin(2*u)*0.7; return {x:x,y:y}; }
+
+    var t0=performance.now();
+    function anim(now){
+      var anyRunning=false;
+      chars.forEach(function(c, idx){
+        var t=Math.max(0, now - t0 - idx*stagger);
+        if(t >= (swirlMs+settleMs)){
+          if(!c.settled){
+            c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
+            c.settled=true;
+          }
+          return;
+        }
+        anyRunning=true;
+        var p=Math.min(1, t/swirlMs);
+        var damp=Math.pow(0.02, p);
+        var u=(t/1000)*freq + (idx*0.35);
+        var path=lissajous(u);
+        var cx=w/2, cy=h/2;
+        var px=cx + path.x * A0 * damp;
+        var py=cy + path.y * A0 * damp;
+        if(t>swirlMs){
+          var q=easeOutCubic((t - swirlMs)/settleMs);
+          px = px + (c.target.x - px) * q;
+          py = py + (c.target.y - py) * q;
+        }
+        c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)';
+        c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
+      });
+      if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
+    }
+    requestAnimationFrame(anim);
+
+    btn && btn.addEventListener('click', function(){
+      try{ localStorage.setItem(key,'1'); }catch(e){}
+      hide();
+    });
+  })();
+  </script>
+
+
+
 <script>
 (function(){
   const badge = document.querySelector('.elementBadge');
   const ref = document.getElementById('ref');
   function isJan1(value){
     if(!value) return false;
+    // value is YYYY-MM-DD
     const m = value.split('-');
     if(m.length !== 3) return false;
     return m[1] === '01' && m[2] === '01';
   }
-  function todayISO(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-  function shouldShow(){
-    const byRef = ref ? isJan1(ref.value) : false;
-    const byToday = isJan1(todayISO());
-    return byRef || byToday;
-  }
   function toggleBadge(){
-    if(!badge) return;
-    if(shouldShow()){
+    if(!badge || !ref) return;
+    if(isJan1(ref.value)){
       badge.style.display = 'block';
       badge.setAttribute('aria-hidden','false');
     } else {
@@ -393,59 +486,16 @@ body.noScroll{overflow:hidden}
       badge.setAttribute('aria-hidden','true');
     }
   }
+  // Hook into existing UI init if the app sets #ref default later
+  // We observe changes too (for programmatic updates elsewhere).
   if(ref){
     ref.addEventListener('change', toggleBadge);
     ref.addEventListener('input', toggleBadge);
   }
+  // Run once DOM is ready and also after a tick (in case of late populates)
   document.addEventListener('DOMContentLoaded', toggleBadge);
   window.addEventListener('load', () => setTimeout(toggleBadge, 0));
 })();
 </script>
-
-
-
-
-
-<script>
-(function(){
-  const badge = document.querySelector('.elementBadge');
-  const ref = document.getElementById('ref');
-  function isJan1(value){
-    if(!value) return false;
-    const m = value.split('-');
-    if(m.length !== 3) return false;
-    return m[1] === '01' && m[2] === '01';
-  }
-  function todayISO(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-  function shouldShow(){
-    const byRef = ref ? isJan1(ref.value) : false;
-    const byToday = isJan1(todayISO());
-    return byRef || byToday;
-  }
-  function toggleBadge(){
-    if(!badge) return;
-    if(shouldShow()){
-      badge.style.display = 'block';
-      badge.setAttribute('aria-hidden','false');
-    } else {
-      badge.style.display = 'none';
-      badge.setAttribute('aria-hidden','true');
-    }
-  }
-  if(ref){
-    ref.addEventListener('change', toggleBadge);
-    ref.addEventListener('input', toggleBadge);
-  }
-  document.addEventListener('DOMContentLoaded', toggleBadge);
-  window.addEventListener('load', () => setTimeout(toggleBadge, 0));
-})();
-</script>
-
 
 </body></html>
