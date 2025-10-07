@@ -114,7 +114,7 @@ body.noScroll{overflow:hidden}
 
 /* --- Periodic Element badge (Hydrogen for 01/01) --- */
 .top-card{position:relative}
-.elementBadge{position:absolute;top:-10px;right:-10px;border:1px solid var(--ol);border-radius:14px;
+.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
   padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
 .elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
@@ -463,5 +463,39 @@ body.noScroll{overflow:hidden}
   })();
   </script>
 
+
+
+<script>
+(function(){
+  const badge = document.querySelector('.elementBadge');
+  const ref = document.getElementById('ref');
+  function isJan1(value){
+    if(!value) return false;
+    // value is YYYY-MM-DD
+    const m = value.split('-');
+    if(m.length !== 3) return false;
+    return m[1] === '01' && m[2] === '01';
+  }
+  function toggleBadge(){
+    if(!badge || !ref) return;
+    if(isJan1(ref.value)){
+      badge.style.display = 'block';
+      badge.setAttribute('aria-hidden','false');
+    } else {
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+    }
+  }
+  // Hook into existing UI init if the app sets #ref default later
+  // We observe changes too (for programmatic updates elsewhere).
+  if(ref){
+    ref.addEventListener('change', toggleBadge);
+    ref.addEventListener('input', toggleBadge);
+  }
+  // Run once DOM is ready and also after a tick (in case of late populates)
+  document.addEventListener('DOMContentLoaded', toggleBadge);
+  window.addEventListener('load', () => setTimeout(toggleBadge, 0));
+})();
+</script>
 
 </body></html>
