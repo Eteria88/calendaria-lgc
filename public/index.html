@@ -111,18 +111,6 @@ body.noScroll{overflow:hidden}
   .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
 }
 
-
-/* --- Periodic Element badge (Hydrogen for 01/01) --- */
-.top-card{position:relative}
-.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
-.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
-@media (max-width:599px){
-  .elementBadge{top:6px;right:6px}
-  .elementBadge img{width:64px}
-}
-
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -212,10 +200,7 @@ body.noScroll{overflow:hidden}
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
-      <section class="card top-card">
-    <div class="elementBadge" title="Hydrogen — 1">
-      <img src="./hydrogen.png" alt="Hydrogen element tile">
-    </div>
+      <section class="card">
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
         <div class="badge" id="apPhaseBadge">—</div>
@@ -464,38 +449,61 @@ body.noScroll{overflow:hidden}
   </script>
 
 
-
+<!-- ELEMENT_BADGE_LOGIC_START -->
 <script>
 (function(){
+  // Strict mapping by (month,day) -> element asset/title
+  const MAP = {
+    "01-01": {img:"hydrogen.png", title:"Hydrogen — 1"},
+    "01-02": {img:"helium.png",   title:"Helium — 2"}
+  };
+
   const badge = document.querySelector('.elementBadge');
-  const ref = document.getElementById('ref');
-  function isJan1(value){
-    if(!value) return false;
-    // value is YYYY-MM-DD
-    const m = value.split('-');
-    if(m.length !== 3) return false;
-    return m[1] === '01' && m[2] === '01';
+  const tile  = document.getElementById('elementTile');
+  const ref   = document.getElementById('ref');
+
+  function isoToMD(iso){
+    if(!iso) return null;
+    const m = iso.split('-');
+    if(m.length !== 3) return null;
+    return m[1] + "-" + m[2];
   }
-  function toggleBadge(){
-    if(!badge || !ref) return;
-    if(isJan1(ref.value)){
-      badge.style.display = 'block';
-      badge.setAttribute('aria-hidden','false');
+  function todayISO(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+  function activeISO(){
+    // If reference is filled, use it exclusively; else fallback to today.
+    if(ref && ref.value) return ref.value;
+    return todayISO();
+  }
+  function renderBadge(){
+    if(!badge || !tile) return;
+    const md = isoToMD(activeISO());
+    const el = md ? MAP[md] : null;
+    if(el){
+      tile.src = "./" + el.img;
+      badge.title = el.title;
+      badge.style.display = "block";
+      badge.setAttribute("aria-hidden","false");
+      tile.alt = el.title + " element tile";
     } else {
-      badge.style.display = 'none';
-      badge.setAttribute('aria-hidden','true');
+      badge.style.display = "none";
+      badge.setAttribute("aria-hidden","true");
     }
   }
-  // Hook into existing UI init if the app sets #ref default later
-  // We observe changes too (for programmatic updates elsewhere).
+
   if(ref){
-    ref.addEventListener('change', toggleBadge);
-    ref.addEventListener('input', toggleBadge);
+    ref.addEventListener('change', renderBadge);
+    ref.addEventListener('input', renderBadge);
   }
-  // Run once DOM is ready and also after a tick (in case of late populates)
-  document.addEventListener('DOMContentLoaded', toggleBadge);
-  window.addEventListener('load', () => setTimeout(toggleBadge, 0));
+  document.addEventListener('DOMContentLoaded', renderBadge);
+  window.addEventListener('load', () => setTimeout(renderBadge, 0));
 })();
 </script>
+<!-- ELEMENT_BADGE_LOGIC_END -->
 
 </body></html>
