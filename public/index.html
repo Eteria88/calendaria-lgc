@@ -472,7 +472,12 @@ body.noScroll{overflow:hidden}
   const MAP = {
     "01-01": {img:"hydrogen.png", title:"Hydrogen — 1"},
     "01-02": {img:"helium.png",   title:"Helium — 2"},
-    "01-03": {img:"lithium.png",  title:"Lithium — 3"}
+    "01-03": {img:"lithium.png",  title:"Lithium — 3"},
+    "01-04": {img:"beryllium.png",title:"Beryllium — 4"},
+    "01-05": {img:"boron.png",    title:"Boron — 5"},
+    "01-06": {img:"carbon.png",   title:"Carbon — 6"},
+    "01-07": {img:"nitrogen.png", title:"Nitrogen — 7"},
+    "01-08": {img:"oxygen.png",   title:"Oxygen — 8"}
   };
 
   const badge = document.querySelector('.elementBadge');
@@ -493,7 +498,6 @@ body.noScroll{overflow:hidden}
     return `${y}-${m}-${day}`;
   }
   function activeISO(){
-    // If ref has a value, we only use it; otherwise fallback to today.
     if(ref && ref.value) return ref.value;
     return todayISO();
   }
@@ -521,6 +525,7 @@ body.noScroll{overflow:hidden}
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
+
 
 
 </body></html>
