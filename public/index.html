@@ -468,10 +468,11 @@ body.noScroll{overflow:hidden}
 <!-- ELEMENT_BADGE_LOGIC_START -->
 <script>
 (function(){
-  // Strict mapping by (month,day) -> element asset/title
+  // Strict mapping by day-of-year (MM-DD) -> element
   const MAP = {
     "01-01": {img:"hydrogen.png", title:"Hydrogen — 1"},
-    "01-02": {img:"helium.png",   title:"Helium — 2"}
+    "01-02": {img:"helium.png",   title:"Helium — 2"},
+    "01-03": {img:"lithium.png",  title:"Lithium — 3"}
   };
 
   const badge = document.querySelector('.elementBadge');
@@ -492,7 +493,7 @@ body.noScroll{overflow:hidden}
     return `${y}-${m}-${day}`;
   }
   function activeISO(){
-    // If reference is filled, use it exclusively; else fallback to today.
+    // If ref has a value, we only use it; otherwise fallback to today.
     if(ref && ref.value) return ref.value;
     return todayISO();
   }
@@ -511,7 +512,6 @@ body.noScroll{overflow:hidden}
       badge.setAttribute("aria-hidden","true");
     }
   }
-
   if(ref){
     ref.addEventListener('change', renderBadge);
     ref.addEventListener('input', renderBadge);
@@ -521,5 +521,6 @@ body.noScroll{overflow:hidden}
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
+
 
 </body></html>
