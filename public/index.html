@@ -214,7 +214,7 @@ body.noScroll{overflow:hidden}
 
       <section class="card top-card">
     <div class="elementBadge" title="Hydrogen — 1">
-      <img src="./hydrogen.png" alt="Hydrogen element tile">
+      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
     </div>
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
@@ -361,15 +361,19 @@ body.noScroll{overflow:hidden}
 <script src="./common.js" defer></script>
 
   
+
+
 <script>
 (function(){
   const badge = document.querySelector('.elementBadge');
+  const tile = document.getElementById('elementTile');
   const ref = document.getElementById('ref');
-  function isJan1(value){
-    if(!value) return false;
-    const m = value.split('-');
-    if(m.length !== 3) return false;
-    return m[1] === '01' && m[2] === '01';
+
+  function parseISO(d){
+    if(!d) return null;
+    const m = d.split('-');
+    if(m.length !== 3) return null;
+    return {y:m[0], mo:m[1], da:m[2]};
   }
   function todayISO(){
     const d = new Date();
@@ -378,29 +382,46 @@ body.noScroll{overflow:hidden}
     const day = String(d.getDate()).padStart(2,'0');
     return `${y}-${m}-${day}`;
   }
-  function shouldShow(){
-    const byRef = ref ? isJan1(ref.value) : false;
-    const byToday = isJan1(todayISO());
-    return byRef || byToday;
+  // Exact mapping by day-of-year
+  function elementForDate(iso){
+    const p = parseISO(iso);
+    if(!p) return null;
+    if(p.mo === '01' && p.da === '01') return {img:'hydrogen.png', title:'Hydrogen — 1'};
+    if(p.mo === '01' && p.da === '02') return {img:'helium.png', title:'Helium — 2'};
+    return null;
   }
-  function toggleBadge(){
-    if(!badge) return;
-    if(shouldShow()){
+  function getActiveISO(){
+    // If reference has a value, we ONLY use it.
+    if(ref && ref.value) return ref.value;
+    // Otherwise fallback to today
+    return todayISO();
+  }
+  function renderBadge(){
+    if(!badge || !tile) return;
+    const el = elementForDate(getActiveISO());
+    if(el){
+      tile.src = `./${el.img}`;
+      badge.title = el.title;
       badge.style.display = 'block';
       badge.setAttribute('aria-hidden','false');
+      tile.alt = el.title + ' element tile';
     } else {
       badge.style.display = 'none';
       badge.setAttribute('aria-hidden','true');
     }
   }
   if(ref){
-    ref.addEventListener('change', toggleBadge);
-    ref.addEventListener('input', toggleBadge);
+    ref.addEventListener('change', renderBadge);
+    ref.addEventListener('input', renderBadge);
   }
-  document.addEventListener('DOMContentLoaded', toggleBadge);
-  window.addEventListener('load', () => setTimeout(toggleBadge, 0));
+  document.addEventListener('DOMContentLoaded', renderBadge);
+  window.addEventListener('load', () => setTimeout(renderBadge, 0));
 })();
 </script>
+
+
+
+
 
 
 
@@ -409,12 +430,14 @@ body.noScroll{overflow:hidden}
 <script>
 (function(){
   const badge = document.querySelector('.elementBadge');
+  const tile = document.getElementById('elementTile');
   const ref = document.getElementById('ref');
-  function isJan1(value){
-    if(!value) return false;
-    const m = value.split('-');
-    if(m.length !== 3) return false;
-    return m[1] === '01' && m[2] === '01';
+
+  function parseISO(d){
+    if(!d) return null;
+    const m = d.split('-');
+    if(m.length !== 3) return null;
+    return {y:m[0], mo:m[1], da:m[2]};
   }
   function todayISO(){
     const d = new Date();
@@ -423,29 +446,44 @@ body.noScroll{overflow:hidden}
     const day = String(d.getDate()).padStart(2,'0');
     return `${y}-${m}-${day}`;
   }
-  function shouldShow(){
-    const byRef = ref ? isJan1(ref.value) : false;
-    const byToday = isJan1(todayISO());
-    return byRef || byToday;
+  // Exact mapping by day-of-year
+  function elementForDate(iso){
+    const p = parseISO(iso);
+    if(!p) return null;
+    if(p.mo === '01' && p.da === '01') return {img:'hydrogen.png', title:'Hydrogen — 1'};
+    if(p.mo === '01' && p.da === '02') return {img:'helium.png', title:'Helium — 2'};
+    return null;
   }
-  function toggleBadge(){
-    if(!badge) return;
-    if(shouldShow()){
+  function getActiveISO(){
+    // If reference has a value, we ONLY use it.
+    if(ref && ref.value) return ref.value;
+    // Otherwise fallback to today
+    return todayISO();
+  }
+  function renderBadge(){
+    if(!badge || !tile) return;
+    const el = elementForDate(getActiveISO());
+    if(el){
+      tile.src = `./${el.img}`;
+      badge.title = el.title;
       badge.style.display = 'block';
       badge.setAttribute('aria-hidden','false');
+      tile.alt = el.title + ' element tile';
     } else {
       badge.style.display = 'none';
       badge.setAttribute('aria-hidden','true');
     }
   }
   if(ref){
-    ref.addEventListener('change', toggleBadge);
-    ref.addEventListener('input', toggleBadge);
+    ref.addEventListener('change', renderBadge);
+    ref.addEventListener('input', renderBadge);
   }
-  document.addEventListener('DOMContentLoaded', toggleBadge);
-  window.addEventListener('load', () => setTimeout(toggleBadge, 0));
+  document.addEventListener('DOMContentLoaded', renderBadge);
+  window.addEventListener('load', () => setTimeout(renderBadge, 0));
 })();
 </script>
+
+
 
 
 </body></html>
