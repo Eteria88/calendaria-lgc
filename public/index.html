@@ -166,7 +166,7 @@ body.noScroll{overflow:hidden}
 
 </head><body>
 
-  <div id="splash" class="splash" hidden role="dialog" aria-label="Portada Calendaria">
+  <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
     <div class="splash__inner">
       <div id="brand" class="brand">
         <div id="brandLayout" class="brand__layout" aria-hidden="true">
@@ -485,53 +485,5 @@ body.noScroll{overflow:hidden}
 
 
 
-
-
-<script>
-(function(){
-  const splash = document.getElementById('splash');
-  const enterBtn = document.getElementById('enterBtn');
-
-  function hasSplashParam(){
-    try {
-      const usp = new URLSearchParams(window.location.search);
-      return usp.get('splash') === '1';
-    } catch(e){ return false; }
-  }
-
-  function hideSplash(){
-    if(!splash) return;
-    splash.setAttribute('hidden','');
-    splash.style.pointerEvents = 'none';
-    document.body.style.overflow = '';
-  }
-
-  function showSplash(){
-    if(!splash) return;
-    splash.removeAttribute('hidden');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function initSplash(){
-    if(!splash) return;
-    // Default: hide unless explicitly requested (?splash=1)
-    if(hasSplashParam()){
-      showSplash();
-    } else {
-      hideSplash();
-    }
-    if(enterBtn){
-      enterBtn.removeAttribute('disabled');
-      enterBtn.addEventListener('click', hideSplash);
-    }
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initSplash);
-  } else {
-    initSplash();
-  }
-})();
-</script>
 
 </body></html>
