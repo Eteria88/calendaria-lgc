@@ -114,6 +114,15 @@ body.noScroll{overflow:hidden}
 
 .top-card{position:relative}
 
+
+/* --- Periodic Element badge (overlay, non-intrusive) --- */
+.top-card{position:relative}
+.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
+.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
+@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -203,7 +212,11 @@ body.noScroll{overflow:hidden}
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
-      <section class="card top-card">\n    <div class="elementBadge" title="Hydrogen — 1">\n      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">\n    </div>
+      <section class="card top-card top-card">
+    <div class="elementBadge" title="Hydrogen — 1">
+      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
+    </div>
+\n    <div class="elementBadge" title="Hydrogen — 1">\n      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">\n    </div>
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
         <div class="badge" id="apPhaseBadge">—</div>
