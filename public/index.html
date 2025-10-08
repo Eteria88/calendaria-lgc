@@ -551,12 +551,22 @@ body.noScroll{overflow:hidden}
     "03-24": {img:"bismuth.png",   title:"Bismuth — 83"},
     "03-25": {img:"polonium.png",  title:"Polonium — 84"},
     "03-26": {img:"astatine.png",  title:"Astatine — 85"},
-    "03-27": {img:"radon.png",     title:"Radon — 86"}
+    "03-27": {img:"radon.png",     title:"Radon — 86"},
+    "03-28": {img:"francium.png",     title:"Francium — 87"},
+    "03-29": {img:"radium.png",       title:"Radium — 88"},
+    "03-30": {img:"actinium.png",     title:"Actinium — 89"},
+    "03-31": {img:"thorium.png",      title:"Thorium — 90"},
+    "04-01": {img:"protactinium.png", title:"Protactinium — 91"},
+    "04-02": {img:"uranium.png",      title:"Uranium — 92"},
+    "04-03": {img:"neptunium.png",    title:"Neptunium — 93"},
+    "04-04": {img:"plutonium.png",    title:"Plutonium — 94"},
+    "04-05": {img:"americium.png",    title:"Americium — 95"},
+    "04-06": {img:"curium.png",       title:"Curium — 96"}
   };
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
   const ref   = document.getElementById('ref');
-  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; return m[1]+"-"+m[2]; }
+  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; return m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0"); }
   function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
   function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
   function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
