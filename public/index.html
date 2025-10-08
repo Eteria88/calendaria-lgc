@@ -111,6 +111,15 @@ body.noScroll{overflow:hidden}
   .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
 }
 
+
+/* Periodic element badge (overlay, non-intrusive) */
+.top-card{position:relative}
+.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
+.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
+@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -200,7 +209,11 @@ body.noScroll{overflow:hidden}
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
-      <section class="card">
+      <section class="card top-card">
+    <div class="elementBadge" title="Hydrogen — 1">
+      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
+    </div>
+
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
         <div class="badge" id="apPhaseBadge">—</div>
@@ -543,7 +556,7 @@ body.noScroll{overflow:hidden}
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
   const ref   = document.getElementById('ref');
-  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; return m[1].padStart(2,'0')+"-"+m[2].padStart(2,'0'); }
+  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; return m[1]+"-"+m[2]; }
   function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
   function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
   function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
@@ -556,5 +569,7 @@ body.noScroll{overflow:hidden}
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
+
+
 
 </body></html>
