@@ -111,18 +111,6 @@ body.noScroll{overflow:hidden}
   .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
 }
 
-
-/* --- Periodic Element badge (Hydrogen for 01/01) --- */
-.top-card{position:relative}
-.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
-.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
-@media (max-width:599px){
-  .elementBadge{top:6px;right:6px}
-  .elementBadge img{width:64px}
-}
-
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -212,10 +200,7 @@ body.noScroll{overflow:hidden}
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
-      <section class="card top-card">
-    <div class="elementBadge" title="Hydrogen — 1">
-      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
-    </div>
+      <section class="card">
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
         <div class="badge" id="apPhaseBadge">—</div>
@@ -464,40 +449,6 @@ body.noScroll{overflow:hidden}
   </script>
 
 
-
-<script>
-(function(){
-  const badge = document.querySelector('.elementBadge');
-  const ref = document.getElementById('ref');
-  function isJan1(value){
-    if(!value) return false;
-    // value is YYYY-MM-DD
-    const m = value.split('-');
-    if(m.length !== 3) return false;
-    return m[1] === '01' && m[2] === '01';
-  }
-  function toggleBadge(){
-    if(!badge || !ref) return;
-    if(isJan1(ref.value)){
-      badge.style.display = 'block';
-      badge.setAttribute('aria-hidden','false');
-    } else {
-      badge.style.display = 'none';
-      badge.setAttribute('aria-hidden','true');
-    }
-  }
-  // Hook into existing UI init if the app sets #ref default later
-  // We observe changes too (for programmatic updates elsewhere).
-  if(ref){
-    ref.addEventListener('change', toggleBadge);
-    ref.addEventListener('input', toggleBadge);
-  }
-  // Run once DOM is ready and also after a tick (in case of late populates)
-  document.addEventListener('DOMContentLoaded', toggleBadge);
-  window.addEventListener('load', () => setTimeout(toggleBadge, 0));
-})();
-</script>
-
 <!-- ELEMENT_BADGE_LOGIC_START -->
 <script>
 (function(){
@@ -529,7 +480,15 @@ body.noScroll{overflow:hidden}
     "01-25": {img:"manganese.png", title:"Manganese — 25"},
     "01-26": {img:"iron.png",      title:"Iron — 26"},
     "01-27": {img:"cobalt.png",    title:"Cobalt — 27"},
-    "01-28": {img:"nickel.png",    title:"Nickel — 28"}
+    "01-28": {img:"nickel.png",    title:"Nickel — 28"},
+    "01-29": {img:"copper.png",    title:"Copper — 29"},
+    "01-30": {img:"zinc.png",      title:"Zinc — 30"},
+    "01-31": {img:"gallium.png",   title:"Gallium — 31"},
+    "02-01": {img:"germanium.png", title:"Germanium — 32"},
+    "02-02": {img:"arsenic.png",   title:"Arsenic — 33"},
+    "02-03": {img:"selenium.png",  title:"Selenium — 34"},
+    "02-04": {img:"bromine.png",   title:"Bromine — 35"},
+    "02-05": {img:"krypton.png",   title:"Krypton — 36"}
   };
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
