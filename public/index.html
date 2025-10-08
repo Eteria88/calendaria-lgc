@@ -112,16 +112,16 @@ body.noScroll{overflow:hidden}
 }
 
 
-.top-card{position:relative}
-
-
-/* --- Periodic Element badge (overlay, non-intrusive) --- */
+/* --- Periodic Element badge (Hydrogen for 01/01) --- */
 .top-card{position:relative}
 .elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
+  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
 .elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
-@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+@media (max-width:599px){
+  .elementBadge{top:6px;right:6px}
+  .elementBadge img{width:64px}
+}
 
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
@@ -212,11 +212,10 @@ body.noScroll{overflow:hidden}
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
-      <section class="card top-card top-card">
+      <section class="card top-card">
     <div class="elementBadge" title="Hydrogen — 1">
       <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
     </div>
-\n    <div class="elementBadge" title="Hydrogen — 1">\n      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">\n    </div>
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
         <div class="badge" id="apPhaseBadge">—</div>
@@ -465,10 +464,43 @@ body.noScroll{overflow:hidden}
   </script>
 
 
+
+<script>
+(function(){
+  const badge = document.querySelector('.elementBadge');
+  const ref = document.getElementById('ref');
+  function isJan1(value){
+    if(!value) return false;
+    // value is YYYY-MM-DD
+    const m = value.split('-');
+    if(m.length !== 3) return false;
+    return m[1] === '01' && m[2] === '01';
+  }
+  function toggleBadge(){
+    if(!badge || !ref) return;
+    if(isJan1(ref.value)){
+      badge.style.display = 'block';
+      badge.setAttribute('aria-hidden','false');
+    } else {
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+    }
+  }
+  // Hook into existing UI init if the app sets #ref default later
+  // We observe changes too (for programmatic updates elsewhere).
+  if(ref){
+    ref.addEventListener('change', toggleBadge);
+    ref.addEventListener('input', toggleBadge);
+  }
+  // Run once DOM is ready and also after a tick (in case of late populates)
+  document.addEventListener('DOMContentLoaded', toggleBadge);
+  window.addEventListener('load', () => setTimeout(toggleBadge, 0));
+})();
+</script>
+
 <!-- ELEMENT_BADGE_LOGIC_START -->
 <script>
 (function(){
-  // Strict mapping by day-of-year (MM-DD) -> element
   const MAP = {
     "01-01": {img:"hydrogen.png",  title:"Hydrogen — 1"},
     "01-02": {img:"helium.png",    title:"Helium — 2"},
@@ -487,56 +519,33 @@ body.noScroll{overflow:hidden}
     "01-15": {img:"phosphorus.png",title:"Phosphorus — 15"},
     "01-16": {img:"sulphur.png",   title:"Sulphur — 16"},
     "01-17": {img:"chlorine.png",  title:"Chlorine — 17"},
-    "01-18": {img:"argon.png",     title:"Argon — 18"}
+    "01-18": {img:"argon.png",     title:"Argon — 18"},
+    "01-19": {img:"potassium.png", title:"Potassium — 19"},
+    "01-20": {img:"calcium.png",   title:"Calcium — 20"},
+    "01-21": {img:"scandium.png",  title:"Scandium — 21"},
+    "01-22": {img:"titanium.png",  title:"Titanium — 22"},
+    "01-23": {img:"vanadium.png",  title:"Vanadium — 23"},
+    "01-24": {img:"chromium.png",  title:"Chromium — 24"},
+    "01-25": {img:"manganese.png", title:"Manganese — 25"},
+    "01-26": {img:"iron.png",      title:"Iron — 26"},
+    "01-27": {img:"cobalt.png",    title:"Cobalt — 27"},
+    "01-28": {img:"nickel.png",    title:"Nickel — 28"}
   };
-
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
   const ref   = document.getElementById('ref');
-
-  function isoToMD(iso){
-    if(!iso) return null;
-    const m = iso.split('-');
-    if(m.length !== 3) return null;
-    return m[1] + "-" + m[2];
+  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; return m[1]+"-"+m[2]; }
+  function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
+  function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
+  function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
+    if(el){ tile.src="./"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
+    else { badge.style.display="none"; badge.setAttribute("aria-hidden","true"); }
   }
-  function todayISO(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-  function activeISO(){
-    if(ref && ref.value) return ref.value;
-    return todayISO();
-  }
-  function renderBadge(){
-    if(!badge || !tile) return;
-    const md = isoToMD(activeISO());
-    const el = md ? MAP[md] : null;
-    if(el){
-      tile.src = "./" + el.img;
-      badge.title = el.title;
-      badge.style.display = "block";
-      badge.setAttribute("aria-hidden","false");
-      tile.alt = el.title + " element tile";
-    } else {
-      badge.style.display = "none";
-      badge.setAttribute("aria-hidden","true");
-    }
-  }
-  if(ref){
-    ref.addEventListener('change', renderBadge);
-    ref.addEventListener('input', renderBadge);
-  }
+  if(ref){ ref.addEventListener('change',renderBadge); ref.addEventListener('input',renderBadge); }
   document.addEventListener('DOMContentLoaded', renderBadge);
-  window.addEventListener('load', () => setTimeout(renderBadge, 0));
+  window.addEventListener('load', ()=>setTimeout(renderBadge,0));
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
-
-
-
 
 </body></html>
