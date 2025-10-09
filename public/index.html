@@ -210,7 +210,8 @@ body.noScroll{overflow:hidden}
       <div id="dbg" class="status">estado: cargando…</div>
 
       <section class="card top-card">
-    <div class="elementBadge" title="Hydrogen — 1">
+    <div id="debug" style="position:fixed;bottom:8px;left:8px;font:12px/1.3 monospace;background:#111;color:#9f9;padding:6px 8px;border:1px solid #383;opacity:.9;z-index:99999">md: <span id="dbg-md">—</span> · hasKey: <span id="dbg-has">—</span></div>
+<div class="elementBadge" title="Hydrogen — 1">
       <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
     </div>
 
@@ -655,15 +656,15 @@ body.noScroll{overflow:hidden}
     "07-04": {img:"vacio-185.png", title:"Espacio vacío — 185"},
     "07-05": {img:"vacio-186.png", title:"Espacio vacío — 186"},
     "07-06": {img:"vacio-187.png", title:"Espacio vacío — 187"},
-    "07-07": {img:"vacio-188.png", title:"Espacio vacío — 188"}
-  };
+    "07-07": {img:"vacio-188.png", title:"Espacio vacío — 188"},
+  };};
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
   const ref   = document.getElementById('ref');
   function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; return m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0"); }
   function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
   function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
-  function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
+  function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null; try{document.getElementById("dbg-md").textContent=md||"null";document.getElementById("dbg-has").textContent=el?"true":"false";}catch(e){}
     if(el){ tile.src="./"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
     else { badge.style.display="none"; badge.setAttribute("aria-hidden","true"); }
   }
