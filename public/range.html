@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="es"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Calculadora de días entre fechas</title>
-<meta http-equiv="Cache-Control" content="no-store">
+<meta content="no-store" http-equiv="Cache-Control"/>
 <style>
 :root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -69,87 +70,75 @@ body.noScroll{overflow:hidden}
 
 </style></head><body>
 <div class="wrap">
-
-  <div class="mobileNav" id="mobileNav" aria-hidden="true">
-    <div class="mobileNavPanel">
-      <div class="mobileNavHeader">
-        <span>Menú</span>
-        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
-      </div>
-      <nav class="mobileList">
-        <a class="mnav-link" href="./">Inicio</a>
-        <a class="mnav-link active" href="./range.html">Días entre fechas</a>
-        <a class="mnav-link" href="./letters.html">Letras → Números</a>
-      
-      <a href="./mapa/">Mapa y codigos</a></nav>
-    </div>
-    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-  </div>
-
-  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small">Herramientas</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button></header>
-  <div class="layout">
-    <aside class="sidenav">
-      <nav>
-        <div class="nav-title">Menú</div>
-        <a class="nav-link" href="./">Inicio</a>
-        <a class="nav-link active" href="./range.html">Días entre fechas</a>
-      
-  <a class="nav-link" href="./mapa/">Mapa y codigos</a></nav>
-    </aside>
-    <main>
-
+<div aria-hidden="true" class="mobileNav" id="mobileNav">
+<div class="mobileNavPanel">
+<div class="mobileNavHeader">
+<span>Menú</span>
+<button aria-label="Cerrar" class="closeBtn" id="closeMenu">×</button>
+</div>
+<nav class="mobileList">
+<a class="mnav-link" href="./">Inicio</a>
+<a class="mnav-link active" href="./range.html">Días entre fechas</a>
+<a class="mnav-link" href="./letters.html">Letras → Números</a>
+<a href="./mapa/">Mapa y codigos</a></nav>
+</div>
+<div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
+</div>
+<header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><button aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button></header>
+<div class="layout">
+<aside class="sidenav">
+<nav>
+<div class="nav-title">Menú</div>
+<a class="nav-link" href="./">Inicio</a>
+<a class="nav-link active" href="./range.html">Días entre fechas</a>
+<a class="nav-link" href="./mapa/">Mapa y codigos</a></nav>
+</aside>
+<main>
 <div class="wrap">
-  <h1 style="margin:0 0 10px 0;font-size:20px">Días entre fechas</h1>
-  <div class="small" style="margin-bottom:10px">Calendario mixto: Juliano hasta 04/10/1582, Gregoriano desde 15/10/1582. Elegí si querés contar <b>exclusivo</b> o <b>inclusivo</b>.</div>
-  <div id="rdbg" class="status">estado: cargando…</div>
-  <div class="card">
-    <div class="input-grid">
-      <div class="field" style="grid-column:span 6">
-        <label class="small">Fecha de inicio</label>
-        <input class="input" type="date" id="start" min="0001-01-01" max="9999-12-31">
-        <button class="btn" id="btnStartToday" type="button" style="margin-top:8px">Hoy</button>
-        
-      </div>
-      <div class="field" style="grid-column:span 6">
-        <label class="small">Fecha de fin</label>
-        <input class="input" type="date" id="end" min="0001-01-01" max="9999-12-31">
-        <button class="btn" id="btnEndToday" type="button" style="margin-top:8px">Hoy</button>
-        
-      </div>
-    </div>
-    
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
-      <div class="small">Resultado</div>
-      <div>
-        <div class="mono big" id="out">—</div>
-        <div style="display:flex;gap:8px;margin-top:6px">
-          <span class="chip mono" id="chipEx">Exclusivo: —</span>
-          <span class="chip mono" id="chipIn">Inclusivo: —</span>
-        </div>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-      <input type="checkbox" id="inclusive" checked>
-      <label for="inclusive" class="small">Contar inclusivo (incluye inicio y fin)</label>
-    </div>
-    
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn" id="calc">Calcular</button>
-      <button class="btn" id="swap">Intercambiar</button>
-      <button class="btn" id="clear">Limpiar</button>
-    </div>
-  </div>
+<h1 style="margin:0 0 10px 0;font-size:20px">Días entre fechas</h1>
+<div class="small" style="margin-bottom:10px">Calendario mixto: Juliano hasta 04/10/1582, Gregoriano desde 15/10/1582. Elegí si querés contar <b>exclusivo</b> o <b>inclusivo</b>.</div>
+<div class="status" id="rdbg">estado: cargando…</div>
+<div class="card">
+<div class="input-grid">
+<div class="field" style="grid-column:span 6">
+<label class="small">Fecha de inicio</label>
+<input class="input" id="start" max="9999-12-31" min="0001-01-01" type="date"/>
+<button class="btn" id="btnStartToday" style="margin-top:8px" type="button">Hoy</button>
+</div>
+<div class="field" style="grid-column:span 6">
+<label class="small">Fecha de fin</label>
+<input class="input" id="end" max="9999-12-31" min="0001-01-01" type="date"/>
+<button class="btn" id="btnEndToday" style="margin-top:8px" type="button">Hoy</button>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+<div class="small">Resultado</div>
+<div>
+<div class="mono big" id="out">—</div>
+<div style="display:flex;gap:8px;margin-top:6px">
+<span class="chip mono" id="chipEx">Exclusivo: —</span>
+<span class="chip mono" id="chipIn">Inclusivo: —</span>
+</div>
+</div>
+</div>
+<div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+<input checked="" id="inclusive" type="checkbox"/>
+<label class="small" for="inclusive">Contar inclusivo (incluye inicio y fin)</label>
+</div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btn" id="calc">Calcular</button>
+<button class="btn" id="swap">Intercambiar</button>
+<button class="btn" id="clear">Limpiar</button>
+</div>
+</div>
 </div>
 <noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para usar la calculadora.</div></noscript>
-<script src="./range.js" defer></script>
-
-    </main>
-  </div>
-  <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
+<script defer="" src="./range.js"></script>
+</main>
 </div>
-<script src="./common.js" defer></script>
-
-
+<footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
+</div>
+<script defer="" src="./common.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   var btn = document.getElementById('btnEndToday');
@@ -169,8 +158,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   var btn = document.getElementById('btnStartToday');
@@ -189,5 +176,4 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
-
 </body></html>
