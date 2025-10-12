@@ -107,6 +107,7 @@ body.noScroll{overflow:hidden}
       <div class="field" style="grid-column:span 6">
         <label class="small">Fecha de inicio</label>
         <input class="input" type="date" id="start" min="0001-01-01" max="9999-12-31">
+        <button class="btn" id="btnStartToday" type="button" style="margin-top:8px">Hoy</button>
         
       </div>
       <div class="field" style="grid-column:span 6">
@@ -164,6 +165,26 @@ document.addEventListener('DOMContentLoaded', function(){
       // trigger events for calculators that listen to changes
       endInput.dispatchEvent(new Event('input', { bubbles: true }));
       endInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.getElementById('btnStartToday');
+  var input = document.getElementById('start');
+  if(btn && input){
+    btn.addEventListener('click', function(){
+      var d = new Date();
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      var val = y + '-' + m + '-' + day;
+      input.value = val;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
     });
   }
 });
