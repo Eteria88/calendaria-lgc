@@ -114,7 +114,24 @@ body.noScroll{overflow:hidden}
 <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
 <div class="small">Resultado</div>
 <div>
+
 <div class="mono big" id="out">—</div>
+
+<!-- Controles extra -->
+<div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+  <label class="small" style="display:flex;align-items:center;gap:8px">
+    <input type="checkbox" id="inclusiveToggle">
+    Contar inclusivo (incluye inicio y fin)
+  </label>
+  <button class="btn" id="copyResult" type="button" title="Copiar resultado">Copiar</button>
+</div>
+
+<!-- Chips LGC -->
+<div id="lgcChips" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px">
+  <div class="chip mono">Inicio · <span id="chipStartCard">—</span> · Vuelta <span id="chipStartTurn">—</span></div>
+  <div class="chip mono">Fin · <span id="chipEndCard">—</span> · Vuelta <span id="chipEndTurn">—</span></div>
+</div>
+
 <div style="display:flex;gap:8px;margin-top:6px">
 <span class="chip mono" id="chipEx">Exclusivo: —</span>
 <span class="chip mono" id="chipIn">Inclusivo: —</span>
@@ -176,4 +193,106 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+
+<script>
+(function(){
+  function parseDate(str){
+    if(!str) return null;
+    var m = /^\d{4}-\d{2}-\d{2}$/.test(str) ? str.split('-') : null;
+    if(!m) return null;
+    var y = +m[0], mo = +m[1]-1, d = +m[2];
+    var dt = new Date(Date.UTC(y, mo, d));
+    return new Date(Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth(), dt.getUTCDate()));
+  }
+  function daysBetweenISO(a,b, inclusive){
+    if(!a || !b) return null;
+    var ms = b.getTime() - a.getTime();
+    var days = Math.round(ms / 86400000);
+    if(inclusive) days += (days >= 0 ? 1 : -1) || 1; // mismo día => 1
+    return days;
+  }
+  function setOutText(txt){ var el = document.getElementById('out'); if(el) el.textContent = txt; }
+  function fmt(n){ return String(n); }
+
+  var startEl, endEl, inclusiveEl, copyBtn;
+
+  function updateURL(){
+    var p = new URL(window.location.href);
+    if(startEl && startEl.value) p.searchParams.set('start', startEl.value); else p.searchParams.delete('start');
+    if(endEl && endEl.value) p.searchParams.set('end', endEl.value); else p.searchParams.delete('end');
+    p.searchParams.set('inc', (inclusiveEl && inclusiveEl.checked) ? '1' : '0');
+    history.replaceState(null, '', p.toString());
+  }
+  function loadFromURL(){
+    var u = new URL(window.location.href);
+    var s = u.searchParams.get('start');
+    var e = u.searchParams.get('end');
+    var inc = u.searchParams.get('inc');
+    if(s) startEl && (startEl.value = s);
+    if(e) endEl && (endEl.value = e);
+    if(inc !== null && inclusiveEl) inclusiveEl.checked = (inc === '1');
+  }
+  function tryFillLGCChips(dateEl, cardId, turnId){
+    var cardEl = document.getElementById(cardId);
+    var turnEl = document.getElementById(turnId);
+    if(!cardEl || !turnEl || !dateEl || !dateEl.value) return;
+    var d = parseDate(dateEl.value);
+    var card = '—', turn = '—';
+    try {
+      if(window.CAL && typeof window.CAL.compute === 'function'){
+        var r = window.CAL.compute(d);
+        if(r){ card = r.card || card; turn = (r.turnNum!=null? r.turnNum : (r.turn||turn)); }
+      } else if (window.computeCalendaria) {
+        var rr = window.computeCalendaria(d);
+        if(rr){ card = rr.card || card; turn = (rr.turnNum!=null? rr.turnNum : (rr.turn||turn)); }
+      }
+    } catch(e){}
+    cardEl.textContent = card; turnEl.textContent = turn;
+  }
+  function recalc(){
+    var a = parseDate(startEl && startEl.value);
+    var b = parseDate(endEl && endEl.value);
+    var inc = inclusiveEl && inclusiveEl.checked;
+    if(!a || !b){
+      setOutText('—');
+    } else {
+      var n = daysBetweenISO(a,b,inc);
+      var label = (n > 0) ? ('Faltan ' + fmt(n) + ' días')
+                : (n < 0) ? ('Excedido por ' + fmt(Math.abs(n)) + ' días')
+                : (inc ? '1 día (mismo día, inclusivo)' : '0 días');
+      setOutText(label);
+    }
+    tryFillLGCChips(startEl, 'chipStartCard', 'chipStartTurn');
+    tryFillLGCChips(endEl, 'chipEndCard', 'chipEndTurn');
+    updateURL();
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    startEl = document.getElementById('start');
+    endEl = document.getElementById('end');
+    inclusiveEl = document.getElementById('inclusiveToggle');
+    copyBtn = document.getElementById('copyResult');
+
+    loadFromURL();
+    ['input','change'].forEach(function(ev){
+      startEl && startEl.addEventListener(ev, recalc);
+      endEl && endEl.addEventListener(ev, recalc);
+    });
+    inclusiveEl && inclusiveEl.addEventListener('change', recalc);
+
+    if(copyBtn){
+      copyBtn.addEventListener('click', function(){
+        var txt = document.getElementById('out') ? document.getElementById('out').textContent : '';
+        if(navigator.clipboard && txt){
+          navigator.clipboard.writeText(txt);
+          copyBtn.textContent = '¡Copiado!';
+          setTimeout(function(){ copyBtn.textContent = 'Copiar'; }, 1200);
+        }
+      });
+    }
+    recalc();
+  });
+})();
+</script>
+
 </body></html>
