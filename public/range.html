@@ -232,16 +232,38 @@ document.addEventListener('DOMContentLoaded', function(){
     if(e) endEl && (endEl.value = e);
     if(inc !== null && inclusiveEl) inclusiveEl.checked = (inc === '1');
   }
-  function tryFillLGCChips(dateEl, cardId, turnId){
-    var cardEl = document.getElementById(cardId);
-    var turnEl = document.getElementById(turnId);
-    if(!cardEl || !turnEl || !dateEl || !dateEl.value) return;
-    var d = parseDate(dateEl.value);
-    var card = '—', turn = '—';
-    try {
-      if(window.CAL && typeof window.CAL.compute === 'function'){
-        var r = window.CAL.compute(d);
-        if(r){ card = r.card || card; turn = (r.turnNum!=null? r.turnNum : (r.turn||turn)); }
+  
+function tryFillLGCChips(dateEl, ids){
+  var dEl = dateEl;
+  var map = ids || {};
+  function set(id, val){ var el = document.getElementById(id); if(el) el.textContent = (val!=null && val!=='') ? val : '—'; }
+  if(!dEl || !dEl.value){ ['card','step','mem','turn','turnDay'].forEach(function(k){ if(map[k]) set(map[k], '—'); }); return; }
+  function parseDate(str){
+    if(!str) return null;
+    var m = /^\d{4}-\d{2}-\d{2}$/.test(str) ? str.split('-') : null;
+    if(!m) return null;
+    var y = +m[0], mo = +m[1]-1, d = +m[2];
+    var dt = new Date(Date.UTC(y, mo, d));
+    return new Date(Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth(), dt.getUTCDate()));
+  }
+  var d = parseDate(dEl.value);
+  var card='—', step='—', mem='—', turn='—', turnDay='—';
+  try{
+    if(window.CAL && typeof window.CAL.compute === 'function'){
+      var r = window.CAL.compute(d);
+      if(r){ card = r.card||card; step = r.step||step; mem = r.mem||r.memory||mem; turn = (r.turnNum!=null? r.turnNum : (r.turn||turn)); turnDay = (r.turnDay!=null? r.turnDay : (r.turnIndex!=null? r.turnIndex : turnDay)); }
+    } else if(window.computeCalendaria){
+      var rr = window.computeCalendaria(d);
+      if(rr){ card = rr.card||card; step = rr.step||step; mem = rr.mem||rr.memory||mem; turn = (rr.turnNum!=null? rr.turnNum : (rr.turn||turn)); turnDay = (rr.turnDay!=null? rr.turnDay : (rr.turnIndex!=null? rr.turnIndex : turnDay)); }
+    }
+  } catch(e){}
+  if(map.card) set(map.card, card);
+  if(map.step) set(map.step, step);
+  if(map.mem) set(map.mem, mem);
+  if(map.turn) set(map.turn, turn);
+  if(map.turnDay) set(map.turnDay, turnDay);
+}
+
       } else if (window.computeCalendaria) {
         var rr = window.computeCalendaria(d);
         if(rr){ card = rr.card || card; turn = (rr.turnNum!=null? rr.turnNum : (rr.turn||turn)); }
@@ -257,15 +279,22 @@ document.addEventListener('DOMContentLoaded', function(){
       setOutText('—');
     } else {
       var n = daysBetweenISO(a,b,inc);
-      var label = (n > 0) ? ('Faltan ' + fmt(n) + ' días')
-                : (n < 0) ? ('Excedido por ' + fmt(Math.abs(n)) + ' días')
-                : (inc ? '1 día (mismo día, inclusivo)' : '0 días');
-      setOutText(label);
+      setOutText(String(n == null ? '—' : n));
     }
-    tryFillLGCChips(startEl, 'chipStartCard', 'chipStartTurn');
-    tryFillLGCChips(endEl, 'chipEndCard', 'chipEndTurn');
+    tryFillLGCChips(startEl, {card:'chipStartCard', step:'chipStartStep', mem:'chipStartMem', turn:'chipStartTurn', turnDay:'chipStartTurnDay'});
+    tryFillLGCChips(endEl, {card:'chipEndCard', step:'chipEndStep', mem:'chipEndMem', turn:'chipEndTurn', turnDay:'chipEndTurnDay'});
     updateURL();
+  var cycEl = document.getElementById('cyclesLine');
+  if(cycEl){
+    var n = (a && b) ? Math.abs(Math.round((b.getTime()-a.getTime())/86400000)) : null;
+    if(n==null){ cycEl.textContent = '—'; }
+    else {
+      var vueltas = Math.floor(n/16);
+      var ladrillos = Math.floor(n/3);
+      cycEl.textContent = 'Esto abarca ' + vueltas + ' ciclos de 16 días (vueltas) y ' + ladrillos + ' ladrillos (3 días).';
+    }
   }
+}
 
   document.addEventListener('DOMContentLoaded', function(){
     startEl = document.getElementById('start');
