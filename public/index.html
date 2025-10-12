@@ -244,7 +244,36 @@ body.noScroll{overflow:hidden}
     </div>
   </section>
 
-  <section class="hero">
+<div class="card">
+    <div class="input-grid">
+      <div class="field" style="grid-column:span 6">
+        <label class="small" for="dob">Fecha de nacimiento</label>
+        <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
+        <div class="small">Diferencia exclusiva (puede ser negativa si la referencia es anterior).</div>
+        <div class="field" style="margin-top:6px">
+          <label class="small" for="dobText">Avanzada</label>
+          <input class="input" type="text" id="dobText" placeholder="YYYY-MM-DD o DD-MM-YYYY">
+        </div>
+      </div>
+      <div class="field" style="grid-column:span 6">
+        <label class="small" for="ref">Fecha de referencia</label>
+        <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
+        <div class="small">Podés pasar ?dob=YYYY-MM-DD y ?ref=YYYY-MM-DD</div>
+        <div class="field" style="margin-top:6px">
+          <label class="small" for="refText">Avanzada</label>
+          <input class="input" type="text" id="refText" placeholder="YYYY-MM-DD o DD-MM-YYYY">
+        </div>
+        <div class="field" style="margin-top:6px">
+          <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+<section class="hero">
     <div class="tile">
       <div><h2 style="margin:0;color:#9fb3c8;font-size:14px">Días Solares desde 01·01·0001</h2>
         <div class="small">Fecha de referencia: <span id="refLabel">—</span></div>
@@ -272,33 +301,6 @@ body.noScroll{overflow:hidden}
       <div class="mono big" id="qNumber">—</div>
     </div>
   </section>
-
-  <div class="card">
-    <div class="input-grid">
-      <div class="field" style="grid-column:span 6">
-        <label class="small" for="dob">Fecha de nacimiento</label>
-        <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
-        <div class="small">Diferencia exclusiva (puede ser negativa si la referencia es anterior).</div>
-        <div class="field" style="margin-top:6px">
-          <label class="small" for="dobText">Avanzada</label>
-          <input class="input" type="text" id="dobText" placeholder="YYYY-MM-DD o DD-MM-YYYY">
-        </div>
-      </div>
-      <div class="field" style="grid-column:span 6">
-        <label class="small" for="ref">Fecha de referencia</label>
-        <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
-        <div class="small">Podés pasar ?dob=YYYY-MM-DD y ?ref=YYYY-MM-DD</div>
-        <div class="field" style="margin-top:6px">
-          <label class="small" for="refText">Avanzada</label>
-          <input class="input" type="text" id="refText" placeholder="YYYY-MM-DD o DD-MM-YYYY">
-        </div>
-        <div class="field" style="margin-top:6px">
-          <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
-          
-        </div>
-      </div>
-    </div>
-  </div>
 
   <section class="metrics">
     <div class="mcard">
