@@ -842,12 +842,28 @@ body.noScroll{overflow:hidden}
 
 
 
-<!-- AUTOCALC-ANCLAJES: calcula días de cada anclaje con data-date-iso según "Fecha de referencia" -->
+<!-- ENSURE+AUTOCALC ANCLAJES: inserta y mantiene visibles los dos anclajes + calcula días -->
 <script>
 (function(){
-  // Evita insertar dos veces
-  if (window.__anclajesAutoCalcInjected__) return;
-  window.__anclajesAutoCalcInjected__ = true;
+  if (window.__ensureAnchorsInjected__) return;
+  window.__ensureAnchorsInjected__ = true;
+
+  const CARDS_HTML = `
+          <div class="a-card" data-anchor-id="d_mendeleev">
+            <div style="display:flex;gap:10px;align-items:center">
+              <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
+              <div>Dmitri Mendeléyev (08·02·1834)</div>
+            </div>
+            <div class="mono" id="d_mendeleev" data-date-iso="1834-02-08">—</div>
+          </div>
+          <div class="a-card" data-anchor-id="d_calendaria_web">
+            <div style="display:flex;gap:10px;align-items:center">
+              <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
+              <div>Fundación de la página Calendaria-LGC Digital (09·09·2025)</div>
+            </div>
+            <div class="mono" id="d_calendaria_web" data-date-iso="2025-09-09">—</div>
+          </div>
+  `;
 
   function todayISO(){
     const d = new Date();
@@ -856,46 +872,86 @@ body.noScroll{overflow:hidden}
     const day = String(d.getDate()).padStart(2,'0');
     return `${y}-${m}-${day}`;
   }
-  function toUTCDate(iso){
-    return new Date(iso + 'T00:00:00Z');
-  }
-  function diffExclusiveDays(fromISO, toISO){
-    const a = toUTCDate(fromISO);
-    const b = toUTCDate(toISO);
-    return Math.floor((b - a) / 86400000);
-  }
   function getRefISO(){
-    // Intentamos varios ids/nodos comunes en tu index
     const ref = document.getElementById('ref') || document.querySelector('input[type="date"][name="ref"], input[type="date"].ref');
     if (ref && ref.value) return ref.value;
-    // Si tu app.js guarda la fecha en window.__refISO, úsala; si no, hoy.
     return window.__refISO || todayISO();
   }
-  function render(){
+  function toUTCDate(iso){ return new Date(iso + 'T00:00:00Z'); }
+  function diffExclusiveDays(fromISO, toISO){
+    return Math.floor((toUTCDate(toISO) - toUTCDate(fromISO))/86400000);
+  }
+
+  function ensureCards(){
+    const grid = document.querySelector('.anchors-grid');
+    if (!grid) return;
+
+    const needM = !grid.querySelector('#d_mendeleev');
+    const needC = !grid.querySelector('#d_calendaria_web');
+
+    if (needM || needC){
+      // Insert at the end of the anchors-grid, preserving layout
+      const tmp = document.createElement('div');
+      tmp.innerHTML = CARDS_HTML.trim();
+      const frag = document.createDocumentFragment();
+      [...tmp.children].forEach(n=>{
+        if (n.querySelector('#d_mendeleev') && !needM) return;
+        if (n.querySelector('#d_calendaria_web') && !needC) return;
+        frag.appendChild(n);
+      });
+      grid.appendChild(frag);
+    }
+  }
+
+  function renderDays(){
     const refISO = getRefISO();
     document.querySelectorAll('.mono[data-date-iso]').forEach(el=>{
       const iso = el.getAttribute('data-date-iso');
       if (!iso) return;
-      const d = diffExclusiveDays(iso, refISO);
-      el.textContent = String(d);
+      el.textContent = String(diffExclusiveDays(iso, refISO));
     });
   }
-  // Re-render en estos eventos comunes:
-  document.addEventListener('DOMContentLoaded', render);
-  window.addEventListener('load', render);
-  ['input','change'].forEach(evt=>{
-    document.addEventListener(evt, e=>{
-      if (e.target && e.target.matches('#ref, input[type="date"][name="ref"], input[type="date"].ref')) render();
-    }, true);
+
+  // Initial run
+  function run(){
+    ensureCards();
+    renderDays();
+  }
+
+  // Observe mutations to anchors section (in case app.js re-rendera)
+  const observer = new MutationObserver((muts)=>{
+    for (const m of muts){
+      if (m.type === 'childList' || m.type === 'subtree'){
+        // Re-ensure and re-render quickly after any change
+        ensureCards();
+        renderDays();
+      }
+    }
   });
-  // Si tu app.js lanza un evento personalizado, escuchamos también.
-  window.addEventListener('calendaria:ref-updated', render);
-  // Render periódico por si la ref se define asíncronamente
+
+  function startObserver(){
+    const grid = document.querySelector('.anchors-grid');
+    if (!grid) return false;
+    observer.observe(grid, { childList: true, subtree: true });
+    return true;
+  }
+
+  // Hooks
+  document.addEventListener('DOMContentLoaded', ()=>{ run(); startObserver(); });
+  window.addEventListener('load', ()=>{ run(); startObserver(); });
+  window.addEventListener('calendaria:ref-updated', renderDays);
+  document.addEventListener('input', e=>{
+    if (e.target && e.target.matches('#ref, input[type="date"][name="ref"], input[type="date"].ref')) renderDays();
+  }, true);
+
+  // Retry a few times in case anchors grid is mounted tarde
   let tries = 0;
   const iv = setInterval(()=>{
-    render();
-    if (++tries > 20) clearInterval(iv);
+    run();
+    const ok = startObserver();
+    if (++tries > 20 || ok) clearInterval(iv);
   }, 150);
+
 })();
 </script>
 
