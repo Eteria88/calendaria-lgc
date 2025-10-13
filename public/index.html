@@ -841,4 +841,60 @@ body.noScroll{overflow:hidden}
 
 
 
+
+<!-- SAFE-AUTOCALC-ANCLAJES: no bloquea carga, solo recalcula si existen los nodos -->
+<script>
+(function(){
+  try{
+    // Evita doble inyección
+    if (window.__safeAutocalcAnchors__) return;
+    window.__safeAutocalcAnchors__ = true;
+
+    function todayISO(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${day}`;
+    }
+    function getRefISO(){
+      const ref = document.getElementById('ref') || document.querySelector('input[type="date"][name="ref"], input[type="date"].ref');
+      if (ref && ref.value) return ref.value;
+      return (typeof window !== 'undefined' && window.__refISO) ? window.__refISO : todayISO();
+    }
+    function toUTCDate(iso){ return new Date(iso + 'T00:00:00Z'); }
+    function diffExclusiveDays(fromISO, toISO){
+      return Math.floor((toUTCDate(toISO) - toUTCDate(fromISO)) / 86400000);
+    }
+    function render(){
+      try{
+        const grid = document.querySelector('.anchors-grid');
+        if (!grid) return; // si no existe, no hacemos nada
+        document.querySelectorAll('.mono[data-date-iso]').forEach(el=>{
+          const iso = el.getAttribute('data-date-iso');
+          if (!iso) return;
+          el.textContent = String(diffExclusiveDays(iso, getRefISO()));
+        });
+      }catch(e){ /* silencioso */ }
+    }
+    // Hooks mínimos y seguros
+    document.addEventListener('DOMContentLoaded', render);
+    window.addEventListener('load', render);
+    document.addEventListener('input', function(e){
+      try{
+        if (e && e.target && (e.target.id === 'ref' || (e.target.matches && e.target.matches('input[type="date"]')))){
+          render();
+        }
+      }catch(_){}
+    }, true);
+    window.addEventListener('calendaria:ref-updated', render);
+    // Un render diferido por si app.js setea la ref luego
+    setTimeout(render, 300);
+  }catch(e){
+    // No bloquear nunca
+    console && console.warn && console.warn('[SAFE-AUTOCALC-ANCLAJES]', e);
+  }
+})();
+</script>
+
 </body></html>
