@@ -345,23 +345,6 @@ body.noScroll{overflow:hidden}
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Día Google (30·12·1899)</div></div><div class="mono" id="d_google">—</div></div>
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Primer segundo intercalar (30·06·1972)</div></div><div class="mono" id="d_leapsec">—</div></div>
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Edad Administrativa (12·08·2024)</div></div><div class="mono" id="d_admin">—</div></div>
-
-          <!-- NUEVOS ANCLAJES (inserción no intrusiva) -->
-          <div class="a-card">
-            <div style="display:flex;gap:10px;align-items:center">
-              <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
-              <div>Dmitri Mendeléyev (08·02·1834)</div>
-            </div>
-            <div class="mono" id="d_mendeleev" data-date-iso="1834-02-08">—</div>
-          </div>
-          <div class="a-card">
-            <div style="display:flex;gap:10px;align-items:center">
-              <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
-              <div>Fundación de la página Calendaria-LGC Digital (09·09·2025)</div>
-            </div>
-            <div class="mono" id="d_calendaria_web" data-date-iso="2025-09-09">—</div>
-          </div>
-
     </div>
     <div class="small">Cálculo exclusivo desde cada fecha.</div>
   </section>
@@ -857,5 +840,63 @@ body.noScroll{overflow:hidden}
 <!-- ELEMENT_BADGE_LOGIC_END -->
 
 
+
+
+<!-- AUTOCALC-ANCLAJES: calcula días de cada anclaje con data-date-iso según "Fecha de referencia" -->
+<script>
+(function(){
+  // Evita insertar dos veces
+  if (window.__anclajesAutoCalcInjected__) return;
+  window.__anclajesAutoCalcInjected__ = true;
+
+  function todayISO(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+  function toUTCDate(iso){
+    return new Date(iso + 'T00:00:00Z');
+  }
+  function diffExclusiveDays(fromISO, toISO){
+    const a = toUTCDate(fromISO);
+    const b = toUTCDate(toISO);
+    return Math.floor((b - a) / 86400000);
+  }
+  function getRefISO(){
+    // Intentamos varios ids/nodos comunes en tu index
+    const ref = document.getElementById('ref') || document.querySelector('input[type="date"][name="ref"], input[type="date"].ref');
+    if (ref && ref.value) return ref.value;
+    // Si tu app.js guarda la fecha en window.__refISO, úsala; si no, hoy.
+    return window.__refISO || todayISO();
+  }
+  function render(){
+    const refISO = getRefISO();
+    document.querySelectorAll('.mono[data-date-iso]').forEach(el=>{
+      const iso = el.getAttribute('data-date-iso');
+      if (!iso) return;
+      const d = diffExclusiveDays(iso, refISO);
+      el.textContent = String(d);
+    });
+  }
+  // Re-render en estos eventos comunes:
+  document.addEventListener('DOMContentLoaded', render);
+  window.addEventListener('load', render);
+  ['input','change'].forEach(evt=>{
+    document.addEventListener(evt, e=>{
+      if (e.target && e.target.matches('#ref, input[type="date"][name="ref"], input[type="date"].ref')) render();
+    }, true);
+  });
+  // Si tu app.js lanza un evento personalizado, escuchamos también.
+  window.addEventListener('calendaria:ref-updated', render);
+  // Render periódico por si la ref se define asíncronamente
+  let tries = 0;
+  const iv = setInterval(()=>{
+    render();
+    if (++tries > 20) clearInterval(iv);
+  }, 150);
+})();
+</script>
 
 </body></html>
