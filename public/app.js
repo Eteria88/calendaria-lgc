@@ -169,7 +169,7 @@
       var PHASES = ['—','Asume','Asimila','Desafía','Decide'];
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
-      var A={d_lgc_inicio:dt(2015,10,15),d_toganesos:dt(2024,1,10),d_rupert:dt(1942,6,28),d_hamer:dt(1935,5,17),d_alcides:dt(1857,8,13),d_quinta:dt(2016,8,28),d_eje258:dt(2017,8,26),d_penta:dt(2022,1,7),d_patrono:dt(1971,8,15),d_uit:dt(1865,5,17),d_google:dt(1899,12,30),d_leapsec:dt(1972,6,30),d_admin:dt(2024,8,12),d_mac:dt(1969,12,6)};
+      var A={d_mendeleev:dt(1834,2,8),d_calendaria_web:dt(2025,9,9),d_lgc_inicio:dt(2015,10,15),d_toganesos:dt(2024,1,10),d_rupert:dt(1942,6,28),d_hamer:dt(1935,5,17),d_alcides:dt(1857,8,13),d_quinta:dt(2016,8,28),d_eje258:dt(2017,8,26),d_penta:dt(2022,1,7),d_patrono:dt(1971,8,15),d_uit:dt(1865,5,17),d_google:dt(1899,12,30),d_leapsec:dt(1972,6,30),d_admin:dt(2024,8,12),d_mac:dt(1969,12,6)};
       for(var key in A){ var el2=document.getElementById(key); if(el2) el2.textContent=Math.max(0,Math.floor((ref-A[key])/ms)); }
 
       buildCalog(ref);

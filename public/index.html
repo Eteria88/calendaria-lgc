@@ -345,6 +345,23 @@ body.noScroll{overflow:hidden}
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Día Google (30·12·1899)</div></div><div class="mono" id="d_google">—</div></div>
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Primer segundo intercalar (30·06·1972)</div></div><div class="mono" id="d_leapsec">—</div></div>
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Edad Administrativa (12·08·2024)</div></div><div class="mono" id="d_admin">—</div></div>
+
+          <!-- NUEVOS ANCLAJES (inserción no intrusiva) -->
+          <div class="a-card">
+            <div style="display:flex;gap:10px;align-items:center">
+              <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
+              <div>Dmitri Mendeléyev (08·02·1834)</div>
+            </div>
+            <div class="mono" id="d_mendeleev" data-date-iso="1834-02-08">—</div>
+          </div>
+          <div class="a-card">
+            <div style="display:flex;gap:10px;align-items:center">
+              <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
+              <div>Fundación de la página Calendaria-LGC Digital (09·09·2025)</div>
+            </div>
+            <div class="mono" id="d_calendaria_web" data-date-iso="2025-09-09">—</div>
+          </div>
+
     </div>
     <div class="small">Cálculo exclusivo desde cada fecha.</div>
   </section>
@@ -840,61 +857,5 @@ body.noScroll{overflow:hidden}
 <!-- ELEMENT_BADGE_LOGIC_END -->
 
 
-
-
-<!-- SAFE-AUTOCALC-ANCLAJES: no bloquea carga, solo recalcula si existen los nodos -->
-<script>
-(function(){
-  try{
-    // Evita doble inyección
-    if (window.__safeAutocalcAnchors__) return;
-    window.__safeAutocalcAnchors__ = true;
-
-    function todayISO(){
-      const d = new Date();
-      const y = d.getFullYear();
-      const m = String(d.getMonth()+1).padStart(2,'0');
-      const day = String(d.getDate()).padStart(2,'0');
-      return `${y}-${m}-${day}`;
-    }
-    function getRefISO(){
-      const ref = document.getElementById('ref') || document.querySelector('input[type="date"][name="ref"], input[type="date"].ref');
-      if (ref && ref.value) return ref.value;
-      return (typeof window !== 'undefined' && window.__refISO) ? window.__refISO : todayISO();
-    }
-    function toUTCDate(iso){ return new Date(iso + 'T00:00:00Z'); }
-    function diffExclusiveDays(fromISO, toISO){
-      return Math.floor((toUTCDate(toISO) - toUTCDate(fromISO)) / 86400000);
-    }
-    function render(){
-      try{
-        const grid = document.querySelector('.anchors-grid');
-        if (!grid) return; // si no existe, no hacemos nada
-        document.querySelectorAll('.mono[data-date-iso]').forEach(el=>{
-          const iso = el.getAttribute('data-date-iso');
-          if (!iso) return;
-          el.textContent = String(diffExclusiveDays(iso, getRefISO()));
-        });
-      }catch(e){ /* silencioso */ }
-    }
-    // Hooks mínimos y seguros
-    document.addEventListener('DOMContentLoaded', render);
-    window.addEventListener('load', render);
-    document.addEventListener('input', function(e){
-      try{
-        if (e && e.target && (e.target.id === 'ref' || (e.target.matches && e.target.matches('input[type="date"]')))){
-          render();
-        }
-      }catch(_){}
-    }, true);
-    window.addEventListener('calendaria:ref-updated', render);
-    // Un render diferido por si app.js setea la ref luego
-    setTimeout(render, 300);
-  }catch(e){
-    // No bloquear nunca
-    console && console.warn && console.warn('[SAFE-AUTOCALC-ANCLAJES]', e);
-  }
-})();
-</script>
 
 </body></html>
