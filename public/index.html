@@ -345,6 +345,23 @@ body.noScroll{overflow:hidden}
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Día Google (30·12·1899)</div></div><div class="mono" id="d_google">—</div></div>
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Primer segundo intercalar (30·06·1972)</div></div><div class="mono" id="d_leapsec">—</div></div>
       <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Edad Administrativa (12·08·2024)</div></div><div class="mono" id="d_admin">—</div></div>
+
+          <!-- NUEVOS ANCLAJES (inserción no intrusiva) -->
+          <div class="a-card">
+            <div style="display:flex;gap:10px;align-items:center">
+              <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
+              <div>Dmitri Mendeléyev (08·02·1834)</div>
+            </div>
+            <div class="mono" id="d_mendeleev" data-date-iso="1834-02-08">—</div>
+          </div>
+          <div class="a-card">
+            <div style="display:flex;gap:10px;align-items:center">
+              <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
+              <div>Fundación de la página Calendaria-LGC Digital (09·09·2025)</div>
+            </div>
+            <div class="mono" id="d_calendaria_web" data-date-iso="2025-09-09">—</div>
+          </div>
+
     </div>
     <div class="small">Cálculo exclusivo desde cada fecha.</div>
   </section>
@@ -840,80 +857,5 @@ body.noScroll{overflow:hidden}
 <!-- ELEMENT_BADGE_LOGIC_END -->
 
 
-
-
-
-<!-- ORDER+COLOR SAFE (non-blocking, defensive) -->
-<script>
-(function(){
-  try{
-    if (window.__anchorsOrderColorSAFE__) return;
-    window.__anchorsOrderColorSAFE__ = true;
-
-    const COLOR = { blue:{bg:'#7cc7ff'}, yellow:{bg:'#ffd166'}, green:{bg:'#9cffd5'} };
-    const BLUE   = ['d_rupert','d_hamer','d_mac','d_alcides','d_mendeleev'];
-    const YELLOW = ['d_calendaria_web','d_lgc_inicio','d_penta','d_admin','d_eje258','d_toganesos','d_quinta'];
-    const GREEN  = ['d_patrono','d_uit','d_google','d_leapsec'];
-
-    function setDotColor(card, color){
-      try{
-        const dot = card && card.querySelector('.a-dot');
-        if(!dot) return;
-        const bg = COLOR[color].bg;
-        dot.style.background = bg;
-        dot.style.boxShadow = "0 0 10px " + bg;
-      }catch(_){}
-    }
-
-    function appendInOrder(grid, ids, color){
-      ids.forEach(id=>{
-        try{
-          const el = grid.querySelector('.mono#'+CSS.escape(id));
-          if(!el) return;
-          const card = el.closest('.a-card');
-          if(!card) return;
-          setDotColor(card, color);
-          grid.appendChild(card); // moves existing node, no innerHTML
-        }catch(_){}
-      });
-    }
-
-    function run(){
-      try{
-        const grid = document.querySelector('.anchors-grid');
-        if(!grid) return false;
-
-        // Stop if cards not present yet (app.js may inject later)
-        const hasAny = grid.querySelector('.a-card .mono[id]');
-        if(!hasAny) return false;
-
-        // Append groups in order (moves existing nodes)
-        appendInOrder(grid, BLUE,   'blue');
-        appendInOrder(grid, YELLOW, 'yellow');
-        appendInOrder(grid, GREEN,  'green');
-        return true;
-      }catch(_){
-        return false;
-      }
-    }
-
-    // Try a few times after load without blocking the app init
-    let tries = 0;
-    function tick(){
-      try{
-        if (run() || ++tries > 40) return; // ~2s total
-        setTimeout(tick, 50);
-      }catch(_){}
-    }
-    window.addEventListener('load', function(){ setTimeout(tick, 100); }, { once:true });
-
-    // If the app signals date/reference updates, we don't need to reorder, but color might flip if theme changes — safe to ignore.
-    // We intentionally do NOT use MutationObserver to avoid any blocking issues.
-  }catch(e){
-    // Never block
-    try{ console.warn('[ORDER+COLOR SAFE]', e); }catch(_){}
-  }
-})();
-</script>
 
 </body></html>
