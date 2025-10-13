@@ -899,4 +899,8 @@ body.noScroll{overflow:hidden}
 })();
 </script>
 
+
+<!-- SAFE-AUTOCALC-ANCLAJES -->
+<script>(function(){try{if(window.__safeAutocalcAnchors__)return;window.__safeAutocalcAnchors__=true;function t(){const e=new Date;return`${e.getFullYear()}-${String(e.getMonth()+1).padStart(2,"0")}-${String(e.getDate()).padStart(2,"0")}`}function n(){const e=document.getElementById("ref")||document.querySelector('input[type="date"][name="ref"], input[type="date"].ref');return e&&e.value?e.value:"undefined"!=typeof window&&window.__refISO?window.__refISO:t()}function c(e){return new Date(e+"T00:00:00Z")}function o(e,t){return Math.floor((c(t)-c(e))/86400000)}function r(){try{document.querySelector(".anchors-grid")&&document.querySelectorAll(".mono[data-date-iso]").forEach(e=>{const t=e.getAttribute("data-date-iso");t&&(e.textContent=String(o(t,n())))})}catch(e){}}document.addEventListener("DOMContentLoaded",r),window.addEventListener("load",r),document.addEventListener("input",function(e){try{e&&e.target&&("ref"===e.target.id||e.target.matches&&e.target.matches('input[type="date"]'))&&r()}catch(e){}},!0),window.addEventListener("calendaria:ref-updated",r),setTimeout(r,300)}catch(e){console&&console.warn&&console.warn("[SAFE-AUTOCALC-ANCLAJES]",e)}})();</script>
+
 </body></html>
