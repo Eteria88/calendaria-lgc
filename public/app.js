@@ -82,6 +82,7 @@
       var Rf = flex(rFrom); if(!Rf){ var t = Date.parse(rFrom); if(!isNaN(t)){ var tmp=new Date(t); Rf={y:tmp.getUTCFullYear(), m:tmp.getUTCMonth()+1, d:tmp.getUTCDate()}; } else { var tl=todayLocal; Rf={y:tl.getUTCFullYear(), m:tl.getUTCMonth()+1, d:tl.getUTCDate()}; } }
       var Db = flex(dFrom); if(!Db){ var tdv = Date.parse(dFrom); if(!isNaN(tdv)){ var tmpd=new Date(tdv); Db={y:tmpd.getUTCFullYear(), m:tmpd.getUTCMonth()+1, d:tmpd.getUTCDate()}; } else { Db = null; } }
 
+      if(!Rf){var _n=new Date(); Rf={y:_n.getUTCFullYear(), m:_n.getUTCMonth()+1, d:_n.getUTCDate()};}
       var ref = dt(Rf.y, Rf.m, Rf.d);
       var dob = dt(Db.y, Db.m, Db.d);
 
