@@ -158,16 +158,19 @@ body.noScroll{overflow:hidden}
   }
   .anilloTick{
     position:absolute;
-    top:50%;
-    left:50%;
+    inset:0;
     transform-origin:50% 50%;
-    transform:rotate(var(--angle)) translate(0,-46%);
+    transform:rotate(var(--angle));
+    pointer-events:none;
   }
   .anilloTick span{
+    position:absolute;
+    top:6px;
+    left:50%;
+    transform:translateX(-50%) rotate(calc(-1*var(--angle)));
     display:block;
     font-size:11px;
     color:var(--muted);
-    transform:rotate(calc(-1*var(--angle)));
   }
   .anilloTick--inactive span{opacity:0;}
 
