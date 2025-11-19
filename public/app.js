@@ -61,6 +61,31 @@
     }
 
     function up(){
+  // --- strong guard for reference date (Rf) ---
+  function todayUTC(){
+    var d=new Date();
+    return {y:d.getUTCFullYear(), m:d.getUTCMonth()+1, d:d.getUTCDate()};
+  }
+  if(!Rf || Rf.y==null || Rf.m==null || Rf.d==null){
+    var y=null,m=null,d=null;
+    var refInput = document.querySelector('#ref');
+    if(refInput && refInput.value){
+      var mRef = refInput.value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(mRef){ y=+mRef[1]; m=+mRef[2]; d=+mRef[3]; }
+    }
+    if(y==null){
+      try{
+        var qp = Object.fromEntries(new URLSearchParams(location.search));
+        if(qp.ref){
+          var mr = String(qp.ref).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+          if(mr){ y=+mr[1]; m=+mr[2]; d=+mr[3]; }
+        }
+      }catch(e){}
+    }
+    if(y==null){ Rf = todayUTC(); } else { Rf = {y:y,m:m,d:d}; }
+  }
+  // --- end guard ---
+
       var now=new Date();
       var todayLocal=new Date(now.getFullYear(),now.getMonth(),now.getDate());
       var tStr=todayLocal.getFullYear()+'-'+pad(todayLocal.getMonth()+1)+'-'+pad(todayLocal.getDate());
@@ -82,7 +107,6 @@
       var Rf = flex(rFrom); if(!Rf){ var t = Date.parse(rFrom); if(!isNaN(t)){ var tmp=new Date(t); Rf={y:tmp.getUTCFullYear(), m:tmp.getUTCMonth()+1, d:tmp.getUTCDate()}; } else { var tl=todayLocal; Rf={y:tl.getUTCFullYear(), m:tl.getUTCMonth()+1, d:tl.getUTCDate()}; } }
       var Db = flex(dFrom); if(!Db){ var tdv = Date.parse(dFrom); if(!isNaN(tdv)){ var tmpd=new Date(tdv); Db={y:tmpd.getUTCFullYear(), m:tmpd.getUTCMonth()+1, d:tmpd.getUTCDate()}; } else { Db = null; } }
 
-      if(!Rf){var _n=new Date(); Rf={y:_n.getUTCFullYear(), m:_n.getUTCMonth()+1, d:_n.getUTCDate()};}
       var ref = dt(Rf.y, Rf.m, Rf.d);
       var dob = dt(Db.y, Db.m, Db.d);
 
