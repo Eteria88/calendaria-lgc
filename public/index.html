@@ -35,6 +35,43 @@ th:first-child,td:first-child{text-align:left}
 .a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02)}
 .a-dot{width:10px;height:10px;border-radius:50%}
 .plane{position:relative;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+  .anilloClock{
+    position:relative;
+    width:100%;
+    max-width:220px;
+    margin:0 auto;
+    aspect-ratio:1/1;
+    border-radius:50%;
+    border:1px solid var(--ol);
+    box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .anilloCenter{
+    text-align:center;
+    padding:8px 10px;
+    border-radius:12px;
+    background:rgba(0,0,0,.35);
+    backdrop-filter:blur(6px);
+  }
+  .anilloCenter .mono{
+    font-size:18px;
+  }
+  .anilloTick{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform-origin:50% 50%;
+    transform:rotate(var(--angle)) translate(0,-44%);
+  }
+  .anilloTick span{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    transform:rotate(calc(-1*var(--angle)));
+  }
+
 @media(min-width:480px){.plane{height:240px}} @media(min-width:768px){.plane{height:260px}} @media(min-width:1024px){.plane{height:300px}}
 .planeGrid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
 .cell{display:flex;align-items:center;justify-content:center;border:1px dashed var(--ol);position:relative;flex-direction:column;gap:4px}
@@ -233,7 +270,7 @@ body.noScroll{overflow:hidden}
           </div>
         </div>
       </div>
-      <div class="plane"><div class="planeGrid">
+      <div id="cardinalPlane" class="plane"><div class="planeGrid">
         <div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9–12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
         <div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5–8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
         <div class="cell" id="cellSO" style="grid-area:2/1"><div class="cellInner"><div class="cTitle">SO</div><div class="cRange">1–4</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div>
@@ -241,6 +278,29 @@ body.noScroll{overflow:hidden}
         </div>
         <div class="cell" id="cellSE" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13–16</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
       </div></div>
+
+      <div id="anilloPlane" class="plane" style="display:none">
+        <div class="anilloClock">
+          <div class="anilloTick" style="--angle:0deg"><span>353</span></div>
+          <div class="anilloTick" style="--angle:27.7deg"><span>354</span></div>
+          <div class="anilloTick" style="--angle:55.4deg"><span>355</span></div>
+          <div class="anilloTick" style="--angle:83.1deg"><span>356</span></div>
+          <div class="anilloTick" style="--angle:110.8deg"><span>357</span></div>
+          <div class="anilloTick" style="--angle:138.5deg"><span>358</span></div>
+          <div class="anilloTick" style="--angle:166.2deg"><span>359</span></div>
+          <div class="anilloTick" style="--angle:193.8deg"><span>360</span></div>
+          <div class="anilloTick" style="--angle:221.5deg"><span>361</span></div>
+          <div class="anilloTick" style="--angle:249.2deg"><span>362</span></div>
+          <div class="anilloTick" style="--angle:276.9deg"><span>363</span></div>
+          <div class="anilloTick" style="--angle:304.6deg"><span>364</span></div>
+          <div class="anilloTick" style="--angle:332.3deg"><span>365</span></div>
+          <div class="anilloCenter">
+            <div class="small">Anillo de Fuego</div>
+            <div class="mono" id="anilloLabel">Procesador</div>
+            <div class="small">Del 353 al 365</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 

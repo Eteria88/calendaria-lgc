@@ -85,6 +85,32 @@
       var ref = dt(Rf.y, Rf.m, Rf.d);
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
 
+// Anillo de Fuego: alternar entre cuadrante de cardinalidades
+// y reloj del Anillo cuando la fecha de referencia entra en el día 353 lógico.
+// - Año no bisiesto: 19/12 → inicio del Anillo (día 353).
+// - Año bisiesto:    18/12 → inicio del Anillo (día 353).
+      (function(){
+        var cardPlane = document.getElementById('cardinalPlane');
+        var anilloPlane = document.getElementById('anilloPlane');
+        if(!cardPlane || !anilloPlane) return;
+
+        var y = ref.getUTCFullYear();
+        var m = ref.getUTCMonth() + 1;
+        var d = ref.getUTCDate();
+        var leap = isL(y);
+
+        var showAnillo = (!leap && m === 12 && d === 19) ||
+                         (leap && m === 12 && d === 18);
+
+        if(showAnillo){
+          cardPlane.style.display = 'none';
+          anilloPlane.style.display = '';
+        } else {
+          cardPlane.style.display = '';
+          anilloPlane.style.display = 'none';
+        }
+      })();
+
       var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
       var nowLbl = now.toLocaleDateString();
       var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent='Ahora: '+nowLbl+' · '+tz;
