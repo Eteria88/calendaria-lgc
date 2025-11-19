@@ -69,7 +69,7 @@
       var refI=$('#ref'), refT=$('#refText'), dobI=$('#dob'), dobT=$('#dobText');
       if(!init){
         if(refI && !refI.value) refI.value = (qp.ref || tStr);
-        if(dobI && !dobI.value) dobI.value = (qp.dob || '1983-01-21');
+        if(dobI && !dobI.value) dobI.value = (qp.dob || '');
         if(refT && !refT.value && qp.ref) refT.value = qp.ref;
         if(dobT && !dobT.value && qp.dob) dobT.value = qp.dob;
       }
@@ -80,10 +80,10 @@
       var dFrom = dTxt || (dobI && dobI.value ? dobI.value : '');
 
       var Rf = flex(rFrom); if(!Rf){ var t = Date.parse(rFrom); if(!isNaN(t)){ var tmp=new Date(t); Rf={y:tmp.getUTCFullYear(), m:tmp.getUTCMonth()+1, d:tmp.getUTCDate()}; } else { var tl=todayLocal; Rf={y:tl.getUTCFullYear(), m:tl.getUTCMonth()+1, d:tl.getUTCDate()}; } }
-      var Db = flex(dFrom); if(!Db){ var tdv = Date.parse(dFrom); if(!isNaN(tdv)){ var tmpd=new Date(tdv); Db={y:tmpd.getUTCFullYear(), m:tmpd.getUTCMonth()+1, d:tmpd.getUTCDate()}; } else { Db = null; }
+      var Db = flex(dFrom); if(!Db){ var tdv = Date.parse(dFrom); if(!isNaN(tdv)){ var tmpd=new Date(tdv); Db={y:tmpd.getUTCFullYear(), m:tmpd.getUTCMonth()+1, d:tmpd.getUTCDate()}; } else { Db = null; } }
 
       var ref = dt(Rf.y, Rf.m, Rf.d);
-      var dob = (Db ? dt(Db.y, Db.m, Db.d) : null);
+      var dob = dt(Db.y, Db.m, Db.d);
 
       var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
       var nowLbl = now.toLocaleDateString();
@@ -146,7 +146,7 @@
       el=$('#brickIdx'); if(el) el.textContent=Math.floor((qD-1)/3)+1;
       el=$('#brickDay'); if(el) el.textContent=((qD-1)%3)+1;
 
-      el=$('#lifeDays'); if(el) el.textContent = (dob ? (function(){ var tUTC = Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), ref.getUTCDate()); var dobUTC=Date.UTC(Db.y,Db.m-1,Db.d); return Math.floor((tUTC-dobUTC)/ms); })() : '0');
+      el=$('#lifeDays'); if(el) el.textContent = (dob ? (function(){ var now=new Date(); var tUTC=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()); var dobUTC=Date.UTC(Db.y,Db.m-1,Db.d); return Math.floor((tUTC-dobUTC)/ms); })() : '—');
 
       el=$('#doy'); if(el) el.textContent=doy;
       el=$('#ylen'); if(el) el.textContent=yl;
