@@ -61,31 +61,6 @@
     }
 
     function up(){
-  // --- strong guard for reference date (Rf) ---
-  function todayUTC(){
-    var d=new Date();
-    return {y:d.getUTCFullYear(), m:d.getUTCMonth()+1, d:d.getUTCDate()};
-  }
-  if(!Rf || Rf.y==null || Rf.m==null || Rf.d==null){
-    var y=null,m=null,d=null;
-    var refInput = document.querySelector('#ref');
-    if(refInput && refInput.value){
-      var mRef = refInput.value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if(mRef){ y=+mRef[1]; m=+mRef[2]; d=+mRef[3]; }
-    }
-    if(y==null){
-      try{
-        var qp = Object.fromEntries(new URLSearchParams(location.search));
-        if(qp.ref){
-          var mr = String(qp.ref).match(/^(\d{4})-(\d{2})-(\d{2})$/);
-          if(mr){ y=+mr[1]; m=+mr[2]; d=+mr[3]; }
-        }
-      }catch(e){}
-    }
-    if(y==null){ Rf = todayUTC(); } else { Rf = {y:y,m:m,d:d}; }
-  }
-  // --- end guard ---
-
       var now=new Date();
       var todayLocal=new Date(now.getFullYear(),now.getMonth(),now.getDate());
       var tStr=todayLocal.getFullYear()+'-'+pad(todayLocal.getMonth()+1)+'-'+pad(todayLocal.getDate());
@@ -94,7 +69,7 @@
       var refI=$('#ref'), refT=$('#refText'), dobI=$('#dob'), dobT=$('#dobText');
       if(!init){
         if(refI && !refI.value) refI.value = (qp.ref || tStr);
-        if(dobI && !dobI.value) dobI.value = (qp.dob || '');
+        if(dobI && !dobI.value){ if(qp.dob) dobI.value = qp.dob; }
         if(refT && !refT.value && qp.ref) refT.value = qp.ref;
         if(dobT && !dobT.value && qp.dob) dobT.value = qp.dob;
       }
@@ -105,15 +80,15 @@
       var dFrom = dTxt || (dobI && dobI.value ? dobI.value : '');
 
       var Rf = flex(rFrom); if(!Rf){ var t = Date.parse(rFrom); if(!isNaN(t)){ var tmp=new Date(t); Rf={y:tmp.getUTCFullYear(), m:tmp.getUTCMonth()+1, d:tmp.getUTCDate()}; } else { var tl=todayLocal; Rf={y:tl.getUTCFullYear(), m:tl.getUTCMonth()+1, d:tl.getUTCDate()}; } }
-      var Db = flex(dFrom); if(!Db){ var tdv = Date.parse(dFrom); if(!isNaN(tdv)){ var tmpd=new Date(tdv); Db={y:tmpd.getUTCFullYear(), m:tmpd.getUTCMonth()+1, d:tmpd.getUTCDate()}; } else { Db = null; } }
+      var Db = flex(dFrom); if(!Db){ var tdv = Date.parse(dFrom); if(!isNaN(tdv)){ var tmpd=new Date(tdv); Db={y:tmpd.getUTCFullYear(), m:tmpd.getUTCMonth()+1, d:tmpd.getUTCDate()}; } else { Db=null; } }
 
       var ref = dt(Rf.y, Rf.m, Rf.d);
-      var dob = dt(Db.y, Db.m, Db.d);
+      var dob = (Db?dt(Db.y, Db.m, Db.d):null);
 
       var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
       var nowLbl = now.toLocaleDateString();
       var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent='Ahora: '+nowLbl+' · '+tz;
-      var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.y).padStart(4,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.d).padStart(2,'0')) : '—');
+      var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.y).padStart(4,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.d).padStart(2,'0')) : '0');
 
       var doyVal=dOY(ref);
       var idx=((doyVal-1)%16);
@@ -122,7 +97,7 @@
       var card=CARD_MAP[idx];
       var step=(idx%4)+1;
       var blk=Math.floor(idx/4)+1;
-      var mem=(card==='SO')?(['','RAM','REM','ROM','RUM'][step]):'—';
+      var mem=(card==='SO')?(['','RAM','REM','ROM','RUM'][step]):'0';
 
       var el;
       el=$('#calDay'); if(el) el.textContent=day;
@@ -171,7 +146,7 @@
       el=$('#brickIdx'); if(el) el.textContent=Math.floor((qD-1)/3)+1;
       el=$('#brickDay'); if(el) el.textContent=((qD-1)%3)+1;
 
-      el=$('#lifeDays'); if(el) el.textContent = (dob ? (function(){ var now=new Date(); var tUTC=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()); var dobUTC=Date.UTC(Db.y,Db.m-1,Db.d); return Math.floor((tUTC-dobUTC)/ms); })() : '—');
+      el=$('#lifeDays'); if(el) el.textContent = (dob ? (function(){ var now=new Date(); var tUTC=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()); var dobUTC=Date.UTC(Db.y,Db.m-1,Db.d); return Math.floor((tUTC-dobUTC)/ms); })() : '0');
 
       el=$('#doy'); if(el) el.textContent=doy;
       el=$('#ylen'); if(el) el.textContent=yl;
@@ -191,7 +166,7 @@
       el=$('#annApp'); if(el) el.textContent=(aPos-aNeg);
       el=$('#appProgressInner'); if(el) el.style.width=Math.round(100*aPos/1461)+'%';
       var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
-      var PHASES = ['—','Asume','Asimila','Desafía','Decide'];
+      var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
       var A={d_mendeleev:dt(1834,2,8),d_calendaria_web:dt(2025,9,9),d_lgc_inicio:dt(2015,10,15),d_toganesos:dt(2024,1,10),d_rupert:dt(1942,6,28),d_hamer:dt(1935,5,17),d_alcides:dt(1857,8,13),d_quinta:dt(2016,8,28),d_eje258:dt(2017,8,26),d_penta:dt(2022,1,7),d_patrono:dt(1971,8,15),d_uit:dt(1865,5,17),d_google:dt(1899,12,30),d_leapsec:dt(1972,6,30),d_admin:dt(2024,8,12),d_mac:dt(1969,12,6)};
