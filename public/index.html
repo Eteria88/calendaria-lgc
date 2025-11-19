@@ -169,6 +169,8 @@ body.noScroll{overflow:hidden}
     color:var(--muted);
     transform:rotate(calc(-1*var(--angle)));
   }
+  .anilloTick--inactive span{opacity:0;}
+
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -294,22 +296,13 @@ body.noScroll{overflow:hidden}
       <div id="anilloPlane" class="plane" style="display:none">
         <div class="anilloTitle mono">Anillo de Fuego</div>
         <div class="anilloClock">
-          <div class="anilloTick" style="--angle:0deg"><span>353</span></div>
-          <div class="anilloTick" style="--angle:27.7deg"><span>354</span></div>
-          <div class="anilloTick" style="--angle:55.4deg"><span>355</span></div>
-          <div class="anilloTick" style="--angle:83.1deg"><span>356</span></div>
-          <div class="anilloTick" style="--angle:110.8deg"><span>357</span></div>
-          <div class="anilloTick" style="--angle:138.5deg"><span>358</span></div>
-          <div class="anilloTick" style="--angle:166.2deg"><span>359</span></div>
-          <div class="anilloTick" style="--angle:193.8deg"><span>360</span></div>
-          <div class="anilloTick" style="--angle:221.5deg"><span>361</span></div>
-          <div class="anilloTick" style="--angle:249.2deg"><span>362</span></div>
-          <div class="anilloTick" style="--angle:276.9deg"><span>363</span></div>
-          <div class="anilloTick" style="--angle:304.6deg"><span>364</span></div>
-          <div class="anilloTick" style="--angle:332.3deg"><span>365</span></div>
+          <!-- 354 en posición de "las 12" (referencia visual) -->
+          <div class="anilloTick" data-day="354" style="--angle:0deg"><span>354</span></div>
+          <!-- 355 en posición de "las 11" (referencia visual) -->
+          <div class="anilloTick" data-day="355" style="--angle:-27.7deg"><span>355</span></div>
           <div class="anilloCenter">
+            <!-- 353 se mantiene en el centro de forma estática -->
             <div class="anilloDay mono" id="anilloDay">353</div>
-            <div class="small">Del 353 al 365</div>
           </div>
         </div>
       </div>

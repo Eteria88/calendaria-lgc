@@ -99,7 +99,6 @@
       (function(){
         var cardPlane = document.getElementById('cardinalPlane');
         var anilloPlane = document.getElementById('anilloPlane');
-        var anilloDayEl = document.getElementById('anilloDay');
         if(!cardPlane || !anilloPlane) return;
 
         var y = ref.getUTCFullYear();
@@ -108,26 +107,47 @@
         var leap = isL(y);
 
         var showAnillo = false;
-        var anilloDay = null;
+        var logicalDay = null;
 
+        // Mapas gregorianos para el inicio del Anillo de Fuego:
+        // Años no bisiestos:
+        //   353 → 19/12
+        //   354 → 20/12
+        //   355 → 21/12
+        // Años bisiestos:
+        //   353 → 18/12
+        //   354 → 19/12
+        //   355 → 20/12
         if(m === 12){
           if(!leap){
-            if(d === 19){ showAnillo = true; anilloDay = 353; }
-            else if(d === 20){ showAnillo = true; anilloDay = 354; }
-            else if(d === 21){ showAnillo = true; anilloDay = 355; }
+            if(d === 19){ showAnillo = true; logicalDay = 353; }
+            else if(d === 20){ showAnillo = true; logicalDay = 354; }
+            else if(d === 21){ showAnillo = true; logicalDay = 355; }
           }else{
-            if(d === 18){ showAnillo = true; anilloDay = 353; }
-            else if(d === 19){ showAnillo = true; anilloDay = 354; }
-            else if(d === 20){ showAnillo = true; anilloDay = 355; }
+            if(d === 18){ showAnillo = true; logicalDay = 353; }
+            else if(d === 19){ showAnillo = true; logicalDay = 354; }
+            else if(d === 20){ showAnillo = true; logicalDay = 355; }
           }
         }
 
         if(showAnillo){
           cardPlane.style.display = 'none';
           anilloPlane.style.display = '';
-          if(anilloDayEl && anilloDay != null){
-            anilloDayEl.textContent = String(anilloDay);
-          }
+
+          // 353 permanece estático en el centro.
+          // Las marcas 354, 355, etc. se van activando progresivamente
+          // y, una vez activadas (día lógico alcanzado), quedan visibles.
+          var maxDay = (logicalDay == null ? 0 : logicalDay);
+          var ticks = anilloPlane.querySelectorAll('.anilloTick[data-day]');
+          ticks.forEach(function(el){
+            var dayAttr = el.getAttribute('data-day');
+            var day = dayAttr ? parseInt(dayAttr, 10) : 0;
+            if(day && day <= maxDay){
+              el.classList.remove('anilloTick--inactive');
+            }else{
+              el.classList.add('anilloTick--inactive');
+            }
+          });
         }else{
           cardPlane.style.display = '';
           anilloPlane.style.display = 'none';
