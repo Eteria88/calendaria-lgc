@@ -85,13 +85,21 @@
       var ref = dt(Rf.y, Rf.m, Rf.d);
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
 
-// Anillo de Fuego: alternar entre cuadrante de cardinalidades
-// y reloj del Anillo cuando la fecha de referencia entra en el día 353 lógico.
-// - Año no bisiesto: 19/12 → inicio del Anillo (día 353).
-// - Año bisiesto:    18/12 → inicio del Anillo (día 353).
+      
+      // Anillo de Fuego: días lógicos 353, 354, 355
+      // Mapas gregorianos:
+      // - Años no bisiestos:
+      //     353 → 19/12
+      //     354 → 20/12
+      //     355 → 21/12
+      // - Años bisiestos:
+      //     353 → 18/12
+      //     354 → 19/12
+      //     355 → 20/12
       (function(){
         var cardPlane = document.getElementById('cardinalPlane');
         var anilloPlane = document.getElementById('anilloPlane');
+        var anilloDayEl = document.getElementById('anilloDay');
         if(!cardPlane || !anilloPlane) return;
 
         var y = ref.getUTCFullYear();
@@ -99,19 +107,33 @@
         var d = ref.getUTCDate();
         var leap = isL(y);
 
-        var showAnillo = (!leap && m === 12 && d === 19) ||
-                         (leap && m === 12 && d === 18);
+        var showAnillo = false;
+        var anilloDay = null;
+
+        if(m === 12){
+          if(!leap){
+            if(d === 19){ showAnillo = true; anilloDay = 353; }
+            else if(d === 20){ showAnillo = true; anilloDay = 354; }
+            else if(d === 21){ showAnillo = true; anilloDay = 355; }
+          }else{
+            if(d === 18){ showAnillo = true; anilloDay = 353; }
+            else if(d === 19){ showAnillo = true; anilloDay = 354; }
+            else if(d === 20){ showAnillo = true; anilloDay = 355; }
+          }
+        }
 
         if(showAnillo){
           cardPlane.style.display = 'none';
           anilloPlane.style.display = '';
-        } else {
+          if(anilloDayEl && anilloDay != null){
+            anilloDayEl.textContent = String(anilloDay);
+          }
+        }else{
           cardPlane.style.display = '';
           anilloPlane.style.display = 'none';
         }
       })();
-
-      var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
+var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
       var nowLbl = now.toLocaleDateString();
       var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent='Ahora: '+nowLbl+' · '+tz;
       var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.y).padStart(4,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.d).padStart(2,'0')) : '0');
