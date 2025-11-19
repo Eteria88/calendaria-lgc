@@ -3,7 +3,7 @@
   function status(msg, ok){ if(dbg){ dbg.textContent=msg; dbg.style.color = ok ? '#9cffd5' : '#ff9aa2'; } }
   try{
     status('estado: JS cargado', true);
-    function $(s){return document.querySelector(s);}
+    function $(s){return document.querySelector(s);} 
     var ms=86400000;
     function dt(y,m,d){return new Date(Date.UTC(y,m-1,d));}
     function isL(y){return (y%4===0)&&((y%100)!==0||y%400===0);}
@@ -146,7 +146,17 @@
       el=$('#brickIdx'); if(el) el.textContent=Math.floor((qD-1)/3)+1;
       el=$('#brickDay'); if(el) el.textContent=((qD-1)%3)+1;
 
-      el=$('#lifeDays'); if(el) el.textContent = (dob ? (function(){ var now=new Date(); var tUTC=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()); var dobUTC=Date.UTC(Db.y,Db.m-1,Db.d); return Math.floor((tUTC-dobUTC)/ms); })() : '0');
+      // *** CHANGE: life days computed vs reference date Rf (not today) ***
+      el=$('#lifeDays'); 
+      if(el){
+        if(dob){
+          var refUTC = Date.UTC(Rf.y, Rf.m-1, Rf.d);
+          var dobUTC = Date.UTC(Db.y, Db.m-1, Db.d);
+          el.textContent = Math.max(0, Math.floor((refUTC - dobUTC) / ms));
+        } else {
+          el.textContent = '0';
+        }
+      }
 
       el=$('#doy'); if(el) el.textContent=doy;
       el=$('#ylen'); if(el) el.textContent=yl;
