@@ -86,16 +86,36 @@
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
 
       
-      // Anillo de Fuego: días lógicos 353, 354, 355
+      // Anillo de Fuego: días lógicos 353–365
       // Mapas gregorianos:
       // - Años no bisiestos:
       //     353 → 19/12
       //     354 → 20/12
       //     355 → 21/12
+      //     356 → 22/12
+      //     357 → 23/12
+      //     358 → 24/12
+      //     359 → 25/12
+      //     360 → 26/12
+      //     361 → 27/12
+      //     362 → 28/12
+      //     363 → 29/12
+      //     364 → 30/12
+      //     365 → 31/12
       // - Años bisiestos:
       //     353 → 18/12
       //     354 → 19/12
       //     355 → 20/12
+      //     356 → 21/12
+      //     357 → 22/12
+      //     358 → 23/12
+      //     359 → 24/12
+      //     360 → 25/12
+      //     361 → 26/12
+      //     362 → 27/12
+      //     363 → 28/12
+      //     364 → 29/12
+      //     365 → 30/12
       (function(){
         var cardPlane = document.getElementById('cardinalPlane');
         var anilloPlane = document.getElementById('anilloPlane');
@@ -109,24 +129,20 @@
         var showAnillo = false;
         var logicalDay = null;
 
-        // Mapas gregorianos para el inicio del Anillo de Fuego:
-        // Años no bisiestos:
-        //   353 → 19/12
-        //   354 → 20/12
-        //   355 → 21/12
-        // Años bisiestos:
-        //   353 → 18/12
-        //   354 → 19/12
-        //   355 → 20/12
+        // Mapas gregorianos para el Anillo de Fuego completo:
         if(m === 12){
           if(!leap){
-            if(d === 19){ showAnillo = true; logicalDay = 353; }
-            else if(d === 20){ showAnillo = true; logicalDay = 354; }
-            else if(d === 21){ showAnillo = true; logicalDay = 355; }
+            // No bisiesto: 353 ↔ 19/12
+            if(d >= 19 && d <= 31){
+              showAnillo = true;
+              logicalDay = 353 + (d - 19);
+            }
           }else{
-            if(d === 18){ showAnillo = true; logicalDay = 353; }
-            else if(d === 19){ showAnillo = true; logicalDay = 354; }
-            else if(d === 20){ showAnillo = true; logicalDay = 355; }
+            // Bisiesto: 353 ↔ 18/12
+            if(d >= 18 && d <= 30){
+              showAnillo = true;
+              logicalDay = 353 + (d - 18);
+            }
           }
         }
 
@@ -135,7 +151,7 @@
           anilloPlane.style.display = '';
 
           // 353 permanece estático en el centro.
-          // Las marcas 354, 355, etc. se van activando progresivamente
+          // Las marcas 354–365 se van activando progresivamente
           // y, una vez activadas (día lógico alcanzado), quedan visibles.
           var maxDay = (logicalDay == null ? 0 : logicalDay);
           var ticks = anilloPlane.querySelectorAll('.anilloTick[data-day]');
@@ -153,7 +169,7 @@
           anilloPlane.style.display = 'none';
         }
       })();
-var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
+ormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
       var nowLbl = now.toLocaleDateString();
       var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent='Ahora: '+nowLbl+' · '+tz;
       var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.y).padStart(4,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.d).padStart(2,'0')) : '0');
