@@ -153,7 +153,7 @@
           anilloPlane.style.display = 'none';
         }
       })();
-ormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
+var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
       var nowLbl = now.toLocaleDateString();
       var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent='Ahora: '+nowLbl+' · '+tz;
       var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.y).padStart(4,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.d).padStart(2,'0')) : '0');
