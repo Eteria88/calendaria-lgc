@@ -166,6 +166,24 @@
           cardPlane.style.display = 'none';
           anilloPlane.style.display = '';
 
+          // Ocultar elementos de vuelta detallada durante el Anillo de Fuego
+          var calTurnRange = document.getElementById('calTurnRange');
+          var turnProgressInner = document.getElementById('turnProgressInner');
+          var turnDaySpan = document.getElementById('turnDay');
+          var blockDaySpan = document.getElementById('blockDay');
+          if(calTurnRange){
+            calTurnRange.style.display = 'none';
+          }
+          if(turnProgressInner && turnProgressInner.parentElement){
+            turnProgressInner.parentElement.style.display = 'none';
+          }
+          if(turnDaySpan && turnDaySpan.parentElement){
+            turnDaySpan.parentElement.style.display = 'none';
+          }
+          if(blockDaySpan && blockDaySpan.parentElement){
+            blockDaySpan.parentElement.style.display = 'none';
+          }
+
           // 353 permanece estático en el centro.
           // Las marcas 354–365 se van activando progresivamente
           // y, una vez activadas (día lógico alcanzado), quedan visibles.
@@ -199,6 +217,24 @@
         }else{
           cardPlane.style.display = '';
           anilloPlane.style.display = 'none';
+
+          // Restaurar elementos de vuelta detallada fuera del Anillo
+          var calTurnRange = document.getElementById('calTurnRange');
+          var turnProgressInner = document.getElementById('turnProgressInner');
+          var turnDaySpan = document.getElementById('turnDay');
+          var blockDaySpan = document.getElementById('blockDay');
+          if(calTurnRange){
+            calTurnRange.style.display = '';
+          }
+          if(turnProgressInner && turnProgressInner.parentElement){
+            turnProgressInner.parentElement.style.display = '';
+          }
+          if(turnDaySpan && turnDaySpan.parentElement){
+            turnDaySpan.parentElement.style.display = '';
+          }
+          if(blockDaySpan && blockDaySpan.parentElement){
+            blockDaySpan.parentElement.style.display = '';
+          }
         }
       })();;
 var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
