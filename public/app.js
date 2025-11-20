@@ -286,8 +286,8 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       var mem=(card==='SO')?(['','RAM','REM','ROM','RUM'][step]):'0';
 
       var el;
-      // Ajuste de encabezado: si estamos en el Anillo de Fuego (días lógicos 353–365),
-      // mostrar ese día lógico en el encabezado en lugar del día dentro de la vuelta.
+      // Si estamos en el Anillo de Fuego (días lógicos 353–365),
+      // mostramos ese día lógico en el encabezado en lugar del día dentro de la vuelta.
       var anilloLD = null;
       (function(){
         if(!ref) return;
@@ -328,7 +328,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         }
       })();
 
-      el=$('#calDay'); if(el) el.textContent = (anilloLD != null ? anilloLD : day);
+      el=$('#calDay'); if(el) el.textContent=(anilloLD != null ? anilloLD : day);
       el=$('#calCard'); if(el) el.textContent=card;
       el=$('#calStep'); if(el) el.textContent=(['Lógica','Inhumano','Humano','Contexto'][step-1]);
       el=$('#calMem'); if(el) el.textContent=mem;
