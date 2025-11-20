@@ -185,6 +185,17 @@
               el.classList.remove('anilloTick--active');
             }
           });
+
+          var lines = anilloPlane.querySelectorAll('.anilloLine[data-day]');
+          lines.forEach(function(el){
+            var dayAttr = el.getAttribute('data-day');
+            var day = dayAttr ? parseInt(dayAttr, 10) : 0;
+            if(day && day <= maxDay){
+              el.classList.remove('anilloLine--inactive');
+            }else{
+              el.classList.add('anilloLine--inactive');
+            }
+          });
         }else{
           cardPlane.style.display = '';
           anilloPlane.style.display = 'none';
