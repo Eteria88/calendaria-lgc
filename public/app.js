@@ -179,6 +179,11 @@
             }else{
               el.classList.add('anilloTick--inactive');
             }
+            if(day && day === maxDay){
+              el.classList.add('anilloTick--active');
+            }else{
+              el.classList.remove('anilloTick--active');
+            }
           });
         }else{
           cardPlane.style.display = '';

@@ -173,6 +173,21 @@ body.noScroll{overflow:hidden}
     color:var(--muted);
   }
   .anilloTick--inactive span{opacity:0;}
+  .anilloTick--active span{
+    font-weight:600;
+  }
+  .anilloTick--active::before{
+    content:"";
+    position:absolute;
+    top:2px;
+    left:50%;
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    border:1px solid var(--ol);
+    transform:translateX(-50%);
+    pointer-events:none;
+  }
 
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
