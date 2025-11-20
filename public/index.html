@@ -173,20 +173,22 @@ body.noScroll{overflow:hidden}
     color:var(--muted);
   }
   .anilloTick--inactive span{opacity:0;}
-  .anilloTick--active span{
-    font-weight:600;
-  }
-  .anilloTick--active::before{
+  /* Línea sutil desde el centro (353) hacia cada frecuencia visible */
+  .anilloTick::before{
     content:"";
     position:absolute;
-    top:2px;
+    top:50%;
     left:50%;
-    width:26px;
-    height:26px;
-    border-radius:50%;
-    border:1px solid var(--ol);
-    transform:translateX(-50%);
+    width:1px;
+    height:32%;
+    background:rgba(255,255,255,.18);
+    transform-origin:50% 100%;
+    transform:translate(-50%,0);
+    opacity:.65;
     pointer-events:none;
+  }
+  .anilloTick--inactive::before{
+    opacity:0;
   }
 
 </style>
