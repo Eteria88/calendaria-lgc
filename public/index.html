@@ -173,9 +173,8 @@ body.noScroll{overflow:hidden}
     color:var(--muted);
   }
   .anilloTick--inactive span{opacity:0;}
-  /* Línea sutil desde el centro (353) hacia cada frecuencia visible */
-  .anilloTick::before{
-    content:"";
+  /* Líneas sutiles desde el centro (353) hacia cada frecuencia visible */
+  .anilloLine{
     position:absolute;
     top:6%;
     left:50%;
@@ -183,11 +182,11 @@ body.noScroll{overflow:hidden}
     height:44%;
     background:rgba(255,255,255,.18);
     transform-origin:50% 100%;
-    transform:translate(-50%,0);
+    transform:rotate(var(--angle));
     opacity:.65;
     pointer-events:none;
   }
-  .anilloTick--inactive::before{
+  .anilloLine--inactive{
     opacity:0;
   }
 
@@ -316,6 +315,20 @@ body.noScroll{overflow:hidden}
       <div id="anilloPlane" class="plane" style="display:none">
         <div class="anilloTitle mono">Anillo de Fuego</div>
         <div class="anilloClock">
+          <!-- Líneas radiales del Anillo, una por frecuencia 354–365 -->
+          <div class="anilloLine" data-day="354" style="--angle:0deg"></div>
+          <div class="anilloLine" data-day="355" style="--angle:-30deg"></div>
+          <div class="anilloLine" data-day="356" style="--angle:-60deg"></div>
+          <div class="anilloLine" data-day="357" style="--angle:-90deg"></div>
+          <div class="anilloLine" data-day="358" style="--angle:-120deg"></div>
+          <div class="anilloLine" data-day="359" style="--angle:-150deg"></div>
+          <div class="anilloLine" data-day="360" style="--angle:180deg"></div>
+          <div class="anilloLine" data-day="361" style="--angle:150deg"></div>
+          <div class="anilloLine" data-day="362" style="--angle:120deg"></div>
+          <div class="anilloLine" data-day="363" style="--angle:90deg"></div>
+          <div class="anilloLine" data-day="364" style="--angle:60deg"></div>
+          <div class="anilloLine" data-day="365" style="--angle:30deg"></div>
+
           <!-- 354 en posición de "las 12" (referencia visual) -->
           <div class="anilloTick" data-day="354" style="--angle:0deg"><span>354</span></div>
           <!-- 355 en posición de "las 11" (referencia visual) -->
@@ -340,7 +353,7 @@ body.noScroll{overflow:hidden}
           <div class="anilloTick" data-day="364" style="--angle:60deg"><span>364</span></div>
           <!-- 365 en posición de "la 1" -->
           <div class="anilloTick" data-day="365" style="--angle:30deg"><span>365</span></div>
-          <div class="anilloCenter">
+<div class="anilloCenter">
             <!-- 353 se mantiene en el centro de forma estática -->
             <div class="anilloDay mono" id="anilloDay">353</div>
           </div>
