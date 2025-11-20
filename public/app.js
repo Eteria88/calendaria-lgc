@@ -286,7 +286,49 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       var mem=(card==='SO')?(['','RAM','REM','ROM','RUM'][step]):'0';
 
       var el;
-      el=$('#calDay'); if(el) el.textContent=day;
+      // Ajuste de encabezado: si estamos en el Anillo de Fuego (días lógicos 353–365),
+      // mostrar ese día lógico en el encabezado en lugar del día dentro de la vuelta.
+      var anilloLD = null;
+      (function(){
+        if(!ref) return;
+        var yA = ref.getUTCFullYear();
+        var mA = ref.getUTCMonth() + 1;
+        var dA = ref.getUTCDate();
+        var leapA = isL(yA);
+        if(mA === 12){
+          if(!leapA){
+            if(dA === 19){ anilloLD = 353; }
+            else if(dA === 20){ anilloLD = 354; }
+            else if(dA === 21){ anilloLD = 355; }
+            else if(dA === 22){ anilloLD = 356; }
+            else if(dA === 23){ anilloLD = 357; }
+            else if(dA === 24){ anilloLD = 358; }
+            else if(dA === 25){ anilloLD = 359; }
+            else if(dA === 26){ anilloLD = 360; }
+            else if(dA === 27){ anilloLD = 361; }
+            else if(dA === 28){ anilloLD = 362; }
+            else if(dA === 29){ anilloLD = 363; }
+            else if(dA === 30){ anilloLD = 364; }
+            else if(dA === 31){ anilloLD = 365; }
+          }else{
+            if(dA === 18){ anilloLD = 353; }
+            else if(dA === 19){ anilloLD = 354; }
+            else if(dA === 20){ anilloLD = 355; }
+            else if(dA === 21){ anilloLD = 356; }
+            else if(dA === 22){ anilloLD = 357; }
+            else if(dA === 23){ anilloLD = 358; }
+            else if(dA === 24){ anilloLD = 359; }
+            else if(dA === 25){ anilloLD = 360; }
+            else if(dA === 26){ anilloLD = 361; }
+            else if(dA === 27){ anilloLD = 362; }
+            else if(dA === 28){ anilloLD = 363; }
+            else if(dA === 29){ anilloLD = 364; }
+            else if(dA === 30){ anilloLD = 365; }
+          }
+        }
+      })();
+
+      el=$('#calDay'); if(el) el.textContent = (anilloLD != null ? anilloLD : day);
       el=$('#calCard'); if(el) el.textContent=card;
       el=$('#calStep'); if(el) el.textContent=(['Lógica','Inhumano','Humano','Contexto'][step-1]);
       el=$('#calMem'); if(el) el.textContent=mem;
