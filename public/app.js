@@ -207,6 +207,43 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.y).padStart(4,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.d).padStart(2,'0')) : '0');
 
       var doyVal=dOY(ref);
+      var y = ref.getUTCFullYear();
+      var m = ref.getUTCMonth() + 1;
+      var d = ref.getUTCDate();
+      var leap = isL(y);
+      var showAnillo = false;
+      var logicalDay = null;
+      if(m === 12){
+        if(!leap){
+          if(d === 19){ showAnillo = true; logicalDay = 353; }
+          else if(d === 20){ showAnillo = true; logicalDay = 354; }
+          else if(d === 21){ showAnillo = true; logicalDay = 355; }
+          else if(d === 22){ showAnillo = true; logicalDay = 356; }
+          else if(d === 23){ showAnillo = true; logicalDay = 357; }
+          else if(d === 24){ showAnillo = true; logicalDay = 358; }
+          else if(d === 25){ showAnillo = true; logicalDay = 359; }
+          else if(d === 26){ showAnillo = true; logicalDay = 360; }
+          else if(d === 27){ showAnillo = true; logicalDay = 361; }
+          else if(d === 28){ showAnillo = true; logicalDay = 362; }
+          else if(d === 29){ showAnillo = true; logicalDay = 363; }
+          else if(d === 30){ showAnillo = true; logicalDay = 364; }
+          else if(d === 31){ showAnillo = true; logicalDay = 365; }
+        }else{
+          if(d === 18){ showAnillo = true; logicalDay = 353; }
+          else if(d === 19){ showAnillo = true; logicalDay = 354; }
+          else if(d === 20){ showAnillo = true; logicalDay = 355; }
+          else if(d === 21){ showAnillo = true; logicalDay = 356; }
+          else if(d === 22){ showAnillo = true; logicalDay = 357; }
+          else if(d === 23){ showAnillo = true; logicalDay = 358; }
+          else if(d === 24){ showAnillo = true; logicalDay = 359; }
+          else if(d === 25){ showAnillo = true; logicalDay = 360; }
+          else if(d === 26){ showAnillo = true; logicalDay = 361; }
+          else if(d === 27){ showAnillo = true; logicalDay = 362; }
+          else if(d === 28){ showAnillo = true; logicalDay = 363; }
+          else if(d === 29){ showAnillo = true; logicalDay = 364; }
+          else if(d === 30){ showAnillo = true; logicalDay = 365; }
+        }
+      }
       var idx=((doyVal-1)%16);
       var CARD_MAP=['SO','SO','SO','SO','NE','NE','NE','NE','NO','NO','NO','NO','SE','SE','SE','SE'];
       var day=idx+1;
@@ -241,7 +278,36 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       el=$('#turnProgressInner'); if(el) el.style.width = Math.round(100*dayInTurn/turnLen)+'%';
       el=$('#blockDay'); if(el) el.textContent = ((day-1)%4)+1;
 
-      var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>=15)));
+      
+      // Ajustes de encabezado para el Anillo de Fuego
+      if(showAnillo && logicalDay != null){
+        el=$('#calDay'); if(el) el.textContent = logicalDay;
+        var cardBlock=$('#calCardBlock');
+        var stepBlock=$('#calStepBlock');
+        var memBlock=$('#calMemBlock');
+        if(cardBlock) cardBlock.style.display='none';
+        if(stepBlock) stepBlock.style.display='none';
+        if(memBlock) memBlock.style.display='none';
+        var cycleLabel=$('#calCycleLabel');
+        if(cycleLabel) cycleLabel.textContent='Calendaria · Anillo de fuego 13 días';
+        var turnBlock=$('#calTurnBlock');
+        if(turnBlock) turnBlock.style.display='';
+        el=$('#calTurn'); if(el) el.textContent='23/23';
+        el=$('#calTurnRange'); if(el) el.style.display='none';
+        el=$('#turnDay'); if(el) el.textContent='—';
+        el=$('#turnProgressInner'); if(el) el.style.width='0%';
+        el=$('#blockDay'); if(el) el.textContent='—';
+      }else{
+        var cardBlock2=$('#calCardBlock');
+        var stepBlock2=$('#calStepBlock');
+        var memBlock2=$('#calMemBlock');
+        if(cardBlock2) cardBlock2.style.display='';
+        if(stepBlock2) stepBlock2.style.display='';
+        if(memBlock2) memBlock2.style.display='';
+        var cycleLabel2=$('#calCycleLabel');
+        if(cycleLabel2) cycleLabel2.textContent='Calendaria · ciclo de 16 días';
+      }
+var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>=15)));
       var jJulEpoch = jdnJ(1,1,1);
       var j=0, gFrom=0;
       if(isGregorian){ j = jdnG(Rf.y,Rf.m,Rf.d); var GREG0 = jdnG(1582,10,15); gFrom = Math.max(0, (j - GREG0 + 1)); }
