@@ -175,30 +175,22 @@ body.noScroll{overflow:hidden}
   }
   .anilloTick--inactive span{opacity:0;}
   /* Línea sutil desde el centro (353) hacia cada frecuencia visible */
-    .anilloLine{
-    position:absolute;
-    inset:0;
-    transform-origin:50% 50%;
-    transform:rotate(var(--angle));
-    pointer-events:none;
-  }
-  .anilloLine::before{
+  .anilloTick::before{
     content:"";
     position:absolute;
-    top:6%;
+    top:50%;
     left:50%;
     width:1px;
     height:44%;
     background:rgba(255,255,255,.18);
     transform-origin:50% 100%;
-    transform:translateX(-50%);
+    transform:translate(-50%,0);
     opacity:.65;
     pointer-events:none;
   }
-  .anilloLine--inactive::before{
+  .anilloTick--inactive::before{
     opacity:0;
   }
-
 
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
@@ -297,19 +289,19 @@ body.noScroll{overflow:hidden}
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
         <div class="badge" id="apPhaseBadge">—</div>
-        <div class="small" id="calCycleLabel">Calendaria · ciclo de 16 días</div>
+        <div class="small" id="cycleLabel">Calendaria · ciclo de 16 días</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
           <div><div class="small">Día</div><div class="mono" id="calDay" style="font-size:24px">—</div></div>
-          <div id="calCardBlock"><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
-          <div id="calStepBlock"><div class="small">Paso</div><div class="mono" id="calStep">—</div></div>
-          <div id="calMemBlock"><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
-          <div id="calTurnBlock">
+          <div><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
+          <div><div class="small">Paso</div><div class="mono" id="calStep">—</div></div>
+          <div><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
+          <div>
             <div class="small">Vuelta</div>
             <div class="mono" id="calTurn">—</div>
             <div class="small" id="calTurnRange" style="display:none">—</div>
             <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
-            <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta</span><span class="mono" id="turnDay">—</span></div>
-            <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Día en bloque (1–4)</span><span class="mono" id="blockDay">—</span></div>
+            <div id="turnDayRow" class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta</span><span class="mono" id="turnDay">—</span></div>
+            <div id="blockDayRow" class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Día en bloque (1–4)</span><span class="mono" id="blockDay">—</span></div>
           </div>
         </div>
       </div>
@@ -325,20 +317,6 @@ body.noScroll{overflow:hidden}
       <div id="anilloPlane" class="plane" style="display:none">
         <div class="anilloTitle mono">Anillo de Fuego</div>
         <div class="anilloClock">
-          <!-- Líneas radiales del Anillo, una por frecuencia 354–365 -->
-          <div class="anilloLine anilloLine--inactive" data-day="354" style="--angle:0deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="355" style="--angle:-30deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="356" style="--angle:-60deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="357" style="--angle:-90deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="358" style="--angle:-120deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="359" style="--angle:-150deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="360" style="--angle:180deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="361" style="--angle:150deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="362" style="--angle:120deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="363" style="--angle:90deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="364" style="--angle:60deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="365" style="--angle:30deg"></div>
-
           <!-- 354 en posición de "las 12" (referencia visual) -->
           <div class="anilloTick" data-day="354" style="--angle:0deg"><span>354</span></div>
           <!-- 355 en posición de "las 11" (referencia visual) -->
