@@ -86,7 +86,7 @@
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
 
       
-      // Anillo de Fuego: días lógicos 353–357
+      // Anillo de Fuego: días lógicos 353–359
       // Mapas gregorianos:
       // - Años no bisiestos:
       //     353 → 19/12
@@ -94,12 +94,16 @@
       //     355 → 21/12
       //     356 → 22/12
       //     357 → 23/12
+      //     358 → 24/12
+      //     359 → 25/12
       // - Años bisiestos:
       //     353 → 18/12
       //     354 → 19/12
       //     355 → 20/12
       //     356 → 21/12
       //     357 → 22/12
+      //     358 → 23/12
+      //     359 → 24/12
       (function(){
         var cardPlane = document.getElementById('cardinalPlane');
         var anilloPlane = document.getElementById('anilloPlane');
@@ -113,7 +117,7 @@
         var showAnillo = false;
         var logicalDay = null;
 
-        // Mapas gregorianos para el tramo inicial del Anillo de Fuego (353–357):
+        // Mapas gregorianos para el tramo 353–359 del Anillo de Fuego:
         if(m === 12){
           if(!leap){
             if(d === 19){ showAnillo = true; logicalDay = 353; }
@@ -121,12 +125,16 @@
             else if(d === 21){ showAnillo = true; logicalDay = 355; }
             else if(d === 22){ showAnillo = true; logicalDay = 356; }
             else if(d === 23){ showAnillo = true; logicalDay = 357; }
+            else if(d === 24){ showAnillo = true; logicalDay = 358; }
+            else if(d === 25){ showAnillo = true; logicalDay = 359; }
           }else{
             if(d === 18){ showAnillo = true; logicalDay = 353; }
             else if(d === 19){ showAnillo = true; logicalDay = 354; }
             else if(d === 20){ showAnillo = true; logicalDay = 355; }
             else if(d === 21){ showAnillo = true; logicalDay = 356; }
             else if(d === 22){ showAnillo = true; logicalDay = 357; }
+            else if(d === 23){ showAnillo = true; logicalDay = 358; }
+            else if(d === 24){ showAnillo = true; logicalDay = 359; }
           }
         }
 
@@ -135,7 +143,7 @@
           anilloPlane.style.display = '';
 
           // 353 permanece estático en el centro.
-          // Las marcas 354–357 se van activando progresivamente
+          // Las marcas 354–359 se van activando progresivamente
           // y, una vez activadas (día lógico alcanzado), quedan visibles.
           var maxDay = (logicalDay == null ? 0 : logicalDay);
           var ticks = anilloPlane.querySelectorAll('.anilloTick[data-day]');
