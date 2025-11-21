@@ -393,16 +393,6 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#freqAppNeg'); if(el) el.textContent='−'+aNeg;
       el=$('#annApp'); if(el) el.textContent=(aPos-aNeg);
       el=$('#appProgressInner'); if(el) el.style.width=Math.round(100*aPos/1461)+'%';
-      var pct = Math.max(0, Math.min(1, aPos/1461));
-      var c = $('#appProgressCircle');
-      if (c) {
-        var C = 2 * Math.PI * 24;
-        c.style.strokeDasharray = C.toFixed(1);
-        c.style.strokeDashoffset = (C * (1 - pct)).toFixed(1);
-      }
-      var lbl = $('#appProgressLabel');
-      if (lbl) lbl.textContent = Math.round(100*pct) + '%';
-
       var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
       var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
