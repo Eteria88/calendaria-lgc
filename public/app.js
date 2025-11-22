@@ -6,6 +6,12 @@
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
     function dt(y,m,d){return new Date(Date.UTC(y,m-1,d));}
+function fmtDate(d){
+      var dd = String(d.getUTCDate()).padStart(2,'0');
+      var mm = String(d.getUTCMonth()+1).padStart(2,'0');
+      var yyyy = d.getUTCFullYear();
+      return dd+'-'+mm+'-'+yyyy;
+    }
     function isL(y){return (y%4===0)&&((y%100)!==0||y%400===0);}
     function yLen(y){return isL(y)?366:365;}
     function dOY(d){var y=d.getUTCFullYear();return Math.floor((d-dt(y,1,1))/ms)+1;}
@@ -309,7 +315,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       var startDate = addDays(yearStart, startDoy-1);
       var endDate = addDays(yearStart, endDoy-1);
       el=$('#calTurn'); if(el) el.textContent = 'Nº '+turn+' / '+totalTurns;
-      el=$('#calTurnRange'); if(el) el.textContent = 'inicio: '+startDate.toISOString().slice(0,10)+' · fin: '+endDate.toISOString().slice(0,10)+' · len: '+turnLen;
+      el=$('#calTurnRange'); if(el) el.textContent = 'inicio: '+fmtDate(startDate)+' · fin: '+fmtDate(endDate)+' · len: '+turnLen;
       el=$('#turnDay'); if(el) el.textContent = (dayInTurn+' / '+turnLen);
       el=$('#turnProgressInner'); if(el) el.style.width = Math.round(100*dayInTurn/turnLen)+'%';
       el=$('#blockDay'); if(el) el.textContent = ((day-1)%4)+1;
