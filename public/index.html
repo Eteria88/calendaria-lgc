@@ -310,8 +310,8 @@ body.noScroll{overflow:hidden}
             <div class="mono" id="calTurn">—</div>
             <div class="small" id="calTurnRange" style="display:none">—</div>
             <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
-            <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta</span><span class="mono" id="turnDay">—</span></div>
-            <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Día en bloque (1–4)</span><span class="mono" id="blockDay">—</span></div>
+            <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta </span><span class="mono" id="turnDay">—</span></div>
+            <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Día en bloque (1–4) </span><span class="mono" id="blockDay">—</span></div>
           </div>
         </div>
       </div>
@@ -411,8 +411,8 @@ body.noScroll{overflow:hidden}
         <div class="small">Fecha de referencia: <span id="refLabel">—</span></div>
         <div class="solarBreak">
           <div class="sb"><div class="h">DÍAS SOLARES</div><div class="v mono" id="sb_total" style="font-size:clamp(16px,5vw,26px)">—</div></div>
-          <div class="sb"><div class="h">JULIANOS hasta 04/10/1582</div><div class="v mono" id="sb_jul">—</div><div class="small" style="text-align:center">JDN 1721424 → 2299160</div></div>
-          <div class="sb"><div class="h">GREGORIANO desde 15/10/1582</div><div class="v mono" id="sb_greg">—</div><div class="small" style="text-align:center">JDN 2299161 → <span class="mono" id="sb_greg_jdn_b">—</span></div></div>
+          <div class="sb"><div class="h">JULIANOS hasta 04/10/1582</div><div class="v mono" id="sb_jul">—</div><div class="small" style="text-align:center; display:none">JDN 1721424 → 2299160</div></div>
+          <div class="sb"><div class="h">GREGORIANO desde 15/10/1582</div><div class="v mono" id="sb_greg">—</div><div class="small" style="text-align:center"><span style="display:none">JDN 2299161 → <span class="mono" id="sb_greg_jdn_b">—</span></span></div></div>
           <div class="sb"><div class="small" style="display:flex;justify-content:space-between;padding:6px 8px"><span>Desde 14/10/1582 (exclusivo)</span><span>Continuidad: primer gregoriano</span></div><div class="small" style="display:flex;justify-content:space-between;padding:6px 8px"><span class="mono" id="sb_greg_alt">—</span><span class="mono" id="sb_first_greg">577738</span></div></div>
         </div>
       </div>
@@ -456,7 +456,7 @@ body.noScroll{overflow:hidden}
     <div class="section-title">Calendario Lógico</div>
     <div class="table-wrap"><table id="calog"><thead><tr><th>Año</th><th>Variable (+)</th><th>Constante</th><th>Aparato</th></tr></thead><tbody></tbody><tfoot><tr><td>SUMA</td><td id="calogSum">—</td><td></td><td></td></tr></tfoot></table></div>
     <div class="scroll-hint">Desliza ↔ para ver la tabla completa</div>
-    <div class="small">Constante: 2012=1096, 2013=78; Variable: inicia en +doy y desciende sumando largos; en 2012 ajuste −1018.</div>
+    <div class="small" style="display:none">Constante: 2012=1096, 2013=78; Variable: inicia en +doy y desciende sumando largos; en 2012 ajuste −1018.</div>
   </section>
 
   <section class="card" style="margin-top:12px">
