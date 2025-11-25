@@ -358,7 +358,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#solarDays'); if(el) el.textContent=totalSolar;
       el=$('#sb_total'); if(el) el.textContent=totalSolar;
       el=$('#sb_jul'); if(el) el.textContent=577737;
-      el=$('#sb_greg'); if(el) el.textContent=gFrom;
+      el=$('#sb_greg'); if(el) el.textContent=Math.max(0,gFrom-1);
       el=$('#sb_greg_jdn_b'); if(el) el.textContent=j;
       el=$('#sb_greg_alt'); if(el) el.textContent=Math.max(0,gFrom-1);
 
