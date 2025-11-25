@@ -21,6 +21,7 @@ header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(1
 .sb .v{text-align:center;padding:8px}
 .q-mini{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
 .q-item{display:flex;justify-content:space-between;border:1px dashed var(--ol);border-radius:10px;padding:8px}
+.q-item-wide{grid-column:1 / -1}
 table{width:100%;border-collapse:collapse;border:1px solid var(--ol);border-radius:10px;overflow:hidden}
 th,td{padding:10px 12px;border-bottom:1px solid var(--ol);text-align:right}
 th:first-child,td:first-child{text-align:left}
@@ -432,6 +433,7 @@ body.noScroll{overflow:hidden}
           <div class="q-item"><span class="small">Día de cuarentena</span><span class="mono" id="qDay">—</span></div>
           <div class="q-item"><span class="small">Ladrillo Nº (3 días)</span><span class="mono" id="brickIdx">—</span></div>
           <div class="q-item"><span class="small">Día dentro del ladrillo</span><span class="mono" id="brickDay">—</span></div>
+          <div class="q-item q-item-wide"><span class="small">Totalidad de ladrillos</span><span class="mono" id="qBricks">—</span></div>
         </div>
       </div>
       
