@@ -21,6 +21,7 @@ header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(1
 .sb .v{text-align:center;padding:8px}
 .q-mini{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
 .q-item{display:flex;justify-content:space-between;border:1px dashed var(--ol);border-radius:10px;padding:8px}
+.q-item-wide{grid-column:1 / -1}
 table{width:100%;border-collapse:collapse;border:1px solid var(--ol);border-radius:10px;overflow:hidden}
 th,td{padding:10px 12px;border-bottom:1px solid var(--ol);text-align:right}
 th:first-child,td:first-child{text-align:left}
@@ -274,7 +275,7 @@ body.noScroll{overflow:hidden}
         <a class="mnav-link" href="./range.html">Días entre fechas</a>
         <a class="mnav-link" href="./letters.html">Letras → Números</a>
       
-      <a href="./mapa/">Mapa y codigos</a></nav>
+      <a href="./mapa/">Mapa y códigos</a></nav>
     </div>
     <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
   </div>
@@ -288,7 +289,7 @@ body.noScroll{overflow:hidden}
         <a class="nav-link active" href="./">Inicio</a>
         <a class="nav-link" href="./range.html">Días entre fechas</a>
         <a class="nav-link" href="./letters.html">Letras → Números</a>
-        <a class="nav-link" href="./mapa/">Mapa y codigos</a>
+        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
       </nav>
     </aside>
     <main>
@@ -314,7 +315,7 @@ body.noScroll{overflow:hidden}
             <div class="small" id="calTurnRange" style="display:none">—</div>
             <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
             <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta </span><span class="mono" id="turnDay">—</span></div>
-            <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Día en bloque (1–4) </span><span class="mono" id="blockDay">—</span></div>
+            <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Paso en cuadrante (1–4) </span><span class="mono" id="blockDay">—</span></div>
           </div>
         </div>
       </div>
@@ -383,7 +384,7 @@ body.noScroll{overflow:hidden}
       <div class="field" style="grid-column:span 6">
         <label class="small" for="dob">Fecha de nacimiento</label>
         <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
-        <div class="small">Ingresa la fecha de nacimiento para calcular los dias de vida</div>
+        <div class="small">Ingresa la fecha de nacimiento para calcular los días de vida</div>
 
         <div class="mcard" style="margin-top:10px">
           <div class="badge">Días de vida</div>
@@ -394,7 +395,7 @@ body.noScroll{overflow:hidden}
       <div class="field" style="grid-column:span 6">
         <label class="small" for="ref">Fecha de referencia</label>
         <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
-        <div class="small">Ingresá la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema.</div>
+        <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
         
         <div class="field" style="margin-top:6px">
           <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
@@ -432,6 +433,7 @@ body.noScroll{overflow:hidden}
           <div class="q-item"><span class="small">Día de cuarentena</span><span class="mono" id="qDay">—</span></div>
           <div class="q-item"><span class="small">Ladrillo Nº (3 días)</span><span class="mono" id="brickIdx">—</span></div>
           <div class="q-item"><span class="small">Día dentro del ladrillo</span><span class="mono" id="brickDay">—</span></div>
+          <div class="q-item q-item-wide"><span class="small">Totalidad de ladrillos</span><span class="mono" id="qBricks">—</span></div>
         </div>
       </div>
       
