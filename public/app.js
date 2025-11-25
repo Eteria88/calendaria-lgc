@@ -363,8 +363,9 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#sb_greg_alt'); if(el) el.textContent=Math.max(0,gFrom-1);
 
       var Q=dt(2012,10,14), qd=Math.floor((ref-Q)/ms), qI=Math.floor((qd-1)/39)+1, qD=((qd-1)%39)+1;
+      var bricks = qd>0 ? Math.floor((qd-1)/3)+1 : 0;
       el=$('#qDays'); if(el) el.textContent=qd;
-      el=$('#qBricks'); if(el) el.textContent=Math.floor((qd-1)/3)+1;
+      el=$('#qBricks'); if(el) el.textContent=bricks>0?bricks:'—';
       el=$('#qNumber'); if(el) el.textContent='#'+qI;
       el=$('#qIdx'); if(el) el.textContent=qI;
       el=$('#qDay'); if(el) el.textContent=qD;
