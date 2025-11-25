@@ -364,6 +364,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
 
       var Q=dt(2012,10,14), qd=Math.floor((ref-Q)/ms), qI=Math.floor((qd-1)/39)+1, qD=((qd-1)%39)+1;
       el=$('#qDays'); if(el) el.textContent=qd;
+      el=$('#qBricks'); if(el) el.textContent=Math.floor((qd-1)/3)+1;
       el=$('#qNumber'); if(el) el.textContent='#'+qI;
       el=$('#qIdx'); if(el) el.textContent=qI;
       el=$('#qDay'); if(el) el.textContent=qD;
