@@ -36,6 +36,13 @@
         var inc = ex + 1;
         if(chipEx) chipEx.textContent = 'Exclusivo: ' + ex;
         if(chipIn) chipIn.textContent = 'Inclusivo: ' + inc;
+
+        var yearsOut = document.getElementById('yearsOut');
+        if(yearsOut){
+          var daysBase = (inclusive && inclusive.checked) ? inc : ex;
+          var years = daysBase / 365.2425;
+          yearsOut.textContent = 'Años entre fechas: ' + years.toFixed(6);
+        }
         if(inclusive && inclusive.checked){
           if(out) out.textContent = inc;
           if(chipIn) chipIn.classList.add('active'); if(chipEx) chipEx.classList.remove('active');
@@ -46,6 +53,9 @@
         status('ok', true);
       } else {
         if(out) out.textContent='—';
+        var yearsOut = document.getElementById('yearsOut');
+        if(yearsOut){ yearsOut.textContent = 'Años entre fechas: —'; }
+
         if(chipEx) { chipEx.textContent = 'Exclusivo: —'; chipEx.classList.remove('active'); }
         if(chipIn) { chipIn.textContent = 'Inclusivo: —'; chipIn.classList.remove('active'); }
         status('ok (faltan fechas)', true);
@@ -56,12 +66,12 @@
       var ok=true, miss=[];
       var btnC=document.getElementById('calc'); if(btnC){ btnC.addEventListener('click', calc); } else { ok=false; miss.push('calc'); }
       var btnX=document.getElementById('clear'); if(btnX){ btnX.addEventListener('click', function(){
-        ['start','end','startT','endT'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.value=''; } });
+        ['start','end'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.value=''; } });
         calc();
         status('ok (limpio)', true);
       }); } else { miss.push('clear'); ok=false; }
       var inc=document.getElementById('inclusive'); if(inc){ inc.addEventListener('change', calc); } else { miss.push('inclusive'); ok=false; }
-      ['start','end','startT','endT'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.addEventListener('change', calc); } else { miss.push(id); ok=false; } });
+      ['start','end'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.addEventListener('change', calc); } else { miss.push(id); ok=false; } });
       if(ok){ status('listo (handlers)', true); } else { status('handlers faltantes: '+miss.join(', '), false); }
     }
 
