@@ -388,11 +388,17 @@ body.noScroll{overflow:hidden}
         <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
         <div class="small">Ingresa la fecha de nacimiento para calcular los días de vida</div>
 
-        <div class="mcard" style="margin-top:10px">
-          <div class="badge">Días de vida</div>
-          <div class="mono big" id="lifeDays" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
+          <div class="mcard" style="flex:1 1 140px">
+            <div class="badge">Días de vida</div>
+            <div class="mono big" id="lifeDays" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
+          </div>
+          <div class="mcard" style="flex:1 1 140px">
+            <div class="badge">Día solar nativo</div>
+            <div class="mono big" id="nativeSolarDay" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
+          </div>
         </div>
-        
+
       </div>
       <div class="field" style="grid-column:span 6">
         <label class="small" for="ref">Fecha de referencia</label>

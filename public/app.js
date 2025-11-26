@@ -384,6 +384,19 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
         }
       }
 
+      // Día solar nativo: día solar correspondiente a la fecha de nacimiento
+      el=$('#nativeSolarDay');
+      if(el){
+        if(Db){
+          var isGregorianDob = (Db.y>1582) || (Db.y===1582 && (Db.m>10 || (Db.m===10 && Db.d>=15)));
+          var jDob = isGregorianDob ? jdnG(Db.y, Db.m, Db.d) : jdnJ(Db.y, Db.m, Db.d);
+          var nativeSolar = jDob - jJulEpoch + 1;
+          el.textContent = nativeSolar;
+        } else {
+          el.textContent = '—';
+        }
+      }
+
       el=$('#doy'); if(el) el.textContent=doy;
       el=$('#ylen'); if(el) el.textContent=yl;
       el=$('#freqYearPos'); if(el) el.textContent='+'+doy;
