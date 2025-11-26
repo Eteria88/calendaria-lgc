@@ -85,7 +85,13 @@ body.noScroll{overflow:hidden}
   }
 }
 
-</style></head><body>
+</style>  <link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0b0d10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calendaria">
+<link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+</head><body>
 <div class="wrap">
 
   <div class="mobileNav" id="mobileNav" aria-hidden="true">
@@ -165,4 +171,13 @@ body.noScroll{overflow:hidden}
 <script src="./letters.js" defer></script>
 <script src="./common.js" defer></script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+      console.log('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
 </body></html>
