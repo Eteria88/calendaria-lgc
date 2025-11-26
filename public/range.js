@@ -55,13 +55,6 @@
     function bindHandlers(){
       var ok=true, miss=[];
       var btnC=document.getElementById('calc'); if(btnC){ btnC.addEventListener('click', calc); } else { ok=false; miss.push('calc'); }
-      var btnS=document.getElementById('swap'); if(btnS){ btnS.addEventListener('click', function(){ 
-        var sT=document.getElementById('startT'), eT=document.getElementById('endT');
-        var sI=document.getElementById('start'), eI=document.getElementById('end');
-        if(sT&&eT){ var t=sT.value; sT.value=eT.value; eT.value=t; }
-        if(sI&&eI){ var t2=sI.value; sI.value=eI.value; eI.value=t2; }
-        calc();
-      }); } else { miss.push('swap'); ok=false; }
       var btnX=document.getElementById('clear'); if(btnX){ btnX.addEventListener('click', function(){
         ['start','end','startT','endT'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.value=''; } });
         calc();
