@@ -112,14 +112,22 @@ body.noScroll{overflow:hidden}
 </div>
 </div>
 <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
-<div class="small">Resultado</div>
+<div class="small" style="display:none">Resultado</div>
 <div>
-<div class="mono big" id="out">—</div>
-<div style="display:flex;gap:8px;margin-top:6px">
-<span class="chip mono" id="chipEx">Exclusivo: —</span>
-<span class="chip mono" id="chipIn">Inclusivo: —</span>
-</div>
-<div class="mono big" id="yearsOut" style="margin-top:6px;font-size:clamp(22px,7vw,34px);opacity:.9">Años —</div>
+  <div style="display:flex;gap:24px;align-items:baseline">
+    <div>
+      <div class="small">Días</div>
+      <div class="mono big" id="out">—</div>
+    </div>
+    <div>
+      <div class="small">Años</div>
+      <div class="mono big" id="yearsOut">—</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:6px">
+    <span class="chip mono" id="chipEx">Exclusivo: —</span>
+    <span class="chip mono" id="chipIn">Inclusivo: —</span>
+  </div>
 </div>
 </div>
 <div style="display:flex;gap:8px;align-items:center;margin-top:8px">

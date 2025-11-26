@@ -41,7 +41,7 @@
         if(yearsOut){
           var daysBase = (inclusive && inclusive.checked) ? inc : ex;
           var years = daysBase / 365.2425;
-          yearsOut.textContent = 'Años ' + Math.round(years);
+          yearsOut.textContent = String(Math.round(years));
         }
         if(inclusive && inclusive.checked){
           if(out) out.textContent = inc;
@@ -54,7 +54,7 @@
       } else {
         if(out) out.textContent='—';
         var yearsOut = document.getElementById('yearsOut');
-        if(yearsOut){ yearsOut.textContent = 'Años —'; }
+        if(yearsOut){ yearsOut.textContent = '—'; }
 
         if(chipEx) { chipEx.textContent = 'Exclusivo: —'; chipEx.classList.remove('active'); }
         if(chipIn) { chipIn.textContent = 'Inclusivo: —'; chipIn.classList.remove('active'); }
