@@ -115,7 +115,6 @@
         var lettersExpr = br.letters.map(function(L,idx){ return L+'('+br.values[idx]+')'; }).join(' + ');
         tr.innerHTML = '<td>'+seq+'</td>'
           + '<td>'+br.original+'</td>'
-          + '<td>'+br.normalized+'</td>'
           + '<td>'+lettersExpr+'</td>'
           + '<td class="mono">'+br.total+'</td>';
         tb.appendChild(tr);
