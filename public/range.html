@@ -111,24 +111,23 @@ body.noScroll{overflow:hidden}
 <button class="btn" id="btnEndToday" style="margin-top:8px" type="button">Hoy</button>
 </div>
 </div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
-<div class="small" style="display:none">Resultado</div>
-<div>
-  <div style="display:flex;gap:24px;align-items:baseline">
-    <div>
-      <div class="small">Días</div>
-      <div class="mono big" id="out">—</div>
+<div style="display:flex;justify-content:center;margin-top:12px">
+  <div>
+    <div style="display:flex;gap:32px;justify-content:center">
+      <div style="text-align:center">
+        <div class="small">Días</div>
+        <div class="mono big" id="out" style="font-size:clamp(14px,3.5vw,20px)">—</div>
+      </div>
+      <div style="text-align:center">
+        <div class="small">Años</div>
+        <div class="mono big" id="yearsOut" style="font-size:clamp(14px,3.5vw,20px)">—</div>
+      </div>
     </div>
-    <div>
-      <div class="small">Años</div>
-      <div class="mono big" id="yearsOut">—</div>
+    <div style="display:flex;gap:8px;margin-top:6px;justify-content:center">
+      <span class="chip mono" id="chipEx">Exclusivo: —</span>
+      <span class="chip mono" id="chipIn">Inclusivo: —</span>
     </div>
   </div>
-  <div style="display:flex;gap:8px;margin-top:6px">
-    <span class="chip mono" id="chipEx">Exclusivo: —</span>
-    <span class="chip mono" id="chipIn">Inclusivo: —</span>
-  </div>
-</div>
 </div>
 <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
 <input checked="" id="inclusive" type="checkbox"/>
