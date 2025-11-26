@@ -39,9 +39,8 @@
 
         var yearsOut = document.getElementById('yearsOut');
         if(yearsOut){
-          var daysBase = (inclusive && inclusive.checked) ? inc : ex;
-          var years = daysBase / 365.2425;
-          yearsOut.textContent = String(Math.round(years));
+          var years = ex / 365.2425;
+          yearsOut.textContent = String(Math.floor(years));
         }
         if(inclusive && inclusive.checked){
           if(out) out.textContent = inc;
