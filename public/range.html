@@ -96,8 +96,8 @@ body.noScroll{overflow:hidden}
 <main>
 <div class="wrap">
 <h1 style="margin:0 0 10px 0;font-size:20px">Días entre fechas</h1>
-<div class="small" style="margin-bottom:10px">Calendario mixto: Juliano hasta 04/10/1582, Gregoriano desde 15/10/1582. Elegí si querés contar <b>exclusivo</b> o <b>inclusivo</b>.</div>
-<div class="status" id="rdbg">estado: cargando…</div>
+
+<div class="status" id="rdbg" style="display:none">estado: cargando…</div>
 <div class="card">
 <div class="input-grid">
 <div class="field" style="grid-column:span 6">
@@ -111,23 +111,23 @@ body.noScroll{overflow:hidden}
 <button class="btn" id="btnEndToday" style="margin-top:8px" type="button">Hoy</button>
 </div>
 </div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
-<div class="small">Resultado</div>
-<div>
-<div class="mono big" id="out">—</div>
-<div style="display:flex;gap:8px;margin-top:6px">
-<span class="chip mono" id="chipEx">Exclusivo: —</span>
-<span class="chip mono" id="chipIn">Inclusivo: —</span>
-</div>
-</div>
-</div>
-<div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-<input checked="" id="inclusive" type="checkbox"/>
-<label class="small" for="inclusive">Contar inclusivo (incluye inicio y fin)</label>
+<div style="display:flex;justify-content:center;margin-top:12px">
+  <div>
+    <div style="display:flex;gap:32px;justify-content:center">
+      <div style="text-align:center">
+        <div class="small">Días</div>
+        <div class="mono big" id="out" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+      </div>
+      <div style="text-align:center">
+        <div class="small">Años</div>
+        <div class="mono big" id="yearsOut" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+      </div>
+    </div>
+  </div>
 </div>
 <div style="display:flex;gap:8px;margin-top:12px">
 <button class="btn" id="calc">Calcular</button>
-<button class="btn" id="swap">Intercambiar</button>
+
 <button class="btn" id="clear">Limpiar</button>
 </div>
 </div>
