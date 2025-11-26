@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Letras → Números · Calendaria</title>
+<title>Letras a números · Calendaria</title>
 <meta http-equiv="Cache-Control" content="no-store">
 <style>
 :root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
@@ -68,6 +68,23 @@ body.noScroll{overflow:hidden}
   .scroll-hint{display:none}
 }
 
+
+@media(max-width:599px){
+  .kb{
+    grid-template-columns:repeat(6,1fr);
+    gap:4px;
+  }
+  .key{
+    padding:4px 4px;
+  }
+  .key .k{
+    font-size:14px;
+  }
+  .key .v{
+    font-size:10px;
+  }
+}
+
 </style></head><body>
 <div class="wrap">
 
@@ -87,25 +104,25 @@ body.noScroll{overflow:hidden}
     <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
   </div>
 
-  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small">Herramientas</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button></header>
+  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" style="display:none">Herramientas</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button></header>
   <div class="layout">
     <aside class="sidenav">
       <nav>
         <div class="nav-title">Menú</div>
         <a class="nav-link" href="./">Inicio</a>
         <a class="nav-link" href="./range.html">Días entre fechas</a>
-        <a class="nav-link active" href="./letters.html">Letras → Números</a>
+        <a class="nav-link active" href="./letters.html">Letras a números</a>
   <a class="nav-link" href="./mapa/">Mapa y codigos</a>
       </nav>
     </aside>
     <main>
-      <div id="ldbg" class="status">estado: cargando…</div>
+      <div id="ldbg" class="status" style="display:none">estado: cargando…</div>
 
       <section class="card">
         <div class="grid">
           <div style="grid-column:span 12">
             <div class="badge">Conversor</div>
-            <div class="hint" style="margin-top:6px">A=1, B=2, …, Ñ=15, O=16 … Z=27. Se toleran acentos: Á→A, É→E, Í→I, Ó→O, Ú/Ü→U, Ñ se preserva.</div>
+            <div class="hint" style="margin-top:6px;display:none">A=1, B=2, …, Ñ=15, O=16 … Z=27. Se toleran acentos: Á→A, É→E, Í→I, Ó→O, Ú/Ü→U, Ñ se preserva.</div>
           </div>
           <div style="grid-column:span 12">
             <label class="small" for="phrase">Escribí una palabra o frase</label>
