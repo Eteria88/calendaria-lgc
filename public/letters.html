@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Letras a números · Calendaria</title>
+<title>Letras → Números · Calendaria</title>
 <meta http-equiv="Cache-Control" content="no-store">
 <style>
 :root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
@@ -21,7 +21,7 @@ header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(1
 .input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap);width:100%}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
 .table-wrap{overflow:auto;border:1px solid var(--ol);border-radius:10px}
-table{width:100%;border-collapse:collapse;min-width:720px}
+table{width:100%;border-collapse:collapse;min-width:0}
 th,td{padding:10px 12px;border-bottom:1px solid var(--ol);text-align:left}
 .badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:3px 8px;text-transform:uppercase;letter-spacing:.6px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
@@ -143,9 +143,9 @@ body.noScroll{overflow:hidden}
       <section class="card" style="margin-top:12px">
         <div class="table-wrap">
           <table>
-            <thead><tr><th>#</th><th>Palabra</th><th>Normalizada</th><th>Letras (valores)</th><th>Total</th></tr></thead>
+            <thead><tr><th>#</th><th>Palabra</th><th>Letras (valores)</th><th>Total</th></tr></thead>
             <tbody id="tb"></tbody>
-            <tfoot><tr><td></td><td></td><td></td><td style="text-align:right"><b>Total frase</b></td><td id="tfTotal">—</td></tr></tfoot>
+            <tfoot><tr><td></td><td></td><td style="text-align:right"><b>Total frase</b></td><td id="tfTotal">—</td></tr></tfoot>
           </table>
         </div>
         <div class="scroll-hint">Desliza ↔ para ver la tabla completa</div>
