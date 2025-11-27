@@ -413,7 +413,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var aPos = Math.floor((ref - dt(aStartY,1,1))/ms)+1;
       var aNeg = 1461 - aPos;
       el=$('#apIndex'); if(el) el.textContent=apIndexVal;
-      el=$('#apStart'); if(el) el.textContent=aStartY+'-01-01';
+      el=$('#apStart'); if(el) el.textContent=fmtDate(dt(aStartY,1,1));
       el=$('#freqAppPos'); if(el) el.textContent='+'+aPos;
       el=$('#freqAppNeg'); if(el) el.textContent='−'+aNeg;
       el=$('#annApp'); if(el) el.textContent=(aPos-aNeg);
