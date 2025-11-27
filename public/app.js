@@ -299,7 +299,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       el=$('#calCard'); if(el) el.textContent=card;
       el=$('#calStep'); if(el) el.textContent=(['Lógica','Inhumano','Humano','Contexto'][step-1]);
       el=$('#calMem'); if(el) el.textContent=mem;
-      var memBlock=$('#calMemBlock'); if(memBlock){ if(card==='SO'){ memBlock.style.display=''; } else { memBlock.style.display='none'; } }
+      var memBlock=$('#calMemBlock'); if(memBlock) memBlock.style.display=(card==='SO')?'':'none';
       plane(card);
       var ks=['NE','NO','SE','SO']; for(var i3=0;i3<ks.length;i3++){ var cell=$('#cell'+ks[i3]); if(cell){ var ls=cell.querySelectorAll('.cStep'); for(var j=0;j<ls.length;j++){ ls[j].classList.remove('active'); } } }
       var activeCell=$('#cell'+card); if(activeCell){ var elStep=activeCell.querySelector('.cStep[data-step="'+step+'"]'); if(elStep){ elStep.classList.add('active'); } }
@@ -346,7 +346,10 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         var memBlock2=$('#calMemBlock');
         if(cardBlock2) cardBlock2.style.display='';
         if(stepBlock2) stepBlock2.style.display='';
-        if(memBlock2) memBlock2.style.display='';
+        if(memBlock2){
+          var cardText=$('#calCard') ? $('#calCard').textContent : '';
+          memBlock2.style.display=(cardText==='SO')?'':'none';
+        }
         var cycleLabel2=$('#calCycleLabel');
         if(cycleLabel2) cycleLabel2.textContent='Calendaria · ciclo de 16 días';
       }
