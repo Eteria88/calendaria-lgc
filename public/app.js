@@ -401,7 +401,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
         }
       }
 
-      el=$('#doy'); if(el) el.textContent=doy;
+      el=$('#doy'); if(el) el.textContent=fmtDate(ref);
       el=$('#ylen'); if(el) el.textContent=yl;
       el=$('#freqYearPos'); if(el) el.textContent='+'+doy;
       el=$('#freqYearNeg'); if(el) el.textContent='−'+(yl-doy);
