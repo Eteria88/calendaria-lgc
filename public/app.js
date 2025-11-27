@@ -332,7 +332,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         if(stepBlock) stepBlock.style.display='none';
         if(memBlock) memBlock.style.display='none';
         var cycleLabel=$('#calCycleLabel');
-        if(cycleLabel) cycleLabel.textContent='Calendaria · Anillo de fuego 13 días';
+        if(cycleLabel) cycleLabel.textContent='';
         var turnBlock=$('#calTurnBlock');
         if(turnBlock) turnBlock.style.display='';
         el=$('#calTurn'); if(el) el.textContent='23/23';
@@ -351,7 +351,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
           memBlock2.style.display=(cardText==='SO')?'':'none';
         }
         var cycleLabel2=$('#calCycleLabel');
-        if(cycleLabel2) cycleLabel2.textContent='Calendaria · ciclo de 16 días';
+        if(cycleLabel2) cycleLabel2.textContent='';
       }
 var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>=15)));
       var jJulEpoch = jdnJ(1,1,1);
