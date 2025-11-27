@@ -315,7 +315,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       var yearStart = dt(y,1,1);
       var startDate = addDays(yearStart, startDoy-1);
       var endDate = addDays(yearStart, endDoy-1);
-      el=$('#calTurn'); if(el) el.textContent = 'Nº '+turn+' de 22;
+      el=$('#calTurn'); if(el) el.textContent = 'Nº '+turn+' de 22';
       el=$('#calTurnRange'); if(el) el.textContent = 'inicio: '+fmtDate(startDate)+' · fin: '+fmtDate(endDate)+' · extensión: '+turnLen;
       el=$('#turnDay'); if(el) el.textContent = (dayInTurn+' / '+turnLen);
       el=$('#turnProgressInner'); if(el) el.style.width = Math.round(100*dayInTurn/turnLen)+'%';
