@@ -323,49 +323,31 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       el=$('#turnProgressInner'); if(el) el.style.width = Math.round(100*dayInTurn/turnLen)+'%';
       el=$('#blockDay'); if(el) el.textContent = ((day-1)%4)+1;
 
-
-      // Anillo de Fuego: sobrescribir información de Vuelta (23 de 23)
-      if (showAnillo) {
-        var startAnilloDate, endAnilloDate, extAnillo;
-        // Inicio del Anillo según sea bisiesto o no
-        if (leap) {
-          startAnilloDate = dt(y, 12, 18);
-          extAnillo = 14;
-        } else {
-          startAnilloDate = dt(y, 12, 19);
-          extAnillo = 13;
-        }
-        endAnilloDate = dt(y, 12, 31);
-
-        // Mostrar siempre el rango de la Vuelta para el Anillo
-        var calTurnRangeEl = document.getElementById('calTurnRange');
-        if (calTurnRangeEl) {
-          calTurnRangeEl.style.display = '';
-          calTurnRangeEl.textContent = 'inicio: ' + fmtDate(startAnilloDate) +
-            ' · fin: ' + fmtDate(endAnilloDate) +
-            ' · extensión: ' + extAnillo;
-        }
-
-        // Texto fijo de la Vuelta para el Anillo
-        var calTurnEl = document.getElementById('calTurn');
-        if (calTurnEl) {
-          calTurnEl.textContent = 'Por Nº 23 de 23';
-        }
-      }
-
       
       // Ajustes de encabezado para el Anillo de Fuego
       if(showAnillo && logicalDay != null){
-        // Etiqueta y valor de Frecuencia (353–365)
-        el=$('#calDayLabel'); if(el) el.textContent='Frecuencia';
-        el=$('#calDay'); if(el) el.textContent = logicalDay;
+        var isLeapYear = isL(Rf.y);
+        var isLastLeapDay = isLeapYear && Rf.m===12 && Rf.d===31;
 
-        // Día dentro del Anillo (1–13)
-        var freqIndex = logicalDay - 352;
-        var anilloDayBlock=$('#anilloDayBlock');
-        var anilloDayEl=$('#anilloSeqDay');
-        if(anilloDayBlock) anilloDayBlock.style.display='';
-        if(anilloDayEl && freqIndex>=1) anilloDayEl.textContent=freqIndex;
+        // Frecuencia y Día dentro del Anillo (solo si no es 31/12 de año bisiesto)
+        if(!isLastLeapDay){
+          // Etiqueta y valor de Frecuencia (353–365)
+          el=$('#calDayLabel'); if(el) el.textContent='Frecuencia';
+          el=$('#calDay'); if(el) el.textContent = logicalDay;
+
+          // Día dentro del Anillo (1–13)
+          var freqIndex = logicalDay - 352;
+          var anilloDayBlock=$('#anilloDayBlock');
+          var anilloDayEl=$('#anilloSeqDay');
+          if(anilloDayBlock) anilloDayBlock.style.display='';
+          if(anilloDayEl && freqIndex>=1) anilloDayEl.textContent=freqIndex;
+        }else{
+          // 31/12 de año bisiesto: ocultar Frecuencia y Día
+          el=$('#calDayLabel'); if(el) el.textContent='';
+          el=$('#calDay'); if(el) el.textContent='—';
+          var anilloDayBlock=$('#anilloDayBlock');
+          if(anilloDayBlock) anilloDayBlock.style.display='none';
+        }
 
         // Ocultar bloques de Cardinalidad / Columna / Memoria
         var cardBlock=$('#calCardBlock');
@@ -375,26 +357,35 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         if(stepBlock) stepBlock.style.display='none';
         if(memBlock) memBlock.style.display='none';
 
-        // Ajustar vuelta: se muestra fija como 23/23 durante el Anillo
+        // Ajustar vuelta: fija como Por Nº 23 de 23 durante el Anillo
         var cycleLabel=$('#calCycleLabel');
         if(cycleLabel) cycleLabel.textContent='';
+
         var turnBlock=$('#calTurnBlock');
         if(turnBlock) turnBlock.style.display='';
-        el=$('#calTurn'); if(el) el.textContent='23/23';
-        el=$('#calTurnRange'); if(el) el.style.display='none';
+
+        // Texto principal de Vuelta
+        el=$('#calTurn');
+        if(el){
+          el.textContent='Por Nº 23 de 23';
+        }
+
+        // Rango del Anillo de Fuego según sea bisiesto o no
+        var startDayAnillo = isLeapYear ? 18 : 19;
+        var startDateAnillo = dt(Rf.y, 12, startDayAnillo);
+        var endDateAnillo = dt(Rf.y, 12, 31);
+        var lenAnillo = isLeapYear ? 14 : 13;
+
+        var turnRangeEl = $('#calTurnRange');
+        if(turnRangeEl){
+          turnRangeEl.style.display='';
+          turnRangeEl.textContent = 'inicio: '+fmtDate(startDateAnillo)+' · fin: '+fmtDate(endDateAnillo)+' · extensión: '+lenAnillo;
+        }
+
+        // Reset de progreso de vuelta y día de bloque para el contexto del Anillo
         el=$('#turnDay'); if(el) el.textContent='—';
         el=$('#turnProgressInner'); if(el) el.style.width='0%';
         el=$('#blockDay'); if(el) el.textContent='—';
-        // Caso especial: 31/12 en años bisiestos → ocultar Frecuencia y Día
-        if(leap && m === 12 && d === 31){
-          var freqLabel = $('#calDayLabel');
-          var freqValue = $('#calDay');
-          var anilloDayBlock3 = $('#anilloDayBlock');
-          if(freqLabel) freqLabel.textContent='';
-          if(freqValue) freqValue.textContent='—';
-          if(anilloDayBlock3) anilloDayBlock3.style.display='none';
-        }
-
       }else{
         // Fuera del Anillo: restaurar etiqueta y ocultar bloque Día del Anillo
         el=$('#calDayLabel'); if(el) el.textContent='Paso';
@@ -411,6 +402,9 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         }
         var cycleLabel2=$('#calCycleLabel');
         if(cycleLabel2) cycleLabel2.textContent='';
+        // Asegurar que el rango de vuelta vuelva a mostrarse fuera del Anillo
+        var turnRangeEl2 = $('#calTurnRange');
+        if(turnRangeEl2) turnRangeEl2.style.display='';
       }
 var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>=15)));
       var jJulEpoch = jdnJ(1,1,1);
