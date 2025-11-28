@@ -323,6 +323,36 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       el=$('#turnProgressInner'); if(el) el.style.width = Math.round(100*dayInTurn/turnLen)+'%';
       el=$('#blockDay'); if(el) el.textContent = ((day-1)%4)+1;
 
+
+      // Anillo de Fuego: sobrescribir información de Vuelta (23 de 23)
+      if (showAnillo) {
+        var startAnilloDate, endAnilloDate, extAnillo;
+        // Inicio del Anillo según sea bisiesto o no
+        if (leap) {
+          startAnilloDate = dt(y, 12, 18);
+          extAnillo = 14;
+        } else {
+          startAnilloDate = dt(y, 12, 19);
+          extAnillo = 13;
+        }
+        endAnilloDate = dt(y, 12, 31);
+
+        // Mostrar siempre el rango de la Vuelta para el Anillo
+        var calTurnRangeEl = document.getElementById('calTurnRange');
+        if (calTurnRangeEl) {
+          calTurnRangeEl.style.display = '';
+          calTurnRangeEl.textContent = 'inicio: ' + fmtDate(startAnilloDate) +
+            ' · fin: ' + fmtDate(endAnilloDate) +
+            ' · extensión: ' + extAnillo;
+        }
+
+        // Texto fijo de la Vuelta para el Anillo
+        var calTurnEl = document.getElementById('calTurn');
+        if (calTurnEl) {
+          calTurnEl.textContent = 'Por Nº 23 de 23';
+        }
+      }
+
       
       // Ajustes de encabezado para el Anillo de Fuego
       if(showAnillo && logicalDay != null){
