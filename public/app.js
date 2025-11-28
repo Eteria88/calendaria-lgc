@@ -357,7 +357,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         if(stepBlock) stepBlock.style.display='none';
         if(memBlock) memBlock.style.display='none';
 
-        // Ajustar vuelta: fija como Por Nº 23 de 23 durante el Anillo
+        // Ajustar vuelta: fija como Nº 23 de 23 durante el Anillo
         var cycleLabel=$('#calCycleLabel');
         if(cycleLabel) cycleLabel.textContent='';
 
@@ -367,7 +367,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         // Texto principal de Vuelta
         el=$('#calTurn');
         if(el){
-          el.textContent='Por Nº 23 de 23';
+          el.textContent='Nº 23 de 23';
         }
 
         // Rango del Anillo de Fuego según sea bisiesto o no
