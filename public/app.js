@@ -173,40 +173,6 @@ function fmtDate(d){
           cardPlane.style.display = 'none';
           anilloPlane.style.display = '';
 
-          var isLeapLastDay = leap && m === 12 && d === 31;
-
-          // Ajustar encabezado: Frecuencia / Día para el Anillo de Fuego
-          var calDayBlock = document.getElementById('calDayBlock');
-          var calDayLabel = document.getElementById('calDayLabel');
-          var calDayEl = document.getElementById('calDay');
-          var anilloDayBlock = document.getElementById('anilloDayBlock');
-          var anilloIndexEl = document.getElementById('anilloIndex');
-
-          if(calDayLabel){
-            calDayLabel.textContent = 'Frecuencia';
-          }
-
-          if(isLeapLastDay){
-            if(calDayBlock) calDayBlock.style.display = 'none';
-            if(anilloDayBlock) anilloDayBlock.style.display = 'none';
-          }else{
-            if(calDayBlock) calDayBlock.style.display = '';
-            if(anilloDayBlock) anilloDayBlock.style.display = '';
-          }
-
-          if(calDayEl && logicalDay != null){
-            // En Anillo de Fuego, el número principal muestra el día lógico 353–365
-            calDayEl.textContent = logicalDay;
-          }
-
-          if(anilloIndexEl){
-            var idx = (logicalDay != null ? logicalDay - 352 : null); // 353→1, …, 365→13
-            if(isLeapLastDay){
-              idx = 14; // Caso especial: 31/12 de año bisiesto
-            }
-            anilloIndexEl.textContent = (idx != null ? idx : '—');
-          }
-
           // Ocultar elementos de vuelta detallada durante el Anillo de Fuego
           var calTurnRange = document.getElementById('calTurnRange');
           var turnProgressInner = document.getElementById('turnProgressInner');
@@ -255,52 +221,9 @@ function fmtDate(d){
               el.classList.add('anilloLine--inactive');
             }
           });
-
-          // Cuadro extra para 31/12 de año bisiesto: muestra fecha, Día 14 y días solares + día de la semana
-          var extraBox = document.getElementById('anilloExtra');
-          if(extraBox){
-            var extraDate = document.getElementById('anilloExtraDate');
-            var extraDay = document.getElementById('anilloExtraDay');
-            var extraSolar = document.getElementById('anilloExtraSolar');
-            if(leap && m === 12 && d === 31){
-              extraBox.style.display = '';
-              if(extraDate){
-                var dd = String(d).padStart(2,'0');
-                var mm = String(m).padStart(2,'0');
-                extraDate.textContent = dd + '/' + mm;
-              }
-              if(extraDay){
-                extraDay.textContent = 'Día 14';
-              }
-              if(extraSolar){
-                var ts = (typeof window !== 'undefined' ? window._cal_totalSolar : null);
-                var wd = (typeof window !== 'undefined' ? window._cal_weekdayAbbr : '');
-                if(ts != null){
-                  extraSolar.textContent = ts + (wd ? ' ' + wd : '');
-                }else{
-                  extraSolar.textContent = '—';
-                }
-              }
-            }else{
-              extraBox.style.display = 'none';
-            }
-          }
         }else{
           cardPlane.style.display = '';
           anilloPlane.style.display = 'none';
-
-          // Restaurar encabezado normal (Paso) y ocultar el bloque de Día del Anillo
-          var calDayBlock = document.getElementById('calDayBlock');
-          var calDayLabel = document.getElementById('calDayLabel');
-          var anilloDayBlock = document.getElementById('anilloDayBlock');
-          if(calDayBlock) calDayBlock.style.display = '';
-          if(calDayLabel) calDayLabel.textContent = 'Paso';
-          if(anilloDayBlock) anilloDayBlock.style.display = 'none';
-
-          var extraBox = document.getElementById('anilloExtra');
-          if(extraBox){
-            extraBox.style.display = 'none';
-          }
 
           // Restaurar elementos de vuelta detallada fuera del Anillo
           var calTurnRange = document.getElementById('calTurnRange');
@@ -362,6 +285,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
           else if(d === 28){ showAnillo = true; logicalDay = 363; }
           else if(d === 29){ showAnillo = true; logicalDay = 364; }
           else if(d === 30){ showAnillo = true; logicalDay = 365; }
+          else if(d === 31){ showAnillo = true; logicalDay = 365; }
         }
       }
       var idx=((doyVal-1)%16);
@@ -402,13 +326,39 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       
       // Ajustes de encabezado para el Anillo de Fuego
       if(showAnillo && logicalDay != null){
-        el=$('#calDay'); if(el) el.textContent = logicalDay;
+        var isLeap31 = isL(Rf.y) && Rf.m===12 && Rf.d===31;
+
+        // Día dentro del Anillo (1–13)
+        var freqIndex = logicalDay - 352;
+        var anilloDayBlock=$('#anilloDayBlock');
+        var anilloDayEl=$('#anilloSeqDay');
+
+        // Bloque Frecuencia (353–365) y Día del Anillo (1–13) sólo si no es 31/12 bisiesto
+        if(!isLeap31){
+          var dayLabelEl = $('#calDayLabel');
+          if(dayLabelEl){
+            dayLabelEl.textContent='Frecuencia';
+            if(dayLabelEl.parentElement) dayLabelEl.parentElement.style.display='';
+          }
+          el=$('#calDay'); if(el) el.textContent = logicalDay;
+          if(anilloDayBlock) anilloDayBlock.style.display='';
+          if(anilloDayEl && freqIndex>=1) anilloDayEl.textContent=freqIndex;
+        }else{
+          // En 31/12 de año bisiesto se ocultan Frecuencia y Día
+          var dayLabelEl2 = $('#calDayLabel');
+          if(dayLabelEl2 && dayLabelEl2.parentElement) dayLabelEl2.parentElement.style.display='none';
+          if(anilloDayBlock) anilloDayBlock.style.display='none';
+        }
+
+        // Ocultar bloques de Cardinalidad / Columna / Memoria
         var cardBlock=$('#calCardBlock');
         var stepBlock=$('#calStepBlock');
         var memBlock=$('#calMemBlock');
         if(cardBlock) cardBlock.style.display='none';
         if(stepBlock) stepBlock.style.display='none';
         if(memBlock) memBlock.style.display='none';
+
+        // Ajustar vuelta: se muestra fija como 23/23 durante el Anillo
         var cycleLabel=$('#calCycleLabel');
         if(cycleLabel) cycleLabel.textContent='';
         var turnBlock=$('#calTurnBlock');
@@ -419,6 +369,12 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         el=$('#turnProgressInner'); if(el) el.style.width='0%';
         el=$('#blockDay'); if(el) el.textContent='—';
       }else{
+        // Fuera del Anillo: restaurar etiqueta y ocultar bloque Día del Anillo
+        var dayLabelEl3 = $('#calDayLabel');
+        if(dayLabelEl3 && dayLabelEl3.parentElement) dayLabelEl3.parentElement.style.display='';
+        el=$('#calDayLabel'); if(el) el.textContent='Paso';
+        var anilloDayBlock2=$('#anilloDayBlock');
+        if(anilloDayBlock2) anilloDayBlock2.style.display='none';
         var cardBlock2=$('#calCardBlock');
         var stepBlock2=$('#calStepBlock');
         var memBlock2=$('#calMemBlock');
@@ -439,19 +395,44 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var totalSolar = j - jJulEpoch + 1;
       el=$('#solarDays'); if(el) el.textContent=totalSolar;
       el=$('#sb_total'); if(el) el.textContent=totalSolar;
-
-      // Exponer días solares y día de la semana para otros módulos (como el Anillo de Fuego)
-      if(typeof window !== 'undefined'){
-        window._cal_totalSolar = totalSolar;
-        var wdIdx = ref.getUTCDay();
-        var wdNames = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
-        window._cal_weekdayAbbr = wdNames[wdIdx] || '';
-      }
-
       el=$('#sb_jul'); if(el) el.textContent=577737;
       el=$('#sb_greg'); if(el) el.textContent=Math.max(0,gFrom-1);
       el=$('#sb_greg_jdn_b'); if(el) el.textContent=j;
       el=$('#sb_greg_alt'); if(el) el.textContent=Math.max(0,gFrom-1);
+      // Información extra del Anillo para el 31/12 de años bisiestos
+      var extraBox=document.getElementById('anilloExtra');
+      if(extraBox){
+        // Mostrar sólo cuando estamos en 31/12 de un año bisiesto dentro del Anillo
+        if(showAnillo && isL(Rf.y) && Rf.m===12 && Rf.d===31){
+          extraBox.style.display='';
+          var extraDate=document.getElementById('anilloExtraDate');
+          var extraDay=document.getElementById('anilloExtraDay');
+          var extraSolar=document.getElementById('anilloExtraSolar');
+
+          // Fecha en formato dd/mm
+          if(extraDate){
+            var dd2 = String(Rf.d).padStart(2,'0');
+            var mm2 = String(Rf.m).padStart(2,'0');
+            extraDate.textContent = dd2+'/'+mm2;
+          }
+
+          // Día 14 del horizonte de sucesos
+          if(extraDay){
+            extraDay.textContent = 'Día 14';
+          }
+
+          // Días solares + día de la semana (Do, Lu, Ma, Mi, Ju, Vi, Sa)
+          if(extraSolar){
+            var dowMap = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+            var dow = ref.getUTCDay(); // 0=Domingo
+            var dowStr = dowMap[dow] || '';
+            extraSolar.textContent = String(totalSolar)+' '+dowStr;
+          }
+        }else{
+          extraBox.style.display='none';
+        }
+      }
+
 
       var Q=dt(2012,10,14), qd=Math.floor((ref-Q)/ms), qI=Math.floor((qd-1)/39)+1, qD=((qd-1)%39)+1;
       var bricks = qd>0 ? Math.floor((qd-1)/3)+1 : 0;
