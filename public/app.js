@@ -286,6 +286,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
           else if(d === 30){ showAnillo = true; logicalDay = 365; }
         }
       }
+
       var idx=((doyVal-1)%16);
       var CARD_MAP=['SO','SO','SO','SO','NE','NE','NE','NE','NO','NO','NO','NO','SE','SE','SE','SE'];
       var day=idx+1;
@@ -294,29 +295,30 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       var blk=Math.floor(idx/4)+1;
       var mem=(card==='SO')?(['','RAM','REM','ROM','RUM'][step]):'0';
 
-      // Día mostrado en el encabezado:
-      // - Fuera del Anillo de Fuego: día 1–16 dentro de la vuelta
-      // - Dentro del Anillo de Fuego: día 1–13 del Anillo (353–365 → 1–13)
+      // Día a mostrar en el encabezado:
+      // - Fuera del Anillo de Fuego → día 1–16 dentro de la vuelta.
+      // - Dentro del Anillo de Fuego (353–365) → frecuencia 1–13 del Anillo.
       var displayDay = day;
       if(showAnillo && logicalDay != null && logicalDay >= 353 && logicalDay <= 365){
-        displayDay = logicalDay - 352;
+        displayDay = logicalDay - 352; // 353→1, …, 365→13
       }
 
       var el;
       el=$('#calDay'); if(el) el.textContent=displayDay;
-      var dayLabel=$('#calDayLabel');
-      if(dayLabel){
-        if(showAnillo && logicalDay != null && logicalDay >= 353 && logicalDay <= 365){
-          dayLabel.textContent='Frecuencia';
-        }else{
-          dayLabel.textContent='Paso';
-        }
+
+      // Etiqueta del encabezado: Paso (normal) / Frecuencia (Anillo)
+      var dayLabelEl = $('#calDayLabel');
+      if(dayLabelEl){
+        dayLabelEl.textContent = (showAnillo && logicalDay != null && logicalDay >= 353 && logicalDay <= 365)
+          ? 'Frecuencia'
+          : 'Paso';
       }
+
       el=$('#calCard'); if(el) el.textContent=card;
       el=$('#calStep'); if(el) el.textContent=(['Lógica','Inhumano','Humano','Contexto'][step-1]);
       el=$('#calMem'); if(el) el.textContent=mem;
       var memBlock=$('#calMemBlock'); if(memBlock) memBlock.style.display=(card==='SO')?'':'none';
-      plane(card);
+ plane(card);
       var ks=['NE','NO','SE','SO']; for(var i3=0;i3<ks.length;i3++){ var cell=$('#cell'+ks[i3]); if(cell){ var ls=cell.querySelectorAll('.cStep'); for(var j=0;j<ls.length;j++){ ls[j].classList.remove('active'); } } }
       var activeCell=$('#cell'+card); if(activeCell){ var elStep=activeCell.querySelector('.cStep[data-step="'+step+'"]'); if(elStep){ elStep.classList.add('active'); } }
       var memTags=document.querySelectorAll('.memTag'); for(var mI=0;mI<memTags.length;mI++){ memTags[mI].classList.remove('active'); }
