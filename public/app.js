@@ -326,29 +326,16 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       
       // Ajustes de encabezado para el Anillo de Fuego
       if(showAnillo && logicalDay != null){
-        var isLeap31 = isL(Rf.y) && Rf.m===12 && Rf.d===31;
+        // Etiqueta y valor de Frecuencia (353–365)
+        el=$('#calDayLabel'); if(el) el.textContent='Frecuencia';
+        el=$('#calDay'); if(el) el.textContent = logicalDay;
 
         // Día dentro del Anillo (1–13)
         var freqIndex = logicalDay - 352;
         var anilloDayBlock=$('#anilloDayBlock');
         var anilloDayEl=$('#anilloSeqDay');
-
-        // Bloque Frecuencia (353–365) y Día del Anillo (1–13) sólo si no es 31/12 bisiesto
-        if(!isLeap31){
-          var dayLabelEl = $('#calDayLabel');
-          if(dayLabelEl){
-            dayLabelEl.textContent='Frecuencia';
-            if(dayLabelEl.parentElement) dayLabelEl.parentElement.style.display='';
-          }
-          el=$('#calDay'); if(el) el.textContent = logicalDay;
-          if(anilloDayBlock) anilloDayBlock.style.display='';
-          if(anilloDayEl && freqIndex>=1) anilloDayEl.textContent=freqIndex;
-        }else{
-          // En 31/12 de año bisiesto se ocultan Frecuencia y Día
-          var dayLabelEl2 = $('#calDayLabel');
-          if(dayLabelEl2 && dayLabelEl2.parentElement) dayLabelEl2.parentElement.style.display='none';
-          if(anilloDayBlock) anilloDayBlock.style.display='none';
-        }
+        if(anilloDayBlock) anilloDayBlock.style.display='';
+        if(anilloDayEl && freqIndex>=1) anilloDayEl.textContent=freqIndex;
 
         // Ocultar bloques de Cardinalidad / Columna / Memoria
         var cardBlock=$('#calCardBlock');
@@ -368,10 +355,18 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
         el=$('#turnDay'); if(el) el.textContent='—';
         el=$('#turnProgressInner'); if(el) el.style.width='0%';
         el=$('#blockDay'); if(el) el.textContent='—';
+        // Caso especial: 31/12 en años bisiestos → ocultar Frecuencia y Día
+        if(leap && m === 12 && d === 31){
+          var freqLabel = $('#calDayLabel');
+          var freqValue = $('#calDay');
+          var anilloDayBlock3 = $('#anilloDayBlock');
+          if(freqLabel) freqLabel.textContent='';
+          if(freqValue) freqValue.textContent='—';
+          if(anilloDayBlock3) anilloDayBlock3.style.display='none';
+        }
+
       }else{
         // Fuera del Anillo: restaurar etiqueta y ocultar bloque Día del Anillo
-        var dayLabelEl3 = $('#calDayLabel');
-        if(dayLabelEl3 && dayLabelEl3.parentElement) dayLabelEl3.parentElement.style.display='';
         el=$('#calDayLabel'); if(el) el.textContent='Paso';
         var anilloDayBlock2=$('#anilloDayBlock');
         if(anilloDayBlock2) anilloDayBlock2.style.display='none';
