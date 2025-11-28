@@ -294,8 +294,24 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       var blk=Math.floor(idx/4)+1;
       var mem=(card==='SO')?(['','RAM','REM','ROM','RUM'][step]):'0';
 
+      // Día mostrado en el encabezado:
+      // - Fuera del Anillo de Fuego: día 1–16 dentro de la vuelta
+      // - Dentro del Anillo de Fuego: día 1–13 del Anillo (353–365 → 1–13)
+      var displayDay = day;
+      if(showAnillo && logicalDay != null && logicalDay >= 353 && logicalDay <= 365){
+        displayDay = logicalDay - 352;
+      }
+
       var el;
-      el=$('#calDay'); if(el) el.textContent=day;
+      el=$('#calDay'); if(el) el.textContent=displayDay;
+      var dayLabel=$('#calDayLabel');
+      if(dayLabel){
+        if(showAnillo && logicalDay != null && logicalDay >= 353 && logicalDay <= 365){
+          dayLabel.textContent='Frecuencia';
+        }else{
+          dayLabel.textContent='Paso';
+        }
+      }
       el=$('#calCard'); if(el) el.textContent=card;
       el=$('#calStep'); if(el) el.textContent=(['Lógica','Inhumano','Humano','Contexto'][step-1]);
       el=$('#calMem'); if(el) el.textContent=mem;
