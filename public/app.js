@@ -6,7 +6,8 @@
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
     function dt(y,m,d){
-      // Normaliza correctamente años 1–99 evitando el offset 1900+ en algunos motores (especialmente móviles)
+      // Corrección: asegurar que los años 1–99 no se mapeen automáticamente a 1900+.
+      // Creamos una fecha base y luego fijamos explícitamente el año en UTC.
       var base = new Date(Date.UTC(0, m-1, d));
       base.setUTCFullYear(y);
       return base;
@@ -74,22 +75,28 @@ function fmtDate(d){
     function up(){
       var now=new Date();
       var todayLocal=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-      var tStr=todayLocal.getFullYear()+'-'+pad(todayLocal.getMonth()+1)+'-'+pad(todayLocal.getDate());
+      var tStr=pad(todayLocal.getDate())+'-'+pad(todayLocal.getMonth()+1)+'-'+String(todayLocal.getFullYear()).padStart(4,'0');
       var qp=parseSearch();
 
       var refI=$('#ref'), refT=$('#refText'), dobI=$('#dob'), dobT=$('#dobText');
-      // Ajuste móvil: en algunos navegadores (iOS/Android) el <input type="date">
-      // muestra 3 ene 1 cuando se ingresa 01-01-0001. Para esos casos cambiamos
-      // dinámicamente a type="text" para que se vea exactamente lo digitado.
-      if(refI && !refI._mobilePatched){
-        try{
-          if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-            refI.type = 'text';
-            if(!refI.placeholder) refI.placeholder = 'aaaa-mm-dd';
+      // Ajuste móvil: algunos navegadores muestran mal fechas antiguas en <input type="date">
+      // Para evitarlo, en móviles usamos type="text" y mostramos exactamente dd-mm-aaaa.
+      try{
+        var ua = navigator.userAgent || '';
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)){
+          var refInput = $('#ref');
+          if(refInput && !refInput._mobilePatched){
+            if(refInput.type === 'date'){
+              refInput.type = 'text';
+            }
+            if(!refInput.placeholder){
+              refInput.placeholder = 'dd-mm-aaaa';
+            }
+            refInput._mobilePatched = true;
           }
-        }catch(e){}
-        refI._mobilePatched = true;
-      }
+        }
+      }catch(e){}
+
       if(!init){
         if(refI && !refI.value) refI.value = (qp.ref || tStr);
         if(dobI && !dobI.value){ if(qp.dob) dobI.value = qp.dob; }
@@ -264,7 +271,7 @@ function fmtDate(d){
 var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
       var nowLbl = now.toLocaleDateString();
       var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent='Ahora: '+nowLbl+' · '+tz;
-      var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.y).padStart(4,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.d).padStart(2,'0')) : '0');
+      var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.d).padStart(2,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.y).padStart(4,'0')) : '0');
 
       var doyVal=dOY(ref);
       var y = ref.getUTCFullYear();
