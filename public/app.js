@@ -6,8 +6,8 @@
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
     function dt(y,m,d){
-      // Corrección: asegurar que los años 1–99 no se mapeen automáticamente a 1901–1999.
-      // Usamos un Date base y luego fijamos explícitamente el año en UTC.
+      // Normaliza correctamente años 1–99 evitando el offset 1900+ en algunos motores JS
+      // y permite fechas como 0001-01-01 sin corrimientos implícitos.
       var base = new Date(Date.UTC(0, m-1, d));
       base.setUTCFullYear(y);
       return base;
@@ -75,10 +75,29 @@ function fmtDate(d){
     function up(){
       var now=new Date();
       var todayLocal=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-      var tStr=todayLocal.getFullYear()+'-'+pad(todayLocal.getMonth()+1)+'-'+pad(todayLocal.getDate());
+      var tStr=pad(todayLocal.getDate())+'-'+pad(todayLocal.getMonth()+1)+'-'+String(todayLocal.getFullYear()).padStart(4,'0');
       var qp=parseSearch();
 
       var refI=$('#ref'), refT=$('#refText'), dobI=$('#dob'), dobT=$('#dobText');
+      // Ajustes para móviles: usar inputs de texto para evitar problemas del control nativo de fecha
+      // y permitir años como 0001 en Fecha de referencia y Fecha de nacimiento.
+      try{
+        var ua = navigator.userAgent || '';
+        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+        if(isMobile){
+          if(refI && !refI._mobilePatched){
+            refI.type = 'text';
+            if(!refI.placeholder) refI.placeholder = 'dd-mm-aaaa';
+            refI._mobilePatched = true;
+          }
+          if(dobI && !dobI._mobilePatched){
+            dobI.type = 'text';
+            if(!dobI.placeholder) dobI.placeholder = 'dd-mm-aaaa';
+            dobI._mobilePatched = true;
+          }
+        }
+      }catch(e){}
+
       if(!init){
         if(refI && !refI.value) refI.value = (qp.ref || tStr);
         if(dobI && !dobI.value){ if(qp.dob) dobI.value = qp.dob; }
@@ -253,7 +272,7 @@ function fmtDate(d){
 var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
       var nowLbl = now.toLocaleDateString();
       var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent='Ahora: '+nowLbl+' · '+tz;
-      var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.y).padStart(4,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.d).padStart(2,'0')) : '0');
+      var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.d).padStart(2,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.y).padStart(4,'0')) : '0');
 
       var doyVal=dOY(ref);
       var y = ref.getUTCFullYear();
