@@ -994,7 +994,32 @@ body.noScroll{overflow:hidden}
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
   const ref   = document.getElementById('ref');
-  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; return m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0"); }
+  function isoToMD(iso){
+    if(!iso) return null;
+    const parts = iso.split('-');
+    if(parts.length !== 3) return null;
+    const y = parseInt(parts[0], 10);
+    let m = parseInt(parts[1], 10);
+    let d = parseInt(parts[2], 10);
+    if(!(y>=1 && m>=1 && m<=12 && d>=1 && d<=31)) return null;
+    const isLeap = (y%4===0) && ((y%100)!==0 || (y%400)===0);
+    if(isLeap){
+      // Para años bisiestos: el 29/02 toma el elemento del 01/03
+      // y desde el 01/03 hasta el 17/12 se corre el elemento un día hacia atrás.
+      // Desde el 18/12 (Anillo de Fuego) no se toca nada.
+      const beforeLeapShift = (m<2) || (m===2 && d<=28);
+      const afterAnilloStart = (m===12 && d>=18);
+      if(!beforeLeapShift && !afterAnilloStart){
+        const jsDate = new Date(Date.UTC(y, m-1, d));
+        jsDate.setUTCDate(jsDate.getUTCDate()+1);
+        m = jsDate.getUTCMonth()+1;
+        d = jsDate.getUTCDate();
+      }
+    }
+    const mm = String(m).padStart(2,"0");
+    const dd = String(d).padStart(2,"0");
+    return mm+"-"+dd;
+  }
   function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
   function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
   function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
