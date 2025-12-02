@@ -6,8 +6,7 @@
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
     function dt(y,m,d){
-      // Corrección: asegurar que los años 1–99 no se mapeen automáticamente a 1901–1999.
-      // Usamos un Date base y luego fijamos explícitamente el año en UTC.
+      // Normaliza correctamente años 1–99 evitando el offset 1900+ en algunos motores (especialmente móviles)
       var base = new Date(Date.UTC(0, m-1, d));
       base.setUTCFullYear(y);
       return base;
@@ -79,6 +78,18 @@ function fmtDate(d){
       var qp=parseSearch();
 
       var refI=$('#ref'), refT=$('#refText'), dobI=$('#dob'), dobT=$('#dobText');
+      // Ajuste móvil: en algunos navegadores (iOS/Android) el <input type="date">
+      // muestra 3 ene 1 cuando se ingresa 01-01-0001. Para esos casos cambiamos
+      // dinámicamente a type="text" para que se vea exactamente lo digitado.
+      if(refI && !refI._mobilePatched){
+        try{
+          if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+            refI.type = 'text';
+            if(!refI.placeholder) refI.placeholder = 'aaaa-mm-dd';
+          }
+        }catch(e){}
+        refI._mobilePatched = true;
+      }
       if(!init){
         if(refI && !refI.value) refI.value = (qp.ref || tStr);
         if(dobI && !dobI.value){ if(qp.dob) dobI.value = qp.dob; }
