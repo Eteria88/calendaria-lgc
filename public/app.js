@@ -6,8 +6,8 @@
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
     function dt(y,m,d){
-      // Corrección: asegurar que los años 1–99 no se mapeen automáticamente a 1900+.
-      // Creamos una fecha base y luego fijamos explícitamente el año en UTC.
+      // Normaliza correctamente años 1–99 evitando el offset 1900+ en algunos motores JS
+      // y permite fechas como 0001-01-01 sin corrimientos implícitos.
       var base = new Date(Date.UTC(0, m-1, d));
       base.setUTCFullYear(y);
       return base;
@@ -79,20 +79,21 @@ function fmtDate(d){
       var qp=parseSearch();
 
       var refI=$('#ref'), refT=$('#refText'), dobI=$('#dob'), dobT=$('#dobText');
-      // Ajuste móvil: algunos navegadores muestran mal fechas antiguas en <input type="date">
-      // Para evitarlo, en móviles usamos type="text" y mostramos exactamente dd-mm-aaaa.
+      // Ajustes para móviles: usar inputs de texto para evitar problemas del control nativo de fecha
+      // y permitir años como 0001 en Fecha de referencia y Fecha de nacimiento.
       try{
         var ua = navigator.userAgent || '';
-        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)){
-          var refInput = $('#ref');
-          if(refInput && !refInput._mobilePatched){
-            if(refInput.type === 'date'){
-              refInput.type = 'text';
-            }
-            if(!refInput.placeholder){
-              refInput.placeholder = 'dd-mm-aaaa';
-            }
-            refInput._mobilePatched = true;
+        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+        if(isMobile){
+          if(refI && !refI._mobilePatched){
+            refI.type = 'text';
+            if(!refI.placeholder) refI.placeholder = 'dd-mm-aaaa';
+            refI._mobilePatched = true;
+          }
+          if(dobI && !dobI._mobilePatched){
+            dobI.type = 'text';
+            if(!dobI.placeholder) dobI.placeholder = 'dd-mm-aaaa';
+            dobI._mobilePatched = true;
           }
         }
       }catch(e){}
