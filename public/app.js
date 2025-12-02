@@ -5,7 +5,13 @@
     status('estado: JS cargado', true);
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
-    function dt(y,m,d){return new Date(Date.UTC(y,m-1,d));}
+    function dt(y,m,d){
+      // Corrección: asegurar que los años 1–99 no se mapeen automáticamente a 1901–1999.
+      // Usamos un Date base y luego fijamos explícitamente el año en UTC.
+      var base = new Date(Date.UTC(0, m-1, d));
+      base.setUTCFullYear(y);
+      return base;
+    }
 function fmtDate(d){
       var dd = String(d.getUTCDate()).padStart(2,'0');
       var mm = String(d.getUTCMonth()+1).padStart(2,'0');
