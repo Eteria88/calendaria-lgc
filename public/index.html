@@ -994,86 +994,27 @@ body.noScroll{overflow:hidden}
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
   const ref   = document.getElementById('ref');
-
-  function isLeapYear(y){
-    return (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
-  }
-
-  function isoToMD(iso){
-    if(!iso) return null;
-    const parts = iso.split('-');
-    if(parts.length !== 3) return null;
-    const y = parseInt(parts[0], 10);
-    let m = parseInt(parts[1], 10);
-    let d = parseInt(parts[2], 10);
-
-    if(Number.isNaN(y) || Number.isNaN(m) || Number.isNaN(d)) return null;
-
-    const mdRaw = String(m).padStart(2,"0") + "-" + String(d).padStart(2,"0");
-
-    if(isLeapYear(y)){
-      // En años bisiestos NO hay elemento periódico el 18/12
-      if(mdRaw === "12-18"){
-        return null;
-      }
-
-      // Desde el 29/02 hasta el 17/12 (inclusive) el elemento se corre un día:
-      // 29/02 usa el elemento del 01/03, 01/03 el del 02/03, ..., 17/12 el del 18/12.
-      const val = m * 100 + d; // comparador simple mmdd
-      const from = 2 * 100 + 29;   // 02-29
-      const to   = 12 * 100 + 17;  // 12-17
-
-      if(val >= from && val <= to){
-        const next = new Date(Date.UTC(y, m - 1, d + 1));
-        const nm = next.getUTCMonth() + 1;
-        const nd = next.getUTCDate();
-        return String(nm).padStart(2,"0") + "-" + String(nd).padStart(2,"0");
-      }
-
-      // Resto de fechas de año bisiesto: se mapean normal
-      return mdRaw;
+  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; if(m.length!==3) return null;
+    // Soporta tanto "aaaa-mm-dd" (HTML date normal)
+    // como "dd-mm-aaaa" (entrada manual en móviles).
+    if(m[0].length===4){
+      // Formato aaaa-mm-dd
+      return m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0");
     }
-
-    // Años no bisiestos: mapeo directo
-    return mdRaw;
-  }
-
-  function todayISO(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-
-  function activeISO(){
-    if(ref && ref.value) return ref.value;
-    return todayISO();
-  }
-
-  function renderBadge(){
-    if(!badge || !tile) return;
-    const md = isoToMD(activeISO());
-    const el = md ? MAP[md] : null;
-    if(el){
-      tile.src = "./" + el.img;
-      badge.title = el.title;
-      badge.style.display = "block";
-      badge.setAttribute("aria-hidden","false");
-      tile.alt = el.title + " element tile";
-    } else {
-      badge.style.display = "none";
-      badge.setAttribute("aria-hidden","true");
-      if(tile){ tile.alt = ""; }
+    if(m[2].length===4){
+      // Formato dd-mm-aaaa
+      return m[1].padStart(2,"0")+"-"+m[0].padStart(2,"0");
     }
+    return null; }
+  function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
+  function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
+  function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
+    if(el){ tile.src="./"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
+    else { badge.style.display="none"; badge.setAttribute("aria-hidden","true"); }
   }
-
-  if(ref){
-    ref.addEventListener('change', renderBadge);
-    ref.addEventListener('input', renderBadge);
-  }
+  if(ref){ ref.addEventListener('change',renderBadge); ref.addEventListener('input',renderBadge); }
   document.addEventListener('DOMContentLoaded', renderBadge);
-  window.addEventListener('load', () => setTimeout(renderBadge, 0));
+  window.addEventListener('load', ()=>setTimeout(renderBadge,0));
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
