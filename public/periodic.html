@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tabla periódica · Calendaria-LGC</title>
+<link rel="icon" href="./favicon_orb_c_wide.png">
+<style>
+:root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(1200px 800px at 80% -10%,#12202b 0%,#0b0d10 40%) fixed;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(11,13,16,.85),rgba(11,13,16,.65));backdrop-filter:saturate(130%) blur(8px);padding:10px 0 12px 0;display:flex;justify-content:space-between;align-items:center}
+.sun{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);box-shadow:0 0 18px #ffb347;display:inline-block;margin-right:8px}
+.small{font-size:12px;color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.mono.big{font-size:clamp(26px,7vw,40px)}
+.badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.6px;text-transform:uppercase}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--ol);border-radius:16px;padding:14px}
+.hero{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin:14px 0}
+.tile{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;border:1px solid var(--ol);border-radius:16px;padding:14px}
+@media(min-width:840px){.tile{grid-column:span 6}}
+.solarBreak{display:grid;gap:8px;margin-top:8px}
+.sb{border:1px solid var(--ol);border-radius:10px;overflow:hidden}
+.sb .h{background:rgba(255,255,255,.06);text-align:center;font-weight:700;padding:6px 8px}
+.sb .v{text-align:center;padding:8px}
+.q-mini{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.q-item{display:flex;justify-content:space-between;border:1px dashed var(--ol);border-radius:10px;padding:8px}
+.q-item-wide{grid-column:1 / -1}
+table{width:100%;border-collapse:collapse;border:1px solid var(--ol);border-radius:10px;overflow:hidden}
+th,td{padding:10px 12px;border-bottom:1px solid var(--ol);text-align:right}
+th:first-child,td:first-child{text-align:left}
+.metrics{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:12px}
+.mcard{grid-column:1/-1;border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+@media(min-width:640px){.mcard{grid-column:span 6}}
+@media(min-width:1024px){.mcard{grid-column:span 4}}
+.progress{height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.05);border:1px solid var(--ol);margin-top:6px}
+.progressInner{height:100%;background:linear-gradient(90deg,#63a8ff,#7cc7ff)}
+.chips{display:flex;gap:8px;margin-top:6px}.chip{border:1px solid var(--ol);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04)}
+.anchors-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
+.a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02)}
+.a-dot{width:10px;height:10px;border-radius:50%}
+.plane{position:relative;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+@media(min-width:480px){.plane{height:240px}} @media(min-width:768px){.plane{height:260px}} @media(min-width:1024px){.plane{height:300px}}
+.planeGrid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.cell{display:flex;align-items:center;justify-content:center;border:1px dashed var(--ol);position:relative;flex-direction:column;gap:4px}
+.cell.active{background:rgba(124,199,255,.10);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.6)}
+.cellInner{display:flex;flex-direction:column;align-items:center;gap:2px}
+.cTitle{font-weight:700;letter-spacing:.5px}
+.cRange{font-size:11px;color:var(--muted)}
+.cSteps{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.cStep{font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 6px;background:rgba(255,255,255,.04)}
+.cStep.active{border-color:#7cc7ff;background:rgba(124,199,255,.18);box-shadow:0 0 6px rgba(124,199,255,.5)}
+.memRow{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:4}
+.memTag{position:relative;font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.04)}
+.memTag.active{border-color:#ffd166;box-shadow:0 0 6px rgba(255,209,102,.5)}
+.section-title{margin:6px 0 8px 0;color:#9fb3c8;font-size:14px;font-weight:700}
+.input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+.field{display:flex;flex-direction:column}
+.input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap)}
+.btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
+.btn:hover{background:rgba(124,199,255,.25)}
+.table-wrap{overflow:auto;border:1px solid var(--ol);border-radius:10px}
+.table-wrap table{min-width:680px}
+.status{margin:8px 0;color:#9cffd5;font-size:12px}
+
+.layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
+.sidenav{position:sticky;top:58px;height:calc(100dvh - 70px);border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+.nav-title{font-size:12px;color:var(--muted);margin-bottom:8px}
+.nav-link{display:block;padding:8px 10px;margin:4px 0;border-radius:8px;border:1px solid var(--ol);color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+.nav-link:hover{background:rgba(255,255,255,.06)}
+.nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+@media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
+
+
+.menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
+@media(max-width:839px){.menuBtn{display:inline-block}}
+body.noScroll{overflow:hidden}
+.mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
+.mobileNav.open{pointer-events:auto}
+.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
+.mobileNav.open .mobileOverlay{opacity:1}
+.mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
+.mobileNav.open .mobileNavPanel{transform:translateX(0)}
+.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
+.closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
+.mobileList{display:flex;flex-direction:column;padding:10px}
+.mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+
+
+/* --- Responsive mobile tuning --- */
+@media(max-width:599px){
+  .wrap{padding:14px}
+  header{padding:8px 0 10px 0}
+  .card,.tile{padding:12px}
+  .mcard{grid-column:1/-1}
+  .mono.big{font-size:clamp(22px,8vw,34px); word-break:break-word; overflow-wrap:anywhere}
+  .plane{height:220px}
+  .cStep{padding:2px 5px}
+  .memTag{padding:2px 6px}
+  .input{min-height:44px}
+  .progress{height:8px}
+  .table-wrap{ -webkit-overflow-scrolling: touch; overflow:auto }
+  .scroll-hint{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+}
+@media(min-width:600px){
+  .scroll-hint{display:none}
+}
+
+
+/* Link "Volver a portada" en header */
+.header-actions{display:flex;gap:10px;align-items:center}
+.header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none}
+.header-actions a:hover{border-color:#6f8aa6;color:#d7e6ff}
+@media (max-width:480px){
+  .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
+}
+
+
+/* Periodic element badge (overlay, non-intrusive) */
+.top-card{position:relative}
+.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
+.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
+@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+
+
+  .anilloTitle{
+    text-align:center;
+    margin-top:6px;
+    margin-bottom:6px;
+    font-size:15px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .anilloClock{
+    position:relative;
+    width:100%;
+    max-width:260px;
+    margin:4px auto 0;
+    aspect-ratio:1/1;
+    border-radius:50%;
+    border:1px solid var(--ol);
+    box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.02);
+  }
+@media(max-width:479px){.anilloClock{max-width:180px;}}
+
+  .anilloCenter{
+    text-align:center;
+    padding:2px 0;
+    border-radius:0;
+    background:transparent;
+    backdrop-filter:none;
+  }
+  .anilloCenter .anilloDay{
+    font-size:16px;
+    line-height:1.1;
+    margin-bottom:0;
+  }
+  .anilloTick{
+    position:absolute;
+    inset:0;
+    transform-origin:50% 50%;
+    transform:rotate(var(--angle));
+    pointer-events:none;
+  }
+  .anilloTick span{
+    position:absolute;
+    top:6px;
+    left:50%;
+    transform:translateX(-50%) rotate(calc(-1*var(--angle)));
+    display:block;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .anilloTick--inactive span{opacity:0;}
+  /* Línea sutil desde el centro (353) hacia cada frecuencia visible */
+    .anilloLine{
+    position:absolute;
+    inset:0;
+    transform-origin:50% 50%;
+    transform:rotate(var(--angle));
+    pointer-events:none;
+  }
+  .anilloLine::before{
+    content:"";
+    position:absolute;
+    top:6%;
+    left:50%;
+    width:1px;
+    height:44%;
+    background:rgba(255,255,255,.18);
+    transform-origin:50% 100%;
+    transform:translateX(-50%);
+    opacity:.65;
+    pointer-events:none;
+  }
+  .anilloLine--inactive::before{
+    opacity:0;
+  }
+
+
+
+.periodicShell{margin-top:16px;display:flex;flex-direction:column;gap:16px}
+.periodicHeader{display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
+@media(min-width:640px){.periodicHeader{flex-direction:row;justify-content:space-between;align-items:center}}
+.periodicContainer{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--ol);background:rgba(0,0,0,.3);min-height:320px}
+.periodicPdf{width:100%;height:min(80vh,900px);border:0;display:block}
+@media(min-width:840px){.periodicPdf{height:80vh}}
+.periodicMarker{position:absolute;border-radius:999px;box-shadow:0 0 12px 4px rgba(124,199,255,.8);border:2px solid rgba(124,199,255,.9);transform:translate(-50%,-50%) scale(.8);pointer-events:none;transition:opacity .3s,transform .3s}
+.periodicMarker::after{content:'';display:block;width:100%;height:100%;border-radius:inherit;background:radial-gradient(circle,rgba(124,199,255,.55),transparent)}
+body[data-el="H"] .marker-H{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.marker-H{top:11%;left:6%;width:4%;opacity:0}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="periodicHeader">
+      <div>
+        <span class="sun"></span>
+        <h1 style="display:inline-block;margin-right:6px">Calendaria‑LGC</h1>
+        <span class="small">Tabla periódica de elementos</span>
+      </div>
+      <div style="margin-top:8px">
+        <a href="./index.html" class="btn">← Volver al calendario</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card periodicShell">
+      <div>
+        <div class="small">Elemento seleccionado</div>
+        <div class="mono big" id="periodicElementLabel">H · 1 · Hidrógeno</div>
+      </div>
+      <p class="small">Esta vista se abre desde el elemento del encabezado. En esta primera versión se resalta el Hidrógeno (1 de enero). Más adelante se podrán ir incorporando el resto de los elementos.</p>
+    </section>
+
+    <section class="card periodicShell">
+      <div class="periodicContainer">
+        <object data="./TablaPeriodica352elementos.pdf#view=FitH" type="application/pdf" class="periodicPdf">
+          <p class="small">Si tu navegador no puede mostrar el PDF, puedes descargar la tabla periódica desde <a href="./TablaPeriodica352elementos.pdf">este enlace</a>.</p>
+        </object>
+        <div class="periodicMarker marker-H" title="Hidrógeno"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  function getParam(name){
+    var m = new RegExp('[?&]'+name+'=([^&]+)').exec(window.location.search);
+    return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
+  }
+  var el = (getParam('el') || 'H').toUpperCase();
+  document.body.setAttribute('data-el', el);
+
+  var label = document.getElementById('periodicElementLabel');
+  if(label){
+    var name = 'Elemento';
+    var atomic = '';
+    if(el === 'H'){
+      name = 'Hidrógeno';
+      atomic = '1';
+    }
+    label.textContent = el + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '');
+  }
+})();
+</script>
+</body>
+</html>
