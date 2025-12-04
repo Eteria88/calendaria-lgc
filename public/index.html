@@ -1022,6 +1022,60 @@ body.noScroll{overflow:hidden}
   window.addEventListener('load', ()=>setTimeout(renderBadge,0));
 })();
 </script>
+<script>
+(function(){
+  const ref = document.getElementById('ref');
+  const link = document.getElementById('openPeriodicLink');
+
+  function isoToMD(iso){
+    if(!iso) return null;
+    var m = iso.split('-');
+    if(m.length !== 3) return null;
+    // Soporta tanto "aaaa-mm-dd" como "dd-mm-aaaa"
+    if(m[0].length === 4){
+      return m[1].padStart(2,'0') + "-" + m[2].padStart(2,'0');
+    }
+    if(m[2].length === 4){
+      return m[1].padStart(2,'0') + "-" + m[0].padStart(2,'0');
+    }
+    return null;
+  }
+
+  function todayISO(){
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var day = String(d.getDate()).padStart(2,'0');
+    return y + "-" + m + "-" + day;
+  }
+
+  function activeISO(){
+    if(ref && ref.value) return ref.value;
+    return todayISO();
+  }
+
+  function updatePeriodicLink(){
+    if(!link) return;
+    var md = isoToMD(activeISO());
+    var symbol = 'H'; // por defecto
+    if(md === '01-02'){
+      symbol = 'He';
+    } else if(md === '01-01'){
+      symbol = 'H';
+    }
+    link.href = './periodic.html?el=' + encodeURIComponent(symbol);
+  }
+
+  if(ref){
+    ref.addEventListener('change', updatePeriodicLink);
+    ref.addEventListener('input', updatePeriodicLink);
+  }
+  document.addEventListener('DOMContentLoaded', updatePeriodicLink);
+  window.addEventListener('load', function(){ setTimeout(updatePeriodicLink, 0); });
+})();
+</script>
+
+
 <!-- ELEMENT_BADGE_LOGIC_END -->
 
 

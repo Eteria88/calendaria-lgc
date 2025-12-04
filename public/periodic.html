@@ -110,7 +110,7 @@ header{
 
   <main>
     <section class="card">
-      <div class="mono elementLabel">Columna 1 · Fila 1</div>
+      <div class="mono elementLabel" id="colRowLabel">Columna 1 · Fila 1</div>
       <div class="small mono" id="periodicElementLabel">H · 1 · Hidrógeno</div>
     </section>
 
@@ -136,17 +136,35 @@ header{
     var m = new RegExp('[?&]'+name+'=([^&]+)').exec(window.location.search);
     return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
   }
-  var el = (getParam('el') || 'H').toUpperCase();
-  document.body.setAttribute('data-el', el);
+
+  var raw = getParam('el') || 'H';
+  var key = raw.toUpperCase();
+  var symbol = raw; // preserva mayúsculas/minúsculas originales
+
   var label = document.getElementById('periodicElementLabel');
-  if(label){
-    var name = 'Elemento';
-    var atomic = '';
-    if(el === 'H'){
-      name = 'Hidrógeno';
-      atomic = '1';
-    }
-    label.textContent = el + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '');
+  var colRowLabel = document.getElementById('colRowLabel');
+
+  var name = 'Elemento';
+  var atomic = '';
+  var colRow = 'Columna 1 · Fila 1';
+
+  if (key === 'H') {
+    name = 'Hidrógeno';
+    atomic = '1';
+    colRow = 'Columna 1 · Fila 1';
+    symbol = 'H';
+  } else if (key === 'HE') {
+    name = 'Helium';
+    atomic = '2';
+    colRow = 'Columna 32 · Fila 1';
+    symbol = 'He';
+  }
+
+  if (label) {
+    label.textContent = symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '');
+  }
+  if (colRowLabel) {
+    colRowLabel.textContent = colRow;
   }
 })();
 </script>
