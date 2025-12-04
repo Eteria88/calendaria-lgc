@@ -81,33 +81,10 @@ header{
 @media (min-width:840px){
   .periodicPdf{height:80vh}
 }
-.periodicMarker{
-  position:absolute;
-  border-radius:999px;
-  box-shadow:0 0 12px 4px rgba(124,199,255,.8);
-  border:2px solid rgba(124,199,255,.9);
-  transform:translate(-50%,-50%) scale(.8);
-  pointer-events:none;
-  transition:opacity .3s,transform .3s;
+@media (max-width:600px){
+  .periodicPdf{height:75vh}
 }
-.periodicMarker::after{
-  content:'';
-  display:block;
-  width:100%;
-  height:100%;
-  border-radius:inherit;
-  background:radial-gradient(circle,rgba(124,199,255,.55),transparent);
-}
-.marker-H{
-  top:12%;
-  left:6%;
-  width:4%;
-  opacity:0;
-}
-body[data-el="H"] .marker-H{
-  opacity:1;
-  transform:translate(-50%,-50%) scale(1);
-}
+
 </style>
 </head>
 <body>
@@ -117,7 +94,7 @@ body[data-el="H"] .marker-H{
       <div class="small"><span class="sun"></span>Calendaria-LGC · Tabla periódica</div>
       <div class="small">Vista de elementos</div>
     </div>
-    <a href="./index.html" class="btn"><span>←</span><span>Volver al calendario</span></a>
+    <a href="./index.html" class="btn"><span>←</span><span>Volver a Calendaria</span></a>
   </header>
 
   <main>
@@ -140,7 +117,6 @@ body[data-el="H"] .marker-H{
             <a href="./TablaPeriodica352elementos.pdf">este enlace</a>.
           </p>
         </object>
-        <div class="periodicMarker marker-H" title="Hidrógeno"></div>
       </div>
     </section>
   </main>
