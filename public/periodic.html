@@ -68,21 +68,34 @@ header{
   position:relative;
   border-radius:16px;
   overflow:hidden;
-  border:1px solid var(--ol);
+  border:1px solid #d7e6ff; /* borde claro en todos los dispositivos */
   background:rgba(0,0,0,.35);
   min-height:320px;
 }
+.periodicScroll{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
 .periodicPdf{
   width:100%;
-  height:min(80vh,900px);
+  height:auto;
   border:0;
   display:block;
 }
 @media (min-width:840px){
-  .periodicPdf{height:80vh}
+  .periodicPdf{
+    width:100%;
+    height:auto;
+    max-height:80vh;
+  }
 }
-@media (max-width:600px){
-  .periodicPdf{height:75vh}
+@media (max-width:839px){
+  .periodicPdf{
+    width:1200px;
+    max-width:none;
+    height:auto;
+  }
 }
 
 </style>
@@ -105,14 +118,16 @@ header{
 
     <section class="card">
       <div class="periodicContainer">
-        <object data="./TablaPeriodica352elementos.pdf#view=FitH"
-                type="application/pdf"
-                class="periodicPdf">
-          <p class="small" style="padding:12px">
-            Tu navegador no puede mostrar el PDF embebido. Puedes descargar la tabla periódica desde
-            <a href="./TablaPeriodica352elementos.pdf">este enlace</a>.
-          </p>
-        </object>
+        <div class="periodicScroll">
+          <object data="./TablaPeriodica352elementos.pdf#view=FitH"
+                  type="application/pdf"
+                  class="periodicPdf">
+            <p class="small" style="padding:12px">
+              Tu navegador no puede mostrar el PDF embebido. Puedes descargar la tabla periódica desde
+              <a href="./TablaPeriodica352elementos.pdf">este enlace</a>.
+            </p>
+          </object>
+        </div>
       </div>
     </section>
   </main>
