@@ -307,6 +307,9 @@ body.noScroll{overflow:hidden}
     <div class="elementBadge" title="Hydrogen — 1">
       <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
     </div>
+    <div style="position:absolute;top:110px;right:16px;">
+      <a href="./periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
+    </div>
 
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
@@ -324,7 +327,6 @@ body.noScroll{overflow:hidden}
             <div class="small" id="calTurnRange" style="display:none">—</div>
             <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
             <div style="margin-top:10px">
-              <a href="./periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
             </div>
 <!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta </span><span class="mono" id="turnDay">—</span></div> -->
 <!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Paso en cuadrante (1–4) </span><span class="mono" id="blockDay">—</span></div> -->
@@ -1021,7 +1023,7 @@ body.noScroll{overflow:hidden}
       return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
     }
 
-    // Anillo de Fuego:
+    // Fechas de Anillo de Fuego para el badge:
     // - Bisiestos: 18/12 al 31/12
     // - No bisiestos: 19/12 al 31/12
     if(isLeap(y)){
@@ -1034,7 +1036,8 @@ body.noScroll{overflow:hidden}
       }
     }
 
-    // Ajuste bisiesto: corrimiento 1 día desde 29/02 hasta 17/12 inclusive
+    // Ajuste bisiesto: del 29/02 al 17/12 inclusive
+    // se corre un día hacia adelante.
     if(isLeap(y)){
       const inShiftRange =
         (m === 2 && d === 29) ||
@@ -1047,11 +1050,12 @@ body.noScroll{overflow:hidden}
       }
     }
 
-    const mm = String(m).padStart(2,'0');
-    const dd = String(d).padStart(2,'0');
+    const mm = String(m).padStart(2, "0");
+    const dd = String(d).padStart(2, "0");
     return mm + "-" + dd;
   }
-  function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
+
+function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
   function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
   function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
     if(el){ tile.src="./"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
@@ -1062,131 +1066,24 @@ body.noScroll{overflow:hidden}
   window.addEventListener('load', ()=>setTimeout(renderBadge,0));
 })();
 </script>
-<!-- ELEMENT_BADGE_LOGIC_END --><script>
+<!-- ELEMENT_BADGE_LOGIC_END -->
+
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+      console.log('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
+
+<script>
 (function(){
   const ref = document.getElementById('ref');
   const link = document.getElementById('openPeriodicLink');
-
-  const SYMBOL_BY_MD = {
-    "01-01": "H",
-    "01-02": "He",
-    "01-03": "Li",
-    "01-04": "Be",
-    "01-05": "B",
-    "01-06": "C",
-    "01-07": "N",
-    "01-08": "O",
-    "01-09": "F",
-    "01-10": "Ne",
-    "01-11": "Na",
-    "01-12": "Mg",
-    "01-13": "Al",
-    "01-14": "Si",
-    "01-15": "P",
-    "01-16": "S",
-    "01-17": "Cl",
-    "01-18": "Ar",
-    "01-19": "K",
-    "01-20": "Ca",
-    "01-21": "Sc",
-    "01-22": "Ti",
-    "01-23": "V",
-    "01-24": "Cr",
-    "01-25": "Mn",
-    "01-26": "Fe",
-    "01-27": "Co",
-    "01-28": "Ni",
-    "01-29": "Cu",
-    "01-30": "Zn",
-    "01-31": "Ga",
-    "02-01": "Ge",
-    "02-02": "As",
-    "02-03": "Se",
-    "02-04": "Br",
-    "02-05": "Kr",
-    "02-06": "Rb",
-    "02-07": "Sr",
-    "02-08": "Y",
-    "02-09": "Zr",
-    "02-10": "Nb",
-    "02-11": "Mo",
-    "02-12": "Tc",
-    "02-13": "Ru",
-    "02-14": "Rh",
-    "02-15": "Pd",
-    "02-16": "Ag",
-    "02-17": "Cd",
-    "02-18": "In",
-    "02-19": "Sn",
-    "02-20": "Sb",
-    "02-21": "Te",
-    "02-22": "I",
-    "02-23": "Xe",
-    "02-24": "Cs",
-    "02-25": "Ba",
-    "02-26": "La",
-    "02-27": "Ce",
-    "02-28": "Pr",
-    "03-01": "Nd",
-    "03-02": "Pm",
-    "03-03": "Sm",
-    "03-04": "Eu",
-    "03-05": "Gd",
-    "03-06": "Tb",
-    "03-07": "Dy",
-    "03-08": "Ho",
-    "03-09": "Er",
-    "03-10": "Tm",
-    "03-11": "Yb",
-    "03-12": "Lu",
-    "03-13": "Hf",
-    "03-14": "Ta",
-    "03-15": "W",
-    "03-16": "Re",
-    "03-17": "Os",
-    "03-18": "Ir",
-    "03-19": "Pt",
-    "03-20": "Au",
-    "03-21": "Hg",
-    "03-22": "Tl",
-    "03-23": "Pb",
-    "03-24": "Bi",
-    "03-25": "Po",
-    "03-26": "At",
-    "03-27": "Rn",
-    "03-28": "Fr",
-    "03-29": "Ra",
-    "03-30": "Ac",
-    "03-31": "Th",
-    "04-01": "Pa",
-    "04-02": "U",
-    "04-03": "Np",
-    "04-04": "Pu",
-    "04-05": "Am",
-    "04-06": "Cm",
-    "04-07": "Bk",
-    "04-08": "Cf",
-    "04-09": "Es",
-    "04-10": "Fm",
-    "04-11": "Md",
-    "04-12": "No",
-    "04-13": "Lr",
-    "04-14": "Rf",
-    "04-15": "Db",
-    "04-16": "Sg",
-    "04-17": "Bh",
-    "04-18": "Hs",
-    "04-19": "Mt",
-    "04-20": "Ds",
-    "04-21": "Rg",
-    "04-22": "Cn",
-    "04-23": "Nh",
-    "04-24": "Fl",
-    "04-25": "Mc",
-    "04-26": "Lv",
-    "04-27": "Ts",
-    "04-28": "Og"
-  };
 
   function isoToMD(iso){
     if(!iso) return null;
@@ -1212,9 +1109,7 @@ body.noScroll{overflow:hidden}
       return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
     }
 
-    // Anillo de Fuego:
-    // - Bisiestos: 18/12 al 31/12
-    // - No bisiestos: 19/12 al 31/12
+    // Anillo de Fuego: sin elemento/tabla
     if(isLeap(y)){
       if(m === 12 && d >= 18){
         return null;
@@ -1225,7 +1120,7 @@ body.noScroll{overflow:hidden}
       }
     }
 
-    // Ajuste bisiesto: corrimiento 1 día desde 29/02 hasta 17/12 inclusive
+    // Ajuste bisiesto de corrimiento desde 29/02 hasta 17/12 inclusive
     if(isLeap(y)){
       var inShiftRange =
         (m === 2 && d === 29) ||
@@ -1260,16 +1155,376 @@ body.noScroll{overflow:hidden}
     if(!link) return;
     var md = isoToMD(activeISO());
 
-    if(!md || !SYMBOL_BY_MD[md]){
+    // Fechas sin elemento (Anillo de Fuego): ocultar botón
+    if(!md){
       link.style.display = 'none';
       link.removeAttribute('href');
       link.setAttribute('aria-disabled','true');
       return;
     }
 
+    // Asegurar que el botón esté visible cuando hay elemento
     link.style.display = '';
     link.removeAttribute('aria-disabled');
-    var symbol = SYMBOL_BY_MD[md];
+
+    var symbol = 'H'; // por defecto
+    if(md === '01-01'){
+      symbol = 'H';
+    }
+    else if(md === '01-02'){
+      symbol = 'He';
+    }
+    else if(md === '01-03'){
+      symbol = 'Li';
+    }
+    else if(md === '01-04'){
+      symbol = 'Be';
+    }
+    else if(md === '01-05'){
+      symbol = 'B';
+    }
+    else if(md === '01-06'){
+      symbol = 'C';
+    }
+    else if(md === '01-07'){
+      symbol = 'N';
+    }
+    else if(md === '01-08'){
+      symbol = 'O';
+    }
+    else if(md === '01-09'){
+      symbol = 'F';
+    }
+    else if(md === '01-10'){
+      symbol = 'Ne';
+    }
+    else if(md === '01-11'){
+      symbol = 'Na';
+    }
+    else if(md === '01-12'){
+      symbol = 'Mg';
+    }
+    else if(md === '01-13'){
+      symbol = 'Al';
+    }
+    else if(md === '01-14'){
+      symbol = 'Si';
+    }
+    else if(md === '01-15'){
+      symbol = 'P';
+    }
+    else if(md === '01-16'){
+      symbol = 'S';
+    }
+    else if(md === '01-17'){
+      symbol = 'Cl';
+    }
+    else if(md === '01-18'){
+      symbol = 'Ar';
+    }
+    else if(md === '01-19'){
+      symbol = 'K';
+    }
+    else if(md === '01-20'){
+      symbol = 'Ca';
+    }
+    else if(md === '01-21'){
+      symbol = 'Sc';
+    }
+    else if(md === '01-22'){
+      symbol = 'Ti';
+    }
+    else if(md === '01-23'){
+      symbol = 'V';
+    }
+    else if(md === '01-24'){
+      symbol = 'Cr';
+    }
+    else if(md === '01-25'){
+      symbol = 'Mn';
+    }
+    else if(md === '01-26'){
+      symbol = 'Fe';
+    }
+    else if(md === '01-27'){
+      symbol = 'Co';
+    }
+    else if(md === '01-28'){
+      symbol = 'Ni';
+    }
+    else if(md === '01-29'){
+      symbol = 'Cu';
+    }
+    else if(md === '01-30'){
+      symbol = 'Zn';
+    }
+    else if(md === '01-31'){
+      symbol = 'Ga';
+    }
+    else if(md === '02-01'){
+      symbol = 'Ge';
+    }
+    else if(md === '02-02'){
+      symbol = 'As';
+    }
+    else if(md === '02-03'){
+      symbol = 'Se';
+    }
+    else if(md === '02-04'){
+      symbol = 'Br';
+    }
+    else if(md === '02-05'){
+      symbol = 'Kr';
+    }
+    else if(md === '02-06'){
+      symbol = 'Rb';
+    }
+    else if(md === '02-07'){
+      symbol = 'Sr';
+    }
+    else if(md === '02-08'){
+      symbol = 'Y';
+    }
+    else if(md === '02-09'){
+      symbol = 'Zr';
+    }
+    else if(md === '02-10'){
+      symbol = 'Nb';
+    }
+    else if(md === '02-11'){
+      symbol = 'Mo';
+    }
+    else if(md === '02-12'){
+      symbol = 'Tc';
+    }
+    else if(md === '02-13'){
+      symbol = 'Ru';
+    }
+    else if(md === '02-14'){
+      symbol = 'Rh';
+    }
+    else if(md === '02-15'){
+      symbol = 'Pd';
+    }
+    else if(md === '02-16'){
+      symbol = 'Ag';
+    }
+    else if(md === '02-17'){
+      symbol = 'Cd';
+    }
+    else if(md === '02-18'){
+      symbol = 'In';
+    }
+    else if(md === '02-19'){
+      symbol = 'Sn';
+    }
+    else if(md === '02-20'){
+      symbol = 'Sb';
+    }
+    else if(md === '02-21'){
+      symbol = 'Te';
+    }
+    else if(md === '02-22'){
+      symbol = 'I';
+    }
+    else if(md === '02-23'){
+      symbol = 'Xe';
+    }
+    else if(md === '02-24'){
+      symbol = 'Cs';
+    }
+    else if(md === '02-25'){
+      symbol = 'Ba';
+    }
+    else if(md === '02-26'){
+      symbol = 'La';
+    }
+    else if(md === '02-27'){
+      symbol = 'Ce';
+    }
+    else if(md === '02-28'){
+      symbol = 'Pr';
+    }
+    else if(md === '03-01'){
+      symbol = 'Nd';
+    }
+    else if(md === '03-02'){
+      symbol = 'Pm';
+    }
+    else if(md === '03-03'){
+      symbol = 'Sm';
+    }
+    else if(md === '03-04'){
+      symbol = 'Eu';
+    }
+    else if(md === '03-05'){
+      symbol = 'Gd';
+    }
+    else if(md === '03-06'){
+      symbol = 'Tb';
+    }
+    else if(md === '03-07'){
+      symbol = 'Dy';
+    }
+    else if(md === '03-08'){
+      symbol = 'Ho';
+    }
+    else if(md === '03-09'){
+      symbol = 'Er';
+    }
+    else if(md === '03-10'){
+      symbol = 'Tm';
+    }
+    else if(md === '03-11'){
+      symbol = 'Yb';
+    }
+    else if(md === '03-12'){
+      symbol = 'Lu';
+    }
+    else if(md === '03-13'){
+      symbol = 'Hf';
+    }
+    else if(md === '03-14'){
+      symbol = 'Ta';
+    }
+    else if(md === '03-15'){
+      symbol = 'W';
+    }
+    else if(md === '03-16'){
+      symbol = 'Re';
+    }
+    else if(md === '03-17'){
+      symbol = 'Os';
+    }
+    else if(md === '03-18'){
+      symbol = 'Ir';
+    }
+    else if(md === '03-19'){
+      symbol = 'Pt';
+    }
+    else if(md === '03-20'){
+      symbol = 'Au';
+    }
+    else if(md === '03-21'){
+      symbol = 'Hg';
+    }
+    else if(md === '03-22'){
+      symbol = 'Tl';
+    }
+    else if(md === '03-23'){
+      symbol = 'Pb';
+    }
+    else if(md === '03-24'){
+      symbol = 'Bi';
+    }
+    else if(md === '03-25'){
+      symbol = 'Po';
+    }
+    else if(md === '03-26'){
+      symbol = 'At';
+    }
+    else if(md === '03-27'){
+      symbol = 'Rn';
+    }
+
+    
+    else if(md === '03-28'){
+      symbol = 'Fr';
+    }
+    else if(md === '03-29'){
+      symbol = 'Ra';
+    }
+    else if(md === '03-30'){
+      symbol = 'Ac';
+    }
+    else if(md === '03-31'){
+      symbol = 'Th';
+    }
+    else if(md === '04-01'){
+      symbol = 'Pa';
+    }
+    else if(md === '04-02'){
+      symbol = 'U';
+    }
+    else if(md === '04-03'){
+      symbol = 'Np';
+    }
+    else if(md === '04-04'){
+      symbol = 'Pu';
+    }
+    else if(md === '04-05'){
+      symbol = 'Am';
+    }
+    else if(md === '04-06'){
+      symbol = 'Cm';
+    }
+    else if(md === '04-07'){
+      symbol = 'Bk';
+    }
+    else if(md === '04-08'){
+      symbol = 'Cf';
+    }
+    else if(md === '04-09'){
+      symbol = 'Es';
+    }
+    else if(md === '04-10'){
+      symbol = 'Fm';
+    }
+    else if(md === '04-11'){
+      symbol = 'Md';
+    }
+    else if(md === '04-12'){
+      symbol = 'No';
+    }
+    else if(md === '04-13'){
+      symbol = 'Lr';
+    }
+    else if(md === '04-14'){
+      symbol = 'Rf';
+    }
+    else if(md === '04-15'){
+      symbol = 'Db';
+    }
+    else if(md === '04-16'){
+      symbol = 'Sg';
+    }
+    else if(md === '04-17'){
+      symbol = 'Bh';
+    }
+    else if(md === '04-18'){
+      symbol = 'Hs';
+    }
+    else if(md === '04-19'){
+      symbol = 'Mt';
+    }
+    else if(md === '04-20'){
+      symbol = 'Ds';
+    }
+    else if(md === '04-21'){
+      symbol = 'Rg';
+    }
+    else if(md === '04-22'){
+      symbol = 'Cn';
+    }
+    else if(md === '04-23'){
+      symbol = 'Nh';
+    }
+    else if(md === '04-24'){
+      symbol = 'Fl';
+    }
+    else if(md === '04-25'){
+      symbol = 'Mc';
+    }
+    else if(md === '04-26'){
+      symbol = 'Lv';
+    }
+    else if(md === '04-27'){
+      symbol = 'Ts';
+    }
+    else if(md === '04-28'){
+      symbol = 'Og';
+    }
+
     link.href = './periodic.html?el=' + encodeURIComponent(symbol);
   }
 
@@ -1282,16 +1537,4 @@ body.noScroll{overflow:hidden}
 })();
 </script>
 
-
-
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(err) {
-      console.log('Service worker registration failed:', err);
-    });
-  });
-}
-</script>
 </body></html>
