@@ -999,18 +999,48 @@ body.noScroll{overflow:hidden}
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
   const ref   = document.getElementById('ref');
-  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; if(m.length!==3) return null;
-    // Soporta tanto "aaaa-mm-dd" (HTML date normal)
-    // como "dd-mm-aaaa" (entrada manual en móviles).
-    if(m[0].length===4){
+  function isoToMD(iso){
+    if(!iso) return null;
+    const parts = iso.split('-');
+    if(parts.length!==3) return null;
+
+    let y, m, d;
+    if(parts[0].length===4){
       // Formato aaaa-mm-dd
-      return m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0");
-    }
-    if(m[2].length===4){
+      y = parseInt(parts[0],10);
+      m = parseInt(parts[1],10);
+      d = parseInt(parts[2],10);
+    } else if(parts[2].length===4){
       // Formato dd-mm-aaaa
-      return m[1].padStart(2,"0")+"-"+m[0].padStart(2,"0");
+      y = parseInt(parts[2],10);
+      m = parseInt(parts[1],10);
+      d = parseInt(parts[0],10);
+    } else {
+      return null;
     }
-    return null; }
+
+    // Ajuste bisiesto:
+    // En años bisiestos, desde el 29/02 hasta el 17/12 inclusive,
+    // el elemento se corre un día hacia adelante (usa el del día siguiente).
+    function isLeap(year){
+      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
+    }
+    if(isLeap(y)){
+      const inShiftRange =
+        (m === 2 && d === 29) ||
+        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if(inShiftRange){
+        const date = new Date(y, m - 1, d);
+        date.setDate(date.getDate() + 1);
+        m = date.getMonth() + 1;
+        d = date.getDate();
+      }
+    }
+
+    const mm = String(m).padStart(2,"0");
+    const dd = String(d).padStart(2,"0");
+    return mm + "-" + dd;
+  }
   function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
   function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
   function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
@@ -1042,16 +1072,43 @@ if ('serviceWorker' in navigator) {
 
   function isoToMD(iso){
     if(!iso) return null;
-    var m = iso.split('-');
-    if(m.length !== 3) return null;
-    // Soporta tanto "aaaa-mm-dd" como "dd-mm-aaaa"
-    if(m[0].length === 4){
-      return m[1].padStart(2,'0') + "-" + m[2].padStart(2,'0');
+    var parts = iso.split('-');
+    if(parts.length !== 3) return null;
+
+    var y, m, d;
+    if(parts[0].length === 4){
+      // aaaa-mm-dd
+      y = parseInt(parts[0], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[2], 10);
+    } else if(parts[2].length === 4){
+      // dd-mm-aaaa
+      y = parseInt(parts[2], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[0], 10);
+    } else {
+      return null;
     }
-    if(m[2].length === 4){
-      return m[1].padStart(2,'0') + "-" + m[0].padStart(2,'0');
+
+    function isLeap(year){
+      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
     }
-    return null;
+
+    if(isLeap(y)){
+      var inShiftRange =
+        (m === 2 && d === 29) ||
+        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if(inShiftRange){
+        var date = new Date(y, m - 1, d);
+        date.setDate(date.getDate() + 1);
+        m = date.getMonth() + 1;
+        d = date.getDate();
+      }
+    }
+
+    var mm = String(m).padStart(2,'0');
+    var dd = String(d).padStart(2,'0');
+    return mm + "-" + dd;
   }
 
   function todayISO(){
