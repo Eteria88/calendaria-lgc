@@ -136,14 +136,12 @@ header{
     var m = new RegExp('[?&]'+name+'=([^&]+)').exec(window.location.search);
     return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
   }
-
   var raw = getParam('el') || 'H';
   var key = raw.toUpperCase();
-  var symbol = raw; // preserva mayúsculas/minúsculas originales
-
+  var symbol = raw;
+  document.body.setAttribute('data-el', key);
   var label = document.getElementById('periodicElementLabel');
   var colRowLabel = document.getElementById('colRowLabel');
-
   var name = 'Elemento';
   var atomic = '';
   var colRow = 'Columna 1 · Fila 1';
@@ -153,302 +151,521 @@ header{
     atomic = '1';
     colRow = 'Columna 1 · Fila 1';
     symbol = 'H';
-  } else if (key === 'HE') {
+  }
+  else if (key === 'HE') {
     name = 'Helium';
     atomic = '2';
     colRow = 'Columna 32 · Fila 1';
     symbol = 'He';
-  } else if (key === 'LI') {
+  }
+  else if (key === 'LI') {
     name = 'Lithium';
     atomic = '3';
     colRow = 'Columna 1 · Fila 2';
     symbol = 'Li';
-  } else if (key === 'BE') {
+  }
+  else if (key === 'BE') {
     name = 'Beryllium';
     atomic = '4';
     colRow = 'Columna 2 · Fila 2';
     symbol = 'Be';
-  } else if (key === 'B') {
+  }
+  else if (key === 'B') {
     name = 'Boron';
     atomic = '5';
     colRow = 'Columna 27 · Fila 2';
     symbol = 'B';
-  } else if (key === 'C') {
+  }
+  else if (key === 'C') {
     name = 'Carbon';
     atomic = '6';
     colRow = 'Columna 28 · Fila 2';
     symbol = 'C';
-  } else if (key === 'N') {
+  }
+  else if (key === 'N') {
     name = 'Nitrogen';
     atomic = '7';
     colRow = 'Columna 29 · Fila 2';
     symbol = 'N';
-  } else if (key === 'O') {
+  }
+  else if (key === 'O') {
     name = 'Oxygen';
     atomic = '8';
     colRow = 'Columna 30 · Fila 2';
     symbol = 'O';
-  } else if (key === 'F') {
+  }
+  else if (key === 'F') {
     name = 'Fluorine';
     atomic = '9';
     colRow = 'Columna 31 · Fila 2';
     symbol = 'F';
-  } else if (key === 'NE') {
+  }
+  else if (key === 'NE') {
     name = 'Neon';
     atomic = '10';
     colRow = 'Columna 32 · Fila 2';
     symbol = 'Ne';
-  } else if (key === 'NA') {
+  }
+  else if (key === 'NA') {
     name = 'Sodium';
     atomic = '11';
     colRow = 'Columna 1 · Fila 3';
     symbol = 'Na';
-  } else if (key === 'MG') {
+  }
+  else if (key === 'MG') {
     name = 'Magnesium';
     atomic = '12';
     colRow = 'Columna 2 · Fila 3';
     symbol = 'Mg';
-  } else if (key === 'AL') {
+  }
+  else if (key === 'AL') {
     name = 'Aluminium';
     atomic = '13';
     colRow = 'Columna 27 · Fila 3';
     symbol = 'Al';
-  } else if (key === 'SI') {
+  }
+  else if (key === 'SI') {
     name = 'Silicon';
     atomic = '14';
     colRow = 'Columna 28 · Fila 3';
     symbol = 'Si';
-  } else if (key === 'P') {
+  }
+  else if (key === 'P') {
     name = 'Phosphorus';
     atomic = '15';
     colRow = 'Columna 29 · Fila 3';
     symbol = 'P';
-  } else if (key === 'S') {
+  }
+  else if (key === 'S') {
     name = 'Sulphur';
     atomic = '16';
     colRow = 'Columna 30 · Fila 3';
     symbol = 'S';
-  } else if (key === 'CL') {
+  }
+  else if (key === 'CL') {
     name = 'Chlorine';
     atomic = '17';
     colRow = 'Columna 31 · Fila 3';
     symbol = 'Cl';
-  } else if (key === 'AR') {
+  }
+  else if (key === 'AR') {
     name = 'Argon';
     atomic = '18';
     colRow = 'Columna 32 · Fila 3';
     symbol = 'Ar';
-  } else if (key === 'K') {
+  }
+  else if (key === 'K') {
     name = 'Potassium';
     atomic = '19';
     colRow = 'Columna 1 · Fila 4';
     symbol = 'K';
-  } else if (key === 'CA') {
+  }
+  else if (key === 'CA') {
     name = 'Calcium';
     atomic = '20';
     colRow = 'Columna 2 · Fila 4';
     symbol = 'Ca';
-  } else if (key === 'SC') {
+  }
+  else if (key === 'SC') {
     name = 'Scandium';
     atomic = '21';
     colRow = 'Columna 17 · Fila 4';
     symbol = 'Sc';
-  } else if (key === 'TI') {
+  }
+  else if (key === 'TI') {
     name = 'Titanium';
     atomic = '22';
     colRow = 'Columna 18 · Fila 4';
     symbol = 'Ti';
-  } else if (key === 'V') {
+  }
+  else if (key === 'V') {
     name = 'Vanadium';
     atomic = '23';
     colRow = 'Columna 19 · Fila 4';
     symbol = 'V';
-  } else if (key === 'CR') {
+  }
+  else if (key === 'CR') {
     name = 'Chromium';
     atomic = '24';
     colRow = 'Columna 20 · Fila 4';
     symbol = 'Cr';
-  } else if (key === 'MN') {
+  }
+  else if (key === 'MN') {
     name = 'Manganese';
     atomic = '25';
     colRow = 'Columna 21 · Fila 4';
     symbol = 'Mn';
-  } else if (key === 'FE') {
+  }
+  else if (key === 'FE') {
     name = 'Iron';
     atomic = '26';
     colRow = 'Columna 22 · Fila 4';
     symbol = 'Fe';
-  } else if (key === 'CO') {
+  }
+  else if (key === 'CO') {
     name = 'Cobalt';
     atomic = '27';
     colRow = 'Columna 23 · Fila 4';
     symbol = 'Co';
-  } else if (key === 'NI') {
+  }
+  else if (key === 'NI') {
     name = 'Nickel';
     atomic = '28';
     colRow = 'Columna 24 · Fila 4';
     symbol = 'Ni';
-  } else if (key === 'CU') {
+  }
+  else if (key === 'CU') {
     name = 'Copper';
     atomic = '29';
     colRow = 'Columna 25 · Fila 4';
     symbol = 'Cu';
-  } else if (key === 'ZN') {
+  }
+  else if (key === 'ZN') {
     name = 'Zinc';
     atomic = '30';
     colRow = 'Columna 26 · Fila 4';
     symbol = 'Zn';
-  } else if (key === 'GA') {
+  }
+  else if (key === 'GA') {
     name = 'Gallium';
     atomic = '31';
     colRow = 'Columna 27 · Fila 4';
     symbol = 'Ga';
-  } else if (key === 'GE') {
+  }
+  else if (key === 'GE') {
     name = 'Germanium';
     atomic = '32';
     colRow = 'Columna 28 · Fila 4';
     symbol = 'Ge';
-  } else if (key === 'AS') {
+  }
+  else if (key === 'AS') {
     name = 'Arsenic';
     atomic = '33';
     colRow = 'Columna 29 · Fila 4';
     symbol = 'As';
-  } else if (key === 'SE') {
+  }
+  else if (key === 'SE') {
     name = 'Selenium';
     atomic = '34';
     colRow = 'Columna 30 · Fila 4';
     symbol = 'Se';
-  } else if (key === 'BR') {
+  }
+  else if (key === 'BR') {
     name = 'Bromine';
     atomic = '35';
     colRow = 'Columna 31 · Fila 4';
     symbol = 'Br';
-  } else if (key === 'KR') {
+  }
+  else if (key === 'KR') {
     name = 'Krypton';
     atomic = '36';
     colRow = 'Columna 32 · Fila 4';
     symbol = 'Kr';
-  } else if (key === 'RB') {
+  }
+  else if (key === 'RB') {
     name = 'Rubidium';
     atomic = '37';
     colRow = 'Columna 1 · Fila 5';
     symbol = 'Rb';
-  } else if (key === 'SR') {
+  }
+  else if (key === 'SR') {
     name = 'Strontium';
     atomic = '38';
     colRow = 'Columna 2 · Fila 5';
     symbol = 'Sr';
-  } else if (key === 'Y') {
+  }
+  else if (key === 'Y') {
     name = 'Yttrium';
     atomic = '39';
     colRow = 'Columna 17 · Fila 5';
     symbol = 'Y';
-  } else if (key === 'ZR') {
+  }
+  else if (key === 'ZR') {
     name = 'Zirconium';
     atomic = '40';
     colRow = 'Columna 18 · Fila 5';
     symbol = 'Zr';
-  } else if (key === 'NB') {
+  }
+  else if (key === 'NB') {
     name = 'Niobium';
     atomic = '41';
     colRow = 'Columna 19 · Fila 5';
     symbol = 'Nb';
-  } else if (key === 'MO') {
+  }
+  else if (key === 'MO') {
     name = 'Molybdenum';
     atomic = '42';
     colRow = 'Columna 20 · Fila 5';
     symbol = 'Mo';
-  } else if (key === 'TC') {
+  }
+  else if (key === 'TC') {
     name = 'Technetium';
     atomic = '43';
     colRow = 'Columna 21 · Fila 5';
     symbol = 'Tc';
-  } else if (key === 'RU') {
+  }
+  else if (key === 'RU') {
     name = 'Ruthenium';
     atomic = '44';
     colRow = 'Columna 22 · Fila 5';
     symbol = 'Ru';
-  } else if (key === 'RH') {
+  }
+  else if (key === 'RH') {
     name = 'Rhodium';
     atomic = '45';
     colRow = 'Columna 23 · Fila 5';
     symbol = 'Rh';
-  } else if (key === 'PD') {
+  }
+  else if (key === 'PD') {
     name = 'Palladium';
     atomic = '46';
     colRow = 'Columna 24 · Fila 5';
     symbol = 'Pd';
-  } else if (key === 'AG') {
+  }
+  else if (key === 'AG') {
     name = 'Silver';
     atomic = '47';
     colRow = 'Columna 25 · Fila 5';
     symbol = 'Ag';
-  } else if (key === 'CD') {
+  }
+  else if (key === 'CD') {
     name = 'Cadmium';
     atomic = '48';
     colRow = 'Columna 26 · Fila 5';
     symbol = 'Cd';
-  } else if (key === 'IN') {
+  }
+  else if (key === 'IN') {
     name = 'Indium';
     atomic = '49';
     colRow = 'Columna 27 · Fila 5';
     symbol = 'In';
-  } else if (key === 'SN') {
+  }
+  else if (key === 'SN') {
     name = 'Tin';
     atomic = '50';
     colRow = 'Columna 28 · Fila 5';
     symbol = 'Sn';
-  } else if (key === 'SB') {
+  }
+  else if (key === 'SB') {
     name = 'Antimony';
     atomic = '51';
     colRow = 'Columna 29 · Fila 5';
     symbol = 'Sb';
-  } else if (key === 'TE') {
+  }
+  else if (key === 'TE') {
     name = 'Tellurium';
     atomic = '52';
     colRow = 'Columna 30 · Fila 5';
     symbol = 'Te';
-  } else if (key === 'I') {
+  }
+  else if (key === 'I') {
     name = 'Iodine';
     atomic = '53';
     colRow = 'Columna 31 · Fila 5';
     symbol = 'I';
-  } else if (key === 'XE') {
+  }
+  else if (key === 'XE') {
     name = 'Xenon';
     atomic = '54';
     colRow = 'Columna 32 · Fila 5';
     symbol = 'Xe';
-  } else if (key === 'CS') {
+  }
+  else if (key === 'CS') {
     name = 'Caesium';
     atomic = '55';
     colRow = 'Columna 1 · Fila 6';
     symbol = 'Cs';
-  } else if (key === 'BA') {
+  }
+  else if (key === 'BA') {
     name = 'Barium';
     atomic = '56';
     colRow = 'Columna 2 · Fila 6';
     symbol = 'Ba';
-  } else if (key === 'LA') {
+  }
+  else if (key === 'LA') {
     name = 'Lanthanum';
     atomic = '57';
     colRow = 'Columna 3 · Fila 6';
     symbol = 'La';
-  } else if (key === 'CE') {
+  }
+  else if (key === 'CE') {
     name = 'Cerium';
     atomic = '58';
     colRow = 'Columna 4 · Fila 6';
     symbol = 'Ce';
-  } else if (key === 'PR') {
+  }
+  else if (key === 'PR') {
     name = 'Praseodymium';
     atomic = '59';
     colRow = 'Columna 5 · Fila 6';
     symbol = 'Pr';
   }
-
-  if (label) {
+  else if (key === 'ND') {
+    name = 'Neodymium';
+    atomic = '60';
+    colRow = 'Columna 6 · Fila 6';
+    symbol = 'Nd';
+  }
+  else if (key === 'PM') {
+    name = 'Promethium';
+    atomic = '61';
+    colRow = 'Columna 7 · Fila 6';
+    symbol = 'Pm';
+  }
+  else if (key === 'SM') {
+    name = 'Samarium';
+    atomic = '62';
+    colRow = 'Columna 8 · Fila 6';
+    symbol = 'Sm';
+  }
+  else if (key === 'EU') {
+    name = 'Europium';
+    atomic = '63';
+    colRow = 'Columna 9 · Fila 6';
+    symbol = 'Eu';
+  }
+  else if (key === 'GD') {
+    name = 'Gadolinium';
+    atomic = '64';
+    colRow = 'Columna 10 · Fila 6';
+    symbol = 'Gd';
+  }
+  else if (key === 'TB') {
+    name = 'Terbium';
+    atomic = '65';
+    colRow = 'Columna 11 · Fila 6';
+    symbol = 'Tb';
+  }
+  else if (key === 'DY') {
+    name = 'Dysprosium';
+    atomic = '66';
+    colRow = 'Columna 12 · Fila 6';
+    symbol = 'Dy';
+  }
+  else if (key === 'HO') {
+    name = 'Holmium';
+    atomic = '67';
+    colRow = 'Columna 13 · Fila 6';
+    symbol = 'Ho';
+  }
+  else if (key === 'ER') {
+    name = 'Erbium';
+    atomic = '68';
+    colRow = 'Columna 14 · Fila 6';
+    symbol = 'Er';
+  }
+  else if (key === 'TM') {
+    name = 'Thulium';
+    atomic = '69';
+    colRow = 'Columna 15 · Fila 6';
+    symbol = 'Tm';
+  }
+  else if (key === 'YB') {
+    name = 'Ytterbium';
+    atomic = '70';
+    colRow = 'Columna 16 · Fila 6';
+    symbol = 'Yb';
+  }
+  else if (key === 'LU') {
+    name = 'Lutetium';
+    atomic = '71';
+    colRow = 'Columna 17 · Fila 6';
+    symbol = 'Lu';
+  }
+  else if (key === 'HF') {
+    name = 'Hafnium';
+    atomic = '72';
+    colRow = 'Columna 18 · Fila 6';
+    symbol = 'Hf';
+  }
+  else if (key === 'TA') {
+    name = 'Tantalum';
+    atomic = '73';
+    colRow = 'Columna 19 · Fila 6';
+    symbol = 'Ta';
+  }
+  else if (key === 'W') {
+    name = 'Tungsten';
+    atomic = '74';
+    colRow = 'Columna 20 · Fila 6';
+    symbol = 'W';
+  }
+  else if (key === 'RE') {
+    name = 'Rhenium';
+    atomic = '75';
+    colRow = 'Columna 21 · Fila 6';
+    symbol = 'Re';
+  }
+  else if (key === 'OS') {
+    name = 'Osmium';
+    atomic = '76';
+    colRow = 'Columna 22 · Fila 6';
+    symbol = 'Os';
+  }
+  else if (key === 'IR') {
+    name = 'Iridium';
+    atomic = '77';
+    colRow = 'Columna 23 · Fila 6';
+    symbol = 'Ir';
+  }
+  else if (key === 'PT') {
+    name = 'Platinum';
+    atomic = '78';
+    colRow = 'Columna 24 · Fila 6';
+    symbol = 'Pt';
+  }
+  else if (key === 'AU') {
+    name = 'Gold';
+    atomic = '79';
+    colRow = 'Columna 25 · Fila 6';
+    symbol = 'Au';
+  }
+  else if (key === 'HG') {
+    name = 'Mercury';
+    atomic = '80';
+    colRow = 'Columna 26 · Fila 6';
+    symbol = 'Hg';
+  }
+  else if (key === 'TL') {
+    name = 'Thallium';
+    atomic = '81';
+    colRow = 'Columna 27 · Fila 6';
+    symbol = 'Tl';
+  }
+  else if (key === 'PB') {
+    name = 'Lead';
+    atomic = '82';
+    colRow = 'Columna 28 · Fila 6';
+    symbol = 'Pb';
+  }
+  else if (key === 'BI') {
+    name = 'Bismuth';
+    atomic = '83';
+    colRow = 'Columna 29 · Fila 6';
+    symbol = 'Bi';
+  }
+  else if (key === 'PO') {
+    name = 'Polonium';
+    atomic = '84';
+    colRow = 'Columna 30 · Fila 6';
+    symbol = 'Po';
+  }
+  else if (key === 'AT') {
+    name = 'Astatine';
+    atomic = '85';
+    colRow = 'Columna 31 · Fila 6';
+    symbol = 'At';
+  }
+  else if (key === 'RN') {
+    name = 'Radon';
+    atomic = '86';
+    colRow = 'Columna 32 · Fila 6';
+    symbol = 'Rn';
+  }
+  if(label){
     label.textContent = symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '');
   }
-  if (colRowLabel) {
+  if(colRowLabel){
     colRowLabel.textContent = colRow;
   }
 })();
