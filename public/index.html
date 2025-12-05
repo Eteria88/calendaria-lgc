@@ -1101,12 +1101,21 @@ if ('serviceWorker' in navigator) {
       return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
     }
 
+    // Fechas de Anillo de Fuego:
+    // - Bisiestos: 18/12 al 31/12
+    // - No bisiestos: 19/12 al 31/12
     if(isLeap(y)){
-      // 18/12 en adelante: sin elemento de tabla periódica
       if(m === 12 && d >= 18){
         return null;
       }
+    } else {
+      if(m === 12 && d >= 19){
+        return null;
+      }
+    }
 
+    // Ajuste bisiesto de corrimiento 1 día (29/02 a 17/12):
+    if(isLeap(y)){
       var inShiftRange =
         (m === 2 && d === 29) ||
         (m > 2 && (m < 12 || (m === 12 && d <= 17)));
@@ -1140,14 +1149,17 @@ if ('serviceWorker' in navigator) {
     if(!link) return;
     var md = isoToMD(activeISO());
 
-    // Si no hay elemento asociado (por ejemplo, Anillo de Fuego en año bisiesto),
-    // deshabilitamos el enlace.
+    // Si no hay elemento asociado (por ejemplo, Anillo de Fuego),
+    // ocultamos completamente el botón/enlace.
     if(!md){
+      link.style.display = 'none';
       link.removeAttribute('href');
       link.setAttribute('aria-disabled','true');
       return;
     }
 
+    // En fechas con elemento, nos aseguramos de que el botón esté visible y habilitado.
+    link.style.display = '';
     link.removeAttribute('aria-disabled');
 
     var symbol = 'H'; // por defecto
