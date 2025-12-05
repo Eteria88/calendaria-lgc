@@ -1051,7 +1051,18 @@ body.noScroll{overflow:hidden}
     const dd = String(d).padStart(2,'0');
     return mm + "-" + dd;
   }
-  function todayISO(){ co<script>
+  function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
+  function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
+  function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
+    if(el){ tile.src="./"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
+    else { badge.style.display="none"; badge.setAttribute("aria-hidden","true"); }
+  }
+  if(ref){ ref.addEventListener('change',renderBadge); ref.addEventListener('input',renderBadge); }
+  document.addEventListener('DOMContentLoaded', renderBadge);
+  window.addEventListener('load', ()=>setTimeout(renderBadge,0));
+})();
+</script>
+<!-- ELEMENT_BADGE_LOGIC_END --><script>
 (function(){
   const ref = document.getElementById('ref');
   const link = document.getElementById('openPeriodicLink');
@@ -1270,18 +1281,7 @@ body.noScroll{overflow:hidden}
   window.addEventListener('load', function(){ setTimeout(updatePeriodicLink, 0); });
 })();
 </script>
-nst d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
-  function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
-  function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
-    if(el){ tile.src="./"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
-    else { badge.style.display="none"; badge.setAttribute("aria-hidden","true"); }
-  }
-  if(ref){ ref.addEventListener('change',renderBadge); ref.addEventListener('input',renderBadge); }
-  document.addEventListener('DOMContentLoaded', renderBadge);
-  window.addEventListener('load', ()=>setTimeout(renderBadge,0));
-})();
-</script>
-<!-- ELEMENT_BADGE_LOGIC_END -->
+
 
 
 
