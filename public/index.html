@@ -1019,13 +1019,19 @@ body.noScroll{overflow:hidden}
       return null;
     }
 
-    // Ajuste bisiesto:
-    // En años bisiestos, desde el 29/02 hasta el 17/12 inclusive,
-    // el elemento se corre un día hacia adelante (usa el del día siguiente).
+    // Ajuste bisiesto + anillo de fuego:
+    // En años bisiestos:
+    // - Del 29/02 al 17/12 inclusive: el elemento se corre un día hacia adelante.
+    // - Desde el 18/12 inclusive: ya no se muestran elementos (Anillo de Fuego).
     function isLeap(year){
       return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
     }
     if(isLeap(y)){
+      // 18/12 en adelante: sin elemento
+      if(m === 12 && d >= 18){
+        return null;
+      }
+
       const inShiftRange =
         (m === 2 && d === 29) ||
         (m > 2 && (m < 12 || (m === 12 && d <= 17)));
@@ -1090,11 +1096,17 @@ if ('serviceWorker' in navigator) {
       return null;
     }
 
+    // Ajuste bisiesto + anillo de fuego (mismo criterio que el badge):
     function isLeap(year){
       return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
     }
 
     if(isLeap(y)){
+      // 18/12 en adelante: sin elemento de tabla periódica
+      if(m === 12 && d >= 18){
+        return null;
+      }
+
       var inShiftRange =
         (m === 2 && d === 29) ||
         (m > 2 && (m < 12 || (m === 12 && d <= 17)));
@@ -1127,6 +1139,17 @@ if ('serviceWorker' in navigator) {
   function updatePeriodicLink(){
     if(!link) return;
     var md = isoToMD(activeISO());
+
+    // Si no hay elemento asociado (por ejemplo, Anillo de Fuego en año bisiesto),
+    // deshabilitamos el enlace.
+    if(!md){
+      link.removeAttribute('href');
+      link.setAttribute('aria-disabled','true');
+      return;
+    }
+
+    link.removeAttribute('aria-disabled');
+
     var symbol = 'H'; // por defecto
 
     if(md === '01-02'){
