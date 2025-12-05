@@ -1023,6 +1023,18 @@ body.noScroll{overflow:hidden}
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
+
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+      console.log('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
 <script>
 (function(){
   const ref = document.getElementById('ref');
@@ -1130,6 +1142,42 @@ body.noScroll{overflow:hidden}
       symbol = 'Br';
     } else if(md === '02-05'){
       symbol = 'Kr';
+    } else if(md === '02-06'){
+      symbol = 'Rb';
+    } else if(md === '02-07'){
+      symbol = 'Sr';
+    } else if(md === '02-08'){
+      symbol = 'Y';
+    } else if(md === '02-09'){
+      symbol = 'Zr';
+    } else if(md === '02-10'){
+      symbol = 'Nb';
+    } else if(md === '02-11'){
+      symbol = 'Mo';
+    } else if(md === '02-12'){
+      symbol = 'Tc';
+    } else if(md === '02-13'){
+      symbol = 'Ru';
+    } else if(md === '02-14'){
+      symbol = 'Rh';
+    } else if(md === '02-15'){
+      symbol = 'Pd';
+    } else if(md === '02-16'){
+      symbol = 'Ag';
+    } else if(md === '02-17'){
+      symbol = 'Cd';
+    } else if(md === '02-18'){
+      symbol = 'In';
+    } else if(md === '02-19'){
+      symbol = 'Sn';
+    } else if(md === '02-20'){
+      symbol = 'Sb';
+    } else if(md === '02-21'){
+      symbol = 'Te';
+    } else if(md === '02-22'){
+      symbol = 'I';
+    } else if(md === '02-23'){
+      symbol = 'Xe';
     } else if(md === '01-01'){
       symbol = 'H';
     }
@@ -1146,17 +1194,4 @@ body.noScroll{overflow:hidden}
 })();
 </script>
 
-
-
-
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(err) {
-      console.log('Service worker registration failed:', err);
-    });
-  });
-}
-</script>
 </body></html>
