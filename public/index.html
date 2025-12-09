@@ -2228,7 +2228,12 @@ if ('serviceWorker' in navigator) {
       symbol = 'L128';
     }
 
-        link.href = './periodic.html?el=' + encodeURIComponent(symbol);
+        var iso = activeISO();
+        var href = './periodic.html?el=' + encodeURIComponent(symbol);
+        if(iso){
+          href += '&ref=' + encodeURIComponent(iso);
+        }
+        link.href = href;
   }
 
   if(ref){

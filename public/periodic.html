@@ -111,6 +111,7 @@ header{
   <main>
     <section class="card">
       <div class="mono elementLabel" id="colRowLabel">Columna 1 · Fila 1</div>
+      <div class="small mono" id="refDateLabel"></div>
       <div class="small mono" id="periodicElementLabel">H · 1 · Hidrógeno</div>
     </section>
 
@@ -136,6 +137,17 @@ header{
     var m = new RegExp('[?&]'+name+'=([^&]+)').exec(window.location.search);
     return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
   }
+  var refIso = getParam('ref');
+  var refLabel = document.getElementById('refDateLabel');
+  if(refLabel && refIso){
+    var parts = refIso.split('-');
+    if(parts.length === 3){
+      refLabel.textContent = 'Fecha de referencia: ' + parts[2] + '/' + parts[1] + '/' + parts[0];
+    } else {
+      refLabel.textContent = 'Fecha de referencia: ' + refIso;
+    }
+  }
+
   var raw = getParam('el') || 'H';
   var key = raw.toUpperCase();
   var symbol = raw;
