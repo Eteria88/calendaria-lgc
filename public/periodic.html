@@ -195,20 +195,57 @@ header{
     var m = new RegExp('[?&]'+name+'=([^&]+)').exec(window.location.search);
     return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
   }
-  var refIso = getParam('ref');
-  var refLabel = document.getElementById('refDateLabel');
-  if(refLabel && refIso){
-    var parts = refIso.split('-');
-    if(parts.length === 3){
-      refLabel.textContent = 'Fecha de referencia: ' + parts[2] + '/' + parts[1] + '/' + parts[0];
-    } else {
-      refLabel.textContent = 'Fecha de referencia: ' + refIso;
+
+  // Parse flexible date formats coming from index:
+  // - yyyy-mm-dd (desktop input[type=date])
+  // - dd-mm-yyyy / dd/mm/yyyy (mobile patched input[type=text])
+  function parseFlexDate(str){
+    if(!str) return null;
+    var s = String(str).trim().replace(/\//g,'-');
+    var p = s.split('-');
+    if(p.length !== 3) return null;
+
+    var idxY = -1;
+    for(var i=0;i<3;i++){
+      if(/^\d{4}$/.test(p[i])){ idxY = i; break; }
     }
+
+    var y,m,d;
+    if(idxY >= 0){
+      y = parseInt(p[idxY], 10);
+      var r = [];
+      for(i=0;i<3;i++){ if(i!==idxY) r.push(parseInt(p[i],10)); }
+      if(r.length !== 2 || isNaN(r[0]) || isNaN(r[1])) return null;
+
+      // If the year is first => yyyy-mm-dd. Otherwise => dd-mm-yyyy.
+      if(idxY === 0){ m = r[0]; d = r[1]; }
+      else { d = r[0]; m = r[1]; }
+    }else{
+      // fallback: assume yyyy-mm-dd
+      y = parseInt(p[0],10); m = parseInt(p[1],10); d = parseInt(p[2],10);
+    }
+
+    if(!(y>=1&&y<=9999&&m>=1&&m<=12&&d>=1&&d<=31)) return null;
+    return {y:y,m:m,d:d};
   }
-    // Aparato + días solares para la misma fecha de referencia
+  function pad2(n){ n=String(n); return n.length<2?('0'+n):n; }
+
+  var refRaw = getParam('ref'); // may be yyyy-mm-dd or dd-mm-yyyy
+  var refDate = parseFlexDate(refRaw);
+
+  var refLabel = document.getElementById('refDateLabel');
+  if(refLabel && refDate){
+    refLabel.textContent = 'Fecha de referencia: ' + pad2(refDate.d) + '/' + pad2(refDate.m) + '/' + String(refDate.y).padStart(4,'0');
+  } else if(refLabel && refRaw){
+    // If parsing fails, at least show the raw string
+    refLabel.textContent = 'Fecha de referencia: ' + refRaw;
+  }
+
+  // Aparato + días solares para la misma fecha de referencia (mismo cálculo que app.js)
   var apHeaderLabel = document.getElementById('apHeaderLabel');
   var solarDaysLabel = document.getElementById('solarDaysLabel');
-  if((apHeaderLabel || solarDaysLabel) && refIso){
+
+  if((apHeaderLabel || solarDaysLabel) && refDate){
     try{
       function jdnG(y,m,d){
         var a=Math.floor((14-m)/12);
@@ -223,33 +260,27 @@ header{
         return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-32083;
       }
 
-      var ps = String(refIso).split('-');
-      if(ps.length===3){
-        var y=parseInt(ps[0],10), m=parseInt(ps[1],10), d=parseInt(ps[2],10);
-        if(y && m && d){
-          var isGregorian = (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
-          var j = isGregorian ? jdnG(y,m,d) : jdnJ(y,m,d);
-          var jJulEpoch = jdnJ(1,1,1);
-          var totalSolar = j - jJulEpoch + 1;
+      var y = refDate.y, m = refDate.m, d = refDate.d;
+      var isGregorian = (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
+      var j = isGregorian ? jdnG(y,m,d) : jdnJ(y,m,d);
+      var jJulEpoch = jdnJ(1,1,1);
+      var totalSolar = j - jJulEpoch + 1;
 
-          var apIndexVal = Math.floor((y-1)/4) + 1;
-          var aStartY = y - ((y-1)%4);
-          var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
-          var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
+      var apIndexVal = Math.floor((y-1)/4) + 1;
+      var aStartY = y - ((y-1)%4);
+      var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
+      var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
 
-          if(apHeaderLabel){
-            apHeaderLabel.textContent = 'Aparato Nº ' + apIndexVal + ' · Año ' + yearPhase + ' — ' + PHASES[yearPhase];
-          }
-          if(solarDaysLabel){
-            solarDaysLabel.textContent = 'Días solares ' + totalSolar;
-          }
-        }
+      if(apHeaderLabel){
+        apHeaderLabel.textContent = 'Aparato Nº ' + apIndexVal + ' · Año ' + yearPhase + ' — ' + PHASES[yearPhase];
+      }
+      if(solarDaysLabel){
+        solarDaysLabel.textContent = 'Días solares ' + totalSolar;
       }
     }catch(e){
       // sin acción
     }
   }
-
   var raw = getParam('el') || 'H';
   var key = raw.toUpperCase();
   var symbol = raw;
