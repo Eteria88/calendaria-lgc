@@ -144,6 +144,7 @@ header{
     <section class="card header-card">
       <div class="header-main">
         <div class="small mono" id="refDateLabel"></div>
+        <div class="small mono" id="apSolarLabel"></div>
         <div class="mono elementLabel" id="colRowLabel">Columna 1 · Fila 1</div>
         <div class="small mono" id="periodicElementLabel">H · 1 · Hidrógeno</div>
       </div>
@@ -186,6 +187,31 @@ header{
       refLabel.textContent = 'Fecha de referencia: ' + refIso;
     }
   }
+  // Aparato + días solares para la misma fecha de referencia
+  var apSolarLabel = document.getElementById('apSolarLabel');
+  if(apSolarLabel && refIso){
+    function jdnG(y,m,d){var a=Math.floor((14-m)/12);var Y=y+4800-a;var M=m+12*a-3;return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-Math.floor(Y/100)+Math.floor(Y/400)-32045;}
+    function jdnJ(y,m,d){var a=Math.floor((14-m)/12);var Y=y+4800-a;var M=m+12*a-3;return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-32083;}
+
+    var ps = String(refIso).split('-');
+    if(ps.length===3){
+      var y=parseInt(ps[0],10), m=parseInt(ps[1],10), d=parseInt(ps[2],10);
+      if(y && m && d){
+        var isGregorian = (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
+        var j = isGregorian ? jdnG(y,m,d) : jdnJ(y,m,d);
+        var jJulEpoch = jdnJ(1,1,1);
+        var totalSolar = j - jJulEpoch + 1;
+
+        var apIndexVal = Math.floor((y-1)/4) + 1;
+        var aStartY = y - ((y-1)%4);
+        var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
+        var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
+
+        apSolarLabel.textContent = 'Aparato Nº ' + apIndexVal + ' · Año ' + yearPhase + ' — ' + PHASES[yearPhase] + ' · Días solares ' + totalSolar;
+      }
+    }
+  }
+
 
   var raw = getParam('el') || 'H';
   var key = raw.toUpperCase();
