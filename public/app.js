@@ -595,12 +595,28 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
+  
+  function triggerRefInput(){
+    var el=document.getElementById('ref');
+    if(!el) return;
+    try{
+      el.dispatchEvent(new Event('input', {bubbles:true}));
+    }catch(e){
+      try{
+        var ev=document.createEvent('Event');
+        ev.initEvent('input', true, true);
+        el.dispatchEvent(ev);
+      }catch(_){}
+    }
+  }
+
+
   function shiftRefBy(deltaDays){
     var p=readRefParts();
     var base=dt(p.y,p.m,p.d);
     var moved=addDays(base, deltaDays);
     setRefInputsFromUTCDate(moved);
-    up();
+    triggerRefInput();
   }
 
   var btnToday=document.getElementById('btnToday');
@@ -609,7 +625,7 @@ document.addEventListener('DOMContentLoaded', function(){
       var now=new Date();
       var today=dt(now.getFullYear(), now.getMonth()+1, now.getDate());
       setRefInputsFromUTCDate(today);
-      up();
+      triggerRefInput();
     });
   }
 
