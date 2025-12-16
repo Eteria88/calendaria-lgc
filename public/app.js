@@ -593,30 +593,22 @@ document.addEventListener('DOMContentLoaded', function(){
     if(refT){
       refT.value = (refT.type === 'date') ? iso : dmY;
     }
-  }
 
-  
-  function triggerRefInput(){
-    var el=document.getElementById('ref');
-    if(!el) return;
-    try{
-      el.dispatchEvent(new Event('input', {bubbles:true}));
-    }catch(e){
+    // Notificar cambios programáticos (para badges/links y listeners de input/change)
+    var target = refI || refT;
+    if(target){
       try{
-        var ev=document.createEvent('Event');
-        ev.initEvent('input', true, true);
-        el.dispatchEvent(ev);
-      }catch(_){}
+        target.dispatchEvent(new Event('input', {bubbles:true}));
+        target.dispatchEvent(new Event('change', {bubbles:true}));
+      }catch(e){}
     }
   }
-
 
   function shiftRefBy(deltaDays){
     var p=readRefParts();
     var base=dt(p.y,p.m,p.d);
     var moved=addDays(base, deltaDays);
     setRefInputsFromUTCDate(moved);
-    triggerRefInput();
   }
 
   var btnToday=document.getElementById('btnToday');
@@ -625,7 +617,6 @@ document.addEventListener('DOMContentLoaded', function(){
       var now=new Date();
       var today=dt(now.getFullYear(), now.getMonth()+1, now.getDate());
       setRefInputsFromUTCDate(today);
-      triggerRefInput();
     });
   }
 

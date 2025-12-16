@@ -57,6 +57,14 @@ th:first-child,td:first-child{text-align:left}
 .input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap)}
 .btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
 .btn:hover{background:rgba(124,199,255,.25)}
+.dayNav{display:flex;gap:10px;flex-wrap:wrap}
+.btnLabelShort{display:none}
+@media(max-width:599px){
+  .dayNav{flex-wrap:nowrap}
+  .dayNav .btn{flex:1 1 0;justify-content:center;white-space:nowrap;padding:10px 8px}
+  .btnLabelLong{display:none}
+  .btnLabelShort{display:inline}
+}
 .table-wrap{overflow:auto;border:1px solid var(--ol);border-radius:10px}
 .table-wrap table{min-width:680px}
 .status{margin:8px 0;color:#9cffd5;font-size:12px}
@@ -423,12 +431,12 @@ body.noScroll{overflow:hidden}
         <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
 
         <div class="field" style="margin-top:8px">
-          <div style="display:flex; gap:10px; flex-wrap:wrap">
-            <button class="btn" id="btnPrevDay" type="button" title="Ir al día anterior">← Día anterior</button>
+          <div class="dayNav">
+            <button class="btn" id="btnPrevDay" type="button" title="Ir al día anterior"><span class="btnLabelLong">← Día anterior</span><span class="btnLabelShort">Anterior</span></button>
             <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
-            <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente">Día siguiente →</button>
+            <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente"><span class="btnLabelLong">Día siguiente →</span><span class="btnLabelShort">Siguiente</span></button>
           </div>
-</div>
+        </div>
       </div>
     </div>
   </div>
