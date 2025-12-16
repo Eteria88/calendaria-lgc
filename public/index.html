@@ -421,10 +421,14 @@ body.noScroll{overflow:hidden}
         <label class="small" for="ref">Fecha de referencia</label>
         <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
         <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
-        
-        <div class="field" style="margin-top:6px">
-          <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
-          
+
+        <div class="field" style="margin-top:8px">
+          <div style="display:flex; gap:10px; flex-wrap:wrap">
+            <button class="btn" id="btnPrevDay" type="button" title="Ir al día anterior">← Día anterior</button>
+            <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
+            <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente">Día siguiente →</button>
+          </div>
+          <div class="small" style="margin-top:6px">Desplázate 1 día hacia atrás o hacia adelante sin reescribir la fecha.</div>
         </div>
       </div>
     </div>

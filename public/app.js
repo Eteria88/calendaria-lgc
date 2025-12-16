@@ -552,16 +552,78 @@ document.addEventListener('DOMContentLoaded', function(){
     el.addEventListener('input', up);
     el.addEventListener('change', up);
   });
-  var btn=document.getElementById('btnToday');
-  if(btn){
-    btn.addEventListener('click', function(){
+
+  function readRefParts(){
+    var refI=document.getElementById('ref');
+    var refT=document.getElementById('refText');
+    var raw=((refT && refT.value)?refT.value:((refI && refI.value)?refI.value:''));
+    raw=(raw||'').trim();
+
+    // Fallback: hoy (local)
+    if(!raw){
       var now=new Date();
-      var iso=String(now.getFullYear()).padStart(4,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-      var refI=document.getElementById('ref');
-      var refT=document.getElementById('refText');
-      if(refI) refI.value=iso;
-      if(refT) refT.value=iso;
+      raw=String(now.getFullYear()).padStart(4,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+    }
+
+    var p=flex(raw);
+    if(p) return p;
+    var t=Date.parse(raw);
+    if(!isNaN(t)){
+      var tmp=new Date(t);
+      return {y:tmp.getUTCFullYear(), m:tmp.getUTCMonth()+1, d:tmp.getUTCDate()};
+    }
+    var now2=new Date();
+    return {y:now2.getFullYear(), m:now2.getMonth()+1, d:now2.getDate()};
+  }
+
+  function setRefInputsFromUTCDate(d){
+    var refI=document.getElementById('ref');
+    var refT=document.getElementById('refText');
+    var y=d.getUTCFullYear();
+    var m=d.getUTCMonth()+1;
+    var da=d.getUTCDate();
+
+    // Si el input es de tipo "date": yyyy-mm-dd. Si es texto: dd-mm-aaaa.
+    var iso=String(y).padStart(4,'0')+'-'+pad(m)+'-'+pad(da);
+    var dmY=pad(da)+'-'+pad(m)+'-'+String(y).padStart(4,'0');
+
+    if(refI){
+      refI.value = (refI.type === 'date') ? iso : dmY;
+    }
+    if(refT){
+      refT.value = (refT.type === 'date') ? iso : dmY;
+    }
+  }
+
+  function shiftRefBy(deltaDays){
+    var p=readRefParts();
+    var base=dt(p.y,p.m,p.d);
+    var moved=addDays(base, deltaDays);
+    setRefInputsFromUTCDate(moved);
+    up();
+  }
+
+  var btnToday=document.getElementById('btnToday');
+  if(btnToday){
+    btnToday.addEventListener('click', function(){
+      var now=new Date();
+      var today=dt(now.getFullYear(), now.getMonth()+1, now.getDate());
+      setRefInputsFromUTCDate(today);
       up();
+    });
+  }
+
+  var btnPrev=document.getElementById('btnPrevDay');
+  if(btnPrev){
+    btnPrev.addEventListener('click', function(){
+      shiftRefBy(-1);
+    });
+  }
+
+  var btnNext=document.getElementById('btnNextDay');
+  if(btnNext){
+    btnNext.addEventListener('click', function(){
+      shiftRefBy(1);
     });
   }
 }, {once:true});
