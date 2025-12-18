@@ -1,0 +1,2876 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calendaria · Tabla periódica</title>
+<style>
+:root{
+  --bg:#0b0d10;
+  --text:#e6f1ff;
+  --muted:#9fb3c8;
+  --ol:#2a3642;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(1200px 800px at 80% -10%,rgba(76,145,255,.25),transparent),
+             radial-gradient(900px 700px at 10% 110%,rgba(144,234,255,.2),transparent),
+             #05070b;
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:8px 0 14px 0;
+}
+.sun{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 20%,#fff6d6,#ffb347);
+  box-shadow:0 0 18px #ffb347;
+  display:inline-block;
+  margin-right:8px;
+}
+.small{font-size:12px;color:var(--muted)}
+.mono{font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+
+#refDateLabel{margin-bottom:12px;}
+
+#solarDaysLabel{margin-top:2px;}
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+  border:1px solid var(--ol);
+  border-radius:16px;
+  padding:14px 16px;
+  margin-bottom:14px;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  color:var(--text);
+  border-radius:999px;
+  padding:6px 12px;
+  border:1px solid var(--ol);
+  text-decoration:none;
+  background:rgba(255,255,255,.04);
+}
+.btn span{font-size:14px}
+.title{font-size:16px;font-weight:600}
+.elementLabel{
+  font-size:22px;
+  margin-top:4px;
+}
+.periodicContainer{
+  position:relative;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid #d7e6ff; /* borde claro en todos los dispositivos */
+  background:rgba(0,0,0,.35);
+  min-height:320px;
+}
+.periodicScroll{
+  width:100%;
+  overflow:visible; /* sin barras extra en desktop */
+}
+.periodicPdf{
+  width:100%;
+  height:min(80vh,900px);
+  border:0;
+  display:block;
+}
+@media (min-width:840px){
+  .periodicPdf{height:80vh}
+}
+@media (max-width:839px){
+  .periodicScroll{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .periodicPdf{
+    width:1200px;
+    max-width:none;
+    height:auto;
+  }
+}
+
+.header-card{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.header-main{
+  flex:1 1 200px;
+}
+.header-badge{
+  flex:0 0 auto;
+}
+.elementBadge{
+  border:1px solid var(--ol);
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  padding:6px;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+  display:none;
+}
+.elementBadge img{
+  display:block;
+  width:76px;
+  height:auto;
+  border-radius:10px;
+  border:1px solid var(--ol);
+}
+@media (max-width:599px){
+  .elementBadge img{width:64px;}
+}
+
+  /* Aparato header (mismo estilo que en index) */
+  .mcard{
+    display:inline-block;
+    width:fit-content;
+    max-width:100%;
+    border:1px solid var(--ol);
+    border-radius:12px;
+    padding:10px 12px;
+    background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
+    margin:0 0 6px 0;
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="small"><span class="sun"></span>Calendaria-LGC · Tabla periódica</div>
+      <div class="small">Vista de elementos</div>
+    </div>
+    <a href="./index.html" class="btn"><span>←</span><span>Volver a Calendaria</span></a>
+  </header>
+
+  <main>
+    <section class="card header-card">
+      <div class="header-main">
+        <div class="small mono" id="refDateLabel"></div>
+        <div class="mcard"><div class="small mono" id="apHeaderLabel"></div></div>
+        <div class="small mono" id="solarDaysLabel"></div>
+        <div class="mono elementLabel" id="colRowLabel">Columna 1 · Fila 1</div>
+        <div class="small mono" id="periodicElementLabel">H · 1 · Hydrogen</div>
+      </div>
+      <div class="header-badge">
+        <div class="elementBadge" title="" aria-hidden="true">
+          <img id="elementTile" src="./hydrogen.png" alt="Elemento actual">
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="periodicContainer">
+        <div class="periodicScroll">
+          <object data="./TablaPeriodica352elementos.pdf#view=FitH"
+                  type="application/pdf"
+                  class="periodicPdf">
+            <p class="small" style="padding:12px">
+              Tu navegador no puede mostrar el PDF embebido. Puedes descargar la tabla periódica desde
+              <a href="./TablaPeriodica352elementos.pdf">este enlace</a>.
+            </p>
+          </object>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+(function(){
+  function getParam(name){
+    var m = new RegExp('[?&]'+name+'=([^&]+)').exec(window.location.search);
+    return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
+  }
+
+  // Parse flexible date formats coming from index:
+  // - yyyy-mm-dd (desktop input[type=date])
+  // - dd-mm-yyyy / dd/mm/yyyy (mobile patched input[type=text])
+  function parseFlexDate(str){
+    if(!str) return null;
+    var s = String(str).trim().replace(/\//g,'-');
+    var p = s.split('-');
+    if(p.length !== 3) return null;
+
+    var idxY = -1;
+    for(var i=0;i<3;i++){
+      if(/^\d{4}$/.test(p[i])){ idxY = i; break; }
+    }
+
+    var y,m,d;
+    if(idxY >= 0){
+      y = parseInt(p[idxY], 10);
+      var r = [];
+      for(i=0;i<3;i++){ if(i!==idxY) r.push(parseInt(p[i],10)); }
+      if(r.length !== 2 || isNaN(r[0]) || isNaN(r[1])) return null;
+
+      // If the year is first => yyyy-mm-dd. Otherwise => dd-mm-yyyy.
+      if(idxY === 0){ m = r[0]; d = r[1]; }
+      else { d = r[0]; m = r[1]; }
+    }else{
+      // fallback: assume yyyy-mm-dd
+      y = parseInt(p[0],10); m = parseInt(p[1],10); d = parseInt(p[2],10);
+    }
+
+    if(!(y>=1&&y<=9999&&m>=1&&m<=12&&d>=1&&d<=31)) return null;
+    return {y:y,m:m,d:d};
+  }
+  function pad2(n){ n=String(n); return n.length<2?('0'+n):n; }
+
+  var refRaw = getParam('ref'); // may be yyyy-mm-dd or dd-mm-yyyy
+  var refDate = parseFlexDate(refRaw);
+
+  var refLabel = document.getElementById('refDateLabel');
+  if(refLabel && refDate){
+    refLabel.textContent = 'Fecha de referencia: ' + pad2(refDate.d) + '/' + pad2(refDate.m) + '/' + String(refDate.y).padStart(4,'0');
+  } else if(refLabel && refRaw){
+    // If parsing fails, at least show the raw string
+    refLabel.textContent = 'Fecha de referencia: ' + refRaw;
+  }
+
+  // Aparato + días solares para la misma fecha de referencia (mismo cálculo que app.js)
+  var apHeaderLabel = document.getElementById('apHeaderLabel');
+  var solarDaysLabel = document.getElementById('solarDaysLabel');
+
+  if((apHeaderLabel || solarDaysLabel) && refDate){
+    try{
+      function jdnG(y,m,d){
+        var a=Math.floor((14-m)/12);
+        var Y=y+4800-a;
+        var M=m+12*a-3;
+        return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-Math.floor(Y/100)+Math.floor(Y/400)-32045;
+      }
+      function jdnJ(y,m,d){
+        var a=Math.floor((14-m)/12);
+        var Y=y+4800-a;
+        var M=m+12*a-3;
+        return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-32083;
+      }
+
+      var y = refDate.y, m = refDate.m, d = refDate.d;
+      var isGregorian = (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
+      var j = isGregorian ? jdnG(y,m,d) : jdnJ(y,m,d);
+      var jJulEpoch = jdnJ(1,1,1);
+      var totalSolar = j - jJulEpoch + 1;
+
+      var apIndexVal = Math.floor((y-1)/4) + 1;
+      var aStartY = y - ((y-1)%4);
+      var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
+      var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
+
+      if(apHeaderLabel){
+        apHeaderLabel.textContent = 'Aparato Nº ' + apIndexVal + ' · Año ' + yearPhase + ' — ' + PHASES[yearPhase];
+      }
+      if(solarDaysLabel){
+        solarDaysLabel.textContent = 'Días solares ' + totalSolar;
+      }
+    }catch(e){
+      // sin acción
+    }
+  }
+  var raw = getParam('el') || 'H';
+  var key = raw.toUpperCase();
+  var symbol = raw;
+  document.body.setAttribute('data-el', key);
+  var label = document.getElementById('periodicElementLabel');
+  var colRowLabel = document.getElementById('colRowLabel');
+  var name = 'Elemento';
+  var atomic = '';
+  var colRow = 'Columna 1 · Fila 1';
+
+  if (key === 'H') {
+    name = 'Hydrogen';
+    atomic = '1';
+    colRow = 'Columna 1 · Fila 1';
+    symbol = 'H';
+  }
+  else if (key === 'HE') {
+    name = 'Helium';
+    atomic = '2';
+    colRow = 'Columna 32 · Fila 1';
+    symbol = 'He';
+  }
+  else if (key === 'LI') {
+    name = 'Lithium';
+    atomic = '3';
+    colRow = 'Columna 1 · Fila 2';
+    symbol = 'Li';
+  }
+  else if (key === 'BE') {
+    name = 'Beryllium';
+    atomic = '4';
+    colRow = 'Columna 2 · Fila 2';
+    symbol = 'Be';
+  }
+  else if (key === 'B') {
+    name = 'Boron';
+    atomic = '5';
+    colRow = 'Columna 27 · Fila 2';
+    symbol = 'B';
+  }
+  else if (key === 'C') {
+    name = 'Carbon';
+    atomic = '6';
+    colRow = 'Columna 28 · Fila 2';
+    symbol = 'C';
+  }
+  else if (key === 'N') {
+    name = 'Nitrogen';
+    atomic = '7';
+    colRow = 'Columna 29 · Fila 2';
+    symbol = 'N';
+  }
+  else if (key === 'O') {
+    name = 'Oxygen';
+    atomic = '8';
+    colRow = 'Columna 30 · Fila 2';
+    symbol = 'O';
+  }
+  else if (key === 'F') {
+    name = 'Fluorine';
+    atomic = '9';
+    colRow = 'Columna 31 · Fila 2';
+    symbol = 'F';
+  }
+  else if (key === 'NE') {
+    name = 'Neon';
+    atomic = '10';
+    colRow = 'Columna 32 · Fila 2';
+    symbol = 'Ne';
+  }
+  else if (key === 'NA') {
+    name = 'Sodium';
+    atomic = '11';
+    colRow = 'Columna 1 · Fila 3';
+    symbol = 'Na';
+  }
+  else if (key === 'MG') {
+    name = 'Magnesium';
+    atomic = '12';
+    colRow = 'Columna 2 · Fila 3';
+    symbol = 'Mg';
+  }
+  else if (key === 'AL') {
+    name = 'Aluminium';
+    atomic = '13';
+    colRow = 'Columna 27 · Fila 3';
+    symbol = 'Al';
+  }
+  else if (key === 'SI') {
+    name = 'Silicon';
+    atomic = '14';
+    colRow = 'Columna 28 · Fila 3';
+    symbol = 'Si';
+  }
+  else if (key === 'P') {
+    name = 'Phosphorus';
+    atomic = '15';
+    colRow = 'Columna 29 · Fila 3';
+    symbol = 'P';
+  }
+  else if (key === 'S') {
+    name = 'Sulphur';
+    atomic = '16';
+    colRow = 'Columna 30 · Fila 3';
+    symbol = 'S';
+  }
+  else if (key === 'CL') {
+    name = 'Chlorine';
+    atomic = '17';
+    colRow = 'Columna 31 · Fila 3';
+    symbol = 'Cl';
+  }
+  else if (key === 'AR') {
+    name = 'Argon';
+    atomic = '18';
+    colRow = 'Columna 32 · Fila 3';
+    symbol = 'Ar';
+  }
+  else if (key === 'K') {
+    name = 'Potassium';
+    atomic = '19';
+    colRow = 'Columna 1 · Fila 4';
+    symbol = 'K';
+  }
+  else if (key === 'CA') {
+    name = 'Calcium';
+    atomic = '20';
+    colRow = 'Columna 2 · Fila 4';
+    symbol = 'Ca';
+  }
+  else if (key === 'SC') {
+    name = 'Scandium';
+    atomic = '21';
+    colRow = 'Columna 17 · Fila 4';
+    symbol = 'Sc';
+  }
+  else if (key === 'TI') {
+    name = 'Titanium';
+    atomic = '22';
+    colRow = 'Columna 18 · Fila 4';
+    symbol = 'Ti';
+  }
+  else if (key === 'V') {
+    name = 'Vanadium';
+    atomic = '23';
+    colRow = 'Columna 19 · Fila 4';
+    symbol = 'V';
+  }
+  else if (key === 'CR') {
+    name = 'Chromium';
+    atomic = '24';
+    colRow = 'Columna 20 · Fila 4';
+    symbol = 'Cr';
+  }
+  else if (key === 'MN') {
+    name = 'Manganese';
+    atomic = '25';
+    colRow = 'Columna 21 · Fila 4';
+    symbol = 'Mn';
+  }
+  else if (key === 'FE') {
+    name = 'Iron';
+    atomic = '26';
+    colRow = 'Columna 22 · Fila 4';
+    symbol = 'Fe';
+  }
+  else if (key === 'CO') {
+    name = 'Cobalt';
+    atomic = '27';
+    colRow = 'Columna 23 · Fila 4';
+    symbol = 'Co';
+  }
+  else if (key === 'NI') {
+    name = 'Nickel';
+    atomic = '28';
+    colRow = 'Columna 24 · Fila 4';
+    symbol = 'Ni';
+  }
+  else if (key === 'CU') {
+    name = 'Copper';
+    atomic = '29';
+    colRow = 'Columna 25 · Fila 4';
+    symbol = 'Cu';
+  }
+  else if (key === 'ZN') {
+    name = 'Zinc';
+    atomic = '30';
+    colRow = 'Columna 26 · Fila 4';
+    symbol = 'Zn';
+  }
+  else if (key === 'GA') {
+    name = 'Gallium';
+    atomic = '31';
+    colRow = 'Columna 27 · Fila 4';
+    symbol = 'Ga';
+  }
+  else if (key === 'GE') {
+    name = 'Germanium';
+    atomic = '32';
+    colRow = 'Columna 28 · Fila 4';
+    symbol = 'Ge';
+  }
+  else if (key === 'AS') {
+    name = 'Arsenic';
+    atomic = '33';
+    colRow = 'Columna 29 · Fila 4';
+    symbol = 'As';
+  }
+  else if (key === 'SE') {
+    name = 'Selenium';
+    atomic = '34';
+    colRow = 'Columna 30 · Fila 4';
+    symbol = 'Se';
+  }
+  else if (key === 'BR') {
+    name = 'Bromine';
+    atomic = '35';
+    colRow = 'Columna 31 · Fila 4';
+    symbol = 'Br';
+  }
+  else if (key === 'KR') {
+    name = 'Krypton';
+    atomic = '36';
+    colRow = 'Columna 32 · Fila 4';
+    symbol = 'Kr';
+  }
+  else if (key === 'RB') {
+    name = 'Rubidium';
+    atomic = '37';
+    colRow = 'Columna 1 · Fila 5';
+    symbol = 'Rb';
+  }
+  else if (key === 'SR') {
+    name = 'Strontium';
+    atomic = '38';
+    colRow = 'Columna 2 · Fila 5';
+    symbol = 'Sr';
+  }
+  else if (key === 'Y') {
+    name = 'Yttrium';
+    atomic = '39';
+    colRow = 'Columna 17 · Fila 5';
+    symbol = 'Y';
+  }
+  else if (key === 'ZR') {
+    name = 'Zirconium';
+    atomic = '40';
+    colRow = 'Columna 18 · Fila 5';
+    symbol = 'Zr';
+  }
+  else if (key === 'NB') {
+    name = 'Niobium';
+    atomic = '41';
+    colRow = 'Columna 19 · Fila 5';
+    symbol = 'Nb';
+  }
+  else if (key === 'MO') {
+    name = 'Molybdenum';
+    atomic = '42';
+    colRow = 'Columna 20 · Fila 5';
+    symbol = 'Mo';
+  }
+  else if (key === 'TC') {
+    name = 'Technetium';
+    atomic = '43';
+    colRow = 'Columna 21 · Fila 5';
+    symbol = 'Tc';
+  }
+  else if (key === 'RU') {
+    name = 'Ruthenium';
+    atomic = '44';
+    colRow = 'Columna 22 · Fila 5';
+    symbol = 'Ru';
+  }
+  else if (key === 'RH') {
+    name = 'Rhodium';
+    atomic = '45';
+    colRow = 'Columna 23 · Fila 5';
+    symbol = 'Rh';
+  }
+  else if (key === 'PD') {
+    name = 'Palladium';
+    atomic = '46';
+    colRow = 'Columna 24 · Fila 5';
+    symbol = 'Pd';
+  }
+  else if (key === 'AG') {
+    name = 'Silver';
+    atomic = '47';
+    colRow = 'Columna 25 · Fila 5';
+    symbol = 'Ag';
+  }
+  else if (key === 'CD') {
+    name = 'Cadmium';
+    atomic = '48';
+    colRow = 'Columna 26 · Fila 5';
+    symbol = 'Cd';
+  }
+  else if (key === 'IN') {
+    name = 'Indium';
+    atomic = '49';
+    colRow = 'Columna 27 · Fila 5';
+    symbol = 'In';
+  }
+  else if (key === 'SN') {
+    name = 'Tin';
+    atomic = '50';
+    colRow = 'Columna 28 · Fila 5';
+    symbol = 'Sn';
+  }
+  else if (key === 'SB') {
+    name = 'Antimony';
+    atomic = '51';
+    colRow = 'Columna 29 · Fila 5';
+    symbol = 'Sb';
+  }
+  else if (key === 'TE') {
+    name = 'Tellurium';
+    atomic = '52';
+    colRow = 'Columna 30 · Fila 5';
+    symbol = 'Te';
+  }
+  else if (key === 'I') {
+    name = 'Iodine';
+    atomic = '53';
+    colRow = 'Columna 31 · Fila 5';
+    symbol = 'I';
+  }
+  else if (key === 'XE') {
+    name = 'Xenon';
+    atomic = '54';
+    colRow = 'Columna 32 · Fila 5';
+    symbol = 'Xe';
+  }
+  else if (key === 'CS') {
+    name = 'Caesium';
+    atomic = '55';
+    colRow = 'Columna 1 · Fila 6';
+    symbol = 'Cs';
+  }
+  else if (key === 'BA') {
+    name = 'Barium';
+    atomic = '56';
+    colRow = 'Columna 2 · Fila 6';
+    symbol = 'Ba';
+  }
+  else if (key === 'LA') {
+    name = 'Lanthanum';
+    atomic = '57';
+    colRow = 'Columna 3 · Fila 6';
+    symbol = 'La';
+  }
+  else if (key === 'CE') {
+    name = 'Cerium';
+    atomic = '58';
+    colRow = 'Columna 4 · Fila 6';
+    symbol = 'Ce';
+  }
+  else if (key === 'PR') {
+    name = 'Praseodymium';
+    atomic = '59';
+    colRow = 'Columna 5 · Fila 6';
+    symbol = 'Pr';
+  }
+  else if (key === 'ND') {
+    name = 'Neodymium';
+    atomic = '60';
+    colRow = 'Columna 6 · Fila 6';
+    symbol = 'Nd';
+  }
+  else if (key === 'PM') {
+    name = 'Promethium';
+    atomic = '61';
+    colRow = 'Columna 7 · Fila 6';
+    symbol = 'Pm';
+  }
+  else if (key === 'SM') {
+    name = 'Samarium';
+    atomic = '62';
+    colRow = 'Columna 8 · Fila 6';
+    symbol = 'Sm';
+  }
+  else if (key === 'EU') {
+    name = 'Europium';
+    atomic = '63';
+    colRow = 'Columna 9 · Fila 6';
+    symbol = 'Eu';
+  }
+  else if (key === 'GD') {
+    name = 'Gadolinium';
+    atomic = '64';
+    colRow = 'Columna 10 · Fila 6';
+    symbol = 'Gd';
+  }
+  else if (key === 'TB') {
+    name = 'Terbium';
+    atomic = '65';
+    colRow = 'Columna 11 · Fila 6';
+    symbol = 'Tb';
+  }
+  else if (key === 'DY') {
+    name = 'Dysprosium';
+    atomic = '66';
+    colRow = 'Columna 12 · Fila 6';
+    symbol = 'Dy';
+  }
+  else if (key === 'HO') {
+    name = 'Holmium';
+    atomic = '67';
+    colRow = 'Columna 13 · Fila 6';
+    symbol = 'Ho';
+  }
+  else if (key === 'ER') {
+    name = 'Erbium';
+    atomic = '68';
+    colRow = 'Columna 14 · Fila 6';
+    symbol = 'Er';
+  }
+  else if (key === 'TM') {
+    name = 'Thulium';
+    atomic = '69';
+    colRow = 'Columna 15 · Fila 6';
+    symbol = 'Tm';
+  }
+  else if (key === 'YB') {
+    name = 'Ytterbium';
+    atomic = '70';
+    colRow = 'Columna 16 · Fila 6';
+    symbol = 'Yb';
+  }
+  else if (key === 'LU') {
+    name = 'Lutetium';
+    atomic = '71';
+    colRow = 'Columna 17 · Fila 6';
+    symbol = 'Lu';
+  }
+  else if (key === 'HF') {
+    name = 'Hafnium';
+    atomic = '72';
+    colRow = 'Columna 18 · Fila 6';
+    symbol = 'Hf';
+  }
+  else if (key === 'TA') {
+    name = 'Tantalum';
+    atomic = '73';
+    colRow = 'Columna 19 · Fila 6';
+    symbol = 'Ta';
+  }
+  else if (key === 'W') {
+    name = 'Tungsten';
+    atomic = '74';
+    colRow = 'Columna 20 · Fila 6';
+    symbol = 'W';
+  }
+  else if (key === 'RE') {
+    name = 'Rhenium';
+    atomic = '75';
+    colRow = 'Columna 21 · Fila 6';
+    symbol = 'Re';
+  }
+  else if (key === 'OS') {
+    name = 'Osmium';
+    atomic = '76';
+    colRow = 'Columna 22 · Fila 6';
+    symbol = 'Os';
+  }
+  else if (key === 'IR') {
+    name = 'Iridium';
+    atomic = '77';
+    colRow = 'Columna 23 · Fila 6';
+    symbol = 'Ir';
+  }
+  else if (key === 'PT') {
+    name = 'Platinum';
+    atomic = '78';
+    colRow = 'Columna 24 · Fila 6';
+    symbol = 'Pt';
+  }
+  else if (key === 'AU') {
+    name = 'Gold';
+    atomic = '79';
+    colRow = 'Columna 25 · Fila 6';
+    symbol = 'Au';
+  }
+  else if (key === 'HG') {
+    name = 'Mercury';
+    atomic = '80';
+    colRow = 'Columna 26 · Fila 6';
+    symbol = 'Hg';
+  }
+  else if (key === 'TL') {
+    name = 'Thallium';
+    atomic = '81';
+    colRow = 'Columna 27 · Fila 6';
+    symbol = 'Tl';
+  }
+  else if (key === 'PB') {
+    name = 'Lead';
+    atomic = '82';
+    colRow = 'Columna 28 · Fila 6';
+    symbol = 'Pb';
+  }
+  else if (key === 'BI') {
+    name = 'Bismuth';
+    atomic = '83';
+    colRow = 'Columna 29 · Fila 6';
+    symbol = 'Bi';
+  }
+  else if (key === 'PO') {
+    name = 'Polonium';
+    atomic = '84';
+    colRow = 'Columna 30 · Fila 6';
+    symbol = 'Po';
+  }
+  else if (key === 'AT') {
+    name = 'Astatine';
+    atomic = '85';
+    colRow = 'Columna 31 · Fila 6';
+    symbol = 'At';
+  }
+  else if (key === 'RN') {
+    name = 'Radon';
+    atomic = '86';
+    colRow = 'Columna 32 · Fila 6';
+    symbol = 'Rn';
+  }
+  else if (key === 'FR') {
+    name = 'Francium';
+    atomic = '87';
+    colRow = 'Columna 1 · Fila 8';
+    symbol = 'Fr';
+  }
+  else if (key === 'RA') {
+    name = 'Radium';
+    atomic = '88';
+    colRow = 'Columna 2 · Fila 8';
+    symbol = 'Ra';
+  }
+  else if (key === 'AC') {
+    name = 'Actinium';
+    atomic = '89';
+    colRow = 'Columna 3 · Fila 8';
+    symbol = 'Ac';
+  }
+  else if (key === 'TH') {
+    name = 'Thorium';
+    atomic = '90';
+    colRow = 'Columna 4 · Fila 8';
+    symbol = 'Th';
+  }
+  else if (key === 'PA') {
+    name = 'Protactinium';
+    atomic = '91';
+    colRow = 'Columna 5 · Fila 8';
+    symbol = 'Pa';
+  }
+  else if (key === 'U') {
+    name = 'Uranium';
+    atomic = '92';
+    colRow = 'Columna 6 · Fila 8';
+    symbol = 'U';
+  }
+  else if (key === 'NP') {
+    name = 'Neptunium';
+    atomic = '93';
+    colRow = 'Columna 7 · Fila 8';
+    symbol = 'Np';
+  }
+  else if (key === 'PU') {
+    name = 'Plutonium';
+    atomic = '94';
+    colRow = 'Columna 8 · Fila 8';
+    symbol = 'Pu';
+  }
+  else if (key === 'AM') {
+    name = 'Americium';
+    atomic = '95';
+    colRow = 'Columna 9 · Fila 8';
+    symbol = 'Am';
+  }
+  else if (key === 'CM') {
+    name = 'Curium';
+    atomic = '96';
+    colRow = 'Columna 10 · Fila 8';
+    symbol = 'Cm';
+  }
+  else if (key === 'BK') {
+    name = 'Berkelium';
+    atomic = '97';
+    colRow = 'Columna 11 · Fila 8';
+    symbol = 'Bk';
+  }
+  else if (key === 'CF') {
+    name = 'Californium';
+    atomic = '98';
+    colRow = 'Columna 12 · Fila 8';
+    symbol = 'Cf';
+  }
+  else if (key === 'ES') {
+    name = 'Einsteinium';
+    atomic = '99';
+    colRow = 'Columna 13 · Fila 8';
+    symbol = 'Es';
+  }
+  else if (key === 'FM') {
+    name = 'Fermium';
+    atomic = '100';
+    colRow = 'Columna 14 · Fila 8';
+    symbol = 'Fm';
+  }
+  else if (key === 'MD') {
+    name = 'Mendelevium';
+    atomic = '101';
+    colRow = 'Columna 15 · Fila 8';
+    symbol = 'Md';
+  }
+  else if (key === 'NO') {
+    name = 'Nobelium';
+    atomic = '102';
+    colRow = 'Columna 16 · Fila 8';
+    symbol = 'No';
+  }
+  else if (key === 'LR') {
+    name = 'Lawrencium';
+    atomic = '103';
+    colRow = 'Columna 17 · Fila 8';
+    symbol = 'Lr';
+  }
+  else if (key === 'RF') {
+    name = 'Rutherfordium';
+    atomic = '104';
+    colRow = 'Columna 18 · Fila 8';
+    symbol = 'Rf';
+  }
+  else if (key === 'DB') {
+    name = 'Dubnium';
+    atomic = '105';
+    colRow = 'Columna 19 · Fila 8';
+    symbol = 'Db';
+  }
+  else if (key === 'SG') {
+    name = 'Seaborgium';
+    atomic = '106';
+    colRow = 'Columna 20 · Fila 8';
+    symbol = 'Sg';
+  }
+  else if (key === 'BH') {
+    name = 'Bohrium';
+    atomic = '107';
+    colRow = 'Columna 21 · Fila 8';
+    symbol = 'Bh';
+  }
+  else if (key === 'HS') {
+    name = 'Hassium';
+    atomic = '108';
+    colRow = 'Columna 22 · Fila 8';
+    symbol = 'Hs';
+  }
+  else if (key === 'MT') {
+    name = 'Meitnerium';
+    atomic = '109';
+    colRow = 'Columna 23 · Fila 8';
+    symbol = 'Mt';
+  }
+  else if (key === 'DS') {
+    name = 'Darmstadtium';
+    atomic = '110';
+    colRow = 'Columna 24 · Fila 8';
+    symbol = 'Ds';
+  }
+  else if (key === 'RG') {
+    name = 'Roentgenium';
+    atomic = '111';
+    colRow = 'Columna 25 · Fila 8';
+    symbol = 'Rg';
+  }
+  else if (key === 'CN') {
+    name = 'Copernicium';
+    atomic = '112';
+    colRow = 'Columna 26 · Fila 8';
+    symbol = 'Cn';
+  }
+  else if (key === 'NH') {
+    name = 'Nihonium';
+    atomic = '113';
+    colRow = 'Columna 27 · Fila 8';
+    symbol = 'Nh';
+  }
+  else if (key === 'FL') {
+    name = 'Flerovium';
+    atomic = '114';
+    colRow = 'Columna 28 · Fila 8';
+    symbol = 'Fl';
+  }
+  else if (key === 'MC') {
+    name = 'Moscovium';
+    atomic = '115';
+    colRow = 'Columna 29 · Fila 8';
+    symbol = 'Mc';
+  }
+  else if (key === 'LV') {
+    name = 'Livermorium';
+    atomic = '116';
+    colRow = 'Columna 30 · Fila 8';
+    symbol = 'Lv';
+  }
+  else if (key === 'TS') {
+    name = 'Tenessine';
+    atomic = '117';
+    colRow = 'Columna 31 · Fila 8';
+    symbol = 'Ts';
+  }
+  else if (key === 'OG') {
+    name = 'Oganesson';
+    atomic = '118';
+    colRow = 'Columna 32 · Fila 8';
+    symbol = 'Og';
+  }
+  else if (key === 'P119') {
+    name = '1';
+    atomic = '119';
+    colRow = 'Columna 31 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P120') {
+    name = '2';
+    atomic = '120';
+    colRow = 'Columna 30 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P121') {
+    name = '3';
+    atomic = '121';
+    colRow = 'Columna 29 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P122') {
+    name = '4';
+    atomic = '122';
+    colRow = 'Columna 28 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P123') {
+    name = '5';
+    atomic = '123';
+    colRow = 'Columna 27 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P124') {
+    name = '6';
+    atomic = '124';
+    colRow = 'Columna 26 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P125') {
+    name = '7';
+    atomic = '125';
+    colRow = 'Columna 25 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P126') {
+    name = '8';
+    atomic = '126';
+    colRow = 'Columna 24 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P127') {
+    name = '9';
+    atomic = '127';
+    colRow = 'Columna 23 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P128') {
+    name = '10';
+    atomic = '128';
+    colRow = 'Columna 22 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P129') {
+    name = '11';
+    atomic = '129';
+    colRow = 'Columna 21 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P130') {
+    name = '12';
+    atomic = '130';
+    colRow = 'Columna 20 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P131') {
+    name = '13';
+    atomic = '131';
+    colRow = 'Columna 19 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P132') {
+    name = '14';
+    atomic = '132';
+    colRow = 'Columna 18 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P133') {
+    name = '15';
+    atomic = '133';
+    colRow = 'Columna 17 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P134') {
+    name = '16';
+    atomic = '134';
+    colRow = 'Columna 16 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P135') {
+    name = '17';
+    atomic = '135';
+    colRow = 'Columna 15 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P136') {
+    name = '18';
+    atomic = '136';
+    colRow = 'Columna 14 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P137') {
+    name = '19';
+    atomic = '137';
+    colRow = 'Columna 13 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P138') {
+    name = '20';
+    atomic = '138';
+    colRow = 'Columna 12 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P139') {
+    name = '21';
+    atomic = '139';
+    colRow = 'Columna 11 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P140') {
+    name = '22';
+    atomic = '140';
+    colRow = 'Columna 10 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P141') {
+    name = '23';
+    atomic = '141';
+    colRow = 'Columna 9 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P142') {
+    name = '24';
+    atomic = '142';
+    colRow = 'Columna 8 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P143') {
+    name = '25';
+    atomic = '143';
+    colRow = 'Columna 7 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P144') {
+    name = '26';
+    atomic = '144';
+    colRow = 'Columna 6 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P145') {
+    name = '27';
+    atomic = '145';
+    colRow = 'Columna 5 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P146') {
+    name = '28';
+    atomic = '146';
+    colRow = 'Columna 4 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P147') {
+    name = '29';
+    atomic = '147';
+    colRow = 'Columna 3 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'P148') {
+    name = '30';
+    atomic = '148';
+    colRow = 'Columna 2 · Fila 1';
+    symbol = 'Promesa';
+  }
+  else if (key === 'BN149') {
+    name = '';
+    atomic = '149';
+    colRow = 'Columna 26 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN150') {
+    name = '';
+    atomic = '150';
+    colRow = 'Columna 26 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN151') {
+    name = '';
+    atomic = '151';
+    colRow = 'Columna 25 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN152') {
+    name = '';
+    atomic = '152';
+    colRow = 'Columna 25 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN153') {
+    name = '';
+    atomic = '153';
+    colRow = 'Columna 24 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN154') {
+    name = '';
+    atomic = '154';
+    colRow = 'Columna 24 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN155') {
+    name = '';
+    atomic = '155';
+    colRow = 'Columna 23 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN156') {
+    name = '';
+    atomic = '156';
+    colRow = 'Columna 23 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN157') {
+    name = '';
+    atomic = '157';
+    colRow = 'Columna 22 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN158') {
+    name = '';
+    atomic = '158';
+    colRow = 'Columna 22 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN159') {
+    name = '';
+    atomic = '159';
+    colRow = 'Columna 21 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN160') {
+    name = '';
+    atomic = '160';
+    colRow = 'Columna 21 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN161') {
+    name = '';
+    atomic = '161';
+    colRow = 'Columna 20 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN162') {
+    name = '';
+    atomic = '162';
+    colRow = 'Columna 20 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN163') {
+    name = '';
+    atomic = '163';
+    colRow = 'Columna 19 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN164') {
+    name = '';
+    atomic = '164';
+    colRow = 'Columna 19 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN165') {
+    name = '';
+    atomic = '165';
+    colRow = 'Columna 18 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN166') {
+    name = '';
+    atomic = '166';
+    colRow = 'Columna 18 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN167') {
+    name = '';
+    atomic = '167';
+    colRow = 'Columna 17 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN168') {
+    name = '';
+    atomic = '168';
+    colRow = 'Columna 17 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN169') {
+    name = '';
+    atomic = '169';
+    colRow = 'Columna 16 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN170') {
+    name = '';
+    atomic = '170';
+    colRow = 'Columna 16 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN171') {
+    name = '';
+    atomic = '171';
+    colRow = 'Columna 16 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN172') {
+    name = '';
+    atomic = '172';
+    colRow = 'Columna 16 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN173') {
+    name = '';
+    atomic = '173';
+    colRow = 'Columna 15 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN174') {
+    name = '';
+    atomic = '174';
+    colRow = 'Columna 15 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN175') {
+    name = '';
+    atomic = '175';
+    colRow = 'Columna 15 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN176') {
+    name = '';
+    atomic = '176';
+    colRow = 'Columna 15 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN177') {
+    name = '';
+    atomic = '177';
+    colRow = 'Columna 14 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN178') {
+    name = '';
+    atomic = '178';
+    colRow = 'Columna 14 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN179') {
+    name = '';
+    atomic = '179';
+    colRow = 'Columna 14 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN180') {
+    name = '';
+    atomic = '180';
+    colRow = 'Columna 14 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN181') {
+    name = '';
+    atomic = '181';
+    colRow = 'Columna 13 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN182') {
+    name = '';
+    atomic = '182';
+    colRow = 'Columna 13 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN183') {
+    name = '';
+    atomic = '183';
+    colRow = 'Columna 13 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN184') {
+    name = '';
+    atomic = '184';
+    colRow = 'Columna 13 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN185') {
+    name = '';
+    atomic = '185';
+    colRow = 'Columna 12 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN186') {
+    name = '';
+    atomic = '186';
+    colRow = 'Columna 12 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN187') {
+    name = '';
+    atomic = '187';
+    colRow = 'Columna 12 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN188') {
+    name = '';
+    atomic = '188';
+    colRow = 'Columna 12 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN189') {
+    name = '';
+    atomic = '189';
+    colRow = 'Columna 11 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN190') {
+    name = '';
+    atomic = '190';
+    colRow = 'Columna 11 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN191') {
+    name = '';
+    atomic = '191';
+    colRow = 'Columna 11 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN192') {
+    name = '';
+    atomic = '192';
+    colRow = 'Columna 11 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN193') {
+    name = '';
+    atomic = '193';
+    colRow = 'Columna 10 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN194') {
+    name = '';
+    atomic = '194';
+    colRow = 'Columna 10 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN195') {
+    name = '';
+    atomic = '195';
+    colRow = 'Columna 10 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN196') {
+    name = '';
+    atomic = '196';
+    colRow = 'Columna 10 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN197') {
+    name = '';
+    atomic = '197';
+    colRow = 'Columna 9 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN198') {
+    name = '';
+    atomic = '198';
+    colRow = 'Columna 9 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN199') {
+    name = '';
+    atomic = '199';
+    colRow = 'Columna 9 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN200') {
+    name = '';
+    atomic = '200';
+    colRow = 'Columna 9 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN201') {
+    name = '';
+    atomic = '201';
+    colRow = 'Columna 8 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN202') {
+    name = '';
+    atomic = '202';
+    colRow = 'Columna 8 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN203') {
+    name = '';
+    atomic = '203';
+    colRow = 'Columna 8 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN204') {
+    name = '';
+    atomic = '204';
+    colRow = 'Columna 8 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN205') {
+    name = '';
+    atomic = '205';
+    colRow = 'Columna 7 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN206') {
+    name = '';
+    atomic = '206';
+    colRow = 'Columna 7 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN207') {
+    name = '';
+    atomic = '207';
+    colRow = 'Columna 7 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN208') {
+    name = '';
+    atomic = '208';
+    colRow = 'Columna 7 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN209') {
+    name = '';
+    atomic = '209';
+    colRow = 'Columna 6 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN210') {
+    name = '';
+    atomic = '210';
+    colRow = 'Columna 6 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN211') {
+    name = '';
+    atomic = '211';
+    colRow = 'Columna 6 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN212') {
+    name = '';
+    atomic = '212';
+    colRow = 'Columna 6 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN213') {
+    name = '';
+    atomic = '213';
+    colRow = 'Columna 5 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN214') {
+    name = '';
+    atomic = '214';
+    colRow = 'Columna 5 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN215') {
+    name = '';
+    atomic = '215';
+    colRow = 'Columna 5 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN216') {
+    name = '';
+    atomic = '216';
+    colRow = 'Columna 5 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN217') {
+    name = '';
+    atomic = '217';
+    colRow = 'Columna 4 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN218') {
+    name = '';
+    atomic = '218';
+    colRow = 'Columna 4 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN219') {
+    name = '';
+    atomic = '219';
+    colRow = 'Columna 4 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN220') {
+    name = '';
+    atomic = '220';
+    colRow = 'Columna 4 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN221') {
+    name = '';
+    atomic = '221';
+    colRow = 'Columna 3 · Fila 2';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN222') {
+    name = '';
+    atomic = '222';
+    colRow = 'Columna 3 · Fila 3';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN223') {
+    name = '';
+    atomic = '223';
+    colRow = 'Columna 3 · Fila 4';
+    symbol = 'Espacio en negro';
+  }
+  else if (key === 'BN224') {
+    name = '';
+    atomic = '224';
+    colRow = 'Columna 3 · Fila 5';
+    symbol = 'Espacio en negro';
+  }
+  // Capa Francium–Bohrium (L1..L81, fila -2, -1, 7, 9)
+
+  else if (key === 'L1') {
+    name = '-87 · 225 · Francium';
+    atomic = '';
+    colRow = 'Columna 1 · Fila -2';
+    symbol = 'Fr';
+  }
+  else if (key === 'L2') {
+    name = '-118 · 256 · Oganesson';
+    atomic = '';
+    colRow = 'Columna 1 · Fila -1';
+    symbol = 'Og';
+  }
+  else if (key === 'L3') {
+    name = '-225 · Francium';
+    atomic = '';
+    colRow = 'Columna 1 · Fila 7';
+    symbol = 'Fr';
+  }
+  else if (key === 'L4') {
+    name = '87 · -225 · Francium';
+    atomic = '';
+    colRow = 'Columna 1 · Fila 9';
+    symbol = 'Fr';
+  }
+  else if (key === 'L5') {
+    name = '-88 · 226 · Radium';
+    atomic = '';
+    colRow = 'Columna 2 · Fila -2';
+    symbol = 'Ra';
+  }
+  else if (key === 'L6') {
+    name = '-117 · 255 · Tennessine';
+    atomic = '';
+    colRow = 'Columna 2 · Fila -1';
+    symbol = 'Ts';
+  }
+  else if (key === 'L7') {
+    name = '-226 · Radium';
+    atomic = '';
+    colRow = 'Columna 2 · Fila 7';
+    symbol = 'Ra';
+  }
+  else if (key === 'L8') {
+    name = '88 · -226 · Radium';
+    atomic = '';
+    colRow = 'Columna 2 · Fila 9';
+    symbol = 'Ra';
+  }
+  else if (key === 'L9') {
+    name = '-89 · 227 · Actinium';
+    atomic = '';
+    colRow = 'Columna 3 · Fila -2';
+    symbol = 'Ac';
+  }
+  else if (key === 'L10') {
+    name = '-116 · 254 · Livermorium';
+    atomic = '';
+    colRow = 'Columna 3 · Fila -1';
+    symbol = 'Lv';
+  }
+  else if (key === 'L11') {
+    name = '-227 · Actinium';
+    atomic = '';
+    colRow = 'Columna 3 · Fila 7';
+    symbol = 'Ac';
+  }
+  else if (key === 'L12') {
+    name = '89 · -227 · Actinium';
+    atomic = '';
+    colRow = 'Columna 3 · Fila 9';
+    symbol = 'Ac';
+  }
+  else if (key === 'L13') {
+    name = '-90 · 228 · Thorium';
+    atomic = '';
+    colRow = 'Columna 4 · Fila -2';
+    symbol = 'Th';
+  }
+  else if (key === 'L14') {
+    name = '-115 · 253 · Moscovium';
+    atomic = '';
+    colRow = 'Columna 4 · Fila -1';
+    symbol = 'Mc';
+  }
+  else if (key === 'L15') {
+    name = '-228 · Thorium';
+    atomic = '';
+    colRow = 'Columna 4 · Fila 7';
+    symbol = 'Th';
+  }
+  else if (key === 'L16') {
+    name = '90 · -228 · Thorium';
+    atomic = '';
+    colRow = 'Columna 4 · Fila 9';
+    symbol = 'Th';
+  }
+  else if (key === 'L17') {
+    name = '-91 · 229 · Protactinium';
+    atomic = '';
+    colRow = 'Columna 5 · Fila -1';
+    symbol = 'Pa';
+  }
+  else if (key === 'L18') {
+    name = '-114 · 252 · Flerovium';
+    atomic = '';
+    colRow = 'Columna 5 · Fila -2';
+    symbol = 'Fl';
+  }
+  else if (key === 'L19') {
+    name = '-229 · Protactinium';
+    atomic = '';
+    colRow = 'Columna 5 · Fila 7';
+    symbol = 'Pa';
+  }
+  else if (key === 'L20') {
+    name = '91 · -229 · Protactinium';
+    atomic = '';
+    colRow = 'Columna 5 · Fila 9';
+    symbol = 'Pa';
+  }
+  else if (key === 'L21') {
+    name = '-92 · 230 · Uranium';
+    atomic = '';
+    colRow = 'Columna 6 · Fila -2';
+    symbol = 'U';
+  }
+  else if (key === 'L22') {
+    name = '-113 · 251 · Nihonium';
+    atomic = '';
+    colRow = 'Columna 6 · Fila -1';
+    symbol = 'Nh';
+  }
+  else if (key === 'L23') {
+    name = '-230 · Uranium';
+    atomic = '';
+    colRow = 'Columna 6 · Fila 7';
+    symbol = 'U';
+  }
+  else if (key === 'L24') {
+    name = '92 · -230 · Uranium';
+    atomic = '';
+    colRow = 'Columna 6 · Fila 9';
+    symbol = 'U';
+  }
+  else if (key === 'L25') {
+    name = '-93 · 231 · Neptunium';
+    atomic = '';
+    colRow = 'Columna 7 · Fila -2';
+    symbol = 'Np';
+  }
+  else if (key === 'L26') {
+    name = '-112 · 250 · Copernicium';
+    atomic = '';
+    colRow = 'Columna 7 · Fila -1';
+    symbol = 'Cn';
+  }
+  else if (key === 'L27') {
+    name = '-231 · Neptunium';
+    atomic = '';
+    colRow = 'Columna 7 · Fila 7';
+    symbol = 'Np';
+  }
+  else if (key === 'L28') {
+    name = '93 · -231 · Neptunium';
+    atomic = '';
+    colRow = 'Columna 7 · Fila 9';
+    symbol = 'Np';
+  }
+  else if (key === 'L29') {
+    name = '-93 · 232 · Plutonium';
+    atomic = '';
+    colRow = 'Columna 8 · Fila -2';
+    symbol = 'Pu';
+  }
+  else if (key === 'L30') {
+    name = '-111 · 249 · Roentgenium';
+    atomic = '';
+    colRow = 'Columna 8 · Fila -1';
+    symbol = 'Rg';
+  }
+  else if (key === 'L31') {
+    name = '-232 · Plutonium';
+    atomic = '';
+    colRow = 'Columna 8 · Fila 7';
+    symbol = 'Pu';
+  }
+  else if (key === 'L32') {
+    name = '94 · -232 · Plutonium';
+    atomic = '';
+    colRow = 'Columna 8 · Fila 9';
+    symbol = 'Pu';
+  }
+  else if (key === 'L33') {
+    name = '-95 · 233 · Americium';
+    atomic = '';
+    colRow = 'Columna 9 · Fila -2';
+    symbol = 'Am';
+  }
+  else if (key === 'L34') {
+    name = '-110 · 248 · Darmstadtium';
+    atomic = '';
+    colRow = 'Columna 9 · Fila -1';
+    symbol = 'Ds';
+  }
+  else if (key === 'L35') {
+    name = '-233 · Americium';
+    atomic = '';
+    colRow = 'Columna 9 · Fila 7';
+    symbol = 'Am';
+  }
+  else if (key === 'L36') {
+    name = '95 · -233 · Americium';
+    atomic = '';
+    colRow = 'Columna 9 · Fila 9';
+    symbol = 'Am';
+  }
+  else if (key === 'L37') {
+    name = '-96 · 234 · Curium';
+    atomic = '';
+    colRow = 'Columna 10 · Fila -2';
+    symbol = 'Cm';
+  }
+  else if (key === 'L38') {
+    name = '-109 · 247 · Meitnerium';
+    atomic = '';
+    colRow = 'Columna 10 · Fila -1';
+    symbol = 'Mt';
+  }
+  else if (key === 'L39') {
+    name = '-234 · Curium';
+    atomic = '';
+    colRow = 'Columna 10 · Fila 7';
+    symbol = 'Cm';
+  }
+  else if (key === 'L40') {
+    name = '96 · 234 · Curium';
+    atomic = '';
+    colRow = 'Columna 10 · Fila 9';
+    symbol = 'Cm';
+  }
+  else if (key === 'L41') {
+    name = '-97 · 235 · Berkelium';
+    atomic = '';
+    colRow = 'Columna 11 · Fila -2';
+    symbol = 'Bk';
+  }
+  else if (key === 'L42') {
+    name = '-108 · 246 · Hassium';
+    atomic = '';
+    colRow = 'Columna 11 · Fila -1';
+    symbol = 'Hs';
+  }
+  else if (key === 'L43') {
+    name = '-235 · Berkelium';
+    atomic = '';
+    colRow = 'Columna 11 · Fila 7';
+    symbol = 'Bk';
+  }
+  else if (key === 'L44') {
+    name = '97 · -235 · Berkelium';
+    atomic = '';
+    colRow = 'Columna 11 · Fila 9';
+    symbol = 'Bk';
+  }
+  else if (key === 'L45') {
+    name = '-98 · 236 · Californium';
+    atomic = '';
+    colRow = 'Columna 12 · Fila -2';
+    symbol = 'Cf';
+  }
+  else if (key === 'L46') {
+    name = '-107 · 245 · Bohrium';
+    atomic = '';
+    colRow = 'Columna 12 · Fila -1';
+    symbol = 'Bh';
+  }
+  else if (key === 'L47') {
+    name = '-236 · Californium';
+    atomic = '';
+    colRow = 'Columna 12 · Fila 7';
+    symbol = 'Cf';
+  }
+  else if (key === 'L48') {
+    name = '98 · -236 · Californium';
+    atomic = '';
+    colRow = 'Columna 12 · Fila 9';
+    symbol = 'Cf';
+  }
+  else if (key === 'L49') {
+    name = '-99 · 237 · Einsteinium';
+    atomic = '';
+    colRow = 'Columna 13 · Fila -2';
+    symbol = 'Es';
+  }
+  else if (key === 'L50') {
+    name = '-106 · 244 · Seaborgium';
+    atomic = '';
+    colRow = 'Columna 13 · Fila -1';
+    symbol = 'Sg';
+  }
+  else if (key === 'L51') {
+    name = '- · 237 · Einsteinium';
+    atomic = '';
+    colRow = 'Columna 13 · Fila 7';
+    symbol = 'Es';
+  }
+  else if (key === 'L52') {
+    name = '99 · - · 237 · Einsteinium';
+    atomic = '';
+    colRow = 'Columna 13 · Fila 9';
+    symbol = 'Es';
+  }
+  else if (key === 'L53') {
+    name = '-100 · 238 · Fermium';
+    atomic = '';
+    colRow = 'Columna 14 · Fila -2';
+    symbol = 'Fm';
+  }
+  else if (key === 'L54') {
+    name = '-105 · 243 · Dubnium';
+    atomic = '';
+    colRow = 'Columna 14 · Fila -1';
+    symbol = 'Db';
+  }
+  else if (key === 'L55') {
+    name = '-238 · Fermium';
+    atomic = '';
+    colRow = 'Columna 14 · Fila 7';
+    symbol = 'Fm';
+  }
+  else if (key === 'L56') {
+    name = '100 · - · 238 · Fermium';
+    atomic = '';
+    colRow = 'Columna 14 · Fila 9';
+    symbol = 'Fm';
+  }
+  else if (key === 'L57') {
+    name = '-101 · - · 239 · Mendelevium';
+    atomic = '';
+    colRow = 'Columna 15 · Fila -2';
+    symbol = 'Md';
+  }
+  else if (key === 'L58') {
+    name = '-104 · 242 · Rutherfordium';
+    atomic = '';
+    colRow = 'Columna 15 · Fila -1';
+    symbol = 'Rf';
+  }
+  else if (key === 'L59') {
+    name = '- · 239 · Mendelevium';
+    atomic = '';
+    colRow = 'Columna 15 · Fila 7';
+    symbol = 'Md';
+  }
+  else if (key === 'L60') {
+    name = '101 · - · 239 · Mendelevium';
+    atomic = '';
+    colRow = 'Columna 15 · Fila 9';
+    symbol = 'Md';
+  }
+  else if (key === 'L61') {
+    name = '-102 · 240 · Nobelium';
+    atomic = '';
+    colRow = 'Columna 16 · Fila -2';
+    symbol = 'No';
+  }
+  else if (key === 'L62') {
+    name = '-103 · 241 · Lawrencium';
+    atomic = '';
+    colRow = 'Columna 16 · Fila -1';
+    symbol = 'Lr';
+  }
+  else if (key === 'L63') {
+    name = '-240 · Nobelium';
+    atomic = '';
+    colRow = 'Columna 16 · Fila 7';
+    symbol = 'No';
+  }
+  else if (key === 'L64') {
+    name = '102 · -240 · Nobelium';
+    atomic = '';
+    colRow = 'Columna 16 · Fila 9';
+    symbol = 'No';
+  }
+  else if (key === 'L65') {
+    name = '-103 · 241 · Lawrencium';
+    atomic = '';
+    colRow = 'Columna 17 · Fila -2';
+    symbol = 'Lr';
+  }
+  else if (key === 'L66') {
+    name = '-102 · 240 · Nobelium';
+    atomic = '';
+    colRow = 'Columna 17 · Fila -1';
+    symbol = 'No';
+  }
+  else if (key === 'L67') {
+    name = '-241 · Lawrencium';
+    atomic = '';
+    colRow = 'Columna 17 · Fila 7';
+    symbol = 'Lr';
+  }
+  else if (key === 'L68') {
+    name = '103 · -241 · Lawrencium';
+    atomic = '';
+    colRow = 'Columna 17 · Fila 9';
+    symbol = 'Lr';
+  }
+  else if (key === 'L69') {
+    name = '-104 · 242 · Rutherfordium';
+    atomic = '';
+    colRow = 'Columna 18 · Fila -2';
+    symbol = 'Rf';
+  }
+  else if (key === 'L70') {
+    name = '-101 · 239 · Mendelevium';
+    atomic = '';
+    colRow = 'Columna 18 · Fila -1';
+    symbol = 'Md';
+  }
+  else if (key === 'L71') {
+    name = '-242 · Rutherfordium';
+    atomic = '';
+    colRow = 'Columna 18 · Fila 7';
+    symbol = 'Rf';
+  }
+  else if (key === 'L72') {
+    name = '104 · -242 · Rutherfordium';
+    atomic = '';
+    colRow = 'Columna 18 · Fila 9';
+    symbol = 'Rf';
+  }
+  else if (key === 'L73') {
+    name = '-105 · 243 · Dubnium';
+    atomic = '';
+    colRow = 'Columna 19 · Fila -2';
+    symbol = 'Db';
+  }
+  else if (key === 'L74') {
+    name = '-100 · 238 · Fermium';
+    atomic = '';
+    colRow = 'Columna 19 · Fila -1';
+    symbol = 'Fm';
+  }
+  else if (key === 'L75') {
+    name = '-243 · Dubnium';
+    atomic = '';
+    colRow = 'Columna 19 · Fila 7';
+    symbol = 'Db';
+  }
+  else if (key === 'L76') {
+    name = '105 · -243 · Dubnium';
+    atomic = '';
+    colRow = 'Columna 19 · Fila 9';
+    symbol = 'Db';
+  }
+  else if (key === 'L77') {
+    name = '-106 · 244 · Seaborgium';
+    atomic = '';
+    colRow = 'Columna 20 · Fila -2';
+    symbol = 'Sg';
+  }
+  else if (key === 'L78') {
+    name = '-99 · 237 · Einsteinium';
+    atomic = '';
+    colRow = 'Columna 20 · Fila -1';
+    symbol = 'Es';
+  }
+  else if (key === 'L79') {
+    name = '-244 · Seaborgium';
+    atomic = '';
+    colRow = 'Columna 20 · Fila 7';
+    symbol = 'Sg';
+  }
+  else if (key === 'L80') {
+    name = '106 · -244 · Seaborgium';
+    atomic = '';
+    colRow = 'Columna 20 · Fila 9';
+    symbol = 'Sg';
+  }
+  else if (key === 'L81') {
+    name = '-107 · 245 · Bohrium';
+    atomic = '';
+    colRow = 'Columna 21 · Fila -2';
+    symbol = 'Bh';
+  }
+  
+  // Extensión Francium–Oganesson (L82..L128, resto de la banda)
+
+  else if (key === 'L82') {
+    name = '-98 · 236 · Californium';
+    atomic = '';
+    colRow = 'Columna 21 · Fila -1';
+    symbol = 'Cf';
+  }
+  else if (key === 'L83') {
+    name = '-245 · Bohrium';
+    atomic = '';
+    colRow = 'Columna 21 · Fila 7';
+    symbol = 'Bh';
+  }
+  else if (key === 'L84') {
+    name = '107 · -245 · Bohrium';
+    atomic = '';
+    colRow = 'Columna 21 · Fila 9';
+    symbol = 'Bh';
+  }
+  else if (key === 'L85') {
+    name = '-108 · 246 · Hassium';
+    atomic = '';
+    colRow = 'Columna 22 · Fila -2';
+    symbol = 'Hs';
+  }
+  else if (key === 'L86') {
+    name = '-97 · 235 · Berkelium';
+    atomic = '';
+    colRow = 'Columna 22 · Fila -1';
+    symbol = 'Bk';
+  }
+  else if (key === 'L87') {
+    name = '-246 · Hassium';
+    atomic = '';
+    colRow = 'Columna 22 · Fila 7';
+    symbol = 'Hs';
+  }
+  else if (key === 'L88') {
+    name = '108 · -246 · Hassium';
+    atomic = '';
+    colRow = 'Columna 22 · Fila 9';
+    symbol = 'Hs';
+  }
+  else if (key === 'L89') {
+    name = '-109 · 247 · Meitnerium';
+    atomic = '';
+    colRow = 'Columna 23 · Fila -2';
+    symbol = 'Mt';
+  }
+  else if (key === 'L90') {
+    name = '-96 · 234 · Curium';
+    atomic = '';
+    colRow = 'Columna 23 · Fila -1';
+    symbol = 'Cm';
+  }
+  else if (key === 'L91') {
+    name = '-247 · Meitnerium';
+    atomic = '';
+    colRow = 'Columna 23 · Fila 7';
+    symbol = 'Mt';
+  }
+  else if (key === 'L92') {
+    name = '109 · -247 · Meitnerium';
+    atomic = '';
+    colRow = 'Columna 23 · Fila 9';
+    symbol = 'Mt';
+  }
+  else if (key === 'L93') {
+    name = '-110 · 248 · Darmstadtium';
+    atomic = '';
+    colRow = 'Columna 24 · Fila -2';
+    symbol = 'Ds';
+  }
+  else if (key === 'L94') {
+    name = '-95 · 233 · Americium';
+    atomic = '';
+    colRow = 'Columna 24 · Fila -1';
+    symbol = 'Am';
+  }
+  else if (key === 'L95') {
+    name = '-248 · Darmstadtium';
+    atomic = '';
+    colRow = 'Columna 24 · Fila 7';
+    symbol = 'Ds';
+  }
+  else if (key === 'L96') {
+    name = '110 · -248 · Darmstadtium';
+    atomic = '';
+    colRow = 'Columna 24 · Fila 9';
+    symbol = 'Ds';
+  }
+  else if (key === 'L97') {
+    name = '-111 · 249 · Roentgenium';
+    atomic = '';
+    colRow = 'Columna 25 · Fila -2';
+    symbol = 'Rg';
+  }
+  else if (key === 'L98') {
+    name = '-94 · 232 · Plutonium';
+    atomic = '';
+    colRow = 'Columna 25 · Fila -1';
+    symbol = 'Pu';
+  }
+  else if (key === 'L99') {
+    name = '-249 · Roentgenium';
+    atomic = '';
+    colRow = 'Columna 25 · Fila 7';
+    symbol = 'Rg';
+  }
+  else if (key === 'L100') {
+    name = '111 · -249 · Roentgenium';
+    atomic = '';
+    colRow = 'Columna 25 · Fila 9';
+    symbol = 'Rg';
+  }
+  else if (key === 'L101') {
+    name = '-112 · 250 · Copernicium';
+    atomic = '';
+    colRow = 'Columna 26 · Fila -2';
+    symbol = 'Cn';
+  }
+  else if (key === 'L102') {
+    name = '-93 · 231 · Neptunium';
+    atomic = '';
+    colRow = 'Columna 26 · Fila -1';
+    symbol = 'Np';
+  }
+  else if (key === 'L103') {
+    name = '-250 · Copernicium';
+    atomic = '';
+    colRow = 'Columna 26 · Fila 7';
+    symbol = 'Cn';
+  }
+  else if (key === 'L104') {
+    name = '112 · -250 · Copernicium';
+    atomic = '';
+    colRow = 'Columna 26 · Fila 9';
+    symbol = 'Cn';
+  }
+  else if (key === 'L105') {
+    name = '-113 · 251 · Nihonium';
+    atomic = '';
+    colRow = 'Columna 27 · Fila -2';
+    symbol = 'Nh';
+  }
+  else if (key === 'L106') {
+    name = '-92 · 230 · Uranium';
+    atomic = '';
+    colRow = 'Columna 27 · Fila -1';
+    symbol = 'U';
+  }
+  else if (key === 'L107') {
+    name = '-251 · Nihonium';
+    atomic = '';
+    colRow = 'Columna 27 · Fila 7';
+    symbol = 'Nh';
+  }
+  else if (key === 'L108') {
+    name = '113 · -251 · Nihonium';
+    atomic = '';
+    colRow = 'Columna 27 · Fila 9';
+    symbol = 'Nh';
+  }
+  else if (key === 'L109') {
+    name = '-114 · 252 · Flerovium';
+    atomic = '';
+    colRow = 'Columna 28 · Fila -2';
+    symbol = 'Fl';
+  }
+  else if (key === 'L110') {
+    name = '-91 · 229 · Protactinium';
+    atomic = '';
+    colRow = 'Columna 28 · Fila -1';
+    symbol = 'Pa';
+  }
+  else if (key === 'L111') {
+    name = '-252 · Flerovium';
+    atomic = '';
+    colRow = 'Columna 28 · Fila 7';
+    symbol = 'Fl';
+  }
+  else if (key === 'L112') {
+    name = '114 · -252 · Flerovium';
+    atomic = '';
+    colRow = 'Columna 28 · Fila 9';
+    symbol = 'Fl';
+  }
+  else if (key === 'L113') {
+    name = '-115 · 253 · Moscovium';
+    atomic = '';
+    colRow = 'Columna 29 · Fila -2';
+    symbol = 'Mc';
+  }
+  else if (key === 'L114') {
+    name = '-90 · 228 · Thorium';
+    atomic = '';
+    colRow = 'Columna 29 · Fila -1';
+    symbol = 'Th';
+  }
+  else if (key === 'L115') {
+    name = '-253 · Moscovium';
+    atomic = '';
+    colRow = 'Columna 29 · Fila 7';
+    symbol = 'Mc';
+  }
+  else if (key === 'L116') {
+    name = '115 · -253 · Moscovium';
+    atomic = '';
+    colRow = 'Columna 29 · Fila 9';
+    symbol = 'Mc';
+  }
+  else if (key === 'L117') {
+    name = '-116 · 254 · Livermorium';
+    atomic = '';
+    colRow = 'Columna 30 · Fila -2';
+    symbol = 'Lv';
+  }
+  else if (key === 'L118') {
+    name = '-89 · 227 · Actinium';
+    atomic = '';
+    colRow = 'Columna 30 · Fila -1';
+    symbol = 'Ac';
+  }
+  else if (key === 'L119') {
+    name = '-254 · Livermorium';
+    atomic = '';
+    colRow = 'Columna 30 · Fila 7';
+    symbol = 'Lv';
+  }
+  else if (key === 'L120') {
+    name = '116 · -254 · Livermorium';
+    atomic = '';
+    colRow = 'Columna 30 · Fila 9';
+    symbol = 'Lv';
+  }
+  else if (key === 'L121') {
+    name = '-117 · 255 · Tennessine';
+    atomic = '';
+    colRow = 'Columna 31 · Fila -2';
+    symbol = 'Ts';
+  }
+  else if (key === 'L122') {
+    name = '-88 · 226 · Radium';
+    atomic = '';
+    colRow = 'Columna 31 · Fila -1';
+    symbol = 'Ra';
+  }
+  else if (key === 'L123') {
+    name = '-255 · Tennessine';
+    atomic = '';
+    colRow = 'Columna 31 · Fila 7';
+    symbol = 'Ts';
+  }
+  else if (key === 'L124') {
+    name = '117 · -255 · Tennessine';
+    atomic = '';
+    colRow = 'Columna 31 · Fila 9';
+    symbol = 'Ts';
+  }
+  else if (key === 'L125') {
+    name = '-118 · 256 · Oganesson';
+    atomic = '';
+    colRow = 'Columna 32 · Fila -2';
+    symbol = 'Og';
+  }
+  else if (key === 'L126') {
+    name = '-87 · 225 · Francium';
+    atomic = '';
+    colRow = 'Columna 32 · Fila -1';
+    symbol = 'Fr';
+  }
+  else if (key === 'L127') {
+    name = '-256 · Oganesson';
+    atomic = '';
+    colRow = 'Columna 32 · Fila 7';
+    symbol = 'Og';
+  }
+  else if (key === 'L128') {
+    name = '118 · -256 · Oganesson';
+    atomic = '';
+    colRow = 'Columna 32 · Fila 9';
+    symbol = 'Og';
+  }
+
+  if(label){
+    label.textContent = symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '');
+  }
+  if(colRowLabel){
+    colRowLabel.textContent = colRow;
+  }
+})();
+</script>
+
+<script>
+(function(){
+  function getParam(name){
+    var m = new RegExp('[?&]'+name+'=([^&]+)').exec(window.location.search);
+    return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
+  }
+
+  const MAP = {
+    "01-01": {img:"hydrogen.png",  title:"Hydrogen — 1"},
+    "01-02": {img:"helium.png",    title:"Helium — 2"},
+    "01-03": {img:"lithium.png",   title:"Lithium — 3"},
+    "01-04": {img:"beryllium.png", title:"Beryllium — 4"},
+    "01-05": {img:"boron.png",     title:"Boron — 5"},
+    "01-06": {img:"carbon.png",    title:"Carbon — 6"},
+    "01-07": {img:"nitrogen.png",  title:"Nitrogen — 7"},
+    "01-08": {img:"oxygen.png",    title:"Oxygen — 8"},
+    "01-09": {img:"fluorine.png",  title:"Fluorine — 9"},
+    "01-10": {img:"neon.png",      title:"Neon — 10"},
+    "01-11": {img:"sodium.png",    title:"Sodium — 11"},
+    "01-12": {img:"magnesium.png", title:"Magnesium — 12"},
+    "01-13": {img:"aluminium.png", title:"Aluminium — 13"},
+    "01-14": {img:"silicon.png",   title:"Silicon — 14"},
+    "01-15": {img:"phosphorus.png",title:"Phosphorus — 15"},
+    "01-16": {img:"sulphur.png",   title:"Sulphur — 16"},
+    "01-17": {img:"chlorine.png",  title:"Chlorine — 17"},
+    "01-18": {img:"argon.png",     title:"Argon — 18"},
+    "01-19": {img:"potassium.png", title:"Potassium — 19"},
+    "01-20": {img:"calcium.png",   title:"Calcium — 20"},
+    "01-21": {img:"scandium.png",  title:"Scandium — 21"},
+    "01-22": {img:"titanium.png",  title:"Titanium — 22"},
+    "01-23": {img:"vanadium.png",  title:"Vanadium — 23"},
+    "01-24": {img:"chromium.png",  title:"Chromium — 24"},
+    "01-25": {img:"manganese.png", title:"Manganese — 25"},
+    "01-26": {img:"iron.png",      title:"Iron — 26"},
+    "01-27": {img:"cobalt.png",    title:"Cobalt — 27"},
+    "01-28": {img:"nickel.png",    title:"Nickel — 28"},
+    "01-29": {img:"copper.png",    title:"Copper — 29"},
+    "01-30": {img:"zinc.png",      title:"Zinc — 30"},
+    "01-31": {img:"gallium.png",   title:"Gallium — 31"},
+    "02-01": {img:"germanium.png", title:"Germanium — 32"},
+"02-02": {img:"arsenic.png",   title:"Arsenic — 33"},
+    "02-03": {img:"selenium.png",  title:"Selenium — 34"},
+    "02-04": {img:"bromine.png",   title:"Bromine — 35"},
+    "02-05": {img:"krypton.png",   title:"Krypton — 36"},
+    "02-06": {img:"rubidium.png",  title:"Rubidium — 37"},
+    "02-07": {img:"strontium.png", title:"Strontium — 38"},
+    "02-08": {img:"yttrium.png",   title:"Yttrium — 39"},
+    "02-09": {img:"zirconium.png", title:"Zirconium — 40"},
+    "02-10": {img:"niobium.png",   title:"Niobium — 41"},
+    "02-11": {img:"molybdenum.png",title:"Molybdenum — 42"},
+    "02-12": {img:"technetium.png",title:"Technetium — 43"},
+    "02-13": {img:"ruthenium.png", title:"Ruthenium — 44"},
+    "02-14": {img:"rhodium.png",   title:"Rhodium — 45"},
+    "02-15": {img:"palladium.png", title:"Palladium — 46"},
+    "02-16": {img:"silver.png",    title:"Silver — 47"},
+    "02-17": {img:"cadmium.png",   title:"Cadmium — 48"},
+    "02-18": {img:"indium.png",    title:"Indium — 49"},
+    "02-19": {img:"tin.png",       title:"Tin — 50"},
+    "02-20": {img:"antimony.png",  title:"Antimony — 51"},
+    "02-21": {img:"tellurium.png", title:"Tellurium — 52"},
+    "02-22": {img:"iodine.png",    title:"Iodine — 53"},
+    "02-23": {img:"xenon.png",     title:"Xenon — 54"},
+    "02-24": {img:"caesium.png",   title:"Caesium — 55"},
+    "02-25": {img:"barium.png",    title:"Barium — 56"},
+    "02-26": {img:"lanthanum.png",    title:"Lanthanum — 57"},
+    "02-27": {img:"cerium.png",       title:"Cerium — 58"},
+    "02-28": {img:"praseodymium.png", title:"Praseodymium — 59"},
+    "03-01": {img:"neodymium.png",    title:"Neodymium — 60"},
+    "03-02": {img:"promethium.png",   title:"Promethium — 61"},
+    "03-03": {img:"samarium.png",     title:"Samarium — 62"},
+    "03-04": {img:"europium.png",     title:"Europium — 63"},
+    "03-05": {img:"gadolinium.png",   title:"Gadolinium — 64"},
+    "03-06": {img:"terbium.png",      title:"Terbium — 65"},
+    "03-07": {img:"dysprosium.png",   title:"Dysprosium — 66"},
+    "03-08": {img:"holmium.png",   title:"Holmium — 67"},
+    "03-09": {img:"erbium.png",    title:"Erbium — 68"},
+    "03-10": {img:"thulium.png",   title:"Thulium — 69"},
+    "03-11": {img:"ytterbium.png", title:"Ytterbium — 70"},
+    "03-12": {img:"lutetium.png",  title:"Lutetium — 71"},
+    "03-13": {img:"hafnium.png",   title:"Hafnium — 72"},
+    "03-14": {img:"tantalum.png",  title:"Tantalum — 73"},
+    "03-15": {img:"tungsten.png",  title:"Tungsten — 74"},
+    "03-16": {img:"rhenium.png",   title:"Rhenium — 75"},
+    "03-17": {img:"osmium.png",    title:"Osmium — 76"},
+    "03-18": {img:"iridium.png",   title:"Iridium — 77"},
+    "03-19": {img:"platinum.png",  title:"Platinum — 78"},
+    "03-20": {img:"gold.png",      title:"Gold — 79"},
+    "03-21": {img:"mercury.png",   title:"Mercury — 80"},
+    "03-22": {img:"thallium.png",  title:"Thallium — 81"},
+    "03-23": {img:"lead.png",      title:"Lead — 82"},
+    "03-24": {img:"bismuth.png",   title:"Bismuth — 83"},
+    "03-25": {img:"polonium.png",  title:"Polonium — 84"},
+    "03-26": {img:"astatine.png",  title:"Astatine — 85"},
+    "03-27": {img:"radon.png",     title:"Radon — 86"},
+    "03-28": {img:"francium.png",     title:"Francium — 87"},
+    "03-29": {img:"radium.png",       title:"Radium — 88"},
+    "03-30": {img:"actinium.png",     title:"Actinium — 89"},
+    "03-31": {img:"thorium.png",      title:"Thorium — 90"},
+    "04-01": {img:"protactinium.png", title:"Protactinium — 91"},
+    "04-02": {img:"uranium.png",      title:"Uranium — 92"},
+    "04-03": {img:"neptunium.png",    title:"Neptunium — 93"},
+    "04-04": {img:"plutonium.png",    title:"Plutonium — 94"},
+    "04-05": {img:"americium.png",    title:"Americium — 95"},
+    "04-06": {img:"curium.png",       title:"Curium — 96"},
+    "04-07": {img:"berkelium.png",    title:"Berkelium — 97"},
+    "04-08": {img:"californium.png",  title:"Californium — 98"},
+    "04-09": {img:"einsteinium.png",  title:"Einsteinium — 99"},
+    "04-10": {img:"fermium.png",      title:"Fermium — 100"},
+    "04-11": {img:"mendelevium.png",  title:"Mendelevium — 101"},
+    "04-12": {img:"nobelium.png",     title:"Nobelium — 102"},
+    "04-13": {img:"lawrencium.png",   title:"Lawrencium — 103"},
+    "04-14": {img:"rutherfordium.png",title:"Rutherfordium — 104"},
+    "04-15": {img:"dubnium.png",      title:"Dubnium — 105"},
+    "04-16": {img:"seaborgium.png",   title:"Seaborgium — 106"},
+    "04-17": {img:"bohrium.png",      title:"Bohrium — 107"},
+    "04-18": {img:"hassium.png",      title:"Hassium — 108"},
+    "04-19": {img:"meitnerium.png",   title:"Meitnerium — 109"},
+    "04-20": {img:"darmstadtium.png", title:"Darmstadtium — 110"},
+    "04-21": {img:"roentgenium.png",  title:"Roentgenium — 111"},
+    "04-22": {img:"copernicium.png",  title:"Copernicium — 112"},
+    "04-23": {img:"nihonium.png",     title:"Nihonium — 113"},
+    "04-24": {img:"flerovium.png",    title:"Flerovium — 114"},
+    "04-25": {img:"moscovium.png",    title:"Moscovium — 115"},
+    "04-26": {img:"livermorium.png",  title:"Livermorium — 116"},
+    "04-27": {img:"tennessine.png", title:"Tennessine — 117"},
+    "04-28": {img:"oganesson.png",  title:"Oganesson — 118"},
+    "04-29": {img:"promesa-119.png", title:"Promesa — 119"},
+    "04-30": {img:"promesa-120.png", title:"Promesa — 120"},
+    "05-01": {img:"promesa-121.png", title:"Promesa — 121"},
+    "05-02": {img:"promesa-122.png", title:"Promesa — 122"},
+    "05-03": {img:"promesa-123.png", title:"Promesa — 123"},
+    "05-04": {img:"promesa-124.png", title:"Promesa — 124"},
+    "05-05": {img:"promesa-125.png", title:"Promesa — 125"},
+    "05-06": {img:"promesa-126.png", title:"Promesa — 126"},
+    "05-07": {img:"promesa-127.png", title:"Promesa — 127"},
+    "05-08": {img:"promesa-128.png", title:"Promesa — 128"},
+    "05-09": {img:"promesa-129.png", title:"Promesa — 129"},
+    "05-10": {img:"promesa-130.png", title:"Promesa — 130"},
+    "05-11": {img:"promesa-131.png", title:"Promesa — 131"},
+    "05-12": {img:"promesa-132.png", title:"Promesa — 132"},
+    "05-13": {img:"promesa-133.png", title:"Promesa — 133"},
+    "05-14": {img:"promesa-134.png", title:"Promesa — 134"},
+    "05-15": {img:"promesa-135.png", title:"Promesa — 135"},
+    "05-16": {img:"promesa-136.png", title:"Promesa — 136"},
+    "05-17": {img:"promesa-137.png", title:"Promesa — 137"},
+    "05-18": {img:"promesa-138.png", title:"Promesa — 138"},
+    "05-19": {img:"promesa-139.png", title:"Promesa — 139"},
+    "05-20": {img:"promesa-140.png", title:"Promesa — 140"},
+    "05-21": {img:"promesa-141.png", title:"Promesa — 141"},
+    "05-22": {img:"promesa-142.png", title:"Promesa — 142"},
+    "05-23": {img:"promesa-143.png", title:"Promesa — 143"},
+    "05-24": {img:"promesa-144.png", title:"Promesa — 144"},
+    "05-25": {img:"promesa-145.png", title:"Promesa — 145"},
+    "05-26": {img:"promesa-146.png", title:"Promesa — 146"},
+    "05-27": {img:"promesa-147.png", title:"Promesa — 147"},
+    "05-28": {img:"promesa-148.png", title:"Promesa — 148"},
+    "05-29": {img:"vacio-149.png", title:"Espacio vacío — 149"},
+    "05-30": {img:"vacio-150.png", title:"Espacio vacío — 150"},
+    "05-31": {img:"vacio-151.png", title:"Espacio vacío — 151"},
+    "06-01": {img:"vacio-152.png", title:"Espacio vacío — 152"},
+    "06-02": {img:"vacio-153.png", title:"Espacio vacío — 153"},
+    "06-03": {img:"vacio-154.png", title:"Espacio vacío — 154"},
+    "06-04": {img:"vacio-155.png", title:"Espacio vacío — 155"},
+    "06-05": {img:"vacio-156.png", title:"Espacio vacío — 156"},
+    "06-06": {img:"vacio-157.png", title:"Espacio vacío — 157"},
+    "06-07": {img:"vacio-158.png", title:"Espacio vacío — 158"},
+    
+    "06-08": {img:"vacio-159.png", title:"Espacio vacío — 159"},
+    "06-09": {img:"vacio-160.png", title:"Espacio vacío — 160"},
+    "06-10": {img:"vacio-161.png", title:"Espacio vacío — 161"},
+    "06-11": {img:"vacio-162.png", title:"Espacio vacío — 162"},
+    "06-12": {img:"vacio-163.png", title:"Espacio vacío — 163"},
+    "06-13": {img:"vacio-164.png", title:"Espacio vacío — 164"},
+    "06-14": {img:"vacio-165.png", title:"Espacio vacío — 165"},
+    "06-15": {img:"vacio-166.png", title:"Espacio vacío — 166"},
+    "06-16": {img:"vacio-167.png", title:"Espacio vacío — 167"},
+    "06-17": {img:"vacio-168.png", title:"Espacio vacío — 168"},
+    "06-18": {img:"vacio-169.png", title:"Espacio vacío — 169"},
+    "06-19": {img:"vacio-170.png", title:"Espacio vacío — 170"},
+    "06-20": {img:"vacio-171.png", title:"Espacio vacío — 171"},
+    "06-21": {img:"vacio-172.png", title:"Espacio vacío — 172"},
+    "06-22": {img:"vacio-173.png", title:"Espacio vacío — 173"},
+    "06-23": {img:"vacio-174.png", title:"Espacio vacío — 174"},
+    "06-24": {img:"vacio-175.png", title:"Espacio vacío — 175"},
+    "06-25": {img:"vacio-176.png", title:"Espacio vacío — 176"},
+    "06-26": {img:"vacio-177.png", title:"Espacio vacío — 177"},
+    "06-27": {img:"vacio-178.png", title:"Espacio vacío — 178"},
+    "06-28": {img:"vacio-179.png", title:"Espacio vacío — 179"},
+    "06-29": {img:"vacio-180.png", title:"Espacio vacío — 180"},
+    "06-30": {img:"vacio-181.png", title:"Espacio vacío — 181"},
+    "07-01": {img:"vacio-182.png", title:"Espacio vacío — 182"},
+    "07-02": {img:"vacio-183.png", title:"Espacio vacío — 183"},
+    "07-03": {img:"vacio-184.png", title:"Espacio vacío — 184"},
+    "07-04": {img:"vacio-185.png", title:"Espacio vacío — 185"},
+    "07-05": {img:"vacio-186.png", title:"Espacio vacío — 186"},
+    "07-06": {img:"vacio-187.png", title:"Espacio vacío — 187"},
+    "07-07": {img:"vacio-188.png", title:"Espacio vacío — 188"},
+    "07-08": {img:"vacio-189.png", title:"Espacio vacío — 189"},
+    "07-09": {img:"vacio-190.png", title:"Espacio vacío — 190"},
+    "07-10": {img:"vacio-191.png", title:"Espacio vacío — 191"},
+    "07-11": {img:"vacio-192.png", title:"Espacio vacío — 192"},
+    "07-12": {img:"vacio-193.png", title:"Espacio vacío — 193"},
+    "07-13": {img:"vacio-194.png", title:"Espacio vacío — 194"},
+    "07-14": {img:"vacio-195.png", title:"Espacio vacío — 195"},
+    "07-15": {img:"vacio-196.png", title:"Espacio vacío — 196"},
+    "07-16": {img:"vacio-197.png", title:"Espacio vacío — 197"},
+    "07-17": {img:"vacio-198.png", title:"Espacio vacío — 198"},
+    "07-18": {img:"vacio-199.png", title:"Espacio vacío — 199"},
+    "07-19": {img:"vacio-200.png", title:"Espacio vacío — 200"},
+    "07-20": {img:"vacio-201.png", title:"Espacio vacío — 201"},
+    "07-21": {img:"vacio-202.png", title:"Espacio vacío — 202"},
+    "07-22": {img:"vacio-203.png", title:"Espacio vacío — 203"},
+    "07-23": {img:"vacio-204.png", title:"Espacio vacío — 204"},
+    "07-24": {img:"vacio-205.png", title:"Espacio vacío — 205"},
+    "07-25": {img:"vacio-206.png", title:"Espacio vacío — 206"},
+    "07-26": {img:"vacio-207.png", title:"Espacio vacío — 207"},
+    "07-27": {img:"vacio-208.png", title:"Espacio vacío — 208"},
+    "07-28": {img:"vacio-209.png", title:"Espacio vacío — 209"},
+    "07-29": {img:"vacio-210.png", title:"Espacio vacío — 210"},
+    "07-30": {img:"vacio-211.png", title:"Espacio vacío — 211"},
+    "07-31": {img:"vacio-212.png", title:"Espacio vacío — 212"},
+    "08-01": {img:"vacio-213.png", title:"Espacio vacío — 213"},
+    "08-02": {img:"vacio-214.png", title:"Espacio vacío — 214"},
+    "08-03": {img:"vacio-215.png", title:"Espacio vacío — 215"},
+    "08-04": {img:"vacio-216.png", title:"Espacio vacío — 216"},
+    "08-05": {img:"vacio-217.png", title:"Espacio vacío — 217"},
+    "08-06": {img:"vacio-218.png", title:"Espacio vacío — 218"},
+    "08-07": {img:"vacio-219.png", title:"Espacio vacío — 219"},
+    "08-08": {img:"vacio-220.png", title:"Espacio vacío — 220"},
+    "08-09": {img:"vacio-221.png", title:"Espacio vacío — 221"},
+    "08-10": {img:"vacio-222.png", title:"Espacio vacío — 222"},
+    "08-11": {img:"vacio-223.png", title:"Espacio vacío — 223"},
+    "08-12": {img:"vacio-224.png", title:"Espacio vacío — 224"},
+    
+    "08-13": {img:"Ri-1.png", title:"Ri — 1"},
+    "08-14": {img:"Ri-2.png", title:"Ri — 2"},
+    "08-15": {img:"Ri-3.png", title:"Ri — 3"},
+    "08-16": {img:"Ri-4.png", title:"Ri — 4"},
+    "08-17": {img:"Ri-5.png", title:"Ri — 5"},
+    "08-18": {img:"Ri-6.png", title:"Ri — 6"},
+    "08-19": {img:"Ri-7.png", title:"Ri — 7"},
+    "08-20": {img:"Ri-8.png", title:"Ri — 8"},
+    "08-21": {img:"Ri-9.png", title:"Ri — 9"},
+    "08-22": {img:"Ri-10.png", title:"Ri — 10"},
+    "08-23": {img:"Ri-11.png", title:"Ri — 11"},
+    "08-24": {img:"Ri-12.png", title:"Ri — 12"},
+    "08-25": {img:"Ri-13.png", title:"Ri — 13"},
+    "08-26": {img:"Ri-14.png", title:"Ri — 14"},
+    "08-27": {img:"Ri-15.png", title:"Ri — 15"},
+    "08-28": {img:"Ri-16.png", title:"Ri — 16"},
+    "08-29": {img:"Ri-17.png", title:"Ri — 17"},
+    "08-30": {img:"Ri-18.png", title:"Ri — 18"},
+    "08-31": {img:"Ri-19.png", title:"Ri — 19"},
+    "09-01": {img:"Ri-20.png", title:"Ri — 20"},
+    "09-02": {img:"Ri-21.png", title:"Ri — 21"},
+    "09-03": {img:"Ri-22.png", title:"Ri — 22"},
+    "09-04": {img:"Ri-23.png", title:"Ri — 23"},
+    "09-05": {img:"Ri-24.png", title:"Ri — 24"},
+    "09-06": {img:"Ri-25.png", title:"Ri — 25"},
+    "09-07": {img:"Ri-26.png", title:"Ri — 26"},
+    "09-08": {img:"Ri-27.png", title:"Ri — 27"},
+    "09-09": {img:"Ri-28.png", title:"Ri — 28"},
+    "09-10": {img:"Ri-29.png", title:"Ri — 29"},
+    "09-11": {img:"Ri-30.png", title:"Ri — 30"},
+    "09-12": {img:"Ri-31.png", title:"Ri — 31"},
+    "09-13": {img:"Ri-32.png", title:"Ri — 32"},
+    "09-14": {img:"Ri-33.png", title:"Ri — 33"},
+    "09-15": {img:"Ri-34.png", title:"Ri — 34"},
+    "09-16": {img:"Ri-35.png", title:"Ri — 35"},
+    "09-17": {img:"Ri-36.png", title:"Ri — 36"},
+    "09-18": {img:"Ri-37.png", title:"Ri — 37"},
+    "09-19": {img:"Ri-38.png", title:"Ri — 38"},
+    "09-20": {img:"Ri-39.png", title:"Ri — 39"},
+    "09-21": {img:"Ri-40.png", title:"Ri — 40"},
+    "09-22": {img:"Ri-41.png", title:"Ri — 41"},
+    "09-23": {img:"Ri-42.png", title:"Ri — 42"},
+    "09-24": {img:"Ri-43.png", title:"Ri — 43"},
+    "09-25": {img:"Ri-44.png", title:"Ri — 44"},
+    "09-26": {img:"Ri-45.png", title:"Ri — 45"},
+    "09-27": {img:"Ri-46.png", title:"Ri — 46"},
+    "09-28": {img:"Ri-47.png", title:"Ri — 47"},
+    "09-29": {img:"Ri-48.png", title:"Ri — 48"},
+    "09-30": {img:"Ri-49.png", title:"Ri — 49"},
+    "10-01": {img:"Ri-50.png", title:"Ri — 50"},
+    "10-02": {img:"Ri-51.png", title:"Ri — 51"},
+    "10-03": {img:"Ri-52.png", title:"Ri — 52"},
+    "10-04": {img:"Ri-53.png", title:"Ri — 53"},
+    "10-05": {img:"Ri-54.png", title:"Ri — 54"},
+    "10-06": {img:"Ri-55.png", title:"Ri — 55"},
+    "10-07": {img:"Ri-56.png", title:"Ri — 56"},
+    "10-08": {img:"Ri-57.png", title:"Ri — 57"},
+    "10-09": {img:"Ri-58.png", title:"Ri — 58"},
+    "10-10": {img:"Ri-59.png", title:"Ri — 59"},
+    "10-11": {img:"Ri-60.png", title:"Ri — 60"},
+    "10-12": {img:"Ri-61.png", title:"Ri — 61"},
+    "10-13": {img:"Ri-62.png", title:"Ri — 62"},
+    "10-14": {img:"Ri-63.png", title:"Ri — 63"},
+    "10-15": {img:"Ri-64.png", title:"Ri — 64"},
+    "10-16": {img:"Ri-65.png", title:"Ri — 65"},
+    "10-17": {img:"Ri-66.png", title:"Ri — 66"},
+    "10-18": {img:"Ri-67.png", title:"Ri — 67"},
+    "10-19": {img:"Ri-68.png", title:"Ri — 68"},
+    "10-20": {img:"Ri-69.png", title:"Ri — 69"},
+    "10-21": {img:"Ri-70.png", title:"Ri — 70"},
+    "10-22": {img:"Ri-71.png", title:"Ri — 71"},
+    "10-23": {img:"Ri-72.png", title:"Ri — 72"},
+    "10-24": {img:"Ri-73.png", title:"Ri — 73"},
+    "10-25": {img:"Ri-74.png", title:"Ri — 74"},
+    "10-26": {img:"Ri-75.png", title:"Ri — 75"},
+    "10-27": {img:"Ri-76.png", title:"Ri — 76"},
+    "10-28": {img:"Ri-77.png", title:"Ri — 77"},
+    "10-29": {img:"Ri-78.png", title:"Ri — 78"},
+    "10-30": {img:"Ri-79.png", title:"Ri — 79"},
+    "10-31": {img:"Ri-80.png", title:"Ri — 80"},
+    "11-01": {img:"Ri-81.png", title:"Ri — 81"},
+    "11-02": {img:"Ri-82.png", title:"Ri — 82"},
+    "11-03": {img:"Ri-83.png", title:"Ri — 83"},
+    "11-04": {img:"Ri-84.png", title:"Ri — 84"},
+    "11-05": {img:"Ri-85.png", title:"Ri — 85"},
+    "11-06": {img:"Ri-86.png", title:"Ri — 86"},
+    "11-07": {img:"Ri-87.png", title:"Ri — 87"},
+    "11-08": {img:"Ri-88.png", title:"Ri — 88"},
+    "11-09": {img:"Ri-89.png", title:"Ri — 89"},
+    "11-10": {img:"Ri-90.png", title:"Ri — 90"},
+    "11-11": {img:"Ri-91.png", title:"Ri — 91"},
+    "11-12": {img:"Ri-92.png", title:"Ri — 92"},
+    "11-13": {img:"Ri-93.png", title:"Ri — 93"},
+    "11-14": {img:"Ri-94.png", title:"Ri — 94"},
+    "11-15": {img:"Ri-95.png", title:"Ri — 95"},
+    "11-16": {img:"Ri-96.png", title:"Ri — 96"},
+    "11-17": {img:"Ri-97.png", title:"Ri — 97"},
+    "11-18": {img:"Ri-98.png", title:"Ri — 98"},
+    "11-19": {img:"Ri-99.png", title:"Ri — 99"},
+    "11-20": {img:"Ri-100.png", title:"Ri — 100"},
+    "11-21": {img:"Ri-101.png", title:"Ri — 101"},
+    "11-22": {img:"Ri-102.png", title:"Ri — 102"},
+    "11-23": {img:"Ri-103.png", title:"Ri — 103"},
+    "11-24": {img:"Ri-104.png", title:"Ri — 104"},
+    "11-25": {img:"Ri-105.png", title:"Ri — 105"},
+    "11-26": {img:"Ri-106.png", title:"Ri — 106"},
+    "11-27": {img:"Ri-107.png", title:"Ri — 107"},
+    "11-28": {img:"Ri-108.png", title:"Ri — 108"},
+    "11-29": {img:"Ri-109.png", title:"Ri — 109"},
+    "11-30": {img:"Ri-110.png", title:"Ri — 110"},
+    "12-01": {img:"Ri-111.png", title:"Ri — 111"},
+    "12-02": {img:"Ri-112.png", title:"Ri — 112"},
+    "12-03": {img:"Ri-113.png", title:"Ri — 113"},
+    "12-04": {img:"Ri-114.png", title:"Ri — 114"},
+    "12-05": {img:"Ri-115.png", title:"Ri — 115"},
+    "12-06": {img:"Ri-116.png", title:"Ri — 116"},
+    "12-07": {img:"Ri-117.png", title:"Ri — 117"},
+    "12-08": {img:"Ri-118.png", title:"Ri — 118"},
+    "12-09": {img:"Ri-119.png", title:"Ri — 119"},
+    "12-10": {img:"Ri-120.png", title:"Ri — 120"},
+    "12-11": {img:"Ri-121.png", title:"Ri — 121"},
+    "12-12": {img:"Ri-122.png", title:"Ri — 122"},
+    "12-13": {img:"Ri-123.png", title:"Ri — 123"},
+    "12-14": {img:"Ri-124.png", title:"Ri — 124"},
+    "12-15": {img:"Ri-125.png", title:"Ri — 125"},
+    "12-16": {img:"Ri-126.png", title:"Ri — 126"},
+    "12-17": {img:"Ri-127.png", title:"Ri — 127"},
+    "12-18": {img:"Ri-128.png", title:"Ri — 128"},
+  };
+
+
+  const badge = document.querySelector('.elementBadge');
+  const tile  = document.getElementById('elementTile');
+
+  function isoToMD(iso){
+    if(!iso) return null;
+    var parts = iso.split('-');
+    if(parts.length !== 3) return null;
+
+    var y, m, d;
+    if(parts[0].length === 4){
+      // Formato aaaa-mm-dd
+      y = parseInt(parts[0], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[2], 10);
+    } else if(parts[2].length === 4){
+      // Formato dd-mm-aaaa
+      y = parseInt(parts[2], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[0], 10);
+    } else {
+      return null;
+    }
+
+    function isLeap(year){
+      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
+    }
+
+    // Fechas de Anillo de Fuego para el badge:
+    // - Bisiestos: 18/12 al 31/12
+    // - No bisiestos: 19/12 al 31/12
+    if(isLeap(y)){
+      if(m === 12 && d >= 18){
+        return null;
+      }
+    } else {
+      if(m === 12 && d >= 19){
+        return null;
+      }
+    }
+
+    // Ajuste bisiesto: del 29/02 al 17/12 inclusive
+    // se corre un día hacia adelante.
+    if(isLeap(y)){
+      var inShiftRange =
+        (m === 2 && d === 29) ||
+        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if(inShiftRange){
+        var date = new Date(y, m - 1, d);
+        date.setDate(date.getDate() + 1);
+        m = date.getMonth() + 1;
+        d = date.getDate();
+      }
+    }
+
+    var mm = String(m).padStart(2, "0");
+    var dd = String(d).padStart(2, "0");
+    return mm + "-" + dd;
+  }
+
+  function activeISO(){
+    var refIso = getParam('ref');
+    if(refIso) return refIso;
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var day = String(d.getDate()).padStart(2,'0');
+    return y + "-" + m + "-" + day;
+  }
+
+  function renderBadge(){
+    if(!badge || !tile) return;
+    var md = isoToMD(activeISO());
+    var el = md ? MAP[md] : null;
+    if(el){
+      tile.src = "./" + el.img;
+      badge.title = el.title;
+      badge.style.display = "block";
+      badge.setAttribute("aria-hidden","false");
+      tile.alt = el.title + " element tile";
+    } else {
+      badge.style.display = "none";
+      badge.setAttribute("aria-hidden","true");
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', renderBadge);
+  window.addEventListener('load', function(){ setTimeout(renderBadge, 0); });
+})();
+</script>
+</body>
+</html>

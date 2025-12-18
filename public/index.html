@@ -57,6 +57,14 @@ th:first-child,td:first-child{text-align:left}
 .input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap)}
 .btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
 .btn:hover{background:rgba(124,199,255,.25)}
+.dayNav{display:flex;gap:10px;flex-wrap:wrap}
+.btnLabelShort{display:none}
+@media(max-width:599px){
+  .dayNav{flex-wrap:nowrap}
+  .dayNav .btn{flex:1 1 0;justify-content:center;white-space:nowrap;padding:10px 8px}
+  .btnLabelLong{display:none}
+  .btnLabelShort{display:inline}
+}
 .table-wrap{overflow:auto;border:1px solid var(--ol);border-radius:10px}
 .table-wrap table{min-width:680px}
 .status{margin:8px 0;color:#9cffd5;font-size:12px}
@@ -307,6 +315,9 @@ body.noScroll{overflow:hidden}
     <div class="elementBadge" title="Hydrogen — 1">
       <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
     </div>
+    <div style="position:absolute;top:110px;right:16px;">
+      <a href="./periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
+    </div>
 
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
       <div>
@@ -323,6 +334,8 @@ body.noScroll{overflow:hidden}
             <div class="mono" id="calTurn">—</div>
             <div class="small" id="calTurnRange" style="display:none">—</div>
             <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
+            <div style="margin-top:10px">
+            </div>
 <!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta </span><span class="mono" id="turnDay">—</span></div> -->
 <!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Paso en cuadrante (1–4) </span><span class="mono" id="blockDay">—</span></div> -->
           </div>
@@ -416,10 +429,13 @@ body.noScroll{overflow:hidden}
         <label class="small" for="ref">Fecha de referencia</label>
         <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
         <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
-        
-        <div class="field" style="margin-top:6px">
-          <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
-          
+
+        <div class="field" style="margin-top:8px">
+          <div class="dayNav">
+            <button class="btn" id="btnPrevDay" type="button" title="Ir al día anterior"><span class="btnLabelLong">← Día anterior</span><span class="btnLabelShort">Anterior</span></button>
+            <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
+            <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente"><span class="btnLabelLong">Día siguiente →</span><span class="btnLabelShort">Siguiente</span></button>
+          </div>
         </div>
       </div>
     </div>
@@ -994,19 +1010,63 @@ body.noScroll{overflow:hidden}
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
   const ref   = document.getElementById('ref');
-  function isoToMD(iso){ if(!iso) return null; const m=iso.split('-'); if(m.length!==3) return null; if(m.length!==3) return null;
-    // Soporta tanto "aaaa-mm-dd" (HTML date normal)
-    // como "dd-mm-aaaa" (entrada manual en móviles).
-    if(m[0].length===4){
+  function isoToMD(iso){
+    if(!iso) return null;
+    const parts = iso.split('-');
+    if(parts.length !== 3) return null;
+
+    let y, m, d;
+    if(parts[0].length === 4){
       // Formato aaaa-mm-dd
-      return m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0");
-    }
-    if(m[2].length===4){
+      y = parseInt(parts[0], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[2], 10);
+    } else if(parts[2].length === 4){
       // Formato dd-mm-aaaa
-      return m[1].padStart(2,"0")+"-"+m[0].padStart(2,"0");
+      y = parseInt(parts[2], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[0], 10);
+    } else {
+      return null;
     }
-    return null; }
-  function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
+
+    function isLeap(year){
+      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
+    }
+
+    // Fechas de Anillo de Fuego para el badge:
+    // - Bisiestos: 18/12 al 31/12
+    // - No bisiestos: 19/12 al 31/12
+    if(isLeap(y)){
+      if(m === 12 && d >= 18){
+        return null;
+      }
+    } else {
+      if(m === 12 && d >= 19){
+        return null;
+      }
+    }
+
+    // Ajuste bisiesto: del 29/02 al 17/12 inclusive
+    // se corre un día hacia adelante.
+    if(isLeap(y)){
+      const inShiftRange =
+        (m === 2 && d === 29) ||
+        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if(inShiftRange){
+        const date = new Date(y, m - 1, d);
+        date.setDate(date.getDate() + 1);
+        m = date.getMonth() + 1;
+        d = date.getDate();
+      }
+    }
+
+    const mm = String(m).padStart(2, "0");
+    const dd = String(d).padStart(2, "0");
+    return mm + "-" + dd;
+  }
+
+function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
   function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
   function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
     if(el){ tile.src="./"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
@@ -1030,4 +1090,1170 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
+<script>
+(function(){
+  const ref = document.getElementById('ref');
+  const link = document.getElementById('openPeriodicLink');
+
+  function isoToMD(iso){
+    if(!iso) return null;
+    var parts = iso.split('-');
+    if(parts.length !== 3) return null;
+
+    var y, m, d;
+    if(parts[0].length === 4){
+      // aaaa-mm-dd
+      y = parseInt(parts[0], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[2], 10);
+    } else if(parts[2].length === 4){
+      // dd-mm-aaaa
+      y = parseInt(parts[2], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[0], 10);
+    } else {
+      return null;
+    }
+
+    function isLeap(year){
+      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
+    }
+
+    // Anillo de Fuego: sin elemento/tabla
+    if(isLeap(y)){
+      if(m === 12 && d >= 18){
+        return null;
+      }
+    } else {
+      if(m === 12 && d >= 19){
+        return null;
+      }
+    }
+
+    // Ajuste bisiesto de corrimiento desde 29/02 hasta 17/12 inclusive
+    if(isLeap(y)){
+      var inShiftRange =
+        (m === 2 && d === 29) ||
+        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if(inShiftRange){
+        var date = new Date(y, m - 1, d);
+        date.setDate(date.getDate() + 1);
+        m = date.getMonth() + 1;
+        d = date.getDate();
+      }
+    }
+
+    var mm = String(m).padStart(2,'0');
+    var dd = String(d).padStart(2,'0');
+    return mm + '-' + dd;
+  }
+
+  function todayISO(){
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var day = String(d.getDate()).padStart(2,'0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function activeISO(){
+    if(ref && ref.value) return ref.value;
+    return todayISO();
+  }
+
+  function updatePeriodicLink(){
+    if(!link) return;
+    var md = isoToMD(activeISO());
+
+    // Fechas sin elemento (Anillo de Fuego): ocultar botón
+    if(!md){
+      link.style.display = 'none';
+      link.removeAttribute('href');
+      link.setAttribute('aria-disabled','true');
+      return;
+    }
+
+    // Asegurar que el botón esté visible cuando hay elemento
+    link.style.display = '';
+    link.removeAttribute('aria-disabled');
+
+    var symbol = 'H'; // por defecto
+    if(md === '01-01'){
+      symbol = 'H';
+    }
+    else if(md === '01-02'){
+      symbol = 'He';
+    }
+    else if(md === '01-03'){
+      symbol = 'Li';
+    }
+    else if(md === '01-04'){
+      symbol = 'Be';
+    }
+    else if(md === '01-05'){
+      symbol = 'B';
+    }
+    else if(md === '01-06'){
+      symbol = 'C';
+    }
+    else if(md === '01-07'){
+      symbol = 'N';
+    }
+    else if(md === '01-08'){
+      symbol = 'O';
+    }
+    else if(md === '01-09'){
+      symbol = 'F';
+    }
+    else if(md === '01-10'){
+      symbol = 'Ne';
+    }
+    else if(md === '01-11'){
+      symbol = 'Na';
+    }
+    else if(md === '01-12'){
+      symbol = 'Mg';
+    }
+    else if(md === '01-13'){
+      symbol = 'Al';
+    }
+    else if(md === '01-14'){
+      symbol = 'Si';
+    }
+    else if(md === '01-15'){
+      symbol = 'P';
+    }
+    else if(md === '01-16'){
+      symbol = 'S';
+    }
+    else if(md === '01-17'){
+      symbol = 'Cl';
+    }
+    else if(md === '01-18'){
+      symbol = 'Ar';
+    }
+    else if(md === '01-19'){
+      symbol = 'K';
+    }
+    else if(md === '01-20'){
+      symbol = 'Ca';
+    }
+    else if(md === '01-21'){
+      symbol = 'Sc';
+    }
+    else if(md === '01-22'){
+      symbol = 'Ti';
+    }
+    else if(md === '01-23'){
+      symbol = 'V';
+    }
+    else if(md === '01-24'){
+      symbol = 'Cr';
+    }
+    else if(md === '01-25'){
+      symbol = 'Mn';
+    }
+    else if(md === '01-26'){
+      symbol = 'Fe';
+    }
+    else if(md === '01-27'){
+      symbol = 'Co';
+    }
+    else if(md === '01-28'){
+      symbol = 'Ni';
+    }
+    else if(md === '01-29'){
+      symbol = 'Cu';
+    }
+    else if(md === '01-30'){
+      symbol = 'Zn';
+    }
+    else if(md === '01-31'){
+      symbol = 'Ga';
+    }
+    else if(md === '02-01'){
+      symbol = 'Ge';
+    }
+    else if(md === '02-02'){
+      symbol = 'As';
+    }
+    else if(md === '02-03'){
+      symbol = 'Se';
+    }
+    else if(md === '02-04'){
+      symbol = 'Br';
+    }
+    else if(md === '02-05'){
+      symbol = 'Kr';
+    }
+    else if(md === '02-06'){
+      symbol = 'Rb';
+    }
+    else if(md === '02-07'){
+      symbol = 'Sr';
+    }
+    else if(md === '02-08'){
+      symbol = 'Y';
+    }
+    else if(md === '02-09'){
+      symbol = 'Zr';
+    }
+    else if(md === '02-10'){
+      symbol = 'Nb';
+    }
+    else if(md === '02-11'){
+      symbol = 'Mo';
+    }
+    else if(md === '02-12'){
+      symbol = 'Tc';
+    }
+    else if(md === '02-13'){
+      symbol = 'Ru';
+    }
+    else if(md === '02-14'){
+      symbol = 'Rh';
+    }
+    else if(md === '02-15'){
+      symbol = 'Pd';
+    }
+    else if(md === '02-16'){
+      symbol = 'Ag';
+    }
+    else if(md === '02-17'){
+      symbol = 'Cd';
+    }
+    else if(md === '02-18'){
+      symbol = 'In';
+    }
+    else if(md === '02-19'){
+      symbol = 'Sn';
+    }
+    else if(md === '02-20'){
+      symbol = 'Sb';
+    }
+    else if(md === '02-21'){
+      symbol = 'Te';
+    }
+    else if(md === '02-22'){
+      symbol = 'I';
+    }
+    else if(md === '02-23'){
+      symbol = 'Xe';
+    }
+    else if(md === '02-24'){
+      symbol = 'Cs';
+    }
+    else if(md === '02-25'){
+      symbol = 'Ba';
+    }
+    else if(md === '02-26'){
+      symbol = 'La';
+    }
+    else if(md === '02-27'){
+      symbol = 'Ce';
+    }
+    else if(md === '02-28'){
+      symbol = 'Pr';
+    }
+    else if(md === '03-01'){
+      symbol = 'Nd';
+    }
+    else if(md === '03-02'){
+      symbol = 'Pm';
+    }
+    else if(md === '03-03'){
+      symbol = 'Sm';
+    }
+    else if(md === '03-04'){
+      symbol = 'Eu';
+    }
+    else if(md === '03-05'){
+      symbol = 'Gd';
+    }
+    else if(md === '03-06'){
+      symbol = 'Tb';
+    }
+    else if(md === '03-07'){
+      symbol = 'Dy';
+    }
+    else if(md === '03-08'){
+      symbol = 'Ho';
+    }
+    else if(md === '03-09'){
+      symbol = 'Er';
+    }
+    else if(md === '03-10'){
+      symbol = 'Tm';
+    }
+    else if(md === '03-11'){
+      symbol = 'Yb';
+    }
+    else if(md === '03-12'){
+      symbol = 'Lu';
+    }
+    else if(md === '03-13'){
+      symbol = 'Hf';
+    }
+    else if(md === '03-14'){
+      symbol = 'Ta';
+    }
+    else if(md === '03-15'){
+      symbol = 'W';
+    }
+    else if(md === '03-16'){
+      symbol = 'Re';
+    }
+    else if(md === '03-17'){
+      symbol = 'Os';
+    }
+    else if(md === '03-18'){
+      symbol = 'Ir';
+    }
+    else if(md === '03-19'){
+      symbol = 'Pt';
+    }
+    else if(md === '03-20'){
+      symbol = 'Au';
+    }
+    else if(md === '03-21'){
+      symbol = 'Hg';
+    }
+    else if(md === '03-22'){
+      symbol = 'Tl';
+    }
+    else if(md === '03-23'){
+      symbol = 'Pb';
+    }
+    else if(md === '03-24'){
+      symbol = 'Bi';
+    }
+    else if(md === '03-25'){
+      symbol = 'Po';
+    }
+    else if(md === '03-26'){
+      symbol = 'At';
+    }
+    else if(md === '03-27'){
+      symbol = 'Rn';
+    }
+
+        else if(md === '03-28'){
+      symbol = 'Fr';
+    }
+    else if(md === '03-29'){
+      symbol = 'Ra';
+    }
+    else if(md === '03-30'){
+      symbol = 'Ac';
+    }
+    else if(md === '03-31'){
+      symbol = 'Th';
+    }
+    else if(md === '04-01'){
+      symbol = 'Pa';
+    }
+    else if(md === '04-02'){
+      symbol = 'U';
+    }
+    else if(md === '04-03'){
+      symbol = 'Np';
+    }
+    else if(md === '04-04'){
+      symbol = 'Pu';
+    }
+    else if(md === '04-05'){
+      symbol = 'Am';
+    }
+    else if(md === '04-06'){
+      symbol = 'Cm';
+    }
+    else if(md === '04-07'){
+      symbol = 'Bk';
+    }
+    else if(md === '04-08'){
+      symbol = 'Cf';
+    }
+    else if(md === '04-09'){
+      symbol = 'Es';
+    }
+    else if(md === '04-10'){
+      symbol = 'Fm';
+    }
+    else if(md === '04-11'){
+      symbol = 'Md';
+    }
+    else if(md === '04-12'){
+      symbol = 'No';
+    }
+    else if(md === '04-13'){
+      symbol = 'Lr';
+    }
+    else if(md === '04-14'){
+      symbol = 'Rf';
+    }
+    else if(md === '04-15'){
+      symbol = 'Db';
+    }
+    else if(md === '04-16'){
+      symbol = 'Sg';
+    }
+    else if(md === '04-17'){
+      symbol = 'Bh';
+    }
+    else if(md === '04-18'){
+      symbol = 'Hs';
+    }
+    else if(md === '04-19'){
+      symbol = 'Mt';
+    }
+    else if(md === '04-20'){
+      symbol = 'Ds';
+    }
+    else if(md === '04-21'){
+      symbol = 'Rg';
+    }
+    else if(md === '04-22'){
+      symbol = 'Cn';
+    }
+    else if(md === '04-23'){
+      symbol = 'Nh';
+    }
+    else if(md === '04-24'){
+      symbol = 'Fl';
+    }
+    else if(md === '04-25'){
+      symbol = 'Mc';
+    }
+    else if(md === '04-26'){
+      symbol = 'Lv';
+    }
+    else if(md === '04-27'){
+      symbol = 'Ts';
+    }
+    else if(md === '04-28'){
+      symbol = 'Og';
+    }
+    else if(md === '04-29'){
+      symbol = 'P119';
+    }
+    else if(md === '04-30'){
+      symbol = 'P120';
+    }
+    else if(md === '05-01'){
+      symbol = 'P121';
+    }
+    else if(md === '05-02'){
+      symbol = 'P122';
+    }
+    else if(md === '05-03'){
+      symbol = 'P123';
+    }
+    else if(md === '05-04'){
+      symbol = 'P124';
+    }
+    else if(md === '05-05'){
+      symbol = 'P125';
+    }
+    else if(md === '05-06'){
+      symbol = 'P126';
+    }
+    else if(md === '05-07'){
+      symbol = 'P127';
+    }
+    else if(md === '05-08'){
+      symbol = 'P128';
+    }
+    else if(md === '05-09'){
+      symbol = 'P129';
+    }
+    else if(md === '05-10'){
+      symbol = 'P130';
+    }
+    else if(md === '05-11'){
+      symbol = 'P131';
+    }
+    else if(md === '05-12'){
+      symbol = 'P132';
+    }
+    else if(md === '05-13'){
+      symbol = 'P133';
+    }
+    else if(md === '05-14'){
+      symbol = 'P134';
+    }
+    else if(md === '05-15'){
+      symbol = 'P135';
+    }
+    else if(md === '05-16'){
+      symbol = 'P136';
+    }
+    else if(md === '05-17'){
+      symbol = 'P137';
+    }
+    else if(md === '05-18'){
+      symbol = 'P138';
+    }
+    else if(md === '05-19'){
+      symbol = 'P139';
+    }
+    else if(md === '05-20'){
+      symbol = 'P140';
+    }
+    else if(md === '05-21'){
+      symbol = 'P141';
+    }
+    else if(md === '05-22'){
+      symbol = 'P142';
+    }
+    else if(md === '05-23'){
+      symbol = 'P143';
+    }
+    else if(md === '05-24'){
+      symbol = 'P144';
+    }
+    else if(md === '05-25'){
+      symbol = 'P145';
+    }
+    else if(md === '05-26'){
+      symbol = 'P146';
+    }
+    else if(md === '05-27'){
+      symbol = 'P147';
+    }
+    else if(md === '05-28'){
+      symbol = 'P148';
+    }
+    else if(md === '05-29'){
+      symbol = 'BN149';
+    }
+    else if(md === '05-30'){
+      symbol = 'BN150';
+    }
+    else if(md === '05-31'){
+      symbol = 'BN151';
+    }
+    else if(md === '06-01'){
+      symbol = 'BN152';
+    }
+    else if(md === '06-02'){
+      symbol = 'BN153';
+    }
+    else if(md === '06-03'){
+      symbol = 'BN154';
+    }
+    else if(md === '06-04'){
+      symbol = 'BN155';
+    }
+    else if(md === '06-05'){
+      symbol = 'BN156';
+    }
+    else if(md === '06-06'){
+      symbol = 'BN157';
+    }
+    else if(md === '06-07'){
+      symbol = 'BN158';
+    }
+    else if(md === '06-08'){
+      symbol = 'BN159';
+    }
+    else if(md === '06-09'){
+      symbol = 'BN160';
+    }
+    else if(md === '06-10'){
+      symbol = 'BN161';
+    }
+    else if(md === '06-11'){
+      symbol = 'BN162';
+    }
+    else if(md === '06-12'){
+      symbol = 'BN163';
+    }
+    else if(md === '06-13'){
+      symbol = 'BN164';
+    }
+    else if(md === '06-14'){
+      symbol = 'BN165';
+    }
+    else if(md === '06-15'){
+      symbol = 'BN166';
+    }
+    else if(md === '06-16'){
+      symbol = 'BN167';
+    }
+    else if(md === '06-17'){
+      symbol = 'BN168';
+    }
+    else if(md === '06-18'){
+      symbol = 'BN169';
+    }
+    else if(md === '06-19'){
+      symbol = 'BN170';
+    }
+    else if(md === '06-20'){
+      symbol = 'BN171';
+    }
+    else if(md === '06-21'){
+      symbol = 'BN172';
+    }
+    else if(md === '06-22'){
+      symbol = 'BN173';
+    }
+    else if(md === '06-23'){
+      symbol = 'BN174';
+    }
+    else if(md === '06-24'){
+      symbol = 'BN175';
+    }
+    else if(md === '06-25'){
+      symbol = 'BN176';
+    }
+    else if(md === '06-26'){
+      symbol = 'BN177';
+    }
+    else if(md === '06-27'){
+      symbol = 'BN178';
+    }
+    else if(md === '06-28'){
+      symbol = 'BN179';
+    }
+    else if(md === '06-29'){
+      symbol = 'BN180';
+    }
+    else if(md === '06-30'){
+      symbol = 'BN181';
+    }
+    else if(md === '07-01'){
+      symbol = 'BN182';
+    }
+    else if(md === '07-02'){
+      symbol = 'BN183';
+    }
+    else if(md === '07-03'){
+      symbol = 'BN184';
+    }
+    else if(md === '07-04'){
+      symbol = 'BN185';
+    }
+    else if(md === '07-05'){
+      symbol = 'BN186';
+    }
+    else if(md === '07-06'){
+      symbol = 'BN187';
+    }
+    else if(md === '07-07'){
+      symbol = 'BN188';
+    }
+    else if(md === '07-08'){
+      symbol = 'BN189';
+    }
+    else if(md === '07-09'){
+      symbol = 'BN190';
+    }
+    else if(md === '07-10'){
+      symbol = 'BN191';
+    }
+    else if(md === '07-11'){
+      symbol = 'BN192';
+    }
+    else if(md === '07-12'){
+      symbol = 'BN193';
+    }
+    else if(md === '07-13'){
+      symbol = 'BN194';
+    }
+    else if(md === '07-14'){
+      symbol = 'BN195';
+    }
+    else if(md === '07-15'){
+      symbol = 'BN196';
+    }
+    else if(md === '07-16'){
+      symbol = 'BN197';
+    }
+    else if(md === '07-17'){
+      symbol = 'BN198';
+    }
+    else if(md === '07-18'){
+      symbol = 'BN199';
+    }
+    else if(md === '07-19'){
+      symbol = 'BN200';
+    }
+    else if(md === '07-20'){
+      symbol = 'BN201';
+    }
+    else if(md === '07-21'){
+      symbol = 'BN202';
+    }
+    else if(md === '07-22'){
+      symbol = 'BN203';
+    }
+    else if(md === '07-23'){
+      symbol = 'BN204';
+    }
+    else if(md === '07-24'){
+      symbol = 'BN205';
+    }
+    else if(md === '07-25'){
+      symbol = 'BN206';
+    }
+    else if(md === '07-26'){
+      symbol = 'BN207';
+    }
+    else if(md === '07-27'){
+      symbol = 'BN208';
+    }
+    else if(md === '07-28'){
+      symbol = 'BN209';
+    }
+    else if(md === '07-29'){
+      symbol = 'BN210';
+    }
+    else if(md === '07-30'){
+      symbol = 'BN211';
+    }
+    else if(md === '07-31'){
+      symbol = 'BN212';
+    }
+    else if(md === '08-01'){
+      symbol = 'BN213';
+    }
+    else if(md === '08-02'){
+      symbol = 'BN214';
+    }
+    else if(md === '08-03'){
+      symbol = 'BN215';
+    }
+    else if(md === '08-04'){
+      symbol = 'BN216';
+    }
+    else if(md === '08-05'){
+      symbol = 'BN217';
+    }
+    else if(md === '08-06'){
+      symbol = 'BN218';
+    }
+    else if(md === '08-07'){
+      symbol = 'BN219';
+    }
+    else if(md === '08-08'){
+      symbol = 'BN220';
+    }
+    else if(md === '08-09'){
+      symbol = 'BN221';
+    }
+    else if(md === '08-10'){
+      symbol = 'BN222';
+    }
+    else if(md === '08-11'){
+      symbol = 'BN223';
+    }
+    else if(md === '08-12'){
+      symbol = 'BN224';
+    }
+
+    else if(md === '08-13'){
+      symbol = 'L1';
+    }
+    else if(md === '08-14'){
+      symbol = 'L2';
+    }
+    else if(md === '08-15'){
+      symbol = 'L3';
+    }
+    else if(md === '08-16'){
+      symbol = 'L4';
+    }
+    else if(md === '08-17'){
+      symbol = 'L5';
+    }
+    else if(md === '08-18'){
+      symbol = 'L6';
+    }
+    else if(md === '08-19'){
+      symbol = 'L7';
+    }
+    else if(md === '08-20'){
+      symbol = 'L8';
+    }
+    else if(md === '08-21'){
+      symbol = 'L9';
+    }
+    else if(md === '08-22'){
+      symbol = 'L10';
+    }
+    else if(md === '08-23'){
+      symbol = 'L11';
+    }
+    else if(md === '08-24'){
+      symbol = 'L12';
+    }
+    else if(md === '08-25'){
+      symbol = 'L13';
+    }
+    else if(md === '08-26'){
+      symbol = 'L14';
+    }
+    else if(md === '08-27'){
+      symbol = 'L15';
+    }
+    else if(md === '08-28'){
+      symbol = 'L16';
+    }
+    else if(md === '08-29'){
+      symbol = 'L17';
+    }
+    else if(md === '08-30'){
+      symbol = 'L18';
+    }
+    else if(md === '08-31'){
+      symbol = 'L19';
+    }
+    else if(md === '09-01'){
+      symbol = 'L20';
+    }
+    else if(md === '09-02'){
+      symbol = 'L21';
+    }
+    else if(md === '09-03'){
+      symbol = 'L22';
+    }
+    else if(md === '09-04'){
+      symbol = 'L23';
+    }
+    else if(md === '09-05'){
+      symbol = 'L24';
+    }
+    else if(md === '09-06'){
+      symbol = 'L25';
+    }
+    else if(md === '09-07'){
+      symbol = 'L26';
+    }
+    else if(md === '09-08'){
+      symbol = 'L27';
+    }
+    else if(md === '09-09'){
+      symbol = 'L28';
+    }
+    else if(md === '09-10'){
+      symbol = 'L29';
+    }
+    else if(md === '09-11'){
+      symbol = 'L30';
+    }
+    else if(md === '09-12'){
+      symbol = 'L31';
+    }
+    else if(md === '09-13'){
+      symbol = 'L32';
+    }
+    else if(md === '09-14'){
+      symbol = 'L33';
+    }
+    else if(md === '09-15'){
+      symbol = 'L34';
+    }
+    else if(md === '09-16'){
+      symbol = 'L35';
+    }
+    else if(md === '09-17'){
+      symbol = 'L36';
+    }
+    else if(md === '09-18'){
+      symbol = 'L37';
+    }
+    else if(md === '09-19'){
+      symbol = 'L38';
+    }
+    else if(md === '09-20'){
+      symbol = 'L39';
+    }
+    else if(md === '09-21'){
+      symbol = 'L40';
+    }
+    else if(md === '09-22'){
+      symbol = 'L41';
+    }
+    else if(md === '09-23'){
+      symbol = 'L42';
+    }
+    else if(md === '09-24'){
+      symbol = 'L43';
+    }
+    else if(md === '09-25'){
+      symbol = 'L44';
+    }
+    else if(md === '09-26'){
+      symbol = 'L45';
+    }
+    else if(md === '09-27'){
+      symbol = 'L46';
+    }
+    else if(md === '09-28'){
+      symbol = 'L47';
+    }
+    else if(md === '09-29'){
+      symbol = 'L48';
+    }
+    else if(md === '09-30'){
+      symbol = 'L49';
+    }
+    else if(md === '10-01'){
+      symbol = 'L50';
+    }
+    else if(md === '10-02'){
+      symbol = 'L51';
+    }
+    else if(md === '10-03'){
+      symbol = 'L52';
+    }
+    else if(md === '10-04'){
+      symbol = 'L53';
+    }
+    else if(md === '10-05'){
+      symbol = 'L54';
+    }
+    else if(md === '10-06'){
+      symbol = 'L55';
+    }
+    else if(md === '10-07'){
+      symbol = 'L56';
+    }
+    else if(md === '10-08'){
+      symbol = 'L57';
+    }
+    else if(md === '10-09'){
+      symbol = 'L58';
+    }
+    else if(md === '10-10'){
+      symbol = 'L59';
+    }
+    else if(md === '10-11'){
+      symbol = 'L60';
+    }
+    else if(md === '10-12'){
+      symbol = 'L61';
+    }
+    else if(md === '10-13'){
+      symbol = 'L62';
+    }
+    else if(md === '10-14'){
+      symbol = 'L63';
+    }
+    else if(md === '10-15'){
+      symbol = 'L64';
+    }
+    else if(md === '10-16'){
+      symbol = 'L65';
+    }
+    else if(md === '10-17'){
+      symbol = 'L66';
+    }
+    else if(md === '10-18'){
+      symbol = 'L67';
+    }
+    else if(md === '10-19'){
+      symbol = 'L68';
+    }
+    else if(md === '10-20'){
+      symbol = 'L69';
+    }
+    else if(md === '10-21'){
+      symbol = 'L70';
+    }
+    else if(md === '10-22'){
+      symbol = 'L71';
+    }
+    else if(md === '10-23'){
+      symbol = 'L72';
+    }
+    else if(md === '10-24'){
+      symbol = 'L73';
+    }
+    else if(md === '10-25'){
+      symbol = 'L74';
+    }
+    else if(md === '10-26'){
+      symbol = 'L75';
+    }
+    else if(md === '10-27'){
+      symbol = 'L76';
+    }
+    else if(md === '10-28'){
+      symbol = 'L77';
+    }
+    else if(md === '10-29'){
+      symbol = 'L78';
+    }
+    else if(md === '10-30'){
+      symbol = 'L79';
+    }
+    else if(md === '10-31'){
+      symbol = 'L80';
+    }
+    else if(md === '11-01'){
+      symbol = 'L81';
+    }
+
+    else if(md === '11-02'){
+      symbol = 'L82';
+    }
+    else if(md === '11-03'){
+      symbol = 'L83';
+    }
+    else if(md === '11-04'){
+      symbol = 'L84';
+    }
+    else if(md === '11-05'){
+      symbol = 'L85';
+    }
+    else if(md === '11-06'){
+      symbol = 'L86';
+    }
+    else if(md === '11-07'){
+      symbol = 'L87';
+    }
+    else if(md === '11-08'){
+      symbol = 'L88';
+    }
+    else if(md === '11-09'){
+      symbol = 'L89';
+    }
+    else if(md === '11-10'){
+      symbol = 'L90';
+    }
+    else if(md === '11-11'){
+      symbol = 'L91';
+    }
+    else if(md === '11-12'){
+      symbol = 'L92';
+    }
+    else if(md === '11-13'){
+      symbol = 'L93';
+    }
+    else if(md === '11-14'){
+      symbol = 'L94';
+    }
+    else if(md === '11-15'){
+      symbol = 'L95';
+    }
+    else if(md === '11-16'){
+      symbol = 'L96';
+    }
+    else if(md === '11-17'){
+      symbol = 'L97';
+    }
+    else if(md === '11-18'){
+      symbol = 'L98';
+    }
+    else if(md === '11-19'){
+      symbol = 'L99';
+    }
+    else if(md === '11-20'){
+      symbol = 'L100';
+    }
+    else if(md === '11-21'){
+      symbol = 'L101';
+    }
+    else if(md === '11-22'){
+      symbol = 'L102';
+    }
+    else if(md === '11-23'){
+      symbol = 'L103';
+    }
+    else if(md === '11-24'){
+      symbol = 'L104';
+    }
+    else if(md === '11-25'){
+      symbol = 'L105';
+    }
+    else if(md === '11-26'){
+      symbol = 'L106';
+    }
+    else if(md === '11-27'){
+      symbol = 'L107';
+    }
+    else if(md === '11-28'){
+      symbol = 'L108';
+    }
+    else if(md === '11-29'){
+      symbol = 'L109';
+    }
+    else if(md === '11-30'){
+      symbol = 'L110';
+    }
+    else if(md === '12-01'){
+      symbol = 'L111';
+    }
+    else if(md === '12-02'){
+      symbol = 'L112';
+    }
+    else if(md === '12-03'){
+      symbol = 'L113';
+    }
+    else if(md === '12-04'){
+      symbol = 'L114';
+    }
+    else if(md === '12-05'){
+      symbol = 'L115';
+    }
+    else if(md === '12-06'){
+      symbol = 'L116';
+    }
+    else if(md === '12-07'){
+      symbol = 'L117';
+    }
+    else if(md === '12-08'){
+      symbol = 'L118';
+    }
+    else if(md === '12-09'){
+      symbol = 'L119';
+    }
+    else if(md === '12-10'){
+      symbol = 'L120';
+    }
+    else if(md === '12-11'){
+      symbol = 'L121';
+    }
+    else if(md === '12-12'){
+      symbol = 'L122';
+    }
+    else if(md === '12-13'){
+      symbol = 'L123';
+    }
+    else if(md === '12-14'){
+      symbol = 'L124';
+    }
+    else if(md === '12-15'){
+      symbol = 'L125';
+    }
+    else if(md === '12-16'){
+      symbol = 'L126';
+    }
+    else if(md === '12-17'){
+      symbol = 'L127';
+    }
+    else if(md === '12-18'){
+      symbol = 'L128';
+    }
+
+        var iso = activeISO();
+        var href = './periodic.html?el=' + encodeURIComponent(symbol);
+        if(iso){
+          href += '&ref=' + encodeURIComponent(iso);
+        }
+        link.href = href;
+  }
+
+  if(ref){
+    ref.addEventListener('change', updatePeriodicLink);
+    ref.addEventListener('input', updatePeriodicLink);
+  }
+  document.addEventListener('DOMContentLoaded', updatePeriodicLink);
+  window.addEventListener('load', function(){ setTimeout(updatePeriodicLink, 0); });
+})();
+</script>
+
 </body></html>
