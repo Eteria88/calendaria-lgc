@@ -283,22 +283,27 @@ body.noScroll{overflow:hidden}
 }
 .anModalClose{
   position:absolute;
-  top:10px;
-  right:10px;
+  /* Alineado al marco del header (misma sangría del padding del card) */
+  top:14px;
+  right:14px;
   width:34px;
   height:34px;
-  border-radius:10px;
+  border-radius:12px;
   border:1px solid var(--ol);
   background:rgba(0,0,0,.45);
   color:#fff;
   font-size:20px;
   line-height:1;
   cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .anModalHead{
   border:1px solid var(--ol);
   border-radius:12px;
-  padding:10px 12px;
+  /* Deja espacio para el botón cerrar sin desalinear el marco */
+  padding:10px 56px 10px 12px;
   background:rgba(0,0,0,.72);
   margin-bottom:14px;
 }
@@ -392,22 +397,27 @@ body.noScroll{overflow:hidden}
 }
 .anModalClose{
   position:absolute;
-  top:10px;
-  right:10px;
+  /* Alineado al marco del header (misma sangría del padding del card) */
+  top:14px;
+  right:14px;
   width:34px;
   height:34px;
-  border-radius:10px;
+  border-radius:12px;
   border:1px solid var(--ol);
   background:rgba(0,0,0,.45);
   color:#fff;
   font-size:20px;
   line-height:1;
   cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .anModalHead{
   border:1px solid var(--ol);
   border-radius:12px;
-  padding:10px 12px;
+  /* Deja espacio para el botón cerrar sin desalinear el marco */
+  padding:10px 56px 10px 12px;
   background:rgba(0,0,0,.72);
   margin-bottom:14px;
 }
