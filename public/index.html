@@ -5,7 +5,7 @@
 <title>Calendaria</title>
 <meta http-equiv="Cache-Control" content="no-store">
 <style>
-:root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
+:root{--accent:#ffd166;--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:radial-gradient(1200px 800px at 80% -10%,#12202b 0%,#0b0d10 40%) fixed;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:1100px;margin:0 auto;padding:20px}
@@ -130,88 +130,131 @@ body.noScroll{overflow:hidden}
   padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
 .elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
 @media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+.anilloTitle{
+  text-align:center;
+  margin-top:6px;
+  margin-bottom:8px;
+  font-size:15px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-weight:600;
+  color:var(--accent);
+}
 
+/* Anillo de Fuego (Vuelta 23) - layout por cajas como en el PDF */
+#anilloPlane{
+  height:auto;                 /* override del .plane */
+  padding:10px;
+}
+.anilloGrid{
+  width:100%;
+  border:1px solid var(--ol);
+  border-radius:14px;
+  background:rgba(255,255,255,.02);
+  padding:10px;
+  display:grid;
+  grid-template-columns:repeat(5, minmax(0,1fr));
+  grid-template-rows:auto auto auto;
+  gap:10px;
+}
+@media(max-width:479px){
+  .anilloGrid{gap:8px;padding:8px}
+}
 
-  .anilloTitle{
-    text-align:center;
-    margin-top:6px;
-    margin-bottom:6px;
-    font-size:15px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    font-weight:600;
-    color:var(--accent);
-  }
-  .anilloClock{
-    position:relative;
-    width:100%;
-    max-width:260px;
-    margin:4px auto 0;
-    aspect-ratio:1/1;
-    border-radius:50%;
-    border:1px solid var(--ol);
-    box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(255,255,255,.02);
-  }
-@media(max-width:479px){.anilloClock{max-width:180px;}}
+.anBox{
+  border:1px solid var(--ol);
+  border-radius:12px;
+  background:rgba(0,0,0,.18);
+  display:flex;
+  flex-direction:column;
+  min-height:88px;
+  overflow:hidden; /* recorta el encabezado dentro del radio del cuadro */
+}
+@media(min-width:768px){
+  .anBox{min-height:100px}
+}
 
-  .anilloCenter{
-    text-align:center;
-    padding:2px 0;
-    border-radius:0;
-    background:transparent;
-    backdrop-filter:none;
-  }
-  .anilloCenter .anilloDay{
-    font-size:16px;
-    line-height:1.1;
-    margin-bottom:0;
-  }
-  .anilloTick{
-    position:absolute;
-    inset:0;
-    transform-origin:50% 50%;
-    transform:rotate(var(--angle));
-    pointer-events:none;
-  }
-  .anilloTick span{
-    position:absolute;
-    top:6px;
-    left:50%;
-    transform:translateX(-50%) rotate(calc(-1*var(--angle)));
-    display:block;
-    font-size:14px;
-    color:var(--muted);
-  }
-  .anilloTick--inactive span{opacity:0;}
-  /* Línea sutil desde el centro (353) hacia cada frecuencia visible */
-    .anilloLine{
-    position:absolute;
-    inset:0;
-    transform-origin:50% 50%;
-    transform:rotate(var(--angle));
-    pointer-events:none;
-  }
-  .anilloLine::before{
-    content:"";
-    position:absolute;
-    top:6%;
-    left:50%;
-    width:1px;
-    height:44%;
-    background:rgba(255,255,255,.18);
-    transform-origin:50% 100%;
-    transform:translateX(-50%);
-    opacity:.65;
-    pointer-events:none;
-  }
-  .anilloLine--inactive::before{
-    opacity:0;
-  }
+.anBoxHead{
+  background:rgba(0,0,0,.78);
+  border-bottom:1px solid var(--ol);
+  padding:3px 5px;
+  border-top-left-radius:12px;
+  border-top-right-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:4px;
+  font-size:9px;
+  line-height:1.0;
+  white-space:nowrap;
+  flex-wrap:nowrap;
+}
+.anBoxHead span{display:inline-block;}
+@media (max-width:420px){
+  .anBoxHead{font-size:8px; gap:3px;}
+}
+.anBoxHead .solar{
+  color:var(--accent);
+  font-weight:700;
+}
+.anBoxHead .dow{
+  color:#7cc7ff;
+  font-weight:700;
+}
 
+.anBoxBody{
+  flex:1;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.anBoxFreq{
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:28px;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+@media(max-width:479px){
+  .anBoxFreq{font-size:22px}
+}
+
+/* Centro (Día 1 / 353) */
+.anBox--center{
+  grid-column:2 / span 3;
+  grid-row:2;
+  min-height:98px;
+}
+.anBox--center .anBoxHead{
+  justify-content:center;
+}
+/* Posiciones exactas del PDF */
+.anBox--d4 {grid-column:1;grid-row:1}
+.anBox--d3 {grid-column:2;grid-row:1}
+.anBox--d2 {grid-column:3;grid-row:1}
+.anBox--d13{grid-column:4;grid-row:1}
+.anBox--d12{grid-column:5;grid-row:1}
+
+.anBox--d5 {grid-column:1;grid-row:2}
+.anBox--d11{grid-column:5;grid-row:2}
+
+.anBox--d6 {grid-column:1;grid-row:3}
+.anBox--d7 {grid-column:2;grid-row:3}
+.anBox--d8 {grid-column:3;grid-row:3}
+.anBox--d9 {grid-column:4;grid-row:3}
+.anBox--d10{grid-column:5;grid-row:3}
+
+/* Alineación del número dentro de cada caja (según PDF) */
+.anBox[data-align="c"]  .anBoxBody{align-items:center;justify-content:center}
+.anBox[data-align="t"]  .anBoxBody{align-items:flex-start;justify-content:center}
+.anBox[data-align="b"]  .anBoxBody{align-items:flex-end;justify-content:center}
+.anBox[data-align="tl"] .anBoxBody{align-items:flex-start;justify-content:flex-start}
+.anBox[data-align="tr"] .anBoxBody{align-items:flex-start;justify-content:flex-end}
+.anBox[data-align="bl"] .anBoxBody{align-items:flex-end;justify-content:flex-start}
+.anBox[data-align="br"] .anBoxBody{align-items:flex-end;justify-content:flex-end}
+
+.anBox--future{opacity:.30}
+.anBox--active{box-shadow:inset 0 0 0 2px rgba(124,199,255,.35)}
 
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
@@ -351,57 +394,85 @@ body.noScroll{overflow:hidden}
       </div></div>
 
       <div id="anilloPlane" class="plane" style="display:none">
-        <div class="anilloTitle mono">Anillo de Fuego</div>
-        <div class="anilloClock">
-          <!-- Líneas radiales del Anillo, una por frecuencia 354–365 -->
-          <div class="anilloLine anilloLine--inactive" data-day="354" style="--angle:0deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="355" style="--angle:-30deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="356" style="--angle:-60deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="357" style="--angle:-90deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="358" style="--angle:-120deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="359" style="--angle:-150deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="360" style="--angle:180deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="361" style="--angle:150deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="362" style="--angle:120deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="363" style="--angle:90deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="364" style="--angle:60deg"></div>
-          <div class="anilloLine anilloLine--inactive" data-day="365" style="--angle:30deg"></div>
+  <div class="anilloTitle mono">Anillo de Fuego</div>
 
-          <!-- 354 en posición de "las 12" (referencia visual) -->
-          <div class="anilloTick" data-day="354" style="--angle:0deg"><span>354</span></div>
-          <!-- 355 en posición de "las 11" (referencia visual) -->
-          <div class="anilloTick" data-day="355" style="--angle:-30deg"><span>355</span></div>
-          <!-- 356 en posición de "las 10" -->
-          <div class="anilloTick" data-day="356" style="--angle:-60deg"><span>356</span></div>
-          <!-- 357 en posición de "las 9" -->
-          <div class="anilloTick" data-day="357" style="--angle:-90deg"><span>357</span></div>
-          <!-- 358 en posición de "las 8" -->
-          <div class="anilloTick" data-day="358" style="--angle:-120deg"><span>358</span></div>
-          <!-- 359 en posición de "las 7" -->
-          <div class="anilloTick" data-day="359" style="--angle:-150deg"><span>359</span></div>
-          <!-- 360 en posición de "las 6" -->
-          <div class="anilloTick" data-day="360" style="--angle:180deg"><span>360</span></div>
-          <!-- 361 en posición de "las 5" -->
-          <div class="anilloTick" data-day="361" style="--angle:150deg"><span>361</span></div>
-          <!-- 362 en posición de "las 4" -->
-          <div class="anilloTick" data-day="362" style="--angle:120deg"><span>362</span></div>
-          <!-- 363 en posición de "las 3" -->
-          <div class="anilloTick" data-day="363" style="--angle:90deg"><span>363</span></div>
-          <!-- 364 en posición de "las 2" -->
-          <div class="anilloTick" data-day="364" style="--angle:60deg"><span>364</span></div>
-          <!-- 365 en posición de "la 1" -->
-          <div class="anilloTick" data-day="365" style="--angle:30deg"><span>365</span></div>
-          <div class="anilloCenter">
-            <!-- 353 se mantiene en el centro de forma estática -->
-            <div class="anilloDay mono" id="anilloDay">353</div>
-          </div>
-        </div>
-        <div id="anilloExtra" class="small mono" style="position:absolute; right:4px; bottom:4px; text-align:right; display:none">
-          <div id="anilloExtraDate">31/12</div>
-          <div id="anilloExtraDay">Día 14</div>
-          <div id="anilloExtraSolar">—</div>
-        </div>
-      </div>
+  <div class="anilloGrid" id="anilloGrid">
+    <!-- Fila 1 -->
+    <div class="anBox anBox--d4" data-seq="4" data-align="br">
+      <div class="anBoxHead mono"><span class="lbl">Día 4:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d3" data-seq="3" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 3:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d2" data-seq="2" data-align="t">
+      <div class="anBoxHead mono"><span class="lbl">Día 2:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d13" data-seq="13" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 13:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d12" data-seq="12" data-align="bl">
+      <div class="anBoxHead mono"><span class="lbl">Día 12:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <!-- Fila 2 -->
+    <div class="anBox anBox--d5" data-seq="5" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 5:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--center" data-seq="1" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 1:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">353</div></div>
+    </div>
+
+    <div class="anBox anBox--d11" data-seq="11" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 11:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <!-- Fila 3 -->
+    <div class="anBox anBox--d6" data-seq="6" data-align="tr">
+      <div class="anBoxHead mono"><span class="lbl">Día 6:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d7" data-seq="7" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 7:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d8" data-seq="8" data-align="b">
+      <div class="anBoxHead mono"><span class="lbl">Día 8:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d9" data-seq="9" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 9:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d10" data-seq="10" data-align="tl">
+      <div class="anBoxHead mono"><span class="lbl">Día 10:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+  </div>
+
+  <!-- Extra: 31/12 en año bisiesto (Día 14 / horizonte de sucesos) -->
+  <div id="anilloExtra" class="small mono" style="position:absolute; right:8px; bottom:8px; text-align:right; display:none">
+    <div id="anilloExtraDate">31/12</div>
+    <div id="anilloExtraDay">Día 14</div>
+    <div id="anilloExtraSolar">—</div>
+  </div>
+</div>
     </div>
   </section>
 

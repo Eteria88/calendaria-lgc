@@ -215,38 +215,54 @@ function fmtDate(d){
           if(blockDaySpan && blockDaySpan.parentElement){
             blockDaySpan.parentElement.style.display = 'none';
           }
+// Render por cajas (como PDF): 353 al centro, 354 arriba (Día 2), etc.
+var grid = document.getElementById('anilloGrid');
+if(grid){
+  var dowMap = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+  var startDay = leap ? 18 : 19;            // 353 (Día 1) arranca 18/12 si bisiesto, 19/12 si no
+  var maxSeq = (logicalDay == null ? 0 : (logicalDay - 352));  // 353->1 ... 365->13
 
-          // 353 permanece estático en el centro.
-          // Las marcas 354–365 se van activando progresivamente
-          // y, una vez activadas (día lógico alcanzado), quedan visibles.
-          var maxDay = (logicalDay == null ? 0 : logicalDay);
-          var ticks = anilloPlane.querySelectorAll('.anilloTick[data-day]');
-          ticks.forEach(function(el){
-            var dayAttr = el.getAttribute('data-day');
-            var day = dayAttr ? parseInt(dayAttr, 10) : 0;
-            if(day && day <= maxDay){
-              el.classList.remove('anilloTick--inactive');
-            }else{
-              el.classList.add('anilloTick--inactive');
-            }
-            if(day && day === maxDay){
-              el.classList.add('anilloTick--active');
-            }else{
-              el.classList.remove('anilloTick--active');
-            }
-          });
+  // JDN del 0001-01-01 (Juliano) para convertir a Día Solar (misma convención del header)
+  var jJulEpochLocal = jdnJ(1,1,1);
 
-          var lines = anilloPlane.querySelectorAll('.anilloLine[data-day]');
-          lines.forEach(function(el){
-            var dayAttr = el.getAttribute('data-day');
-            var day = dayAttr ? parseInt(dayAttr, 10) : 0;
-            if(day && day <= maxDay){
-              el.classList.remove('anilloLine--inactive');
-            }else{
-              el.classList.add('anilloLine--inactive');
-            }
-          });
-        }else{
+  grid.querySelectorAll('.anBox[data-seq]').forEach(function(box){
+    var seq = parseInt(box.getAttribute('data-seq')||'0',10);
+    if(!seq) return;
+
+    // Fecha gregoriana dentro del tramo del Anillo
+    var date = dt(y, 12, startDay + (seq-1)); // UTC
+    var mm = String(date.getUTCMonth()+1).padStart(2,'0');
+    var dd = String(date.getUTCDate()).padStart(2,'0');
+    var dm = dd + '/' + mm;
+
+    // Día solar para esa fecha (Gregoriano moderno)
+    var jdn = jdnG(date.getUTCFullYear(), date.getUTCMonth()+1, date.getUTCDate());
+    var solar = jdn - jJulEpochLocal + 1;
+
+    // Header
+    var lbl = box.querySelector('.anBoxHead .lbl');
+    var dmEl = box.querySelector('.anBoxHead .dm');
+    var solEl = box.querySelector('.anBoxHead .solar');
+    var dowEl = box.querySelector('.anBoxHead .dow');
+    if(lbl) lbl.textContent = 'Día ' + seq + ':';
+    if(dmEl) dmEl.textContent = dm;
+    if(solEl) solEl.textContent = String(solar);
+    if(dowEl) dowEl.textContent = dowMap[date.getUTCDay()] || '';
+
+    // Frecuencia en grande: se “desbloquea” al transitar esa fecha
+    var freq = 352 + seq;
+    var freqEl = box.querySelector('.anBoxFreq');
+    if(freqEl){
+      freqEl.textContent = (seq <= maxSeq ? String(freq) : '—');
+    }
+
+    // Estados visuales
+    box.classList.remove('anBox--active','anBox--future');
+    if(seq === maxSeq) box.classList.add('anBox--active');
+    if(seq > maxSeq) box.classList.add('anBox--future');
+  });
+}
+}else{
           cardPlane.style.display = '';
           anilloPlane.style.display = 'none';
 
@@ -352,27 +368,17 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       // Ajustes de encabezado para el Anillo de Fuego
       if(showAnillo && logicalDay != null){
         var isLeapYear = isL(Rf.y);
-        var isLastLeapDay = isLeapYear && Rf.m===12 && Rf.d===31;
+	        var isLastLeapDay = isLeapYear && Rf.m===12 && Rf.d===31;
 
-        // Frecuencia y Día dentro del Anillo (solo si no es 31/12 de año bisiesto)
-        if(!isLastLeapDay){
-          // Etiqueta y valor de Frecuencia (353–365)
-          el=$('#calDayLabel'); if(el) el.textContent='Frecuencia';
-          el=$('#calDay'); if(el) el.textContent = logicalDay;
-
-          // Día dentro del Anillo (1–13)
-          var freqIndex = logicalDay - 352;
-          var anilloDayBlock=$('#anilloDayBlock');
-          var anilloDayEl=$('#anilloSeqDay');
-          if(anilloDayBlock) anilloDayBlock.style.display='';
-          if(anilloDayEl && freqIndex>=1) anilloDayEl.textContent=freqIndex;
-        }else{
-          // 31/12 de año bisiesto: ocultar Frecuencia y Día
-          el=$('#calDayLabel'); if(el) el.textContent='';
-          el=$('#calDay'); if(el) el.textContent='—';
-          var anilloDayBlock=$('#anilloDayBlock');
-          if(anilloDayBlock) anilloDayBlock.style.display='none';
-        }
+	        // Ocultar el bloque superior "Frecuencia / Día" (antes era Paso + valor)
+	        // porque ahora esa info vive dentro de cada cuadro del Anillo.
+	        var calDayLabelEl = $('#calDayLabel');
+	        if(calDayLabelEl && calDayLabelEl.parentElement){
+	          calDayLabelEl.parentElement.style.display='none';
+	        }
+	        // Ocultar también el bloque "Día" superior del Anillo (ya está en los cuadros)
+	        var anilloDayBlock = $('#anilloDayBlock');
+	        if(anilloDayBlock) anilloDayBlock.style.display='none';
 
         // Ocultar bloques de Cardinalidad / Columna / Memoria
         var cardBlock=$('#calCardBlock');
@@ -414,6 +420,11 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       }else{
         // Fuera del Anillo: restaurar etiqueta y ocultar bloque Día del Anillo
         el=$('#calDayLabel'); if(el) el.textContent='Paso';
+	        // Re-mostrar el bloque de Paso (calDayLabel + calDay)
+	        var calDayLabelEl2 = $('#calDayLabel');
+	        if(calDayLabelEl2 && calDayLabelEl2.parentElement){
+	          calDayLabelEl2.parentElement.style.display='';
+	        }
         var anilloDayBlock2=$('#anilloDayBlock');
         if(anilloDayBlock2) anilloDayBlock2.style.display='none';
         var cardBlock2=$('#calCardBlock');
