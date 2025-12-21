@@ -216,7 +216,12 @@ body.noScroll{overflow:hidden}
   letter-spacing:.02em;
 }
 @media(max-width:479px){
-  .anBoxFreq{font-size:22px}
+  /* En celular bajamos solo el número (el encabezado se mantiene legible) */
+  .anBoxFreq{font-size:21px}
+}
+
+@media(max-width:360px){
+  .anBoxFreq{font-size:19px}
 }
 
 /* Centro (Día 1 / 353) */
