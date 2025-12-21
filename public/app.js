@@ -261,8 +261,64 @@ if(grid){
     if(seq === maxSeq) box.classList.add('anBox--active');
     if(seq > maxSeq) box.classList.add('anBox--future');
   });
+
+  // Zoom en celular: tocar una caja abre el detalle completo (encabezado + frecuencia)
+  var modal = document.getElementById('anilloModal');
+  if(modal && !modal.dataset.bound){
+    var closeBtn = modal.querySelector('.anModalClose');
+    var l1 = modal.querySelector('.anModalLine1');
+    var solarSpan = modal.querySelector('.anModalLine2 .solar');
+    var dowSpan = modal.querySelector('.anModalLine2 .dow');
+    var freqBig = modal.querySelector('.anModalFreq');
+
+    function closeModal(){
+      modal.classList.remove('isOpen');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    function openFromBox(box){
+      var isMobile = (window.matchMedia && window.matchMedia('(max-width: 520px)').matches);
+      if(!isMobile) return;
+
+      var lbl = (box.querySelector('.anBoxHead .lbl')||{}).textContent || '';
+      var dm  = (box.querySelector('.anBoxHead .dm')||{}).textContent || '';
+      var sol = (box.querySelector('.anBoxHead .solar')||{}).textContent || '';
+      var dow = (box.querySelector('.anBoxHead .dow')||{}).textContent || '';
+      var freq= (box.querySelector('.anBoxFreq')||{}).textContent || '';
+
+      if(l1) l1.textContent = (lbl.trim() + ' ' + dm.trim()).trim();
+      if(solarSpan) solarSpan.textContent = sol.trim();
+      if(dowSpan) dowSpan.textContent = dow.trim();
+      if(freqBig) freqBig.textContent = freq.trim();
+
+      modal.classList.add('isOpen');
+      modal.setAttribute('aria-hidden','false');
+    }
+
+    if(closeBtn) closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){
+      if(e.target === modal || (e.target && e.target.classList && e.target.classList.contains('anModalBackdrop'))){
+        closeModal();
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') closeModal();
+    });
+
+    grid.addEventListener('click', function(e){
+      var box = e.target && e.target.closest ? e.target.closest('.anBox') : null;
+      if(!box) return;
+      openFromBox(box);
+    });
+
+    modal.dataset.bound = '1';
+  }
+
 }
 }else{
+          // Cerrar modal si salimos del Anillo
+          var _am = document.getElementById('anilloModal');
+          if(_am){ _am.classList.remove('isOpen'); _am.setAttribute('aria-hidden','true'); }
           cardPlane.style.display = '';
           anilloPlane.style.display = 'none';
 
