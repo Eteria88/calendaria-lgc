@@ -511,21 +511,25 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#sb_greg_jdn_b'); if(el) el.textContent=j;
       el=$('#sb_greg_alt'); if(el) el.textContent=Math.max(0,gFrom-1);
       // Información extra del Anillo para el 31/12 de años bisiestos
-      var extraBox=document.getElementById('anilloExtra');
-      if(extraBox){
-        // Mostrar sólo cuando estamos en 31/12 de un año bisiesto dentro del Anillo
-        if(showAnillo && isL(Rf.y) && Rf.m===12 && Rf.d===31){
-          extraBox.style.display='';
-          var extraDate=document.getElementById('anilloExtraDate');
-          var extraDay=document.getElementById('anilloExtraDay');
-          var extraSolar=document.getElementById('anilloExtraSolar');
 
-          // Fecha en formato dd/mm
-          if(extraDate){
-            var dd2 = String(Rf.d).padStart(2,'0');
-            var mm2 = String(Rf.m).padStart(2,'0');
-            extraDate.textContent = dd2+'/'+mm2;
-          }
+      var leapBox=document.getElementById('anilloLeapBox');
+      if(leapBox){
+        // Mostrar sólo cuando estamos en 31/12 de un año bisiesto dentro del Anillo (Frecuencia 366)
+        if(showAnillo && isL(Rf.y) && Rf.m===12 && Rf.d===31){
+          leapBox.style.display='';
+          var dowMap=['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+          var dowStr=dowMap[ref.getUTCDay()]||'';
+
+          var el2=leapBox.querySelector('.lbl'); if(el2) el2.textContent='Día 14:';
+          el2=leapBox.querySelector('.dm'); if(el2) el2.textContent='31/12';
+          el2=leapBox.querySelector('.solar'); if(el2) el2.textContent=String(totalSolar);
+          el2=leapBox.querySelector('.dow'); if(el2) el2.textContent=dowStr;
+
+          el2=leapBox.querySelector('.anBoxFreq'); if(el2) el2.textContent='366';
+        }else{
+          leapBox.style.display='none';
+        }
+      }
 
           // Día 14 del horizonte de sucesos
           if(extraDay){

@@ -147,6 +147,8 @@ body.noScroll{overflow:hidden}
   padding:10px;
 }
 .anilloGrid{
+  position:relative;
+
   width:100%;
   border:1px solid var(--ol);
   border-radius:14px;
@@ -262,6 +264,18 @@ body.noScroll{overflow:hidden}
 .anBox--active{box-shadow:inset 0 0 0 2px rgba(124,199,255,.35)}
 
 
+
+/* Caja extra bisiesto (Día 14 / 31·12 / Frecuencia 366) — fuera del frame */
+.anBox--leap{
+  position:absolute;
+  top:-66px;
+  right:0;
+  width:220px;
+  z-index:10;
+}
+@media(max-width:480px){
+  .anBox--leap{top:-60px;width:46vw;max-width:240px;}
+}
 /* Modal "zoom" para ver el encabezado completo en celular */
 .anModal{
   position:fixed;
@@ -620,12 +634,10 @@ body.noScroll{overflow:hidden}
       <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
     </div>
   </div>
-
-  <!-- Extra: 31/12 en año bisiesto (Día 14 / horizonte de sucesos) -->
-  <div id="anilloExtra" class="small mono" style="position:absolute; right:8px; bottom:8px; text-align:right; display:none">
-    <div id="anilloExtraDate">31/12</div>
-    <div id="anilloExtraDay">Día 14</div>
-    <div id="anilloExtraSolar">—</div>
+  <!-- Caja extra bisiesto: Día 14 (31/12) · Frecuencia 366 -->
+  <div class="anBox anBox--leap" id="anilloLeapBox" data-seq="14" data-align="c" style="display:none">
+    <div class="anBoxHead mono"><span class="lbl">Día 14:</span><span class="dm">31/12</span><span class="solar">—</span><span class="dow">—</span></div>
+    <div class="anBoxBody"><div class="anBoxFreq">366</div></div>
   </div>
 </div>
     </div>
