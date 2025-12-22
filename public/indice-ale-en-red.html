@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Índice — Ale en Red · Calendaria</title>
+  <meta http-equiv="Cache-Control" content="no-store">
+
+  <style>
+    :root{--accent:#ffd166;--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;background:radial-gradient(1200px 800px at 80% -10%,#12202b 0%,#0b0d10 40%) fixed;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(11,13,16,.85),rgba(11,13,16,.65));backdrop-filter:saturate(130%) blur(8px);padding:10px 0 12px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .sun{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);box-shadow:0 0 18px #ffb347;display:inline-block;margin-right:8px}
+    .small{font-size:12px;color:var(--muted)}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+    .badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.6px;text-transform:uppercase}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--ol);border-radius:16px;padding:14px}
+    .btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:8px 12px;cursor:pointer;min-height:var(--tap)}
+    .btn:hover{background:rgba(124,199,255,.25)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:10px;color:var(--text);padding:10px 12px;min-height:var(--tap);width:100%}
+    .layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
+    .sidenav{position:sticky;top:58px;height:calc(100dvh - 70px);border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+    .nav-title{font-size:12px;color:var(--muted);margin-bottom:8px}
+    .nav-link{display:block;padding:8px 10px;margin:4px 0;border-radius:8px;border:1px solid var(--ol);color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+    .nav-link:hover{background:rgba(255,255,255,.06)}
+    .nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+    @media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
+    .menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
+    @media(max-width:839px){.menuBtn{display:inline-block}}
+    body.noScroll{overflow:hidden}
+    .mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
+    .mobileNav.open{pointer-events:auto}
+    .mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
+    .mobileNav.open .mobileOverlay{opacity:1}
+    .mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
+    .mobileNav.open .mobileNavPanel{transform:translateX(0)}
+    .mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
+    .closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
+    .mobileList{display:flex;flex-direction:column;padding:10px}
+    .mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+    .mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+    .header-actions{display:flex;gap:10px;align-items:center}
+    .header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none;white-space:nowrap}
+    .header-actions a:hover{border-color:#6f8aa6;color:#d7e6ff}
+    @media(max-width:480px){.header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}}
+    @media(max-width:599px){.wrap{padding:14px} header{padding:8px 0 10px 0}.card{padding:12px}}
+    /* Índice UI */
+    .topRow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--ol);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.03);font-size:12px;color:var(--muted)}
+    .results{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+    .result{border:1px dashed var(--ol);border-radius:14px;padding:12px;background:rgba(255,255,255,.02)}
+    .resultTop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+    .rTitle{font-weight:700}
+    .rMeta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .tagRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .tag{font-size:12px;border:1px solid var(--ol);border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.03);color:#cfe2ff}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .linkBtn{display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+  </style>
+
+  <!-- Vercel Web Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0b0d10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Calendaria">
+  <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="mobileNav" id="mobileNav" aria-hidden="true">
+    <div class="mobileNavPanel">
+      <div class="mobileNavHeader">
+        <span>Menú</span>
+        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
+      </div>
+      <nav class="mobileList">
+        <a class="mnav-link" href="./">Inicio</a>
+        <a class="mnav-link" href="./range.html">Días entre fechas</a>
+        <a class="mnav-link" href="./letters.html">Letras a números</a>
+        <a class="mnav-link active" href="./indice-ale-en-red.html">Índice Ale en Red</a>
+        <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
+      </nav>
+    </div>
+    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
+  </div>
+
+  <header>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="sun"></span>
+      <h1 style="display:inline-block;margin:0">Calendaria</h1>
+    </div>
+    <span class="small" id="nowTZ">—</span>
+    <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button>
+    <div class="header-actions">
+      <a href="./">Volver a inicio</a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidenav">
+      <nav>
+        <div class="nav-title">Menú</div>
+        <a class="nav-link" href="./">Inicio</a>
+        <a class="nav-link" href="./range.html">Días entre fechas</a>
+        <a class="nav-link" href="./letters.html">Letras a números</a>
+        <a class="nav-link active" href="./indice-ale-en-red.html">Índice Ale en Red</a>
+        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="card">
+        <div class="topRow">
+          <div>
+            <div class="badge">Índice</div>
+            <h2 style="margin:8px 0 6px 0">Alejandra Casado · EN RED</h2>
+            <div class="small">
+              Búsqueda por número de transmisión o palabras/etiquetas.
+              <span id="updatedSpan"></span>
+            </div>
+          </div>
+          <div class="controls">
+            <span class="pill"><span class="mono" id="countSpan">—</span>&nbsp;resultados</span>
+            <a id="openPdfBtn" class="btn linkBtn" href="#" target="_blank" rel="noopener" aria-disabled="true">Abrir PDF</a>
+            <button id="clearBtn" class="btn" type="button">Limpiar</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:grid;grid-template-columns:1fr;gap:10px">
+          <div>
+            <input id="searchInput" class="input" type="search" placeholder="Buscar: 23 | #conciencia | respiración | vuelta 18 | etc." autocomplete="off" />
+            <div class="hint">Tip: probá con “#” para buscar por etiquetas (si existen), o con el número de la transmisión.</div>
+          </div>
+        </div>
+
+        <div id="results" class="results" aria-live="polite"></div>
+
+        <div class="hint" style="margin-top:14px">
+          Nota: este índice muestra <b>metadata</b>. Los enlaces deben apuntar a la <b>fuente oficial</b> (Drive/Telegram/YouTube) para respetar autoría.
+        </div>
+      </section>
+    </main>
+  </div>
+
+</div>
+
+<script src="./indice-ale-en-red.js"></script>
+</body>
+</html>
