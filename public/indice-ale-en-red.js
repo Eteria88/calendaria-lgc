@@ -52,9 +52,12 @@
 
   function canonItem(raw){
     // Tolerante con distintos esquemas de JSON.
-    // Esquema "nuevo": { n, titulo, fecha, page, url, tags }
-    // Esquema "export": [{ num, date, pdfPage, snippet, url, tags, vuelta, freq, ... }]
+    // Soporta:
+    //  - wrapper {pdf_url, updated, items:[...]}
+    //  - array directo [...]
+    // Item ejemplo export: { num, date, dateISO, pdfPage, url (telegram), tags, vuelta, freq }
     raw = raw || {};
+
     var n = (raw.n != null ? raw.n
           : raw.num != null ? raw.num
           : raw.numero != null ? raw.numero
@@ -62,20 +65,33 @@
           : null);
     n = toInt(n);
 
-    var titulo = raw.titulo || raw.title || raw.snippet || raw.tema || "";
+    // Título: evitamos usar "snippet" si es "(Extraído de ...)"
+    var titulo = raw.titulo || raw.title || raw.tema || "";
+    if(!titulo && raw.snippet){
+      var sn = (raw.snippet||"").toString().trim();
+      if(!/^\(?\s*extra[ií]do/i.test(sn)) titulo = sn;
+    }
+
     var fecha  = raw.fecha || raw.date || raw.fecha_str || raw.dateStr || "";
-    var page   = (raw.page != null ? raw.page : raw.pdfPage != null ? raw.pdfPage : raw.pagina != null ? raw.pagina : null);
+    var page   = (raw.page != null ? raw.page
+               : raw.pdfPage != null ? raw.pdfPage
+               : raw.pagina != null ? raw.pagina
+               : null);
     page = toInt(page);
 
     var tags = raw.tags || raw.etiquetas || raw.labels || [];
     if(typeof tags === "string") tags = tags.split(",").map(function(x){return x.trim();}).filter(Boolean);
+
+    var transcript = raw.transcripcion || raw.transcripción || raw.transcription || raw.telegram || raw.url || raw.link || raw.href || "";
+    var youtube = raw.youtube_url || raw.youtubeUrl || raw.youtube || raw.yt || raw.yt_url || "";
 
     return {
       n: n,
       titulo: titulo,
       fecha: fecha,
       page: page,
-      url: raw.url || raw.link || raw.href || "",
+      transcript_url: transcript,
+      youtube_url: youtube,
       tags: Array.isArray(tags) ? tags : [],
       vuelta: (raw.vuelta != null ? toInt(raw.vuelta) : null),
       freq: raw.freq || raw.frecuencia || ""
@@ -96,19 +112,15 @@
     return norm(t.join(" "));
   }
 
-  function makeLink(it, pdfUrl){
-    // Priority: explicit url. Otherwise, if there's a pdfUrl, jump to page.
-    if(it.url){
-      return it.url;
-    }
-    if(pdfUrl){
-      var p = it.page ? ("#page=" + it.page) : "";
-      return pdfUrl + p;
-    }
-    return "";
+  function pdfLink(it, pdfUrl){
+    if(!pdfUrl) return "";
+    var p = it.page ? ("#page=" + it.page) : "";
+    return pdfUrl + p;
   }
 
-  function render(list, pdfUrl){
+  function youtubeLink(it){
+    if(it.youtube_url) return it.youtube_url;
+    // Fallback: búsqueda en YouTube (sirve si todavía no cargaste el lirender(list, pdfUrl){
     var wrap = $("results");
     if(!wrap) return;
     wrap.innerHTML = "";
@@ -116,14 +128,28 @@
     $("countSpan").textContent = String(list.length);
 
     if(list.length === 0){
-      wrap.innerHTML = '<div class="result"><div class="rTitle">Sin resultados</div><div class="rMeta">Probá con otra palabra o con el número de transmisión.</div></div>';
+      wrap.innerHTML = '<div class="result"><div class="rTitle">Sin resultados</div><div class="small">Probá con otra palabra, con un <span class="mono">#tag</span> o con el número de transmisión.</div></div>';
       return;
     }
 
     for(var i=0;i<list.length;i++){
       var it = list[i];
-      var link = makeLink(it, pdfUrl);
-      var aOpen = link ? ('<a class="btn linkBtn" href="'+esc(link)+'" target="_blank" rel="noopener">Abrir</a>') : '<span class="btn" style="opacity:.55">Sin link</span>';
+
+      var yt = youtubeLink(it);
+      var tr = transcriptLink(it);
+      var pdf = pdfLink(it, pdfUrl);
+
+      var btns = '<div class="btnStack">';
+      btns += '<a class="btn linkBtn" href="'+esc(yt)+'" target="_blank" rel="noopener">YouTube</a>';
+      if(tr){
+        btns += '<a class="btn linkBtn" href="'+esc(tr)+'" target="_blank" rel="noopener">Transcripción</a>';
+      }else{
+        btns += '<span class="btn" style="opacity:.55">Transcripción</span>';
+      }
+      if(pdfUrl){
+        btns += '<a class="btn linkBtn" href="'+esc(pdf||pdfUrl)+'" target="_blank" rel="noopener">PDF</a>';
+      }
+      btns += '</div>';
 
       var tags = "";
       if(it.tags && it.tags.length){
@@ -138,13 +164,23 @@
       if(it.vuelta!=null) meta.push('<span class="pill">Vuelta '+esc(it.vuelta)+'</span>');
       if(it.freq) meta.push('<span class="pill">'+esc(it.freq)+'</span>');
 
-      var title = it.titulo || ("Ale en Red " + it.n);
+      var title = it.titulo || ("Alejandra Casado EN RED " + it.n);
 
       var html = ''
         + '<div class="result">'
         + '  <div class="resultTop">'
         + '    <div>'
-        + '      <div class="rTitle">'+esc(title)+'</div>'
+        + '      <div class="rTitle"><a class="rTitleLink" href="'+esc(yt)+'" target="_blank" rel="noopener">'+esc(title)+'</a></div>'
+        + '      <div class="rMeta">'+meta.join(" ")+'</div>'
+        + '    </div>'
+        +      btns
+        + '  </div>'
+        +      tags
+        + '</div>';
+
+      wrap.insertAdjacentHTML("beforeend", html);
+    }
+  }div class="rTitle">'+esc(title)+'</div>'
         + '      <div class="rMeta">'+meta.join(" ")+'</div>'
         + '    </div>'
         + '    <div>'+aOpen+'</div>'
@@ -224,6 +260,7 @@
           itemsRaw = data.items || data.data || [];
           state.pdf_url = data.pdf_url || data.pdfUrl || "";
         }
+        if(!state.pdf_url && window.ALE_EN_RED_PDF_URL){ state.pdf_url = window.ALE_EN_RED_PDF_URL; }
         setPdfLink(state.pdf_url);
 
         if(!Array.isArray(data) && data.updated){

@@ -61,7 +61,11 @@
     .tag{font-size:12px;border:1px solid var(--ol);border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.03);color:#cfe2ff}
     .hint{font-size:12px;color:var(--muted);margin-top:6px}
     .linkBtn{display:inline-flex;align-items:center;gap:8px;text-decoration:none}
-  </style>
+  
+    .btnStack{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+    .rTitleLink{color:var(--text);text-decoration:none}
+    .rTitleLink:hover{text-decoration:underline}
+</style>
 
   <!-- Vercel Web Analytics -->
   <script defer src="/_vercel/insights/script.js"></script>
@@ -153,6 +157,11 @@
 
 </div>
 
+
+  <script>
+    // Pegá acá el link OFICIAL del PDF (Drive/Website de la Red). Si lo dejás vacío, se oculta el botón "PDF".
+    window.ALE_EN_RED_PDF_URL = "";
+  </script>
 <script src="./indice-ale-en-red.js"></script>
 </body>
 </html>
