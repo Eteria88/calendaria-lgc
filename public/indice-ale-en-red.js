@@ -45,6 +45,43 @@
   var DATA_URL = "./data/ale_en_red_index.json";
   var state = { items: [], view: [] };
 
+  function toInt(x){
+    var n = parseInt(x, 10);
+    return isFinite(n) ? n : null;
+  }
+
+  function canonItem(raw){
+    // Tolerante con distintos esquemas de JSON.
+    // Esquema "nuevo": { n, titulo, fecha, page, url, tags }
+    // Esquema "export": [{ num, date, pdfPage, snippet, url, tags, vuelta, freq, ... }]
+    raw = raw || {};
+    var n = (raw.n != null ? raw.n
+          : raw.num != null ? raw.num
+          : raw.numero != null ? raw.numero
+          : raw.id != null ? raw.id
+          : null);
+    n = toInt(n);
+
+    var titulo = raw.titulo || raw.title || raw.snippet || raw.tema || "";
+    var fecha  = raw.fecha || raw.date || raw.fecha_str || raw.dateStr || "";
+    var page   = (raw.page != null ? raw.page : raw.pdfPage != null ? raw.pdfPage : raw.pagina != null ? raw.pagina : null);
+    page = toInt(page);
+
+    var tags = raw.tags || raw.etiquetas || raw.labels || [];
+    if(typeof tags === "string") tags = tags.split(",").map(function(x){return x.trim();}).filter(Boolean);
+
+    return {
+      n: n,
+      titulo: titulo,
+      fecha: fecha,
+      page: page,
+      url: raw.url || raw.link || raw.href || "",
+      tags: Array.isArray(tags) ? tags : [],
+      vuelta: (raw.vuelta != null ? toInt(raw.vuelta) : null),
+      freq: raw.freq || raw.frecuencia || ""
+    };
+  }
+
   function itemHaystack(it){
     var t = [];
     t.push("ale");
@@ -53,6 +90,8 @@
     if(it.n!=null) t.push(String(it.n));
     if(it.titulo) t.push(it.titulo);
     if(it.fecha) t.push(it.fecha);
+    if(it.freq) t.push(String(it.freq));
+    if(it.vuelta!=null) t.push("vuelta " + String(it.vuelta));
     if(it.tags && it.tags.length) t = t.concat(it.tags.map(function(x){return "#"+x;}));
     return norm(t.join(" "));
   }
@@ -96,6 +135,8 @@
       meta.push('<span class="pill">N° <span class="mono">'+esc(it.n)+'</span></span>');
       if(it.fecha) meta.push('<span class="pill">'+esc(it.fecha)+'</span>');
       if(it.page) meta.push('<span class="pill">p. '+esc(it.page)+'</span>');
+      if(it.vuelta!=null) meta.push('<span class="pill">Vuelta '+esc(it.vuelta)+'</span>');
+      if(it.freq) meta.push('<span class="pill">'+esc(it.freq)+'</span>');
 
       var title = it.titulo || ("Ale en Red " + it.n);
 
@@ -173,19 +214,28 @@
     fetch(DATA_URL, {cache:"no-store"})
       .then(function(r){ return r.json(); })
       .then(function(data){
-        state.pdf_url = data.pdf_url || "";
+        // Acepta wrapper {pdf_url, updated, items:[...]}
+        // o array directo [...]
+        var itemsRaw;
+        if(Array.isArray(data)){
+          itemsRaw = data;
+          state.pdf_url = "";
+        }else{
+          itemsRaw = data.items || data.data || [];
+          state.pdf_url = data.pdf_url || data.pdfUrl || "";
+        }
         setPdfLink(state.pdf_url);
 
-        if(data.updated){
+        if(!Array.isArray(data) && data.updated){
           $("updatedSpan").textContent = " · actualizado: " + data.updated;
         }
 
-        state.items = (data.items||[]).slice().sort(function(a,b){
-          return (a.n||0) - (b.n||0);
-        }).map(function(it){
-          it._h = itemHaystack(it);
-          return it;
-        });
+        state.items = (itemsRaw||[])
+          .map(canonItem)
+          .filter(function(it){ return it && it.n != null; })
+          .slice()
+          .sort(function(a,b){ return (a.n||0) - (b.n||0); })
+          .map(function(it){ it._h = itemHaystack(it); return it; });
 
         // initial query
         var qp = parseQ();
