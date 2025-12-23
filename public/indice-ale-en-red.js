@@ -109,7 +109,7 @@
       if(it.vuelta) meta.push('<span class="pill">🧭 ' + esc(it.vuelta) + '</span>');
       meta.push('<span class="pill">#' + it.n + '</span>');
 
-      var tags = (it.tags||[]).slice(0, 14).map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+      var tags = (it.tags||[]).map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
 
       var actions = [];
       actions.push('<a class="btn ok" href="' + esc(yt) + '" target="_blank" rel="noopener">▶︎ YouTube</a>');
