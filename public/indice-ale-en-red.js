@@ -14,7 +14,7 @@
     return 'https://www.youtube.com/results?search_query=' + encodeURIComponent('Alejandra Casado en red ' + n);
   }
 
-  var state = { data:null, items:[], view:[] };
+  var state = { data:null, items:[], view:[], pdf_url:'' };
 
   function loadData(){
     // 1) Try fetch (normal hosting)
@@ -36,6 +36,8 @@
     state.items = (state.data.items || []).map(function(it){
       return {
         n: it.n,
+        raw_title: it.title || '',
+        title_display: 'Alejandra Casado EN RED (' + it.n + ')',
         title: it.title || ('Alejandra Casado en Red ' + it.n),
         date_raw: it.date_raw || '',
         date: it.date || '',
@@ -44,8 +46,11 @@
         tags: Array.isArray(it.tags)? it.tags : [],
         youtube_url: it.youtube_url || '',
         transcripcion_url: it.transcripcion_url || '',
+        pdf_page: it.pdf_page || null
       };
     });
+    state.pdf_url = (state.data.pdf_url || '').trim();
+
     // init UI
     var qEl = $('q'); var countEl=$('count');
     qEl.value = parseQuery();
@@ -65,11 +70,13 @@
   function filter(q){
     var nq = norm(q);
     if(!nq){
-      return state.items.slice(0, 150);
+      return state.items;
     }
     return state.items.filter(function(it){
       var hay = [
         it.n,
+        it.raw_title,
+        it.title_display,
         it.title,
         it.date_raw,
         it.date,
@@ -78,7 +85,13 @@
         (it.tags||[]).join(' ')
       ].join(' ');
       return norm(hay).indexOf(nq) !== -1;
-    }).slice(0, 150);
+    });
+  }
+
+  function pdfLink(it){
+    if(!state.pdf_url) return '';
+    if(it.pdf_page) return state.pdf_url + '#page=' + encodeURIComponent(it.pdf_page);
+    return state.pdf_url;
   }
 
   function render(list){
@@ -92,6 +105,8 @@
     list.forEach(function(it){
       var yt = it.youtube_url || youtubeFallback(it.n);
       var tr = it.transcripcion_url || '';
+      var pdf = pdfLink(it);
+
       var meta = [];
       if(it.date_raw) meta.push('<span class="pill">📅 ' + esc(it.date_raw) + '</span>');
       if(it.metrics) meta.push('<span class="pill">⚙️ ' + esc(it.metrics) + '</span>');
@@ -103,12 +118,14 @@
       var actions = [];
       actions.push('<a class="btn ok" href="' + esc(yt) + '" target="_blank" rel="noopener">▶︎ YouTube</a>');
       actions.push('<a class="btn" href="' + esc(tr || '#') + '" target="_blank" rel="noopener" ' + (tr? '' : 'aria-disabled="true" class="btn disabled"') + '>' + (tr? '📝 Transcripción' : '📝 Transcripción (no disponible)') + '</a>');
+      actions.push('<a class="btn warn ' + (pdf? '' : 'disabled') + '" href="' + esc(pdf || '#') + '" target="_blank" rel="noopener">📄 Abrir PDF</a>');
+
       var card = document.createElement('div');
       card.className='card';
       card.innerHTML =
         '<div class="head">' +
           '<div class="hleft">' +
-            '<div><a href="' + esc(yt) + '" target="_blank" rel="noopener"><b>' + esc(it.title) + '</b></a></div>' +
+            '<div><a href="' + esc(yt) + '" target="_blank" rel="noopener"><b>' + esc(it.title_display || it.title) + '</b></a></div>' +
             '<div class="meta">' + meta.join('') + '</div>' +
           '</div>' +
           '<div class="actions">' + actions.join('') + '</div>' +
