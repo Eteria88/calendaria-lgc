@@ -65,7 +65,7 @@
   function filter(q){
     var nq = norm(q);
     if(!nq){
-      return state.items.slice(0, 120);
+      return state.items.slice(0, 150);
     }
     return state.items.filter(function(it){
       var hay = [
@@ -78,7 +78,7 @@
         (it.tags||[]).join(' ')
       ].join(' ');
       return norm(hay).indexOf(nq) !== -1;
-    }).slice(0, 120);
+    }).slice(0, 150);
   }
 
   function render(list){
