@@ -65,7 +65,7 @@
   function filter(q){
     var nq = norm(q);
     if(!nq){
-      return state.items.slice(0, 60);
+      return state.items.slice(0, 120);
     }
     return state.items.filter(function(it){
       var hay = [
