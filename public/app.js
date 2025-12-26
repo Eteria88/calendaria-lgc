@@ -190,7 +190,7 @@ function fmtDate(d){
             else if(d === 28){ showAnillo = true; logicalDay = 363; }
             else if(d === 29){ showAnillo = true; logicalDay = 364; }
             else if(d === 30){ showAnillo = true; logicalDay = 365; }
-            else if(d === 31){ showAnillo = true; logicalDay = 365; }
+            else if(d === 31){ showAnillo = true; logicalDay = 366; }
           }
         }
 
@@ -215,38 +215,157 @@ function fmtDate(d){
           if(blockDaySpan && blockDaySpan.parentElement){
             blockDaySpan.parentElement.style.display = 'none';
           }
+// Render por cajas (como PDF): 353 al centro, 354 arriba (Día 2), etc.
+var grid = document.getElementById('anilloGrid');
+if(grid){
+  var dowMap = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+  var startDay = leap ? 18 : 19;            // 353 (Día 1) arranca 18/12 si bisiesto, 19/12 si no
+  var maxSeq = (logicalDay == null ? 0 : (logicalDay - 352));  // 353->1 ... 365->13
 
-          // 353 permanece estático en el centro.
-          // Las marcas 354–365 se van activando progresivamente
-          // y, una vez activadas (día lógico alcanzado), quedan visibles.
-          var maxDay = (logicalDay == null ? 0 : logicalDay);
-          var ticks = anilloPlane.querySelectorAll('.anilloTick[data-day]');
-          ticks.forEach(function(el){
-            var dayAttr = el.getAttribute('data-day');
-            var day = dayAttr ? parseInt(dayAttr, 10) : 0;
-            if(day && day <= maxDay){
-              el.classList.remove('anilloTick--inactive');
-            }else{
-              el.classList.add('anilloTick--inactive');
-            }
-            if(day && day === maxDay){
-              el.classList.add('anilloTick--active');
-            }else{
-              el.classList.remove('anilloTick--active');
-            }
-          });
+  // JDN del 0001-01-01 (Juliano) para convertir a Día Solar (misma convención del header)
+  var jJulEpochLocal = jdnJ(1,1,1);
 
-          var lines = anilloPlane.querySelectorAll('.anilloLine[data-day]');
-          lines.forEach(function(el){
-            var dayAttr = el.getAttribute('data-day');
-            var day = dayAttr ? parseInt(dayAttr, 10) : 0;
-            if(day && day <= maxDay){
-              el.classList.remove('anilloLine--inactive');
-            }else{
-              el.classList.add('anilloLine--inactive');
-            }
-          });
-        }else{
+  grid.querySelectorAll('.anBox[data-seq]').forEach(function(box){
+    var seq = parseInt(box.getAttribute('data-seq')||'0',10);
+    if(!seq) return;
+
+    // Fecha gregoriana dentro del tramo del Anillo
+    var date = dt(y, 12, startDay + (seq-1)); // UTC
+    var mm = String(date.getUTCMonth()+1).padStart(2,'0');
+    var dd = String(date.getUTCDate()).padStart(2,'0');
+    var dm = dd + '/' + mm;
+
+    // Día solar para esa fecha (Gregoriano moderno)
+    var jdn = jdnG(date.getUTCFullYear(), date.getUTCMonth()+1, date.getUTCDate());
+    var solar = jdn - jJulEpochLocal + 1;
+
+    // Header
+    var lbl = box.querySelector('.anBoxHead .lbl');
+    var dmEl = box.querySelector('.anBoxHead .dm');
+    var solEl = box.querySelector('.anBoxHead .solar');
+    var dowEl = box.querySelector('.anBoxHead .dow');
+    if(lbl) lbl.textContent = 'Día ' + seq + ':';
+    if(dmEl) dmEl.textContent = dm;
+    if(solEl) solEl.textContent = String(solar);
+    if(dowEl) dowEl.textContent = dowMap[date.getUTCDay()] || '';
+
+    // Frecuencia en grande: se “desbloquea” al transitar esa fecha
+    var freq = 352 + seq;
+    var freqEl = box.querySelector('.anBoxFreq');
+    if(freqEl){
+      freqEl.textContent = (seq <= maxSeq ? String(freq) : '—');
+    }
+
+    // Estados visuales
+    box.classList.remove('anBox--active','anBox--future');
+    if(seq === maxSeq) box.classList.add('anBox--active');
+    if(seq > maxSeq) box.classList.add('anBox--future');
+  // Caja extra (solo años bisiestos): Día 14 (31/12) · Frecuencia 366
+  var leapWrap = document.getElementById('anilloLeapWrap');
+  var leapBox  = document.getElementById('anilloLeapBox');
+  if(leapWrap && leapBox){
+    if(leap){
+      leapWrap.style.display = 'flex';
+      var date14 = dt(y, 12, 31);
+      var mm14 = String(date14.getUTCMonth()+1).padStart(2,'0');
+      var dd14 = String(date14.getUTCDate()).padStart(2,'0');
+      var dm14 = dd14 + '/' + mm14;
+
+      var jdn14 = jdnG(date14.getUTCFullYear(), date14.getUTCMonth()+1, date14.getUTCDate());
+      var solar14 = jdn14 - jJulEpochLocal + 1;
+
+      var lbl14 = leapBox.querySelector('.anBoxHead .lbl');
+      var dmEl14 = leapBox.querySelector('.anBoxHead .dm');
+      var solEl14 = leapBox.querySelector('.anBoxHead .solar');
+      var dowEl14 = leapBox.querySelector('.anBoxHead .dow');
+      if(lbl14) lbl14.textContent = 'Día 14:';
+      if(dmEl14) dmEl14.textContent = dm14;
+      if(solEl14) solEl14.textContent = String(solar14);
+      if(dowEl14) dowEl14.textContent = dowMap[date14.getUTCDay()] || '';
+
+      var freqEl14 = leapBox.querySelector('.anBoxFreq');
+      if(freqEl14){
+        freqEl14.textContent = (maxSeq >= 14 ? '366' : '—');
+      }
+
+      leapBox.classList.remove('anBox--active','anBox--future');
+      if(maxSeq === 14) leapBox.classList.add('anBox--active');
+      if(maxSeq < 14)  leapBox.classList.add('anBox--future');
+    }else{
+      leapWrap.style.display = 'none';
+    }
+  }
+
+
+  });
+
+  // Zoom en celular: tocar una caja abre el detalle completo (encabezado + frecuencia)
+  var modal = document.getElementById('anilloModal');
+  if(modal && !modal.dataset.bound){
+    var closeBtn = modal.querySelector('.anModalClose');
+    var l1 = modal.querySelector('.anModalLine1');
+    var solarSpan = modal.querySelector('.anModalLine2 .solar');
+    var dowSpan = modal.querySelector('.anModalLine2 .dow');
+    var freqBig = modal.querySelector('.anModalFreq');
+
+    function closeModal(){
+      modal.classList.remove('isOpen');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    function openFromBox(box){
+      var isMobile = (window.matchMedia && window.matchMedia('(max-width: 520px)').matches);
+      if(!isMobile) return;
+
+      var lbl = (box.querySelector('.anBoxHead .lbl')||{}).textContent || '';
+      var dm  = (box.querySelector('.anBoxHead .dm')||{}).textContent || '';
+      var sol = (box.querySelector('.anBoxHead .solar')||{}).textContent || '';
+      var dow = (box.querySelector('.anBoxHead .dow')||{}).textContent || '';
+      var freq= (box.querySelector('.anBoxFreq')||{}).textContent || '';
+
+      if(l1) l1.textContent = (lbl.trim() + ' ' + dm.trim()).trim();
+      if(solarSpan) solarSpan.textContent = sol.trim();
+      if(dowSpan) dowSpan.textContent = dow.trim();
+      if(freqBig) freqBig.textContent = freq.trim();
+
+      modal.classList.add('isOpen');
+      modal.setAttribute('aria-hidden','false');
+    }
+
+    if(closeBtn) closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){
+      if(e.target === modal || (e.target && e.target.classList && e.target.classList.contains('anModalBackdrop'))){
+        closeModal();
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') closeModal();
+    });
+
+    grid.addEventListener('click', function(e){
+      var box = e.target && e.target.closest ? e.target.closest('.anBox') : null;
+      if(!box) return;
+      openFromBox(box);
+    });
+    // También permitir "zoom" tocando la caja extra (Día 14 / 366)
+    var leapBox2 = document.getElementById('anilloLeapBox');
+    if(leapBox2){
+      leapBox2.addEventListener('click', function(e){
+        e.stopPropagation();
+        openFromBox(leapBox2);
+      });
+    }
+
+
+
+    modal.dataset.bound = '1';
+  }
+
+}
+}else{
+          // Cerrar modal si salimos del Anillo
+          var _am = document.getElementById('anilloModal');
+          if(_am){ _am.classList.remove('isOpen'); _am.setAttribute('aria-hidden','true'); }
           cardPlane.style.display = '';
           anilloPlane.style.display = 'none';
 
@@ -310,7 +429,7 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
           else if(d === 28){ showAnillo = true; logicalDay = 363; }
           else if(d === 29){ showAnillo = true; logicalDay = 364; }
           else if(d === 30){ showAnillo = true; logicalDay = 365; }
-          else if(d === 31){ showAnillo = true; logicalDay = 365; }
+          else if(d === 31){ showAnillo = true; logicalDay = 366; }
         }
       }
       var idx=((doyVal-1)%16);
@@ -352,27 +471,17 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       // Ajustes de encabezado para el Anillo de Fuego
       if(showAnillo && logicalDay != null){
         var isLeapYear = isL(Rf.y);
-        var isLastLeapDay = isLeapYear && Rf.m===12 && Rf.d===31;
+	        var isLastLeapDay = isLeapYear && Rf.m===12 && Rf.d===31;
 
-        // Frecuencia y Día dentro del Anillo (solo si no es 31/12 de año bisiesto)
-        if(!isLastLeapDay){
-          // Etiqueta y valor de Frecuencia (353–365)
-          el=$('#calDayLabel'); if(el) el.textContent='Frecuencia';
-          el=$('#calDay'); if(el) el.textContent = logicalDay;
-
-          // Día dentro del Anillo (1–13)
-          var freqIndex = logicalDay - 352;
-          var anilloDayBlock=$('#anilloDayBlock');
-          var anilloDayEl=$('#anilloSeqDay');
-          if(anilloDayBlock) anilloDayBlock.style.display='';
-          if(anilloDayEl && freqIndex>=1) anilloDayEl.textContent=freqIndex;
-        }else{
-          // 31/12 de año bisiesto: ocultar Frecuencia y Día
-          el=$('#calDayLabel'); if(el) el.textContent='';
-          el=$('#calDay'); if(el) el.textContent='—';
-          var anilloDayBlock=$('#anilloDayBlock');
-          if(anilloDayBlock) anilloDayBlock.style.display='none';
-        }
+	        // Ocultar el bloque superior "Frecuencia / Día" (antes era Paso + valor)
+	        // porque ahora esa info vive dentro de cada cuadro del Anillo.
+	        var calDayLabelEl = $('#calDayLabel');
+	        if(calDayLabelEl && calDayLabelEl.parentElement){
+	          calDayLabelEl.parentElement.style.display='none';
+	        }
+	        // Ocultar también el bloque "Día" superior del Anillo (ya está en los cuadros)
+	        var anilloDayBlock = $('#anilloDayBlock');
+	        if(anilloDayBlock) anilloDayBlock.style.display='none';
 
         // Ocultar bloques de Cardinalidad / Columna / Memoria
         var cardBlock=$('#calCardBlock');
@@ -414,6 +523,11 @@ var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().
       }else{
         // Fuera del Anillo: restaurar etiqueta y ocultar bloque Día del Anillo
         el=$('#calDayLabel'); if(el) el.textContent='Paso';
+	        // Re-mostrar el bloque de Paso (calDayLabel + calDay)
+	        var calDayLabelEl2 = $('#calDayLabel');
+	        if(calDayLabelEl2 && calDayLabelEl2.parentElement){
+	          calDayLabelEl2.parentElement.style.display='';
+	        }
         var anilloDayBlock2=$('#anilloDayBlock');
         if(anilloDayBlock2) anilloDayBlock2.style.display='none';
         var cardBlock2=$('#calCardBlock');
@@ -443,41 +557,6 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#sb_greg'); if(el) el.textContent=Math.max(0,gFrom-1);
       el=$('#sb_greg_jdn_b'); if(el) el.textContent=j;
       el=$('#sb_greg_alt'); if(el) el.textContent=Math.max(0,gFrom-1);
-      // Información extra del Anillo para el 31/12 de años bisiestos
-      var extraBox=document.getElementById('anilloExtra');
-      if(extraBox){
-        // Mostrar sólo cuando estamos en 31/12 de un año bisiesto dentro del Anillo
-        if(showAnillo && isL(Rf.y) && Rf.m===12 && Rf.d===31){
-          extraBox.style.display='';
-          var extraDate=document.getElementById('anilloExtraDate');
-          var extraDay=document.getElementById('anilloExtraDay');
-          var extraSolar=document.getElementById('anilloExtraSolar');
-
-          // Fecha en formato dd/mm
-          if(extraDate){
-            var dd2 = String(Rf.d).padStart(2,'0');
-            var mm2 = String(Rf.m).padStart(2,'0');
-            extraDate.textContent = dd2+'/'+mm2;
-          }
-
-          // Día 14 del horizonte de sucesos
-          if(extraDay){
-            extraDay.textContent = 'Día 14';
-          }
-
-          // Días solares + día de la semana (Do, Lu, Ma, Mi, Ju, Vi, Sa)
-          if(extraSolar){
-            var dowMap = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
-            var dow = ref.getUTCDay(); // 0=Domingo
-            var dowStr = dowMap[dow] || '';
-            extraSolar.textContent = String(totalSolar)+' '+dowStr;
-          }
-        }else{
-          extraBox.style.display='none';
-        }
-      }
-
-
       var Q=dt(2012,10,14), qd=Math.floor((ref-Q)/ms), qI=Math.floor((qd-1)/39)+1, qD=((qd-1)%39)+1;
       var bricks = qd>0 ? Math.floor((qd-1)/3)+1 : 0;
       el=$('#qDays'); if(el) el.textContent=qd;

@@ -92,6 +92,8 @@
       var wordsCount = document.getElementById('wordsCount');
       var totalSum = document.getElementById('totalSum');
       var tfTotal = document.getElementById('tfTotal');
+      var lupaSum = document.getElementById('lupaSum');
+      var tfLupa = document.getElementById('tfLupa');
       if(!tb) return;
 
       tb.innerHTML='';
@@ -100,6 +102,8 @@
         if(wordsCount) wordsCount.textContent='Palabras: —';
         if(totalSum) totalSum.textContent='Total frase: —';
         if(tfTotal) tfTotal.textContent='—';
+        if(lupaSum) lupaSum.textContent='Lupa: —';
+        if(tfLupa) tfLupa.textContent='—';
         status('ok (vacío)', true);
         return;
       }
@@ -123,6 +127,13 @@
       if(wordsCount) wordsCount.textContent='Palabras: '+words.length;
       if(totalSum) totalSum.textContent='Total frase: '+totalFrase;
       if(tfTotal) tfTotal.textContent=totalFrase;
+      // Lupa = Total × 1,21
+      var lupa = totalFrase * 1.21;
+      var lupaTxt;
+      try{ lupaTxt = lupa.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+      catch(e){ lupaTxt = (Math.round(lupa*100)/100).toFixed(2); }
+      if(lupaSum) lupaSum.textContent='Lupa: '+lupaTxt;
+      if(tfLupa) tfLupa.textContent=lupaTxt;
       status('ok', true);
     }
 
