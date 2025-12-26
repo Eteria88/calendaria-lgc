@@ -130,8 +130,8 @@
       // Lupa = Total × 1,21
       var lupa = totalFrase * 1.21;
       var lupaTxt;
-      try{ lupaTxt = lupa.toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 2}); }
-      catch(e){ lupaTxt = (Math.round(lupa*100)/100).toString(); }
+      try{ lupaTxt = lupa.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+      catch(e){ lupaTxt = (Math.round(lupa*100)/100).toFixed(2); }
       if(lupaSum) lupaSum.textContent='Lupa: '+lupaTxt;
       if(tfLupa) tfLupa.textContent=lupaTxt;
       status('ok', true);
