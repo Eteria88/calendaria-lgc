@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Índice / Buscador · Alejandra Casado EN RED</title>
+  <style>
+    :root{
+      --bg:#0b0d10; --panel:#101720; --text:#e6f1ff; --muted:#9fb3c8; --ol:#223040;
+      --chip:#16202c; --chip2:#0e141c; --ok:#7be3a1; --warn:#f1c56b;
+      --tap:42px; --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg); color:var(--text)}
+    .wrap{max-width:980px; margin:0 auto; padding:18px 14px 40px}
+    .top{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+    .title{display:flex; flex-direction:column; gap:4px}
+    h1{margin:0; font-size:18px; letter-spacing:.2px}
+    .sub{color:var(--muted); font-size:12px; line-height:1.35}
+    .bar{display:flex; gap:10px; align-items:center; width:100%; margin-top:12px}
+    .search{flex:1; display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--ol); border-radius:var(--radius); padding:10px 12px}
+    .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:14px}
+    .pill{display:inline-flex; align-items:center; gap:8px; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:8px 10px; color:var(--muted); font-size:12px}
+    .btn{display:inline-flex; align-items:center; justify-content:center; min-height:var(--tap);
+      padding:8px 12px; border-radius:12px; border:1px solid var(--ol);
+      background:var(--chip2); color:var(--text); text-decoration:none; font-size:13px; gap:8px;
+    }
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:translateY(1px)}
+    .btn.disabled{opacity:.45; pointer-events:none}
+    .btn.ok{border-color:rgba(123,227,161,.35)}
+    .btn.warn{border-color:rgba(241,197,107,.35)}
+    .grid{margin-top:14px; display:flex; flex-direction:column; gap:10px}
+    .card{background:var(--panel); border:1px solid var(--ol); border-radius:16px; padding:12px}
+    .head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap}
+    .hleft{min-width:240px}
+    .hleft a{color:var(--text); text-decoration:none}
+    .hleft a:hover{text-decoration:underline}
+    .meta{margin-top:6px; display:flex; flex-wrap:wrap; gap:8px}
+    .meta .pill{background:transparent}
+    .tags{margin-top:10px; display:flex; flex-wrap:wrap; gap:6px}
+    .tag{display:inline-flex; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:6px 9px; font-size:12px; color:var(--muted)}
+    .actions{display:flex; gap:8px; flex-wrap:wrap}
+    .note{margin-top:12px; color:var(--muted); font-size:12px}
+    .err{margin-top:12px; padding:12px; border:1px solid rgba(241,197,107,.35); background:rgba(241,197,107,.06); border-radius:14px; color:var(--muted); font-size:13px}
+    .small{font-size:12px; color:var(--muted)}
+    @media (max-width:540px){
+      .wrap{padding:14px 12px 32px}
+      .search{padding:10px}
+      .btn{width:100%}
+      .actions{width:100%}
+      .actions .btn{flex:1}
+      .hleft{min-width:unset}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">
+        <h1>Índice / Buscador · Alejandra Casado EN RED</h1>
+        <div class="sub">Buscador por palabra, #tag, número, fecha o “vuelta”.<br/>Los links apuntan a la <b>emisión (YouTube)</b> y a la <b>Transcripción (Telegram)</b> cuando está disponible.</div>
+      </div>
+      <a class="btn" href="./index.html">← Volver</a>
+    </div>
+
+    <div class="bar">
+      <div class="search">
+        <span class="small">🔎</span>
+        <input id="q" type="search" placeholder="Buscar… (ej: mente, #respiración, 80, 2022, vuelta 23)" autocomplete="off" />
+        <span id="count" class="pill">—</span>
+      </div>
+    </div>
+
+    <div id="err" class="err" style="display:none"></div>
+    <div id="grid" class="grid"></div>
+
+    <div class="note">
+      <div><b>PDF</b>: si pegás el link oficial en el JSON (<span class="small">pdf_url</span>), se activa “Abrir PDF” y abre en la página del episodio.</div>
+      <div class="small">Tip: en iPhone, si no actualiza, cerrá y abrí la pestaña (cache).</div>
+    </div>
+  </div>
+
+  <!-- Fallback: datos embebidos (sirve incluso en GitHub preview / file://) -->
+  <script src="./data/ale_en_red_index.js"></script>
+  <script src="./indice-ale-en-red.js"></script>
+</body>
+</html>
