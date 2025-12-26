@@ -102,7 +102,7 @@
         if(wordsCount) wordsCount.textContent='Palabras: —';
         if(totalSum) totalSum.textContent='Total frase: —';
         if(tfTotal) tfTotal.textContent='—';
-        if(lupaSum) lupaSum.textContent='Lupa (×1,21): —';
+        if(lupaSum) lupaSum.textContent='Lupa: —';
         if(tfLupa) tfLupa.textContent='—';
         status('ok (vacío)', true);
         return;
@@ -132,7 +132,7 @@
       var lupaTxt;
       try{ lupaTxt = lupa.toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 2}); }
       catch(e){ lupaTxt = (Math.round(lupa*100)/100).toString(); }
-      if(lupaSum) lupaSum.textContent='Lupa (×1,21): '+lupaTxt;
+      if(lupaSum) lupaSum.textContent='Lupa: '+lupaTxt;
       if(tfLupa) tfLupa.textContent=lupaTxt;
       status('ok', true);
     }
