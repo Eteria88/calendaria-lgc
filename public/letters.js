@@ -100,7 +100,7 @@
       if(phrase===''){
         if(lettersCount) lettersCount.textContent='Letras: —';
         if(wordsCount) wordsCount.textContent='Palabras: —';
-        if(totalSum) totalSum.textContent='Total frase: —';
+        if(totalSum) totalSum.textContent='Frecuencia resultante: —';
         if(tfTotal) tfTotal.textContent='—';
         if(lupaSum) lupaSum.textContent='Lupa: —';
         if(tfLupa) tfLupa.textContent='—';
@@ -125,7 +125,7 @@
       }
       if(lettersCount) lettersCount.textContent='Letras: '+totalLetras;
       if(wordsCount) wordsCount.textContent='Palabras: '+words.length;
-      if(totalSum) totalSum.textContent='Total frase: '+totalFrase;
+      if(totalSum) totalSum.textContent='Frecuencia resultante: '+totalFrase;
       if(tfTotal) tfTotal.textContent=totalFrase;
       // Lupa = Total × 1,21
       var lupa = totalFrase * 1.21;
