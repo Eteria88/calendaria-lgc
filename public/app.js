@@ -5,6 +5,7 @@
     status('estado: JS cargado', true);
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
+    var lastRef=null;
     function dt(y,m,d){
       // Normaliza correctamente años 1–99 evitando el offset 1900+ en algunos motores JS
       // y permite fechas como 0001-01-01 sin corrimientos implícitos.
@@ -50,19 +51,52 @@ function fmtDate(d){
       var tbl=$('#calog'); if(!tbl) return;
       var tbody=tbl.querySelector('tbody'); if(!tbody) return;
       tbody.innerHTML='';
-      var y0=2012,y1=2028,yr=ref.getUTCFullYear(),LGC=dt(2015,10,15),INS=dt(2012,10,14),C={};
+      var yr=ref.getUTCFullYear();
+      var futureIn=$('#calogFuture');
+      var futureYears=80;
+      if(futureIn){
+        var fv0=parseInt(futureIn.value,10);
+        if(!isNaN(fv0)) futureYears=fv0;
+      }
+      var y0=2012;
+      var y1=Math.max(2028, yr + futureYears);
+
+      // Actualiza mini UI del rango
+      var fv=$('#calogFutureVal'); if(fv) fv.textContent=futureYears;
+      var ft=$('#calogFutureTo'); if(ft) ft.textContent='→ '+y1;
+
+      var LGC=dt(2015,10,15),INS=dt(2012,10,14),C={};
       C[2012]=Math.floor((LGC-INS)/ms); C[2013]=Math.floor((dt(2016,1,1)-LGC)/ms);
       for(var y=2014;y<=y1;y++){ C[y]=C[y-1]+yLen(y-1); }
-      var V={}, d=dOY(ref); V[yr]=d; for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); } if(yr>=2013) V[2012]=V[2013]-1018;
-      var s=0;
+
+      // Variable: se calcula hacia atrás y hacia adelante desde el año de referencia
+      var V={}, d=dOY(ref); V[yr]=d;
+      for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); }
+      if(yr>=2013) V[2012]=V[2013]-1018;
+      for(y=yr+1;y<=y1;y++){ V[y]=V[y-1]-yLen(y-1); }
+
+      var s=0, curRow=null;
       for(y=y1;y>=y0;y--){
         var tr=document.createElement('tr');
+        if(y===yr) tr.className='calog-current';
         var cells=[''+y, (V.hasOwnProperty(y)?V[y]:''), (C[y]||0), apIdx(y)];
-        for(var i2=0;i2<cells.length;i2++){ var td=document.createElement('td'); td.textContent=cells[i2]; tr.appendChild(td); }
+        for(var i2=0;i2<cells.length;i2++){
+          var td=document.createElement('td'); td.textContent=cells[i2]; tr.appendChild(td);
+        }
         if(V.hasOwnProperty(y) && y<=yr) s+=V[y];
         tbody.appendChild(tr);
+        if(y===yr) curRow=tr;
       }
       var sumEl=$('#calogSum'); if(sumEl) sumEl.textContent=s;
+
+      // Centra el año de referencia dentro del scroll (si aplica)
+      var wrap=$('#calogWrap');
+      if(curRow && wrap){
+        try{
+          var target = curRow.offsetTop - (wrap.clientHeight/2) + (curRow.clientHeight/2);
+          wrap.scrollTop = Math.max(0, target);
+        }catch(e){}
+      }
     }
 
     var init=false;
@@ -114,6 +148,7 @@ function fmtDate(d){
       var Db = flex(dFrom); if(!Db){ var tdv = Date.parse(dFrom); if(!isNaN(tdv)){ var tmpd=new Date(tdv); Db={y:tmpd.getUTCFullYear(), m:tmpd.getUTCMonth()+1, d:tmpd.getUTCDate()}; } else { Db=null; } }
 
       var ref = dt(Rf.y, Rf.m, Rf.d);
+      lastRef = ref;
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
 
       
@@ -624,6 +659,10 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
     
 document.addEventListener('DOMContentLoaded', function(){
   up();
+  var calF=document.getElementById('calogFuture');
+  if(calF){
+    calF.addEventListener('input', function(){ if(lastRef) buildCalog(lastRef); });
+  }
   var ids=['ref','refText','dob','dobText'];
   ids.forEach(function(id){
     var el=document.getElementById(id);
