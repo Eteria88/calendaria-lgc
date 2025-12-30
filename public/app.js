@@ -65,8 +65,15 @@ function fmtDate(d){
         var iso = out.getAttribute('data-date-iso') || card.getAttribute('data-date-iso');
         var d = isoToDate(iso);
         if(!d){ out.textContent='—'; return; }
-        var days=Math.floor((ref - d)/ms);
-        out.textContent = Math.max(0, days);
+        var diff=Math.floor((ref - d)/ms);
+        if(diff>=0){
+          out.textContent = diff;
+          out.title = diff+' días transcurridos';
+        }else{
+          var faltan = -diff;
+          out.textContent = faltan;
+          out.title = 'Faltan '+faltan+' días';
+        }
       });
     }
 
