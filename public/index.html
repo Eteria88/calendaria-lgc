@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="es"><head>
-<meta charset="utf-8"/>
-<link href="/favicon.png" rel="icon" type="image/png"/>
-<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Calendaria</title>
-<meta content="no-store" http-equiv="Cache-Control"/>
+<meta http-equiv="Cache-Control" content="no-store">
 <style>
 :root{--accent:#ffd166;--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -37,7 +36,7 @@ th:first-child,td:first-child{text-align:left}
 .chips{display:flex;gap:8px;margin-top:6px}.chip{border:1px solid var(--ol);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04)}
 .anchors-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
 .a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02)}
-.a-dot{width:10px;height:10px;border-radius:50%;background:#7cc7ff;box-shadow:0 0 10px #7cc7ff}
+.a-dot{width:10px;height:10px;border-radius:50%}
 .plane{position:relative;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
 @media(min-width:480px){.plane{height:240px}} @media(min-width:768px){.plane{height:260px}} @media(min-width:1024px){.plane{height:300px}}
 .planeGrid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
@@ -356,12 +355,19 @@ body.noScroll{overflow:hidden}
   .anModal{ display:none !important; }
 }
 
+
+    .calog-controls{margin:8px 0 10px;display:flex;flex-direction:column;gap:6px}
+    .calog-controls input[type=range]{width:100%}
+    .calog-wrap{max-height:360px}
+    #calog thead th{position:sticky;top:0;background:var(--bg);z-index:2}
+    #calog tr.calog-current td{background:rgba(255,255,255,.06)}
+
 </style>
-<!-- Splash Landing v3 (forzado) + mobile responsive -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&amp;display=swap" rel="stylesheet"/>
-<style id="splash-spiral-css">
+  <!-- Splash Landing v3 (forzado) + mobile responsive -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+  <style id="splash-spiral-css">
     .splash{position:fixed;inset:0;display:grid;place-items:center;background:
       radial-gradient(1200px 800px at 60% -10%, rgba(255,200,120,.07), transparent 60%),
       radial-gradient(1000px 900px at 10% 110%, rgba(120,180,255,.07), transparent 60%),
@@ -471,282 +477,331 @@ body.noScroll{overflow:hidden}
 }
 
 </style>
-<!-- Vercel Web Analytics -->
-<script defer="" src="/_vercel/insights/script.js"></script>
-<link href="/manifest.webmanifest" rel="manifest"/>
-<meta content="#0b0d10" name="theme-color"/>
-<meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="Calendaria" name="apple-mobile-web-app-title"/>
-<link href="/icons/calendaria-512.png" rel="apple-touch-icon"/>
+
+
+  <!-- Vercel Web Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
+  <link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0b0d10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calendaria">
+<link rel="apple-touch-icon" href="/icons/calendaria-512.png">
 </head><body>
-<div aria-label="Portada Calendaria" class="splash" id="splash" role="dialog">
-<div class="splash__inner">
-<div class="brand" id="brand">
-<div aria-hidden="true" class="brand__layout" id="brandLayout">
-<div class="row" data-row="0">CALENDARIA</div>
-<div class="row" data-row="1">LGC</div>
-</div>
-<div aria-hidden="true" class="brand__stage" id="brandStage"></div>
-</div>
-<div><button class="enter" disabled="" id="enterBtn">Entrar</button></div>
-</div>
-</div>
+
+  <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
+    <div class="splash__inner">
+      <div id="brand" class="brand">
+        <div id="brandLayout" class="brand__layout" aria-hidden="true">
+          <div class="row" data-row="0">CALENDARIA</div>
+          <div class="row" data-row="1">LGC</div>
+        </div>
+        <div id="brandStage" class="brand__stage" aria-hidden="true"></div>
+      </div>
+      <div><button id="enterBtn" class="enter" disabled>Entrar</button></div>
+    </div>
+  </div>
+
 <div class="wrap">
-<div aria-hidden="true" class="mobileNav" id="mobileNav">
-<div class="mobileNavPanel">
-<div class="mobileNavHeader">
-<span>Menú</span>
-<button aria-label="Cerrar" class="closeBtn" id="closeMenu">×</button>
-</div>
-<nav class="mobileList">
-<a class="mnav-link active" href="./">Inicio</a>
-<a class="mnav-link" href="./range.html">Días entre fechas</a>
-<a class="mnav-link" href="./letters.html">Letras a números</a> <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
-<a class="mnav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
-</nav>
-</div>
-<div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-</div>
-<header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button><div class="header-actions"><a href="/?splash=1" id="toSplashLink">Volver a portada</a></div></header>
-<div class="layout">
-<aside class="sidenav">
-<nav>
-<div class="nav-title">Menú</div>
-<a class="nav-link active" href="./">Inicio</a>
-<a class="nav-link" href="./range.html">Días entre fechas</a>
-<a class="nav-link" href="./letters.html">Letras a números</a> <a class="nav-link" href="./mapa/">Mapa y códigos</a>
-<a class="nav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
-</nav>
-</aside>
-<main>
-<div class="status" id="dbg">estado: cargando…</div>
-<section class="card top-card">
-<div class="elementBadge" title="Hydrogen — 1">
-<img alt="Hydrogen element tile" id="elementTile" src="./hydrogen.png"/>
-</div>
-<div style="position:absolute;top:110px;right:16px;">
-<a class="badge" href="./periodic.html?el=H" id="openPeriodicLink" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
-</div>
-<div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-<div>
-<div class="badge" id="apPhaseBadge">—</div>
-<div class="small" id="calCycleLabel" style="margin-bottom:14px"> </div>
-<div style="display:flex;gap:12px;flex-wrap:wrap">
-<div id="calCardBlock"><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
-<div id="calStepBlock"><div class="small">Columna</div><div class="mono" id="calStep">—</div></div>
-<div><div class="small" id="calDayLabel">Paso</div><div class="mono" id="calDay" style="font-size:20px">—</div></div>
-<div id="anilloDayBlock" style="display:none"><div class="small">Día</div><div class="mono" id="anilloSeqDay" style="font-size:20px">—</div></div>
-<div id="calMemBlock"><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
-<div id="calTurnBlock">
-<div class="small">Vuelta</div>
-<div class="mono" id="calTurn">—</div>
-<div class="small" id="calTurnRange" style="display:none">—</div>
-<div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
-<div style="margin-top:10px">
-</div>
+
+  <div class="mobileNav" id="mobileNav" aria-hidden="true">
+    <div class="mobileNavPanel">
+      <div class="mobileNavHeader">
+        <span>Menú</span>
+        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
+      </div>
+      <nav class="mobileList">
+        <a class="mnav-link active" href="./">Inicio</a>
+        <a class="mnav-link" href="./range.html">Días entre fechas</a>
+        <a class="mnav-link" href="./letters.html">Letras a números</a>      <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
+
+        <a class="mnav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
+      </nav>
+    </div>
+    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
+  </div>
+
+  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
+
+  <div class="layout">
+    <aside class="sidenav">
+      <nav>
+        <div class="nav-title">Menú</div>
+        <a class="nav-link active" href="./">Inicio</a>
+        <a class="nav-link" href="./range.html">Días entre fechas</a>
+        <a class="nav-link" href="./letters.html">Letras a números</a>        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
+
+        <a class="nav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
+      </nav>
+    </aside>
+    <main>
+      <div id="dbg" class="status">estado: cargando…</div>
+
+      <section class="card top-card">
+    <div class="elementBadge" title="Hydrogen — 1">
+      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
+    </div>
+    <div style="position:absolute;top:110px;right:16px;">
+      <a href="./periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+      <div>
+        <div class="badge" id="apPhaseBadge">—</div>
+        <div class="small" id="calCycleLabel" style="margin-bottom:14px">&nbsp;</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div id="calCardBlock"><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
+          <div id="calStepBlock"><div class="small">Columna</div><div class="mono" id="calStep">—</div></div>
+          <div><div class="small" id="calDayLabel">Paso</div><div class="mono" id="calDay" style="font-size:20px">—</div></div>
+          <div id="anilloDayBlock" style="display:none"><div class="small">Día</div><div class="mono" id="anilloSeqDay" style="font-size:20px">—</div></div>
+          <div id="calMemBlock"><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
+          <div id="calTurnBlock">
+            <div class="small">Vuelta</div>
+            <div class="mono" id="calTurn">—</div>
+            <div class="small" id="calTurnRange" style="display:none">—</div>
+            <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
+            <div style="margin-top:10px">
+            </div>
 <!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta </span><span class="mono" id="turnDay">—</span></div> -->
 <!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Paso en cuadrante (1–4) </span><span class="mono" id="blockDay">—</span></div> -->
+          </div>
+        </div>
+      </div>
+      <div id="cardinalPlane" class="plane"><div class="planeGrid">
+        <div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+        <div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+        <div class="cell" id="cellSO" style="grid-area:2/1"><div class="cellInner"><div class="cTitle">SO</div><div class="cRange">1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div>
+          <div class="memRow"><span class="memTag" data-mem="RAM">RAM</span><span class="memTag" data-mem="REM">REM</span><span class="memTag" data-mem="ROM">ROM</span><span class="memTag" data-mem="RUM">RUM</span></div>
+        </div>
+        <div class="cell" id="cellSE" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+      </div></div>
+
+      <div id="anilloPlane" class="plane" style="display:none">
+  <div class="anilloTitle mono">Anillo de Fuego</div>
+
+  <div class="anilloLeapWrap" id="anilloLeapWrap" style="display:none">
+    <div class="anBox anBox--leapOverlay" id="anilloLeapBox" data-seq="14" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 14:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+  </div>
+
+  <div class="anilloGrid" id="anilloGrid">
+    <!-- Fila 1 -->
+    <div class="anBox anBox--d4" data-seq="4" data-align="br">
+      <div class="anBoxHead mono"><span class="lbl">Día 4:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d3" data-seq="3" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 3:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d2" data-seq="2" data-align="t">
+      <div class="anBoxHead mono"><span class="lbl">Día 2:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d13" data-seq="13" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 13:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d12" data-seq="12" data-align="bl">
+      <div class="anBoxHead mono"><span class="lbl">Día 12:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <!-- Fila 2 -->
+    <div class="anBox anBox--d5" data-seq="5" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 5:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--center" data-seq="1" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 1:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">353</div></div>
+    </div>
+
+    <div class="anBox anBox--d11" data-seq="11" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 11:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <!-- Fila 3 -->
+    <div class="anBox anBox--d6" data-seq="6" data-align="tr">
+      <div class="anBoxHead mono"><span class="lbl">Día 6:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d7" data-seq="7" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 7:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d8" data-seq="8" data-align="b">
+      <div class="anBoxHead mono"><span class="lbl">Día 8:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d9" data-seq="9" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 9:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d10" data-seq="10" data-align="tl">
+      <div class="anBoxHead mono"><span class="lbl">Día 10:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-<div class="plane" id="cardinalPlane"><div class="planeGrid">
-<div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9       10       11       12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
-<div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5       6       7       8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
-<div class="cell" id="cellSO" style="grid-area:2/1"><div class="cellInner"><div class="cTitle">SO</div><div class="cRange">1       2       3       4</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div>
-<div class="memRow"><span class="memTag" data-mem="RAM">RAM</span><span class="memTag" data-mem="REM">REM</span><span class="memTag" data-mem="ROM">ROM</span><span class="memTag" data-mem="RUM">RUM</span></div>
-</div>
-<div class="cell" id="cellSE" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13       14       15       16</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
-</div></div>
-<div class="plane" id="anilloPlane" style="display:none">
-<div class="anilloTitle mono">Anillo de Fuego</div>
-<div class="anilloLeapWrap" id="anilloLeapWrap" style="display:none">
-<div class="anBox anBox--leapOverlay" data-align="c" data-seq="14" id="anilloLeapBox">
-<div class="anBoxHead mono"><span class="lbl">Día 14:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-</div>
-<div class="anilloGrid" id="anilloGrid">
-<!-- Fila 1 -->
-<div class="anBox anBox--d4" data-align="br" data-seq="4">
-<div class="anBoxHead mono"><span class="lbl">Día 4:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--d3" data-align="c" data-seq="3">
-<div class="anBoxHead mono"><span class="lbl">Día 3:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--d2" data-align="t" data-seq="2">
-<div class="anBoxHead mono"><span class="lbl">Día 2:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--d13" data-align="c" data-seq="13">
-<div class="anBoxHead mono"><span class="lbl">Día 13:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--d12" data-align="bl" data-seq="12">
-<div class="anBoxHead mono"><span class="lbl">Día 12:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<!-- Fila 2 -->
-<div class="anBox anBox--d5" data-align="c" data-seq="5">
-<div class="anBoxHead mono"><span class="lbl">Día 5:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--center" data-align="c" data-seq="1">
-<div class="anBoxHead mono"><span class="lbl">Día 1:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">353</div></div>
-</div>
-<div class="anBox anBox--d11" data-align="c" data-seq="11">
-<div class="anBoxHead mono"><span class="lbl">Día 11:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<!-- Fila 3 -->
-<div class="anBox anBox--d6" data-align="tr" data-seq="6">
-<div class="anBoxHead mono"><span class="lbl">Día 6:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--d7" data-align="c" data-seq="7">
-<div class="anBoxHead mono"><span class="lbl">Día 7:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--d8" data-align="b" data-seq="8">
-<div class="anBoxHead mono"><span class="lbl">Día 8:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--d9" data-align="c" data-seq="9">
-<div class="anBoxHead mono"><span class="lbl">Día 9:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-<div class="anBox anBox--d10" data-align="tl" data-seq="10">
-<div class="anBoxHead mono"><span class="lbl">Día 10:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
-<div class="anBoxBody"><div class="anBoxFreq">—</div></div>
-</div>
-</div>
-</div>
-</div>
-</section>
+    </div>
+  </section>
+
+
 <div class="card">
-<div class="input-grid">
-<div class="field" style="grid-column:span 6">
-<label class="small" for="dob">Fecha de nacimiento</label>
-<input class="input" id="dob" max="9999-12-31" min="0001-01-01" type="date"/>
-<div class="small">Ingresa la fecha de nacimiento para calcular los días de vida</div>
-<div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
-<div class="mcard" style="flex:1 1 140px">
-<div class="badge">Días de vida</div>
-<div class="mono big" id="lifeDays" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
-</div>
-<div class="mcard" style="flex:1 1 140px">
-<div class="badge">Día solar nativo</div>
-<div class="mono big" id="nativeSolarDay" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
-</div>
-</div>
-</div>
-<div class="field" style="grid-column:span 6">
-<label class="small" for="ref">Fecha de referencia</label>
-<input class="input" id="ref" max="9999-12-31" min="0001-01-01" type="date"/>
-<div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
-<div class="field" style="margin-top:8px">
-<div class="dayNav">
-<button class="btn" id="btnPrevDay" title="Ir al día anterior" type="button"><span class="btnLabelLong">← Día anterior</span><span class="btnLabelShort">Anterior</span></button>
-<button class="btn" id="btnToday" title="Ir a hoy" type="button">Hoy</button>
-<button class="btn" id="btnNextDay" title="Ir al día siguiente" type="button"><span class="btnLabelLong">Día siguiente →</span><span class="btnLabelShort">Siguiente</span></button>
-</div>
-</div>
-</div>
-</div>
-</div>
+    <div class="input-grid">
+      <div class="field" style="grid-column:span 6">
+        <label class="small" for="dob">Fecha de nacimiento</label>
+        <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
+        <div class="small">Ingresa la fecha de nacimiento para calcular los días de vida</div>
+
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
+          <div class="mcard" style="flex:1 1 140px">
+            <div class="badge">Días de vida</div>
+            <div class="mono big" id="lifeDays" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
+          </div>
+          <div class="mcard" style="flex:1 1 140px">
+            <div class="badge">Día solar nativo</div>
+            <div class="mono big" id="nativeSolarDay" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="field" style="grid-column:span 6">
+        <label class="small" for="ref">Fecha de referencia</label>
+        <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
+        <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
+
+        <div class="field" style="margin-top:8px">
+          <div class="dayNav">
+            <button class="btn" id="btnPrevDay" type="button" title="Ir al día anterior"><span class="btnLabelLong">← Día anterior</span><span class="btnLabelShort">Anterior</span></button>
+            <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
+            <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente"><span class="btnLabelLong">Día siguiente →</span><span class="btnLabelShort">Siguiente</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+
+
 <section class="hero">
-<div class="tile">
-<div><h2 style="margin:0;color:#9fb3c8;font-size:14px">Días Solares desde 01·01·0001</h2>
-<div class="small">Fecha de referencia: <span id="refLabel">—</span></div>
-<div class="solarBreak">
-<div class="sb"><div class="h">DÍAS SOLARES</div><div class="v mono" id="sb_total" style="font-size:clamp(16px,5vw,26px)">—</div></div>
-<div class="sb"><div class="h">Días Julianos hasta 04/10/1582</div><div class="v mono" id="sb_jul">—</div><div class="small" style="text-align:center; display:none">JDN 1721424 → 2299160</div></div>
-<div class="sb"><div class="h">Inicio del A-Gregoriano 15/10/1582</div><div class="v mono" id="sb_first_greg">577738</div></div>
-<div class="sb"><div class="h">Días A-Gregorianos</div><div class="v mono" id="sb_greg">—</div><div class="small" style="text-align:center"><span style="display:none">JDN 2299161 → <span class="mono" id="sb_greg_jdn_b">—</span></span></div></div>
+    <div class="tile">
+      <div><h2 style="margin:0;color:#9fb3c8;font-size:14px">Días Solares desde 01·01·0001</h2>
+        <div class="small">Fecha de referencia: <span id="refLabel">—</span></div>
+        <div class="solarBreak">
+          <div class="sb"><div class="h">DÍAS SOLARES</div><div class="v mono" id="sb_total" style="font-size:clamp(16px,5vw,26px)">—</div></div>
+          <div class="sb"><div class="h">Días Julianos hasta 04/10/1582</div><div class="v mono" id="sb_jul">—</div><div class="small" style="text-align:center; display:none">JDN 1721424 → 2299160</div></div>
+          <div class="sb"><div class="h">Inicio del A-Gregoriano 15/10/1582</div><div class="v mono" id="sb_first_greg">577738</div></div>
+          <div class="sb"><div class="h">Días A-Gregorianos</div><div class="v mono" id="sb_greg">—</div><div class="small" style="text-align:center"><span style="display:none">JDN 2299161 → <span class="mono" id="sb_greg_jdn_b">—</span></span></div></div>
+          
+        </div>
+      </div>
+      <div class="mono big" id="solarDays" style="font-size:clamp(20px,6vw,30px); display:none">—</div>
+    </div>
+
+    <div class="tile">
+      <div style="flex:1">
+        <h2 style="margin:0;color:#9fb3c8;font-size:14px">Cuarentena Global (14·10·2012)</h2>
+        <div class="small">Duración por cuarentena: 39 días · transcurridos: <span id="qDays" style="font-size:clamp(16px,5vw,26px); color:#ffffff">—</span></div>
+        <div class="q-mini">
+          <div class="q-item"><span class="small">Nº de cuarentena</span><span class="mono" id="qIdx">—</span></div>
+          <div class="q-item"><span class="small">Día de cuarentena</span><span class="mono" id="qDay">—</span></div>
+          <div class="q-item"><span class="small">Ladrillo Nº (3 días)</span><span class="mono" id="brickIdx">—</span></div>
+          <div class="q-item"><span class="small">Día dentro del ladrillo</span><span class="mono" id="brickDay">—</span></div>
+          <div class="q-item q-item-wide"><span class="small">Totalidad de ladrillos</span><span class="mono" id="qBricks">—</span></div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="metrics">
+    </div>
+    <div class="mcard">
+      <div class="badge">Frecuencias del año</div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Fecha</span><span class="mono" style="font-size:11px"><span id="doy">—</span></span></div>
+      <div class="progress"><div class="progressInner" id="yearProgressInner" style="width:0%"></div></div>
+      <div class="chips"><span class="chip mono" id="freqYearPos">+—</span><span class="chip mono" id="freqYearNeg">−—</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación anual</span><span class="mono" id="annYear">—</span></div>
+    </div>
+    <div class="mcard">
+      <div class="badge">Aparato (ciclo 1461)</div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndex">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
+      <div class="progress"><div class="progressInner" id="appProgressInner" style="width:0%"></div></div>
+      <div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación del aparato</span><span class="mono" id="annApp">—</span></div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:12px">
+    <div class="section-title">Calendario Lógico</div>
+    <div class="calog-controls">
+      <div class="small">Años a futuro: <span id="calogFutureVal">80</span> <span class="mono" id="calogFutureTo"></span></div>
+      <input id="calogFuture" type="range" min="0" max="200" step="1" value="80" aria-label="Años a futuro">
+    </div>
+    <div class="table-wrap calog-wrap" id="calogWrap"><table id="calog"><thead><tr><th>Año</th><th>Variable (+)</th><th>Constante</th><th>Aparato</th></tr></thead><tbody></tbody><tfoot><tr><td>SUMA</td><td id="calogSum">—</td><td></td><td></td></tr></tfoot></table></div>
+    <div class="scroll-hint">Desliza ↔ para ver la tabla completa</div>
+    <div class="small" style="display:none">Constante: 2012=1096, 2013=78; Variable: inicia en +doy y desciende sumando largos; en 2012 ajuste −1018.</div>
+  </section>
+
+  <section class="card" style="margin-top:12px">
+    <div class="small" style="margin-bottom:8px">Marcas LGC</div>
+    <div class="anchors-grid">
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Rupert Sheldrake (28·06·1942)</div></div><div class="mono" id="d_rupert">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Ryke Geerd Hamer (17·05·1935)</div></div><div class="mono" id="d_hamer">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>María Alejandra Casado (06·12·1969)</div></div><div class="mono" id="d_mac">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div><div>Alcides Carrión (13·08·1857)</div></div><div class="mono" id="d_alcides">—</div></div>
+      <div class="a-card">
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="a-dot" style="background:#7cc7ff;box-shadow:0 0 10px #7cc7ff"></div>
+    <div>Dmitri Mendeléyev (08·02·1834)</div>
+  </div>
+  <div class="mono" id="d_mendeleev" data-date-iso="1834-02-08">—</div>
 </div>
+      <div class="a-card">
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div>
+    <div>App Calendaria-LGC Digital (09·09·2025)</div>
+  </div>
+  <div class="mono" id="d_calendaria_web" data-date-iso="2025-09-09">—</div>
 </div>
-<div class="mono big" id="solarDays" style="font-size:clamp(20px,6vw,30px); display:none">—</div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Inicio del calendario LGC (15·10·2015)</div></div><div class="mono" id="d_lgc_inicio">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Pentagrama LGC (07·01·2022)</div></div><div class="mono" id="d_penta">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Edad Administrativa (12·08·2024)</div></div><div class="mono" id="d_admin">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Eje 258 (26·08·2017)</div></div><div class="mono" id="d_eje258">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#ffd166;box-shadow:0 0 10px #ffd166"></div><div>Agregado del Toganeson (10·01·2024)</div></div><div class="mono" id="d_toganesos">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Quita del patrón oro (15·08·1971)</div></div><div class="mono" id="d_patrono">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Inicio de la UIT (17·05·1865)</div></div><div class="mono" id="d_uit">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Día Google (30·12·1899)</div></div><div class="mono" id="d_google">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Primer segundo intercalar (30·06·1972)</div></div><div class="mono" id="d_leapsec">—</div></div>
+      <div class="a-card"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot" style="background:#9cffd5;box-shadow:0 0 10px #9cffd5"></div><div>Quinta etapa (28·08·2016)</div></div><div class="mono" id="d_quinta">—</div></div>
+  </section>
+
+    </main>
+  </div>
+
+  <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
 </div>
-<div class="tile">
-<div style="flex:1">
-<h2 style="margin:0;color:#9fb3c8;font-size:14px">Cuarentena Global (14·10·2012)</h2>
-<div class="small">Duración por cuarentena: 39 días · transcurridos: <span id="qDays" style="font-size:clamp(16px,5vw,26px); color:#ffffff">—</span></div>
-<div class="q-mini">
-<div class="q-item"><span class="small">Nº de cuarentena</span><span class="mono" id="qIdx">—</span></div>
-<div class="q-item"><span class="small">Día de cuarentena</span><span class="mono" id="qDay">—</span></div>
-<div class="q-item"><span class="small">Ladrillo Nº (3 días)</span><span class="mono" id="brickIdx">—</span></div>
-<div class="q-item"><span class="small">Día dentro del ladrillo</span><span class="mono" id="brickDay">—</span></div>
-<div class="q-item q-item-wide"><span class="small">Totalidad de ladrillos</span><span class="mono" id="qBricks">—</span></div>
-</div>
-</div>
-</div>
-</section>
-<section class="metrics">
-</section></main></div>
-<div class="mcard">
-<div class="badge">Frecuencias del año</div>
-<div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Fecha</span><span class="mono" style="font-size:11px"><span id="doy">—</span></span></div>
-<div class="progress"><div class="progressInner" id="yearProgressInner" style="width:0%"></div></div>
-<div class="chips"><span class="chip mono" id="freqYearPos">+—</span><span class="chip mono" id="freqYearNeg">−—</span></div>
-<div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación anual</span><span class="mono" id="annYear">—</span></div>
-</div>
-<div class="mcard">
-<div class="badge">Aparato (ciclo 1461)</div>
-<div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndex">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
-<div class="progress"><div class="progressInner" id="appProgressInner" style="width:0%"></div></div>
-<div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
-<div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación del aparato</span><span class="mono" id="annApp">—</span></div>
-</div>
-
-<section class="card" style="margin-top:12px">
-<div class="section-title">Calendario Lógico</div>
-<div class="table-wrap"><table id="calog"><thead><tr><th>Año</th><th>Variable (+)</th><th>Constante</th><th>Aparato</th></tr></thead><tbody></tbody><tfoot><tr><td>SUMA</td><td id="calogSum">—</td><td></td><td></td></tr></tfoot></table></div>
-<div class="scroll-hint">Desliza ↔ para ver la tabla completa</div>
-<div class="small" style="display:none">Constante: 2012=1096, 2013=78; Variable: inicia en +doy y desciende sumando largos; en 2012 ajuste −1018.</div>
-</section>
-<section class="card" style="margin-top:12px">
-<div class="small" style="margin-bottom:8px">Marcas LGC</div>
-<div class="anchors-grid" id="marcasLgcGrid">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="a-card" data-date-iso="1834-02-08">
-<div style="display:flex;gap:10px;align-items:center">
-<div class="a-dot"></div>
-<div>Dmitri Mendeléyev (08·02·1834)</div>
-</div>
-<div class="mono" data-date-iso="1834-02-08" id="d_mendeleev">—</div>
-</div><div class="a-card" data-date-iso="1857-08-13"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Alcides Carrión (13·08·1857)</div></div><div class="mono" id="d_alcides">—</div></div><div class="a-card" data-date-iso="1865-05-17"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Inicio de la UIT (17·05·1865)</div></div><div class="mono" id="d_uit">—</div></div><div class="a-card" data-date-iso="1899-12-30"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Día Google (30·12·1899)</div></div><div class="mono" id="d_google">—</div></div><div class="a-card" data-date-iso="1935-05-17"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Ryke Geerd Hamer (17·05·1935)</div></div><div class="mono" id="d_hamer">—</div></div><div class="a-card" data-date-iso="1942-06-28"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Rupert Sheldrake (28·06·1942)</div></div><div class="mono" id="d_rupert">—</div></div><div class="a-card" data-date-iso="1969-12-06"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>María Alejandra Casado (06·12·1969)</div></div><div class="mono" id="d_mac">—</div></div><div class="a-card" data-date-iso="1971-08-15"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Quita del patrón oro (15·08·1971)</div></div><div class="mono" id="d_patrono">—</div></div><div class="a-card" data-date-iso="1972-06-30"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Primer segundo intercalar (30·06·1972)</div></div><div class="mono" id="d_leapsec">—</div></div><div class="a-card" data-date-iso="2015-10-15"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Inicio del calendario LGC (15·10·2015)</div></div><div class="mono" id="d_lgc_inicio">—</div></div><div class="a-card" data-date-iso="2016-08-28"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Quinta etapa (28·08·2016)</div></div><div class="mono" id="d_quinta">—</div></div><div class="a-card" data-date-iso="2017-08-26"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Eje 258 (26·08·2017)</div></div><div class="mono" id="d_eje258">—</div></div><div class="a-card" data-date-iso="2022-01-07"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Pentagrama LGC (07·01·2022)</div></div><div class="mono" id="d_penta">—</div></div><div class="a-card" data-date-iso="2024-01-10"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Agregado del Toganeson (10·01·2024)</div></div><div class="mono" id="d_toganesos">—</div></div><div class="a-card" data-date-iso="2024-08-12"><div style="display:flex;gap:10px;align-items:center"><div class="a-dot"></div><div>Edad Administrativa (12·08·2024)</div></div><div class="mono" id="d_admin">—</div></div><div class="a-card" data-date-iso="2025-09-09">
-<div style="display:flex;gap:10px;align-items:center">
-<div class="a-dot"></div>
-<div>App Calendaria-LGC Digital (09·09·2025)</div>
-</div>
-<div class="mono" data-date-iso="2025-09-09" id="d_calendaria_web">—</div>
-</div></div></section>
-
-</div>
-<footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
-
 <noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para ver los cálculos.</div></noscript>
-<script defer="" src="./app.js"></script>
-<script defer="" src="./common.js"></script>
-<script>
+<script src="./app.js" defer></script>
+<script src="./common.js" defer></script>
+
+  <script>
   (function(){
     var key="calendaria_seen_splash_v3";
     var splash=document.getElementById('splash');
@@ -848,6 +903,8 @@ body.noScroll{overflow:hidden}
     });
   })();
   </script>
+
+
 <!-- ELEMENT_BADGE_LOGIC_START -->
 <script>
 (function(){
@@ -1279,6 +1336,9 @@ function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
+
+
+
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -1288,6 +1348,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
 <script>
 (function(){
   const ref = document.getElementById('ref');
@@ -2452,16 +2513,19 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', function(){ setTimeout(updatePeriodicLink, 0); });
 })();
 </script>
+
+
 <!-- Modal zoom (mobile) -->
-<div aria-hidden="true" class="anModal" id="anilloModal">
-<div class="anModalBackdrop"></div>
-<div aria-label="Detalle del Anillo de Fuego" aria-modal="true" class="anModalCard" role="dialog">
-<button aria-label="Cerrar" class="anModalClose" type="button">×</button>
-<div class="anModalHead mono">
-<div class="anModalLine1"></div>
-<div class="anModalLine2"><span class="solar"></span> <span class="sep">·</span> <span class="dow"></span></div>
+<div id="anilloModal" class="anModal" aria-hidden="true">
+  <div class="anModalBackdrop"></div>
+  <div class="anModalCard" role="dialog" aria-modal="true" aria-label="Detalle del Anillo de Fuego">
+    <button class="anModalClose" type="button" aria-label="Cerrar">×</button>
+    <div class="anModalHead mono">
+      <div class="anModalLine1"></div>
+      <div class="anModalLine2"><span class="solar"></span> <span class="sep">·</span> <span class="dow"></span></div>
+    </div>
+    <div class="anModalFreq mono"></div>
+  </div>
 </div>
-<div class="anModalFreq mono"></div>
-</div>
-</div>
+
 </body></html>
