@@ -65,8 +65,16 @@ function fmtDate(d){
         var iso = out.getAttribute('data-date-iso') || card.getAttribute('data-date-iso');
         var d = isoToDate(iso);
         if(!d){ out.textContent='—'; return; }
-        var days=Math.floor((ref - d)/ms);
-        out.textContent = Math.max(0, days);
+        var diff=Math.floor((ref - d)/ms);
+        if(diff>=0){
+          out.textContent = diff;
+          out.title = diff+' días transcurridos';
+        }else{
+          // Futuro: mostramos el conteo en negativo para no confundir (lo que falta para llegar)
+          var faltan = -diff;
+          out.textContent = diff; // negativo
+          out.title = 'Faltan '+faltan+' días';
+        }
       });
     }
 
@@ -92,22 +100,68 @@ function fmtDate(d){
     function plane(card){
       var ks=['NE','NO','SE','SO']; for(var i=0;i<ks.length;i++){var el=$('#cell'+ks[i]); if(!el) continue; if(ks[i]===card) el.classList.add('active'); else el.classList.remove('active');}
     }
-    function buildCalog(ref){
+    function buildCalog(ref, futureYears){
       var tbl=$('#calog'); if(!tbl) return;
       var tbody=tbl.querySelector('tbody'); if(!tbody) return;
       tbody.innerHTML='';
-      var y0=2012,y1=2028,yr=ref.getUTCFullYear(),LGC=dt(2015,10,15),INS=dt(2012,10,14),C={};
-      C[2012]=Math.floor((LGC-INS)/ms); C[2013]=Math.floor((dt(2016,1,1)-LGC)/ms);
+      futureYears = parseInt(futureYears,10); if(isNaN(futureYears) || futureYears<0) futureYears=0;
+
+      var yr=ref.getUTCFullYear();
+      var y0=2012;
+      var baseMax=Math.max(2028, yr);
+      var y1=baseMax + futureYears;
+
+      // Constante (C) – extensible a futuro por acumulación de largos anuales
+      var LGC=dt(2015,10,15), INS=dt(2012,10,14), C={};
+      C[2012]=Math.floor((LGC-INS)/ms);
+      C[2013]=Math.floor((dt(2016,1,1)-LGC)/ms);
       for(var y=2014;y<=y1;y++){ C[y]=C[y-1]+yLen(y-1); }
-      var V={}, d=dOY(ref); V[yr]=d; for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); } if(yr>=2013) V[2012]=V[2013]-1018;
+
+      // Variable (V) – días desde el 1/1 del año hasta la fecha de referencia.
+      // Para años futuros queda en negativo (faltan días para llegar a esa fecha desde ese año).
+      var V={}, d=dOY(ref);
+      V[yr]=d;
+
+      // hacia atrás (pasado)
+      for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); }
+      if(yr>=2013){ V[2012]=V[2013]-1018; } // ajuste histórico de tu secuencia
+
+      // hacia adelante (futuro)
+      for(y=yr+1;y<=y1;y++){
+        var prev=y-1;
+        var prevVal = V.hasOwnProperty(prev) ? V[prev] : d;
+        V[y]=prevVal - yLen(prev);
+      }
+
       var s=0;
       for(y=y1;y>=y0;y--){
         var tr=document.createElement('tr');
-        var cells=[''+y, (V.hasOwnProperty(y)?V[y]:''), (C[y]||0), apIdx(y)];
-        for(var i2=0;i2<cells.length;i2++){ var td=document.createElement('td'); td.textContent=cells[i2]; tr.appendChild(td); }
+        tr.setAttribute('data-year', String(y));
+        if(y===yr) tr.classList.add('active');
+
+        var vTxt = (V.hasOwnProperty(y)?V[y]:'');
+        var cells=[''+y, vTxt, (C[y]||0), apIdx(y)];
+        for(var i2=0;i2<cells.length;i2++){
+          var td=document.createElement('td');
+          td.textContent=cells[i2];
+          tr.appendChild(td);
+        }
         if(V.hasOwnProperty(y) && y<=yr) s+=V[y];
         tbody.appendChild(tr);
       }
+      var sumEl=$('#calogSum'); if(sumEl) sumEl.textContent=s;
+
+      // centra (si puede) el año de referencia en el scroll
+      var wrap=document.getElementById('calogWrap');
+      if(wrap){
+        var active=tbody.querySelector('tr.active');
+        if(active){
+          var top=active.offsetTop;
+          wrap.scrollTop = Math.max(0, top - (wrap.clientHeight/2));
+        }
+      }
+    }
+
       var sumEl=$('#calogSum'); if(sumEl) sumEl.textContent=s;
     }
 
@@ -661,7 +715,9 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
 
       updateMarcasLgcCounts(ref);
 
-      buildCalog(ref);
+      var fy=0; var fyEl=document.getElementById('calogFutureYears'); if(fyEl){ fy=parseInt(fyEl.value,10); if(isNaN(fy)||fy<0) fy=0; var out=document.getElementById('calogFutureYearsVal'); if(out) out.textContent=String(fy); }
+
+      buildCalog(ref, fy);
       init=true;
       status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
     }
@@ -670,6 +726,11 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
 document.addEventListener('DOMContentLoaded', function(){
   up();
     sortMarcasLgc();
+  var fySlider=document.getElementById('calogFutureYears');
+  if(fySlider){
+    fySlider.addEventListener('input', up);
+    fySlider.addEventListener('change', up);
+  }
 var ids=['ref','refText','dob','dobText'];
   ids.forEach(function(id){
     var el=document.getElementById(id);
