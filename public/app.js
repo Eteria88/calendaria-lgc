@@ -19,6 +19,43 @@ function fmtDate(d){
       var yyyy = d.getUTCFullYear();
       return dd+'-'+mm+'-'+yyyy;
     }
+
+    function parseISODate(iso){
+      if(!iso) return null;
+      var p=String(iso).trim().split('-');
+      if(p.length<3) return null;
+      var y=parseInt(p[0],10), m=parseInt(p[1],10), d=parseInt(p[2],10);
+      if(isNaN(y)||isNaN(m)||isNaN(d)) return null;
+      return dt(y,m,d);
+    }
+    function updateMarcas(ref){
+      var nodes=document.querySelectorAll('#anchorsGrid .mono[data-date-iso]');
+      if(!nodes || !nodes.length) return;
+      nodes.forEach(function(n){
+        var d=parseISODate(n.getAttribute('data-date-iso'));
+        if(!d) return;
+        var delta=Math.floor((ref - d)/ms);
+        if(delta<0) n.textContent='−'+Math.abs(delta);
+        else n.textContent=String(delta);
+        n.title = (delta<0) ? ('Faltan '+Math.abs(delta)+' días') : ('Hace '+delta+' días');
+      });
+    }
+    function sortMarcas(){
+      var grid=document.getElementById('anchorsGrid');
+      if(!grid) return;
+      var cards=[].slice.call(grid.querySelectorAll('.a-card'));
+      cards.sort(function(a,b){
+        var da=a.querySelector('.mono[data-date-iso]');
+        var db=b.querySelector('.mono[data-date-iso]');
+        var ia=da?da.getAttribute('data-date-iso'):'9999-12-31';
+        var ib=db?db.getAttribute('data-date-iso'):'9999-12-31';
+        if(ia<ib) return -1;
+        if(ia>ib) return 1;
+        return 0;
+      });
+      cards.forEach(function(c){ grid.appendChild(c); });
+    }
+
     function isL(y){return (y%4===0)&&((y%100)!==0||y%400===0);}
     function yLen(y){return isL(y)?366:365;}
     function dOY(d){var y=d.getUTCFullYear();return Math.floor((d-dt(y,1,1))/ms)+1;}
@@ -648,8 +685,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
-      var A={d_mendeleev:dt(1834,2,8),d_calendaria_web:dt(2025,9,9),d_lgc_inicio:dt(2015,10,15),d_toganesos:dt(2024,1,10),d_rupert:dt(1942,6,28),d_hamer:dt(1935,5,17),d_alcides:dt(1857,8,13),d_quinta:dt(2016,8,28),d_eje258:dt(2017,8,26),d_penta:dt(2022,1,7),d_patrono:dt(1971,8,15),d_uit:dt(1865,5,17),d_google:dt(1899,12,30),d_leapsec:dt(1972,6,30),d_admin:dt(2024,8,12),d_mac:dt(1969,12,6)};
-      for(var key in A){ var el2=document.getElementById(key); if(el2) el2.textContent=Math.max(0,Math.floor((ref-A[key])/ms)); }
+      updateMarcas(ref);
 
       buildCalog(ref);
       init=true;
@@ -658,6 +694,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
     
 document.addEventListener('DOMContentLoaded', function(){
+  sortMarcas();
   up();
   var calF=document.getElementById('calogFuture');
   if(calF){
