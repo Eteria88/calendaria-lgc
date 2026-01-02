@@ -128,7 +128,7 @@ body.noScroll{overflow:hidden}
         <div class="grid">
           <div style="grid-column:span 12">
             <div class="badge">Conversor</div>
-            <div class="hint" style="margin-top:6px;display:none">A=1, B=2, …, Ñ=15, O=16 … Z=27. Se toleran acentos: Á→A, É→E, Í→I, Ó→O, Ú/Ü→U, Ñ se preserva.</div>
+            <div class="hint" style="margin-top:6px;display:none">A=1, B=2, …, Ñ=15, O=16 … Z=27. Se toleran acentos: Á���A, É→E, Í→I, Ó→O, Ú/Ü→U, Ñ se preserva.</div>
           </div>
           <div style="grid-column:span 12">
             <label class="small" for="phrase">Escribí una palabra o frase</label>
@@ -181,4 +181,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
+<script>
+  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+
 </body></html>
