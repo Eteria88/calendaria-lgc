@@ -5,7 +5,6 @@
     status('estado: JS cargado', true);
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
-    var lastRef=null;
     function dt(y,m,d){
       // Normaliza correctamente años 1–99 evitando el offset 1900+ en algunos motores JS
       // y permite fechas como 0001-01-01 sin corrimientos implícitos.
@@ -19,43 +18,6 @@ function fmtDate(d){
       var yyyy = d.getUTCFullYear();
       return dd+'-'+mm+'-'+yyyy;
     }
-
-    function parseISODate(iso){
-      if(!iso) return null;
-      var p=String(iso).trim().split('-');
-      if(p.length<3) return null;
-      var y=parseInt(p[0],10), m=parseInt(p[1],10), d=parseInt(p[2],10);
-      if(isNaN(y)||isNaN(m)||isNaN(d)) return null;
-      return dt(y,m,d);
-    }
-    function updateMarcas(ref){
-      var nodes=document.querySelectorAll('#anchorsGrid .mono[data-date-iso]');
-      if(!nodes || !nodes.length) return;
-      nodes.forEach(function(n){
-        var d=parseISODate(n.getAttribute('data-date-iso'));
-        if(!d) return;
-        var delta=Math.floor((ref - d)/ms);
-        if(delta<0) n.textContent='−'+Math.abs(delta);
-        else n.textContent=String(delta);
-        n.title = (delta<0) ? ('Faltan '+Math.abs(delta)+' días') : ('Hace '+delta+' días');
-      });
-    }
-    function sortMarcas(){
-      var grid=document.getElementById('anchorsGrid');
-      if(!grid) return;
-      var cards=[].slice.call(grid.querySelectorAll('.a-card'));
-      cards.sort(function(a,b){
-        var da=a.querySelector('.mono[data-date-iso]');
-        var db=b.querySelector('.mono[data-date-iso]');
-        var ia=da?da.getAttribute('data-date-iso'):'9999-12-31';
-        var ib=db?db.getAttribute('data-date-iso'):'9999-12-31';
-        if(ia<ib) return -1;
-        if(ia>ib) return 1;
-        return 0;
-      });
-      cards.forEach(function(c){ grid.appendChild(c); });
-    }
-
     function isL(y){return (y%4===0)&&((y%100)!==0||y%400===0);}
     function yLen(y){return isL(y)?366:365;}
     function dOY(d){var y=d.getUTCFullYear();return Math.floor((d-dt(y,1,1))/ms)+1;}
@@ -88,52 +50,19 @@ function fmtDate(d){
       var tbl=$('#calog'); if(!tbl) return;
       var tbody=tbl.querySelector('tbody'); if(!tbody) return;
       tbody.innerHTML='';
-      var yr=ref.getUTCFullYear();
-      var futureIn=$('#calogFuture');
-      var futureYears=80;
-      if(futureIn){
-        var fv0=parseInt(futureIn.value,10);
-        if(!isNaN(fv0)) futureYears=fv0;
-      }
-      var y0=2012;
-      var y1=Math.max(2028, yr + futureYears);
-
-      // Actualiza mini UI del rango
-      var fv=$('#calogFutureVal'); if(fv) fv.textContent=futureYears;
-      var ft=$('#calogFutureTo'); if(ft) ft.textContent='→ '+y1;
-
-      var LGC=dt(2015,10,15),INS=dt(2012,10,14),C={};
+      var y0=2012,y1=2028,yr=ref.getUTCFullYear(),LGC=dt(2015,10,15),INS=dt(2012,10,14),C={};
       C[2012]=Math.floor((LGC-INS)/ms); C[2013]=Math.floor((dt(2016,1,1)-LGC)/ms);
       for(var y=2014;y<=y1;y++){ C[y]=C[y-1]+yLen(y-1); }
-
-      // Variable: se calcula hacia atrás y hacia adelante desde el año de referencia
-      var V={}, d=dOY(ref); V[yr]=d;
-      for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); }
-      if(yr>=2013) V[2012]=V[2013]-1018;
-      for(y=yr+1;y<=y1;y++){ V[y]=V[y-1]-yLen(y-1); }
-
-      var s=0, curRow=null;
+      var V={}, d=dOY(ref); V[yr]=d; for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); } if(yr>=2013) V[2012]=V[2013]-1018;
+      var s=0;
       for(y=y1;y>=y0;y--){
         var tr=document.createElement('tr');
-        if(y===yr) tr.className='calog-current';
         var cells=[''+y, (V.hasOwnProperty(y)?V[y]:''), (C[y]||0), apIdx(y)];
-        for(var i2=0;i2<cells.length;i2++){
-          var td=document.createElement('td'); td.textContent=cells[i2]; tr.appendChild(td);
-        }
+        for(var i2=0;i2<cells.length;i2++){ var td=document.createElement('td'); td.textContent=cells[i2]; tr.appendChild(td); }
         if(V.hasOwnProperty(y) && y<=yr) s+=V[y];
         tbody.appendChild(tr);
-        if(y===yr) curRow=tr;
       }
       var sumEl=$('#calogSum'); if(sumEl) sumEl.textContent=s;
-
-      // Centra el año de referencia dentro del scroll (si aplica)
-      var wrap=$('#calogWrap');
-      if(curRow && wrap){
-        try{
-          var target = curRow.offsetTop - (wrap.clientHeight/2) + (curRow.clientHeight/2);
-          wrap.scrollTop = Math.max(0, target);
-        }catch(e){}
-      }
     }
 
     var init=false;
@@ -185,7 +114,6 @@ function fmtDate(d){
       var Db = flex(dFrom); if(!Db){ var tdv = Date.parse(dFrom); if(!isNaN(tdv)){ var tmpd=new Date(tdv); Db={y:tmpd.getUTCFullYear(), m:tmpd.getUTCMonth()+1, d:tmpd.getUTCDate()}; } else { Db=null; } }
 
       var ref = dt(Rf.y, Rf.m, Rf.d);
-      lastRef = ref;
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
 
       
@@ -685,7 +613,8 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
-      updateMarcas(ref);
+      var A={d_mendeleev:dt(1834,2,8),d_calendaria_web:dt(2025,9,9),d_lgc_inicio:dt(2015,10,15),d_toganesos:dt(2024,1,10),d_rupert:dt(1942,6,28),d_hamer:dt(1935,5,17),d_alcides:dt(1857,8,13),d_quinta:dt(2016,8,28),d_eje258:dt(2017,8,26),d_penta:dt(2022,1,7),d_patrono:dt(1971,8,15),d_uit:dt(1865,5,17),d_google:dt(1899,12,30),d_leapsec:dt(1972,6,30),d_admin:dt(2024,8,12),d_mac:dt(1969,12,6)};
+      for(var key in A){ var el2=document.getElementById(key); if(el2) el2.textContent=Math.max(0,Math.floor((ref-A[key])/ms)); }
 
       buildCalog(ref);
       init=true;
@@ -694,17 +623,27 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
     
 document.addEventListener('DOMContentLoaded', function(){
-  sortMarcas();
-  up();
-  var calF=document.getElementById('calogFuture');
-  if(calF){
-    calF.addEventListener('input', function(){ if(lastRef) buildCalog(lastRef); });
+  // Defer the first heavy update to allow the first paint (helps mobile FCP/LCP)
+  if (window.requestAnimationFrame) {
+    requestAnimationFrame(function(){ setTimeout(up, 0); });
+  } else {
+    setTimeout(up, 0);
   }
+
+  function debounce(fn, wait){
+    var t;
+    return function(){
+      var ctx=this, args=arguments;
+      clearTimeout(t);
+      t=setTimeout(function(){ fn.apply(ctx, args); }, wait);
+    };
+  }
+  var upDebounced = debounce(up, 250);
   var ids=['ref','refText','dob','dobText'];
   ids.forEach(function(id){
     var el=document.getElementById(id);
     if(!el) return;
-    el.addEventListener('input', up);
+    el.addEventListener('input', upDebounced);
     el.addEventListener('change', up);
   });
 
