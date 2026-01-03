@@ -53,7 +53,21 @@ function fmtDate(d){
       var y0=2012,y1=2028+(extraYears||0),yr=ref.getUTCFullYear(),LGC=dt(2015,10,15),INS=dt(2012,10,14),C={};
       C[2012]=Math.floor((LGC-INS)/ms); C[2013]=Math.floor((dt(2016,1,1)-LGC)/ms);
       for(var y=2014;y<=y1;y++){ C[y]=C[y-1]+yLen(y-1); }
-      var V={}, d=dOY(ref); V[yr]=d; for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); } if(yr>=2013) V[2012]=V[2013]-1018;
+
+      // Variable: parte desde el día del año de la fecha de referencia y se propaga hacia pasado y futuro
+      var V={}, d=dOY(ref);
+      V[yr]=d;
+
+      // hacia el pasado
+      for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); }
+      if(yr>=2013) V[2012]=V[2013]-1018;
+
+      // hacia el futuro (para que también se vea la variable en años futuros)
+      for(y=yr+1;y<=y1;y++){
+        V[y]=V[y-1]-yLen(y-1);
+        if(V[y]===0) V[y]=0; // evitar "-0"
+      }
+
       var s=0;
       for(y=y1;y>=y0;y--){
         var tr=document.createElement('tr');
@@ -63,7 +77,7 @@ function fmtDate(d){
         if(V.hasOwnProperty(y) && y<=yr) s+=V[y];
         tbody.appendChild(tr);
       }
-      
+
       // centrar el año de referencia en el scroll
       var wrap=$('#calogWrap');
       if(wrap){
@@ -73,29 +87,33 @@ function fmtDate(d){
           if(isFinite(target)) wrap.scrollTop=Math.max(0, target);
         }
       }
-var sumEl=$('#calogSum'); if(sumEl) sumEl.textContent=s;
+
+      var sumEl=$('#calogSum'); if(sumEl) sumEl.textContent=s;
     }
-    // --- Calendario Lógico: control de años a futuro (slider) ---
-    var calogUserSet=false;
+      var sumEl=$('#calogSum'); if(sumEl) sumEl.textContent=s;
+    }
+
+    // Calendario Lógico: control de "Años a futuro"
+    var calogUserSet = false;
     function calogDefaultExtraYears(ref){
       // extiende lo necesario para que la tabla alcance el año de referencia (más un margen)
-      var baseY1=2028;
-      var buffer=10; // margen para explorar un poco más
-      var yr=ref.getUTCFullYear();
-      var need=(yr + buffer) - baseY1;
-      if(need<0) need=0;
-      if(need>200) need=200;
+      var baseY1 = 2028;
+      var buffer = 10; // margen para explorar un poco más
+      var yr = ref.getUTCFullYear();
+      var need = (yr + buffer) - baseY1;
+      if(need < 0) need = 0;
+      if(need > 200) need = 200;
       return need;
     }
     function syncCalogControls(ref, force){
-      var r=$('#calogFuture'), v=$('#calogFutureVal'), to=$('#calogFutureTo');
+      var r = $('#calogFuture'), v = $('#calogFutureVal'), to = $('#calogFutureTo');
       if(!r || !v || !to) return 0;
       if(force || !calogUserSet){
-        r.value=String(calogDefaultExtraYears(ref));
+        r.value = String(calogDefaultExtraYears(ref));
       }
-      var n=parseInt(r.value||'0',10); if(!isFinite(n)) n=0;
-      v.textContent=String(n);
-      to.textContent='– '+String(2028 + n);
+      var n = parseInt(r.value || '0', 10); if(!isFinite(n)) n = 0;
+      v.textContent = String(n);
+      to.textContent = '– ' + String(2028 + n);
       return n;
     }
 
@@ -649,9 +667,9 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
       var A={d_mendeleev:dt(1834,2,8),d_calendaria_web:dt(2025,9,9),d_lgc_inicio:dt(2015,10,15),d_toganesos:dt(2024,1,10),d_rupert:dt(1942,6,28),d_hamer:dt(1935,5,17),d_alcides:dt(1857,8,13),d_quinta:dt(2016,8,28),d_eje258:dt(2017,8,26),d_penta:dt(2022,1,7),d_patrono:dt(1971,8,15),d_uit:dt(1865,5,17),d_google:dt(1899,12,30),d_leapsec:dt(1972,6,30),d_admin:dt(2024,8,12),d_mac:dt(1969,12,6)};
-      for(var key in A){ var el2=document.getElementById(key); if(el2) el2.textContent=Math.max(0,Math.floor((ref-A[key])/ms)); }
+      for(var key in A){ var el2=document.getElementById(key); if(el2) var dd=Math.floor((ref-A[key])/ms); if(dd===0) dd=0; el2.textContent=String(dd); }
 
-      var extraYears=syncCalogControls(ref, !init);
+      var extraYears = syncCalogControls(ref, !init);
       buildCalog(ref, extraYears);
       init=true;
       status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
@@ -659,6 +677,15 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
     
 document.addEventListener('DOMContentLoaded', function(){
+  // Calendario Lógico: si el usuario mueve el slider, respetar su elección
+  var calogR = document.getElementById('calogFuture');
+  if(calogR){
+    calogR.addEventListener('input', function(){
+      calogUserSet = true;
+      try{ up(); }catch(e){}
+    });
+  }
+
   // Defer the first heavy update to allow the first paint (helps mobile FCP/LCP)
   if (window.requestAnimationFrame) {
     requestAnimationFrame(function(){ setTimeout(up, 0); });
@@ -681,21 +708,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!el) return;
     el.addEventListener('input', upDebounced);
     el.addEventListener('change', up);
-  
-  // Slider de años a futuro del Calendario Lógico
-  var calogR=document.getElementById('calogFuture');
-  if(calogR){
-    calogR.addEventListener('input', function(){
-      calogUserSet=true;
-      up();
-    });
-    calogR.addEventListener('change', function(){
-      calogUserSet=true;
-      up();
-    });
-  }
-
-});
+  });
 
   function readRefParts(){
     var refI=document.getElementById('ref');
