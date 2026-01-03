@@ -673,8 +673,44 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
-      var A={d_mendeleev:dt(1834,2,8),d_calendaria_web:dt(2025,9,9),d_lgc_inicio:dt(2015,10,15),d_toganesos:dt(2024,1,10),d_rupert:dt(1942,6,28),d_hamer:dt(1935,5,17),d_alcides:dt(1857,8,13),d_quinta:dt(2016,8,28),d_eje258:dt(2017,8,26),d_penta:dt(2022,1,7),d_patrono:dt(1971,8,15),d_uit:dt(1865,5,17),d_google:dt(1899,12,30),d_leapsec:dt(1972,6,30),d_admin:dt(2024,8,12),d_mac:dt(1969,12,6)};
-      for(var key in A){ var el2=document.getElementById(key); if(el2) el2.textContent=Math.max(0,Math.floor((ref-A[key])/ms)); }
+      // Marcas LGC: calcula automáticamente leyendo data-date-iso del DOM (soporta fechas pasadas y futuras)
+      function parseISODate(iso){
+        if(!iso) return null;
+        var m = /^\s*(\d{4})-(\d{2})-(\d{2})\s*$/.exec(String(iso));
+        if(!m) return null;
+        return dt(parseInt(m[1],10), parseInt(m[2],10), parseInt(m[3],10));
+      }
+      function fmtSigned(n){
+        if(!isFinite(n)) return '—';
+        if(n===0) return '0';
+        return n<0 ? ('−'+Math.abs(n)) : String(n);
+      }
+      function updateAnchors(refDate){
+        var grid = document.getElementById('anchorsGrid');
+        if(!grid) return;
+
+        // Orden cronológico (más antiguo → más reciente)
+        var cards = Array.prototype.slice.call(grid.querySelectorAll('.a-card'));
+        var items = cards.map(function(card){
+          var valEl = card.querySelector('[data-date-iso]');
+          var iso = valEl ? valEl.getAttribute('data-date-iso') : null;
+          var d = parseISODate(iso);
+          return {card:card, valEl:valEl, date:d, time:d ? d.getTime() : Number.POSITIVE_INFINITY};
+        });
+        items.sort(function(a,b){ return a.time - b.time; });
+        items.forEach(function(it){ grid.appendChild(it.card); });
+
+        // Conteo: pasado positivo, futuro negativo (evita -0)
+        items.forEach(function(it){
+          if(!it.valEl || !it.date) return;
+          var diff = Math.floor((refDate - it.date)/ms);
+          if(diff===0) diff = 0;
+          it.valEl.textContent = fmtSigned(diff);
+          it.valEl.title = diff<0 ? ('Faltan '+Math.abs(diff)+' días') : '';
+        });
+      }
+      updateAnchors(ref);
+
 
       // Calendario lógico: slider de años a futuro (desde 2028)
       var futureYears = 0;
