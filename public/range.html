@@ -177,6 +177,28 @@ body.noScroll{overflow:hidden}
         <div style="display:flex;gap:8px;margin-top:12px">
           <button class="btn" id="clearAll" type="button">Limpiar todo</button>
         </div>
+
+
+<!-- BANDAS ETARIAS -->
+<section class="card" style="margin-top:12px">
+  <div class="small" style="margin-bottom:8px;opacity:.9">Bandas etarias</div>
+
+  <div class="input-grid">
+    <div class="field" style="grid-column:span 6">
+      <label class="small">Fecha de nacimiento</label>
+      <input class="input" id="birth" max="9999-12-31" min="0001-01-01" type="date"/>
+    </div>
+    <div class="field" style="grid-column:span 6">
+      <label class="small">Fecha de referencia</label>
+      <input class="input" id="ref" max="9999-12-31" min="0001-01-01" type="date"/>
+      <button class="btn" id="btnRefToday" style="margin-top:8px" type="button">Hoy</button>
+    </div>
+  </div>
+
+  <div class="kv"><div class="k">Banda etaria</div><div class="v" id="bandOut">—</div></div>
+  <div class="kv"><div class="k">Días para la próxima</div><div class="v" id="bandLeft">—</div></div>
+  <div class="kv"><div class="k">Bandas recorridas</div><div class="v" id="bandDone">—</div></div>
+</section>
 </section>
 
       <noscript><div style="color:#ff9aa2;padding:8px 0">Necesitás habilitar JavaScript para usar la calculadora.</div></noscript>
@@ -214,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function(){
   bind('btnEndTodayA','endA');
   bind('btnStartTodayB','startB');
   bind('btnEndTodayB','endB');
+  bind('btnRefToday','ref');
 });
 </script>
 

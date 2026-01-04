@@ -94,6 +94,60 @@
       return baseB - baseA; // EXCLUSIVO
     }
 
+
+
+function bandaEtaria(dias){
+  var bandas = [
+    { n: 1, desde: 0,     hasta: 5777,  nextStart: 5778 },
+    { n: 2, desde: 5778,  hasta: 11554, nextStart: 11555 },
+    { n: 3, desde: 11555, hasta: 17331, nextStart: 17332 },
+    { n: 4, desde: 17332, hasta: 23108, nextStart: 23109 },
+    { n: 5, desde: 23109, hasta: 28885, nextStart: 28886 }
+  ];
+  for(var i=0;i<bandas.length;i++){
+    var b = bandas[i];
+    if(dias >= b.desde && dias <= b.hasta) return { ok:true, b:b };
+  }
+  return { ok:false, msg:'Fuera de rango (0–28885).' };
+}
+
+function calcBandas(){
+  var birthEl = $('birth');
+  var refEl = $('ref');
+  if(!birthEl || !refEl){
+    return { ok:false, msg:'Campos no encontrados.' };
+  }
+
+  var B = flex(birthEl.value);
+  if(!B) return { ok:false, msg:'Falta fecha de nacimiento.' };
+
+  var R = flex(refEl.value);
+  if(!R) return { ok:false, msg:'Falta fecha de referencia.' };
+
+  var jBirth = jdnMixed(B.y,B.m,B.d);
+  var jRef = jdnMixed(R.y,R.m,R.d);
+  var dias = (jRef - jBirth); // EXCLUSIVO. Día 0 = mismo día.
+
+  if(dias < 0) return { ok:false, msg:'Referencia < Nacimiento.' };
+
+  var found = bandaEtaria(dias);
+  if(!found.ok) return { ok:false, msg: found.msg, dias:dias };
+
+  var b = found.b;
+  var faltan = (b.n < 5) ? (b.nextStart - dias) : null;
+  var recorridas = Math.max(0, b.n - 1); // bandas completas
+
+  return {
+    ok:true,
+    dias:dias,
+    banda: b.n,
+    desde: b.desde,
+    hasta: b.hasta,
+    faltan: faltan,
+    recorridas: recorridas
+  };
+}
+
     function render(){
       var exA = calcRange('startA','endA');
       var exB = calcRange('startB','endB');
@@ -129,11 +183,33 @@
       setText('potOut', String(potenciales));
       setText('constOut', String(constante));
 
+
+
+// --- Bandas etarias ---
+var band = calcBandas();
+if(!band.ok){
+  // Si faltan fechas, no mostramos nada; si hay error real, lo mostramos en "Días para la próxima"
+  if(String(band.msg||'').indexOf('Falta') === 0){
+    setText('bandOut','—'); setText('bandLeft','—'); setText('bandDone','—');
+  }else{
+    setText('bandOut','—'); setText('bandDone','—');
+    setText('bandLeft', band.msg || '—');
+  }
+}else{
+  setText('bandOut', band.banda + 'ª (' + band.desde + '–' + band.hasta + ')');
+  if(band.banda >= 5){
+    setText('bandLeft', 'Última banda');
+  }else{
+    setText('bandLeft', String(band.faltan) + ' días');
+  }
+  setText('bandDone', String(band.recorridas) + ' (completas)');
+}
+
       status('ok', true);
     }
 
     function clearAll(){
-      ['startA','endA','startB','endB'].forEach(function(id){
+      ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
         var el = $(id); if(el) el.value = '';
       });
       render();
@@ -141,7 +217,7 @@
     }
 
     function bind(){
-      ['startA','endA','startB','endB'].forEach(function(id){
+      ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
         var el = $(id);
         if(el){
           el.addEventListener('change', render);
@@ -153,6 +229,18 @@
     }
 
     bind();
+
+
+(function initBandRefToday(){
+  var refEl = $('ref');
+  if(refEl && !refEl.value){
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var day = String(d.getDate()).padStart(2,'0');
+    refEl.value = y + '-' + m + '-' + day;
+  }
+})();
     document.addEventListener('DOMContentLoaded', function(){ bind(); render(); }, {once:true});
     setTimeout(function(){ bind(); }, 250);
 
