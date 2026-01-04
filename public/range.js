@@ -10,7 +10,35 @@
 
   function $(id){ return document.getElementById(id); }
   function setText(id, txt){ var el=$(id); if(el) el.textContent = txt; }
-  function setActive(el, on){ if(el){ el.classList.toggle('active', !!on); } }
+
+  // Menú lateral: oculto por defecto, se abre con el botón ☰
+  (function initMenu(){
+    var btn = $('menuBtn');
+    var sidenav = document.querySelector('.sidenav');
+    var backdrop = $('backdrop');
+    if(!btn || !sidenav || !backdrop) return;
+
+    function closeMenu(){
+      sidenav.classList.remove('open');
+      backdrop.classList.remove('show');
+      btn.setAttribute('aria-expanded','false');
+    }
+    function openMenu(){
+      sidenav.classList.add('open');
+      backdrop.classList.add('show');
+      btn.setAttribute('aria-expanded','true');
+    }
+
+    btn.addEventListener('click', function(){
+      if(sidenav.classList.contains('open')) closeMenu();
+      else openMenu();
+    });
+    backdrop.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') closeMenu();
+    });
+  })();
+
 
   try{
     status('estado: JS cargado', true);
@@ -55,198 +83,78 @@
       return {y:y,m:m,d:d};
     }
 
-    function calcPotenciales(baseA, baseB){
-      return {
-        A: baseA,
-        B: baseB,
-        sum: baseA + baseB,
-        delta: baseB - baseA
-      };
-    }
-
-    function calcConstante(baseA, baseB){
-      var sum = baseA + baseB;
-      var mod = ((sum % 369) + 369) % 369; // siempre positivo
-      return { value: sum, sum: sum, mod369: mod };
-    }
-
-    function bandaEtaria(dias){
-      var bandas = [
-        { n: 1, desde: 0,     hasta: 5777,  nextStart: 5778 },
-        { n: 2, desde: 5778,  hasta: 11554, nextStart: 11555 },
-        { n: 3, desde: 11555, hasta: 17331, nextStart: 17332 },
-        { n: 4, desde: 17332, hasta: 23108, nextStart: 23109 },
-        { n: 5, desde: 23109, hasta: 28885, nextStart: 28886 }
-      ];
-      var b = null;
-      for(var i=0;i<bandas.length;i++){
-        if(dias >= bandas[i].desde && dias <= bandas[i].hasta){ b = bandas[i]; break; }
-      }
-      if(!b) return { ok:false, msg:'Fuera de rango (0–28885).' };
-
-      return {
-        ok:true,
-        banda: b.n,
-        desde: b.desde,
-        hasta: b.hasta,
-        falta: (b.n < 5) ? (b.nextStart - dias) : null,
-        proxima: (b.n < 5) ? b.nextStart : null
-      };
-    }
-
-    function calc(){
-      var sI = $('start') ? $('start').value : '';
-      var eI = $('end') ? $('end').value : '';
+    function calcRange(startId, endId){
+      var sI = $(startId) ? $(startId).value : '';
+      var eI = $(endId) ? $(endId).value : '';
       var S = flex(sI), E = flex(eI);
+      if(!(S && E)) return null;
 
-      var out = $('out');
-      var yearsOut = $('yearsOut');
-      var inclusive = $('inclusive');
+      var baseA = jdnMixed(S.y,S.m,S.d);
+      var baseB = jdnMixed(E.y,E.m,E.d);
+      return baseB - baseA; // EXCLUSIVO
+    }
 
-      // Defaults de salida
-      function clearAll(){
-        if(out) out.textContent = '—';
-        if(yearsOut) yearsOut.textContent = '—';
-        setText('chipEx', 'Exclusivo: —');
-        setText('chipIn', 'Inclusivo: —');
+    function render(){
+      var exA = calcRange('startA','endA');
+      var exB = calcRange('startB','endB');
 
-        setText('potA', '—'); setText('potB', '—'); setText('potSum', '—'); setText('potDelta', '—');
-        setText('constOut', '—'); setText('constAplusB', 'A + B: —'); setText('constMod369', '(A + B) mod 369: —');
-        setText('ageDays', '—'); setText('bandName', '—'); setText('bandRange', '—'); setText('bandRemaining', '—');
+      // Salidas por rango
+      if(exA === null){
+        setText('outA','—'); setText('yearsOutA','—'); setText('resA','—');
+      }else{
+        setText('outA', String(exA));
+        setText('resA', String(exA));
+        setText('yearsOutA', String(Math.floor(exA / 365.2425)));
       }
 
-      if(!(S && E)){
-        clearAll();
+      if(exB === null){
+        setText('outB','—'); setText('yearsOutB','—'); setText('resB','—');
+      }else{
+        setText('outB', String(exB));
+        setText('resB', String(exB));
+        setText('yearsOutB', String(Math.floor(exB / 365.2425)));
+      }
+
+      // Potenciales / Constante (solo cuando hay ambos)
+      if(exA === null || exB === null){
+        setText('potOut','—');
+        setText('constOut','—');
         status('ok (faltan fechas)', true);
         return;
       }
 
-      var baseA = jdnMixed(S.y,S.m,S.d);
-      var baseB = jdnMixed(E.y,E.m,E.d);
+      var potenciales = exA + exB;
+      var constante = exA - exB;
 
-      var ex = (baseB - baseA);
-      var inc = ex + 1;
-
-      // --- Diferencial ---
-      setText('chipEx', 'Exclusivo: ' + ex);
-      setText('chipIn', 'Inclusivo: ' + inc);
-
-      // Estado activo visual de chips
-      var useInc = inclusive && inclusive.checked;
-      if(out) out.textContent = useInc ? inc : ex;
-
-      // Years (aprox. tropical)
-      if(yearsOut){
-        var years = ex / 365.2425;
-        yearsOut.textContent = String(Math.floor(years));
-      }
-
-      setActive($('chipEx'), !useInc);
-      setActive($('chipIn'), useInc);
-
-      // --- Potenciales ---
-      var pot = calcPotenciales(baseA, baseB);
-      setText('potA', String(pot.A));
-      setText('potB', String(pot.B));
-      setText('potSum', String(pot.sum));
-      setText('potDelta', String(pot.delta));
-
-      // --- Constante ---
-      var con = calcConstante(baseA, baseB);
-      setText('constOut', String(con.value));
-      setText('constAplusB', 'A + B: ' + con.sum);
-      setText('constMod369', '(A + B) mod 369: ' + con.mod369);
-
-      // --- Banda etaria ---
-      // Días de vida: (B - A) exclusivo. Día 0 = mismo día.
-      setText('ageDays', String(ex));
-      if(ex < 0){
-        setText('bandName', '—');
-        setText('bandRange', '—');
-        setText('bandRemaining', 'Fecha B < Fecha A');
-      }else{
-        var b = bandaEtaria(ex);
-        if(!b.ok){
-          setText('bandName', '—');
-          setText('bandRange', '—');
-          setText('bandRemaining', b.msg);
-        }else{
-          setText('bandName', b.banda + 'ª');
-          setText('bandRange', b.desde + '–' + b.hasta);
-          if(b.banda >= 5){
-            setText('bandRemaining', 'Última banda (sin próxima)');
-          }else{
-            setText('bandRemaining', b.falta + ' días (próxima en ' + b.proxima + ')');
-          }
-        }
-      }
+      setText('potOut', String(potenciales));
+      setText('constOut', String(constante));
 
       status('ok', true);
     }
 
-    function setTab(key){
-      // botones
-      var btns = document.querySelectorAll('[data-tabbtn]');
-      btns.forEach(function(b){
-        setActive(b, b.getAttribute('data-tabbtn') === key);
+    function clearAll(){
+      ['startA','endA','startB','endB'].forEach(function(id){
+        var el = $(id); if(el) el.value = '';
       });
-      // paneles
-      var tabs = document.querySelectorAll('[data-tab]');
-      tabs.forEach(function(t){
-        t.classList.toggle('show', t.getAttribute('data-tab') === key);
-      });
+      render();
+      status('ok (limpio)', true);
     }
 
-    function bindHandlers(){
-      var btnC = $('calc'); if(btnC){ btnC.addEventListener('click', calc); }
-      var btnX = $('clear'); if(btnX){
-        btnX.addEventListener('click', function(){
-          ['start','end'].forEach(function(id){ var el=$(id); if(el) el.value=''; });
-          var inc = $('inclusive'); if(inc) inc.checked = false;
-          calc();
-          status('ok (limpio)', true);
-        });
-      }
-
-      var inc = $('inclusive'); if(inc){ inc.addEventListener('change', calc); }
-
-      ['start','end'].forEach(function(id){
+    function bind(){
+      ['startA','endA','startB','endB'].forEach(function(id){
         var el = $(id);
-        if(el){ el.addEventListener('change', calc); el.addEventListener('input', calc); }
+        if(el){
+          el.addEventListener('change', render);
+          el.addEventListener('input', render);
+        }
       });
-
-      // Chips exclus/inclus: click para alternar
-      var chipEx = $('chipEx');
-      var chipIn = $('chipIn');
-      if(chipEx){
-        chipEx.addEventListener('click', function(){
-          var inc = $('inclusive'); if(inc){ inc.checked = false; calc(); }
-        });
-      }
-      if(chipIn){
-        chipIn.addEventListener('click', function(){
-          var inc = $('inclusive'); if(inc){ inc.checked = true; calc(); }
-        });
-      }
-
-      // Tabs
-      var tabBtns = document.querySelectorAll('[data-tabbtn]');
-      tabBtns.forEach(function(b){
-        b.addEventListener('click', function(){
-          setTab(b.getAttribute('data-tabbtn'));
-        });
-      });
-
-      // Tab default
-      setTab('diff');
+      var btn = $('clearAll');
+      if(btn){ btn.addEventListener('click', clearAll); }
     }
 
-    // Intento inmediato (defer debería alcanzar)
-    bindHandlers();
-    // Refuerzo: al terminar de parsear DOM
-    document.addEventListener('DOMContentLoaded', function(){ bindHandlers(); calc(); }, {once:true});
-    // Tercer intento: pequeño retraso por seguridad
-    setTimeout(function(){ bindHandlers(); }, 300);
+    bind();
+    document.addEventListener('DOMContentLoaded', function(){ bind(); render(); }, {once:true});
+    setTimeout(function(){ bind(); }, 250);
 
   }catch(e){
     status('error init: ' + e.message, false);

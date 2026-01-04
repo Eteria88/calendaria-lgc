@@ -63,6 +63,24 @@ body.noScroll{overflow:hidden}
   .mono.big{font-size:clamp(22px,8vw,34px); word-break:break-word; overflow-wrap:anywhere}
   .input{min-height:44px}
 }
+
+/* ====== Ajustes: menú oculto por defecto + frames lado a lado ====== */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:900px){.compare-grid{grid-template-columns:1fr}}
+
+.layout{display:block;gap:0}
+.menuBtn{display:inline-block}
+
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:40}
+.backdrop.show{opacity:1;pointer-events:auto}
+
+.sidenav{position:fixed;top:0;left:0;width:260px;height:100dvh;overflow:auto;
+  transform:translateX(-110%);transition:transform .22s ease;z-index:50;
+  border:1px solid var(--ol);border-radius:0 16px 16px 0;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+.sidenav.open{transform:translateX(0)}
+
 </style>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b0d10">
@@ -90,8 +108,9 @@ body.noScroll{overflow:hidden}
 
 <header>
   <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div>
-  <button aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button>
+  <button aria-label="Abrir menú" aria-expanded="false" class="menuBtn" id="menuBtn" title="Menú">☰</button>
 </header>
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
 
 <div class="layout">
   <aside class="sidenav">
@@ -103,124 +122,98 @@ body.noScroll{overflow:hidden}
     </nav>
   </aside>
 
-  <main>
+    <main>
     <div class="wrap">
       <h1 style="margin:0 0 4px 0;font-size:20px">Comparador LGC</h1>
-      <div class="small" style="margin:0 0 10px 0">Diferencial • Potenciales • Constante • Banda etaria</div>
+      <div class="small" style="margin:0 0 10px 0">Diferencial • Potenciales (suma) • Constante (resta)</div>
 
       <div class="status" id="rdbg" style="display:none">estado: cargando…</div>
 
-      <!-- Tabs -->
-      <div class="row" style="margin:0 0 10px 0">
-        <button class="chip active" data-tabbtn="diff" type="button">Diferencial</button>
-        <button class="chip" data-tabbtn="pot" type="button">Potenciales</button>
-        <button class="chip" data-tabbtn="const" type="button">Constante</button>
-        <button class="chip" data-tabbtn="band" type="button">Banda etaria</button>
-      </div>
+      <!-- RANGO A -->
+      <div class="compare-grid">
+<section class="card" style="margin-bottom:12px">
+        <div class="small" style="margin-bottom:8px;opacity:.9">Rango A</div>
 
-      <!-- DIFERENCIAL -->
-      <section class="card tab show" id="tab-diff" data-tab="diff">
         <div class="input-grid">
           <div class="field" style="grid-column:span 6">
-            <label class="small">Fecha A (inicio)</label>
-            <input class="input" id="start" max="9999-12-31" min="0001-01-01" type="date"/>
-            <button class="btn" id="btnStartToday" style="margin-top:8px" type="button">Hoy</button>
+            <label class="small">Inicio</label>
+            <input class="input" id="startA" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnStartTodayA" style="margin-top:8px" type="button">Hoy</button>
           </div>
           <div class="field" style="grid-column:span 6">
-            <label class="small">Fecha B (fin)</label>
-            <input class="input" id="end" max="9999-12-31" min="0001-01-01" type="date"/>
-            <button class="btn" id="btnEndToday" style="margin-top:8px" type="button">Hoy</button>
+            <label class="small">Fin</label>
+            <input class="input" id="endA" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnEndTodayA" style="margin-top:8px" type="button">Hoy</button>
           </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <label class="small" style="display:flex;gap:8px;align-items:center">
-            <input id="inclusive" type="checkbox" />
-            Inclusivo (+1 día)
-          </label>
-          <span class="chip" id="chipEx" title="Diferencial exclusivo">Exclusivo: —</span>
-          <span class="chip" id="chipIn" title="Diferencial inclusivo">Inclusivo: —</span>
         </div>
 
         <div style="display:flex;justify-content:center;margin-top:12px">
-          <div>
-            <div style="display:flex;gap:32px;justify-content:center">
-              <div style="text-align:center">
-                <div class="small">Días</div>
-                <div class="mono big" id="out" style="font-size:clamp(16px,3.5vw,22px)">—</div>
-              </div>
-              <div style="text-align:center">
-                <div class="small">Años</div>
-                <div class="mono big" id="yearsOut" style="font-size:clamp(16px,3.5vw,22px)">—</div>
-              </div>
+          <div style="display:flex;gap:32px;justify-content:center">
+            <div style="text-align:center">
+              <div class="small">Días</div>
+              <div class="mono big" id="outA" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+            </div>
+            <div style="text-align:center">
+              <div class="small">Años</div>
+              <div class="mono big" id="yearsOutA" style="font-size:clamp(16px,3.5vw,22px)">—</div>
             </div>
           </div>
         </div>
+      </section>
+
+      <!-- RANGO B -->
+      <section class="card" style="margin-bottom:12px">
+        <div class="small" style="margin-bottom:8px;opacity:.9">Rango B</div>
+
+        <div class="input-grid">
+          <div class="field" style="grid-column:span 6">
+            <label class="small">Inicio</label>
+            <input class="input" id="startB" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnStartTodayB" style="margin-top:8px" type="button">Hoy</button>
+          </div>
+          <div class="field" style="grid-column:span 6">
+            <label class="small">Fin</label>
+            <input class="input" id="endB" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnEndTodayB" style="margin-top:8px" type="button">Hoy</button>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;margin-top:12px">
+          <div style="display:flex;gap:32px;justify-content:center">
+            <div style="text-align:center">
+              <div class="small">Días</div>
+              <div class="mono big" id="outB" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+            </div>
+            <div style="text-align:center">
+              <div class="small">Años</div>
+              <div class="mono big" id="yearsOutB" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
+</div>
+
+
+      <!-- RESULTADOS -->
+      <section class="card">
+        <div class="small" style="margin-bottom:8px;opacity:.9">Resultado comparado</div>
+
+        <div class="kv"><div class="k">Frecuencia resultante A (días)</div><div class="v" id="resA">—</div></div>
+        <div class="kv"><div class="k">Frecuencia resultante B (días)</div><div class="v" id="resB">—</div></div>
+        <div class="kv"><div class="k">Potenciales (A + B)</div><div class="v" id="potOut">—</div></div>
+        <div class="kv"><div class="k">Constante (A − B)</div><div class="v" id="constOut">—</div></div>
 
         <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn" id="calc" type="button">Calcular</button>
-          <button class="btn" id="clear" type="button">Limpiar</button>
+          <button class="btn" id="clearAll" type="button">Limpiar todo</button>
         </div>
 
         <div class="small" style="margin-top:10px;opacity:.9">
-          Nota: el módulo usa calendario mixto (Juliano antes de 1582‑10‑15, Gregoriano desde esa fecha) para sostener la coherencia histórica.
-        </div>
-      </section>
-
-      <!-- POTENCIALES -->
-      <section class="card tab" id="tab-pot" data-tab="pot">
-        <div class="small" style="margin-bottom:10px;opacity:.9">
-          Potenciales calculados sobre una base numérica del día (día absoluto / JDN mixto). Si querés otra definición LGC, se ajusta en <span class="mono">calcPotenciales()</span>.
-        </div>
-
-        <div class="kv"><div class="k">Potencial A (base día)</div><div class="v" id="potA">—</div></div>
-        <div class="kv"><div class="k">Potencial B (base día)</div><div class="v" id="potB">—</div></div>
-        <div class="kv"><div class="k">Potencial resultante (A + B)</div><div class="v" id="potSum">—</div></div>
-        <div class="kv"><div class="k">Diferencia base (B − A)</div><div class="v" id="potDelta">—</div></div>
-      </section>
-
-      <!-- CONSTANTE -->
-      <section class="card tab" id="tab-const" data-tab="const">
-        <div class="small" style="margin-bottom:10px;opacity:.9">
-          Constante definida como una operación estable entre A y B. Por defecto: <span class="mono">A + B</span>. Se ajusta en <span class="mono">calcConstante()</span>.
-        </div>
-
-        <div style="text-align:center;margin-top:8px">
-          <div class="small">Constante</div>
-          <div class="mono big" id="constOut" style="font-size:clamp(18px,4vw,28px)">—</div>
-        </div>
-
-        <div class="row" style="justify-content:center;margin-top:10px">
-          <span class="chip" id="constAplusB">A + B: —</span>
-          <span class="chip" id="constMod369">(A + B) mod 369: —</span>
-        </div>
-      </section>
-
-      <!-- BANDA ETARIA -->
-      <section class="card tab" id="tab-band" data-tab="band">
-        <div class="small" style="margin-bottom:10px;opacity:.9">
-          Banda etaria calculada con <b>días de vida</b> = (Fecha B − Fecha A) en días (exclusivo). Día 0 = mismo día.
-        </div>
-
-        <div style="display:flex;gap:18px;flex-wrap:wrap">
-          <div style="flex:1;min-width:220px;text-align:center">
-            <div class="small">Días de vida</div>
-            <div class="mono big" id="ageDays" style="font-size:clamp(18px,4vw,28px)">—</div>
-          </div>
-          <div style="flex:1;min-width:220px;text-align:center">
-            <div class="small">Banda etaria</div>
-            <div class="mono big" id="bandName" style="font-size:clamp(18px,4vw,28px)">—</div>
-          </div>
-        </div>
-
-        <div style="margin-top:12px">
-          <div class="kv"><div class="k">Rango</div><div class="v" id="bandRange">—</div></div>
-          <div class="kv"><div class="k">Falta para la próxima</div><div class="v" id="bandRemaining">—</div></div>
+          Nota: cálculo exclusivo (Fin − Inicio). Calendario mixto: Juliano antes de 1582‑10‑15, Gregoriano desde esa fecha.
         </div>
       </section>
 
       <noscript><div style="color:#ff9aa2;padding:8px 0">Necesitás habilitar JavaScript para usar la calculadora.</div></noscript>
-      <script defer="" src="./range.js"></script>
+      <script defer src="./range.js"></script>
     </div>
   </main>
 </div>
@@ -230,7 +223,7 @@ body.noScroll{overflow:hidden}
 
 <script defer="" src="./common.js"></script>
 
-<!-- Botones Hoy (A y B) -->
+<!-- Botones Hoy (rangos A y B) -->
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   function toISO(d){
@@ -239,24 +232,21 @@ document.addEventListener('DOMContentLoaded', function(){
     var day = String(d.getDate()).padStart(2, '0');
     return y + '-' + m + '-' + day;
   }
-  var btnE = document.getElementById('btnEndToday');
-  var endInput = document.getElementById('end');
-  if(btnE && endInput){
-    btnE.addEventListener('click', function(){
-      endInput.value = toISO(new Date());
-      endInput.dispatchEvent(new Event('input', { bubbles: true }));
-      endInput.dispatchEvent(new Event('change', { bubbles: true }));
-    });
+  function bind(btnId, inputId){
+    var btn = document.getElementById(btnId);
+    var input = document.getElementById(inputId);
+    if(btn && input){
+      btn.addEventListener('click', function(){
+        input.value = toISO(new Date());
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
   }
-  var btnS = document.getElementById('btnStartToday');
-  var startInput = document.getElementById('start');
-  if(btnS && startInput){
-    btnS.addEventListener('click', function(){
-      startInput.value = toISO(new Date());
-      startInput.dispatchEvent(new Event('input', { bubbles: true }));
-      startInput.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-  }
+  bind('btnStartTodayA','startA');
+  bind('btnEndTodayA','endA');
+  bind('btnStartTodayB','startB');
+  bind('btnEndTodayB','endB');
 });
 </script>
 
