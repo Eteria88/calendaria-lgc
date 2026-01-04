@@ -185,18 +185,18 @@ function renderBandSchedule(){
   var body = $('bandScheduleBody');
   var hint = $('bandScheduleHint');
   var birthEl = $('birth');
-  if(!wrap || !body || !hint || !birthEl) return;
+  if(!wrap || !body || !birthEl) return;
 
   var B = flex(birthEl.value);
   if(!B){
     wrap.style.display = 'none';
     body.innerHTML = '';
-    hint.textContent = 'Ingresá una fecha de nacimiento para ver el rango de fechas de cada banda.';
+    if(hint) hint.textContent = 'Ingresá una fecha de nacimiento para ver el rango de fechas de cada banda.';
     return;
   }
 
   var jBirth = jdnMixed(B.y,B.m,B.d);
-  hint.textContent = 'Nacimiento: ' + (B.d + '/' + B.m + '/' + B.y);
+  if(hint) hint.textContent = 'Nacimiento: ' + (B.d + '/' + B.m + '/' + B.y);
 
   // Para resaltar banda actual según fecha de referencia (si existe)
   var refEl = $('ref');
