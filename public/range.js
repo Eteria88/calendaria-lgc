@@ -59,7 +59,40 @@
     }
     function jdnMixed(Y,M,D){ return isGreg(Y,M,D) ? jdnG(Y,M,D) : jdnJ(Y,M,D); }
 
-    function flex(str){
+    
+    // Inverso de JDN -> fecha (para mostrar cronogramas)
+    var JDN_GREG_START = jdnG(1582,10,15); // 1582-10-15
+    function ymdFromJdnG(j){
+      var l = j + 68569;
+      var n = Math.floor(4*l/146097);
+      l = l - Math.floor((146097*n + 3)/4);
+      var i = Math.floor(4000*(l + 1)/1461001);
+      l = l - Math.floor(1461*i/4) + 31;
+      var j2 = Math.floor(80*l/2447);
+      var d = l - Math.floor(2447*j2/80);
+      l = Math.floor(j2/11);
+      var m = j2 + 2 - 12*l;
+      var y = 100*(n - 49) + i + l;
+      return {y:y, m:m, d:d};
+    }
+    function ymdFromJdnJ(j){
+      var c = j + 32082;
+      var d = Math.floor((4*c + 3)/1461);
+      var e = c - Math.floor(1461*d/4);
+      var m = Math.floor((5*e + 2)/153);
+      var day = e - Math.floor((153*m + 2)/5) + 1;
+      var month = m + 3 - 12*Math.floor(m/10);
+      var year = d - 4800 + Math.floor(m/10);
+      return {y:year, m:month, d:day};
+    }
+    function ymdFromJdnMixed(j){
+      return (j >= JDN_GREG_START) ? ymdFromJdnG(j) : ymdFromJdnJ(j);
+    }
+    function fmtDMY(ymd){
+      return ymd.d + '/' + ymd.m + '/' + ymd.y;
+    }
+
+function flex(str){
       if(!str) return null;
       var s=String(str).trim().replace(/\//g,'-');
       var p=s.split('-'); if(p.length!==3) return null;
@@ -146,6 +179,60 @@ function calcBandas(){
     faltan: faltan,
     recorridas: recorridas
   };
+
+function renderBandSchedule(){
+  var wrap = $('bandScheduleWrap');
+  var body = $('bandScheduleBody');
+  var hint = $('bandScheduleHint');
+  var birthEl = $('birth');
+  if(!wrap || !body || !hint || !birthEl) return;
+
+  var B = flex(birthEl.value);
+  if(!B){
+    wrap.style.display = 'none';
+    body.innerHTML = '';
+    hint.textContent = 'Ingresá una fecha de nacimiento para ver el rango de fechas de cada banda.';
+    return;
+  }
+
+  var jBirth = jdnMixed(B.y,B.m,B.d);
+  hint.textContent = 'Nacimiento: ' + (B.d + '/' + B.m + '/' + B.y);
+
+  // Para resaltar banda actual según fecha de referencia (si existe)
+  var refEl = $('ref');
+  var daysLife = null;
+  if(refEl){
+    var R = flex(refEl.value);
+    if(R){
+      daysLife = jdnMixed(R.y,R.m,R.d) - jBirth; // exclusivo
+    }
+  }
+
+  var bands = [
+    {name:'Primera', desde:0, hasta:5777},
+    {name:'Segunda', desde:5778, hasta:11554},
+    {name:'Tercera', desde:11555, hasta:17331},
+    {name:'Cuarta', desde:17332, hasta:23108},
+    {name:'Quinta', desde:23109, hasta:28885}
+  ];
+
+  var rows = '';
+  for(var i=0;i<bands.length;i++){
+    var b = bands[i];
+    var from = ymdFromJdnMixed(jBirth + b.desde);
+    var to = ymdFromJdnMixed(jBirth + b.hasta);
+    var hi = (daysLife !== null && daysLife >= b.desde && daysLife <= b.hasta) ? ' class="hi"' : '';
+    rows += '<tr'+hi+'>'
+      + '<td>'+b.name+'</td>'
+      + '<td>'+b.desde+'–'+b.hasta+'</td>'
+      + '<td>'+fmtDMY(from)+'</td>'
+      + '<td>'+fmtDMY(to)+'</td>'
+      + '</tr>';
+  }
+  body.innerHTML = rows;
+  wrap.style.display = 'block';
+}
+
 }
 
     function render(){
@@ -203,6 +290,9 @@ if(!band.ok){
   }
   setText('bandDone', String(band.recorridas) + ' (completas)');
 }
+
+// Cronograma informativo de bandas (independiente)
+renderBandSchedule();
 
       status('ok', true);
     }

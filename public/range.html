@@ -68,7 +68,16 @@ body.noScroll{overflow:hidden}
   transform:translateX(-110%);transition:transform .22s ease;z-index:50;
   border:1px solid var(--ol);border-radius:0 16px 16px 0;
   background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
-.sidenav.open{transform:translateX(0)}</style>
+.sidenav.open{transform:translateX(0)}
+/* Bandas etarias — cronograma */
+.tblwrap{overflow:auto;border:1px solid var(--ol);border-radius:12px}
+.tbl{width:100%;border-collapse:collapse;min-width:520px}
+.tbl th,.tbl td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;vertical-align:top}
+.tbl th{font-weight:600;color:rgba(255,255,255,.9);background:rgba(255,255,255,.03)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .mut{color:var(--muted);font-size:12px;margin-top:2px}
+.tbl tr.hi{background:rgba(156,255,213,.06)}
+</style>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b0d10">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,6 +210,26 @@ body.noScroll{overflow:hidden}
   <div class="kv"><div class="k">Banda etaria</div><div class="v" id="bandOut">—</div></div>
   <div class="kv"><div class="k">Días para la próxima</div><div class="v" id="bandLeft">—</div></div>
   <div class="kv"><div class="k">Bandas recorridas</div><div class="v" id="bandDone">—</div></div>
+
+  <div style="height:1px;background:rgba(255,255,255,.08);margin:14px 0"></div>
+
+  <div class="small" style="margin-bottom:8px;color:rgba(255,255,255,.9)">Rangos de bandas según nacimiento</div>
+  <div class="small" id="bandScheduleHint" style="margin-bottom:10px;color:var(--muted)">Ingresá una fecha de nacimiento para ver el rango de fechas de cada banda.</div>
+
+  <div class="tblwrap" id="bandScheduleWrap" style="display:none">
+    <table class="tbl" aria-label="Cronograma de bandas etarias">
+      <thead>
+        <tr>
+          <th>Banda</th>
+          <th>Rango (días)</th>
+          <th>Del</th>
+          <th>Al</th>
+        </tr>
+      </thead>
+      <tbody id="bandScheduleBody"></tbody>
+    </table>
+  </div>
+
 </section>
 
 
