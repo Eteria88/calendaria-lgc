@@ -173,12 +173,11 @@ function calcBandas(){
       if(exA === null || exB === null){
         setText('potOut','—');
         setText('constOut','—');
-        status('ok (faltan fechas)', true);
-        return;
+      }else{
+        var potenciales = exA + exB;
+        var constante = exA - exB;
       }
 
-      var potenciales = exA + exB;
-      var constante = exA - exB;
 
       setText('potOut', String(potenciales));
       setText('constOut', String(constante));
