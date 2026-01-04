@@ -29,6 +29,7 @@ body{margin:0;background:#0b0d10;color:#e6f1ff;font-family:system-ui,-apple-syst
 .btn{background:rgba(124,199,255,.15);border:1px solid #2a3642;border-radius:999px;color:#e6f1ff;padding:6px 12px;cursor:pointer;min-height:42px}
 .btn:hover{background:rgba(124,199,255,.25)}
 .status{margin:8px 0;color:#9cffd5;font-size:12px}
+#rdbg{display:none !important}
 .chip{border:1px solid #2a3642;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04);cursor:pointer}
 .chip.active{background:rgba(124,199,255,.18);border-color:#7cc7ff}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -168,10 +169,10 @@ body.noScroll{overflow:hidden}
       <section class="card">
         <div class="small" style="margin-bottom:8px;opacity:.9">Resultado comparado</div>
 
-        <div class="kv"><div class="k">Frecuencia resultante A (días)</div><div class="v" id="resA">—</div></div>
-        <div class="kv"><div class="k">Frecuencia resultante B (días)</div><div class="v" id="resB">—</div></div>
-        <div class="kv"><div class="k">Potenciales (A + B)</div><div class="v" id="potOut">—</div></div>
-        <div class="kv"><div class="k">Constante (A − B)</div><div class="v" id="constOut">—</div></div>
+        <div class="kv"><div class="k">Frecuencia resultante A</div><div class="v" id="resA">—</div></div>
+        <div class="kv"><div class="k">Frecuencia resultante B</div><div class="v" id="resB">—</div></div>
+        <div class="kv"><div class="k">Potenciales</div><div class="v" id="potOut">—</div></div>
+        <div class="kv"><div class="k">Constante</div><div class="v" id="constOut">—</div></div>
 
         <div style="display:flex;gap:8px;margin-top:12px">
           <button class="btn" id="clearAll" type="button">Limpiar todo</button>
