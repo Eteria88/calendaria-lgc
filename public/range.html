@@ -3,8 +3,7 @@
 <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Comparador LGC — Fechas</title>
 <meta content="no-store" http-equiv="Cache-Control"/>
-<style>
-:root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
+<style>:root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#0b0d10;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:1100px;margin:0 auto;padding:20px}
@@ -43,17 +42,6 @@ body{margin:0;background:#0b0d10;color:#e6f1ff;font-family:system-ui,-apple-syst
 .menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
 @media(max-width:839px){.menuBtn{display:inline-block}}
 body.noScroll{overflow:hidden}
-.mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
-.mobileNav.open{pointer-events:auto}
-.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
-.mobileNav.open .mobileOverlay{opacity:1}
-.mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
-.mobileNav.open .mobileNavPanel{transform:translateX(0)}
-.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
-.closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
-.mobileList{display:flex;flex-direction:column;padding:10px}
-.mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
-.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
 
 /* --- Responsive mobile tuning --- */
 @media(max-width:599px){
@@ -79,9 +67,7 @@ body.noScroll{overflow:hidden}
   transform:translateX(-110%);transition:transform .22s ease;z-index:50;
   border:1px solid var(--ol);border-radius:0 16px 16px 0;
   background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
-.sidenav.open{transform:translateX(0)}
-
-</style>
+.sidenav.open{transform:translateX(0)}</style>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b0d10">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -90,22 +76,6 @@ body.noScroll{overflow:hidden}
 <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
 </head><body>
 <div class="wrap">
-<div aria-hidden="true" class="mobileNav" id="mobileNav">
-  <div class="mobileNavPanel">
-    <div class="mobileNavHeader">
-      <span>Menú</span>
-      <button aria-label="Cerrar" class="closeBtn" id="closeMenu">×</button>
-    </div>
-    <nav class="mobileList">
-      <a class="mnav-link" href="./">Inicio</a>
-      <a class="mnav-link active" href="./range.html">Comparador LGC</a>
-      <a class="mnav-link" href="./letters.html">Letras → Números</a>
-      <a class="mnav-link" href="./mapa/">Mapa y codigos</a>
-    </nav>
-  </div>
-  <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-</div>
-
 <header>
   <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div>
   <button aria-label="Abrir menú" aria-expanded="false" class="menuBtn" id="menuBtn" title="Menú">☰</button>
@@ -190,7 +160,6 @@ body.noScroll{overflow:hidden}
         </div>
       </section>
 </div>
-
 
       <!-- RESULTADOS -->
       <section class="card">
