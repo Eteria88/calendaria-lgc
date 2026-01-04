@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Calculadora de días entre fechas</title>
+<title>Comparador LGC — Fechas</title>
 <meta content="no-store" http-equiv="Cache-Control"/>
 <style>
 :root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
@@ -30,8 +30,15 @@ body{margin:0;background:#0b0d10;color:#e6f1ff;font-family:system-ui,-apple-syst
 .btn{background:rgba(124,199,255,.15);border:1px solid #2a3642;border-radius:999px;color:#e6f1ff;padding:6px 12px;cursor:pointer;min-height:42px}
 .btn:hover{background:rgba(124,199,255,.25)}
 .status{margin:8px 0;color:#9cffd5;font-size:12px}
-.chip{border:1px solid #2a3642;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04)}
+.chip{border:1px solid #2a3642;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04);cursor:pointer}
 .chip.active{background:rgba(124,199,255,.18);border-color:#7cc7ff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed rgba(42,54,66,.8)}
+.kv:last-child{border-bottom:none}
+.k{color:var(--muted);font-size:12px}
+.v{font-family:ui-monospace,Menlo,Consolas,monospace}
+.tab{display:none}
+.tab.show{display:block}
 
 .menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
 @media(max-width:839px){.menuBtn{display:inline-block}}
@@ -48,27 +55,16 @@ body.noScroll{overflow:hidden}
 .mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
 .mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
 
-
 /* --- Responsive mobile tuning --- */
 @media(max-width:599px){
   .wrap{padding:14px}
   header{padding:8px 0 10px 0}
   .card,.tile{padding:12px}
-  .mcard{grid-column:1/-1}
   .mono.big{font-size:clamp(22px,8vw,34px); word-break:break-word; overflow-wrap:anywhere}
-  .plane{height:220px}
-  .cStep{padding:2px 5px}
-  .memTag{padding:2px 6px}
   .input{min-height:44px}
-  .progress{height:8px}
-  .table-wrap{ -webkit-overflow-scrolling: touch; overflow:auto }
-  .scroll-hint{display:block;margin-top:6px;color:var(--muted);font-size:12px}
 }
-@media(min-width:600px){
-  .scroll-hint{display:none}
-}
-
-</style>  <link rel="manifest" href="/manifest.webmanifest">
+</style>
+<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b0d10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -77,111 +73,193 @@ body.noScroll{overflow:hidden}
 </head><body>
 <div class="wrap">
 <div aria-hidden="true" class="mobileNav" id="mobileNav">
-<div class="mobileNavPanel">
-<div class="mobileNavHeader">
-<span>Menú</span>
-<button aria-label="Cerrar" class="closeBtn" id="closeMenu">×</button>
-</div>
-<nav class="mobileList">
-<a class="mnav-link" href="./">Inicio</a>
-<a class="mnav-link active" href="./range.html">Días entre fechas</a>
-<a class="mnav-link" href="./letters.html">Letras → Números</a>
-<a href="./mapa/">Mapa y codigos</a></nav>
-</div>
-<div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-</div>
-<header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><button aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button></header>
-<div class="layout">
-<aside class="sidenav">
-<nav>
-<div class="nav-title">Menú</div>
-<a class="nav-link" href="./">Inicio</a>
-<a class="nav-link active" href="./range.html">Días entre fechas</a>
-<a class="nav-link" href="./mapa/">Mapa y codigos</a></nav>
-</aside>
-<main>
-<div class="wrap">
-<h1 style="margin:0 0 10px 0;font-size:20px">Días entre fechas</h1>
-
-<div class="status" id="rdbg" style="display:none">estado: cargando…</div>
-<div class="card">
-<div class="input-grid">
-<div class="field" style="grid-column:span 6">
-<label class="small">Fecha de inicio</label>
-<input class="input" id="start" max="9999-12-31" min="0001-01-01" type="date"/>
-<button class="btn" id="btnStartToday" style="margin-top:8px" type="button">Hoy</button>
-</div>
-<div class="field" style="grid-column:span 6">
-<label class="small">Fecha de fin</label>
-<input class="input" id="end" max="9999-12-31" min="0001-01-01" type="date"/>
-<button class="btn" id="btnEndToday" style="margin-top:8px" type="button">Hoy</button>
-</div>
-</div>
-<div style="display:flex;justify-content:center;margin-top:12px">
-  <div>
-    <div style="display:flex;gap:32px;justify-content:center">
-      <div style="text-align:center">
-        <div class="small">Días</div>
-        <div class="mono big" id="out" style="font-size:clamp(16px,3.5vw,22px)">—</div>
-      </div>
-      <div style="text-align:center">
-        <div class="small">Años</div>
-        <div class="mono big" id="yearsOut" style="font-size:clamp(16px,3.5vw,22px)">—</div>
-      </div>
+  <div class="mobileNavPanel">
+    <div class="mobileNavHeader">
+      <span>Menú</span>
+      <button aria-label="Cerrar" class="closeBtn" id="closeMenu">×</button>
     </div>
+    <nav class="mobileList">
+      <a class="mnav-link" href="./">Inicio</a>
+      <a class="mnav-link active" href="./range.html">Comparador LGC</a>
+      <a class="mnav-link" href="./letters.html">Letras → Números</a>
+      <a class="mnav-link" href="./mapa/">Mapa y codigos</a>
+    </nav>
   </div>
+  <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
 </div>
-<div style="display:flex;gap:8px;margin-top:12px">
-<button class="btn" id="calc">Calcular</button>
 
-<button class="btn" id="clear">Limpiar</button>
+<header>
+  <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div>
+  <button aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button>
+</header>
+
+<div class="layout">
+  <aside class="sidenav">
+    <nav>
+      <div class="nav-title">Menú</div>
+      <a class="nav-link" href="./">Inicio</a>
+      <a class="nav-link active" href="./range.html">Comparador LGC</a>
+      <a class="nav-link" href="./mapa/">Mapa y codigos</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="wrap">
+      <h1 style="margin:0 0 4px 0;font-size:20px">Comparador LGC</h1>
+      <div class="small" style="margin:0 0 10px 0">Diferencial • Potenciales • Constante • Banda etaria</div>
+
+      <div class="status" id="rdbg" style="display:none">estado: cargando…</div>
+
+      <!-- Tabs -->
+      <div class="row" style="margin:0 0 10px 0">
+        <button class="chip active" data-tabbtn="diff" type="button">Diferencial</button>
+        <button class="chip" data-tabbtn="pot" type="button">Potenciales</button>
+        <button class="chip" data-tabbtn="const" type="button">Constante</button>
+        <button class="chip" data-tabbtn="band" type="button">Banda etaria</button>
+      </div>
+
+      <!-- DIFERENCIAL -->
+      <section class="card tab show" id="tab-diff" data-tab="diff">
+        <div class="input-grid">
+          <div class="field" style="grid-column:span 6">
+            <label class="small">Fecha A (inicio)</label>
+            <input class="input" id="start" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnStartToday" style="margin-top:8px" type="button">Hoy</button>
+          </div>
+          <div class="field" style="grid-column:span 6">
+            <label class="small">Fecha B (fin)</label>
+            <input class="input" id="end" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnEndToday" style="margin-top:8px" type="button">Hoy</button>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <label class="small" style="display:flex;gap:8px;align-items:center">
+            <input id="inclusive" type="checkbox" />
+            Inclusivo (+1 día)
+          </label>
+          <span class="chip" id="chipEx" title="Diferencial exclusivo">Exclusivo: —</span>
+          <span class="chip" id="chipIn" title="Diferencial inclusivo">Inclusivo: —</span>
+        </div>
+
+        <div style="display:flex;justify-content:center;margin-top:12px">
+          <div>
+            <div style="display:flex;gap:32px;justify-content:center">
+              <div style="text-align:center">
+                <div class="small">Días</div>
+                <div class="mono big" id="out" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+              </div>
+              <div style="text-align:center">
+                <div class="small">Años</div>
+                <div class="mono big" id="yearsOut" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn" id="calc" type="button">Calcular</button>
+          <button class="btn" id="clear" type="button">Limpiar</button>
+        </div>
+
+        <div class="small" style="margin-top:10px;opacity:.9">
+          Nota: el módulo usa calendario mixto (Juliano antes de 1582‑10‑15, Gregoriano desde esa fecha) para sostener la coherencia histórica.
+        </div>
+      </section>
+
+      <!-- POTENCIALES -->
+      <section class="card tab" id="tab-pot" data-tab="pot">
+        <div class="small" style="margin-bottom:10px;opacity:.9">
+          Potenciales calculados sobre una base numérica del día (día absoluto / JDN mixto). Si querés otra definición LGC, se ajusta en <span class="mono">calcPotenciales()</span>.
+        </div>
+
+        <div class="kv"><div class="k">Potencial A (base día)</div><div class="v" id="potA">—</div></div>
+        <div class="kv"><div class="k">Potencial B (base día)</div><div class="v" id="potB">—</div></div>
+        <div class="kv"><div class="k">Potencial resultante (A + B)</div><div class="v" id="potSum">—</div></div>
+        <div class="kv"><div class="k">Diferencia base (B − A)</div><div class="v" id="potDelta">—</div></div>
+      </section>
+
+      <!-- CONSTANTE -->
+      <section class="card tab" id="tab-const" data-tab="const">
+        <div class="small" style="margin-bottom:10px;opacity:.9">
+          Constante definida como una operación estable entre A y B. Por defecto: <span class="mono">A + B</span>. Se ajusta en <span class="mono">calcConstante()</span>.
+        </div>
+
+        <div style="text-align:center;margin-top:8px">
+          <div class="small">Constante</div>
+          <div class="mono big" id="constOut" style="font-size:clamp(18px,4vw,28px)">—</div>
+        </div>
+
+        <div class="row" style="justify-content:center;margin-top:10px">
+          <span class="chip" id="constAplusB">A + B: —</span>
+          <span class="chip" id="constMod369">(A + B) mod 369: —</span>
+        </div>
+      </section>
+
+      <!-- BANDA ETARIA -->
+      <section class="card tab" id="tab-band" data-tab="band">
+        <div class="small" style="margin-bottom:10px;opacity:.9">
+          Banda etaria calculada con <b>días de vida</b> = (Fecha B − Fecha A) en días (exclusivo). Día 0 = mismo día.
+        </div>
+
+        <div style="display:flex;gap:18px;flex-wrap:wrap">
+          <div style="flex:1;min-width:220px;text-align:center">
+            <div class="small">Días de vida</div>
+            <div class="mono big" id="ageDays" style="font-size:clamp(18px,4vw,28px)">—</div>
+          </div>
+          <div style="flex:1;min-width:220px;text-align:center">
+            <div class="small">Banda etaria</div>
+            <div class="mono big" id="bandName" style="font-size:clamp(18px,4vw,28px)">—</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="kv"><div class="k">Rango</div><div class="v" id="bandRange">—</div></div>
+          <div class="kv"><div class="k">Falta para la próxima</div><div class="v" id="bandRemaining">—</div></div>
+        </div>
+      </section>
+
+      <noscript><div style="color:#ff9aa2;padding:8px 0">Necesitás habilitar JavaScript para usar la calculadora.</div></noscript>
+      <script defer="" src="./range.js"></script>
+    </div>
+  </main>
 </div>
-</div>
-</div>
-<noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para usar la calculadora.</div></noscript>
-<script defer="" src="./range.js"></script>
-</main>
-</div>
+
 <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
 </div>
+
 <script defer="" src="./common.js"></script>
+
+<!-- Botones Hoy (A y B) -->
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  var btn = document.getElementById('btnEndToday');
+  function toISO(d){
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+  var btnE = document.getElementById('btnEndToday');
   var endInput = document.getElementById('end');
-  if(btn && endInput){
-    btn.addEventListener('click', function(){
-      var d = new Date();
-      var y = d.getFullYear();
-      var m = String(d.getMonth() + 1).padStart(2, '0');
-      var day = String(d.getDate()).padStart(2, '0');
-      var val = y + '-' + m + '-' + day;
-      endInput.value = val;
-      // trigger events for calculators that listen to changes
+  if(btnE && endInput){
+    btnE.addEventListener('click', function(){
+      endInput.value = toISO(new Date());
       endInput.dispatchEvent(new Event('input', { bubbles: true }));
       endInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
   }
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var btn = document.getElementById('btnStartToday');
-  var input = document.getElementById('start');
-  if(btn && input){
-    btn.addEventListener('click', function(){
-      var d = new Date();
-      var y = d.getFullYear();
-      var m = String(d.getMonth() + 1).padStart(2, '0');
-      var day = String(d.getDate()).padStart(2, '0');
-      var val = y + '-' + m + '-' + day;
-      input.value = val;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+  var btnS = document.getElementById('btnStartToday');
+  var startInput = document.getElementById('start');
+  if(btnS && startInput){
+    btnS.addEventListener('click', function(){
+      startInput.value = toISO(new Date());
+      startInput.dispatchEvent(new Event('input', { bubbles: true }));
+      startInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
   }
 });
 </script>
+
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
