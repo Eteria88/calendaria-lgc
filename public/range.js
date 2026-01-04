@@ -179,6 +179,7 @@ function calcBandas(){
     faltan: faltan,
     recorridas: recorridas
   };
+}
 
 function renderBandSchedule(){
   var wrap = $('bandScheduleWrap');
@@ -198,7 +199,7 @@ function renderBandSchedule(){
   var jBirth = jdnMixed(B.y,B.m,B.d);
   if(hint) hint.textContent = 'Nacimiento: ' + (B.d + '/' + B.m + '/' + B.y);
 
-  // Para resaltar banda actual según fecha de referencia (si existe)
+  // Resaltar banda actual según fecha de referencia (si existe y es válida)
   var refEl = $('ref');
   var daysLife = null;
   if(refEl){
@@ -229,11 +230,11 @@ function renderBandSchedule(){
       + '<td>'+fmtDMY(to)+'</td>'
       + '</tr>';
   }
+
   body.innerHTML = rows;
   wrap.style.display = 'block';
 }
 
-}
 
     function render(){
       var exA = calcRange('startA','endA');
@@ -256,18 +257,18 @@ function renderBandSchedule(){
         setText('yearsOutB', String(Math.floor(exB / 365.2425)));
       }
 
-      // Potenciales / Constante (solo cuando hay ambos)
-      if(exA === null || exB === null){
-        setText('potOut','—');
-        setText('constOut','—');
-      }else{
-        var potenciales = exA + exB;
-        var constante = exA - exB;
-      }
+      
+// Potenciales / Constante (solo cuando hay ambos)
+if(exA === null || exB === null){
+  setText('potOut','—');
+  setText('constOut','—');
+}else{
+  var potenciales = exA + exB;
+  var constante = exA - exB;
+  setText('potOut', String(potenciales));
+  setText('constOut', String(constante));
+}
 
-
-      setText('potOut', String(potenciales));
-      setText('constOut', String(constante));
 
 
 
