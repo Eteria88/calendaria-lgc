@@ -2349,7 +2349,7 @@
       "n": 55,
       "title": "Alejandra Casado en Red 55",
       "date": "2021-10-22",
-      "date_raw": 22.10.2021",
+      "date_raw": "22.10.2021",
       "metrics": "295 -70",
       "vuelta": "vuelta 19",
       "tags": [
@@ -2881,7 +2881,23 @@
       "date_raw": "09.05.2022",
       "metrics": "129 -236",
       "vuelta": "vuelta 9",
-      "tags": [],
+      "tags": [
+        "#Vuelta9",
+        "#JKLfuenteExterna",
+        "#Base12Y21",
+        "#FortalezaEsEmisoraFuerzaEsReceptora",
+        "#ConcienciaReceptoraMenteEmisora",
+        "#AnatomiaDelAño",
+        "#AnatomiaDelPsiquismo",
+        "#IteracionTieneQueVerConCiclos",
+        "#DiferenciaExperienciaEvolucion",
+        "#AparatoPsiquicoYPsicologico",
+        "#SeñalesInterpretadasDocumentadas",
+        "#FuncionPer",
+        "#AlmaInstanciaParticularOColectiva",
+        "#BasesOtasDesdeLGC",
+        "#LaTotalidadFiltraLaFuncionPer"
+      ],
       "youtube_url": "https://youtu.be/olvOra0cPLE",
       "transcripcion_url": "https://t.me/ACenRED/228",
       "pdf_page": 49
