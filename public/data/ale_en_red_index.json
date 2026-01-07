@@ -134,7 +134,7 @@
         "#sabios",
         "#habilidosos"
       ],
-      "youtube_url": null,
+      "youtube_url": "https://t.me/ACenRED/386",
       "transcripcion_url": "https://t.me/ACenRED/47",
       "pdf_page": 2
     },
@@ -200,7 +200,7 @@
         "#algo"
       ],
       "youtube_url": "https://youtu.be/_70m6A9TXnQ",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/ACenRED/49",
       "pdf_page": 3
     },
     {
@@ -345,7 +345,7 @@
       "date": "2020-08-08",
       "date_raw": "08.08.2020",
       "metrics": "221 -145",
-      "vuelta": null,
+      "vuelta": "Vuelta 14",
       "tags": [
         "#comentarioDeExplosionEnBeirutEnElLibano",
         "#saltoDeConciencia",
@@ -830,7 +830,7 @@
       "date": "2020-11-21",
       "date_raw": "21.11.2020",
       "metrics": "326 -38",
-      "vuelta": null,
+      "vuelta": "Vuelta 21",
       "tags": [
         "#21",
         "#12",
@@ -1006,7 +1006,7 @@
       "date": "2020-12-20",
       "date_raw": "20.12.2020",
       "metrics": "355-11",
-      "vuelta": null,
+      "vuelta": "Vuelta 23",
       "tags": [
         "#recreación",
         "#añoBisiesto",
@@ -1041,7 +1041,7 @@
       "date": "2020-12-27",
       "date_raw": "27.12.2020",
       "metrics": "362-4",
-      "vuelta": null,
+      "vuelta": "Vuelta 23",
       "tags": [
         "#aparato505",
         "#quintaEtapa1582",
@@ -1088,9 +1088,9 @@
     {
       "n": 30,
       "title": "Alejandra Casado EN RED 30",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-01-02",
+      "date_raw": "02.01.2021",
+      "metrics": "2 -363",
       "vuelta": "vuelta 1",
       "tags": [
         "#año2021",
@@ -1130,9 +1130,9 @@
     {
       "n": 31,
       "title": "Alejandra Casado EN RED 31",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-01-09",
+      "date_raw": "09.01.2021",
+      "metrics": "9 -356",
       "vuelta": "vuelta 1",
       "tags": [
         "#emisión #absorcion",
@@ -1170,9 +1170,9 @@
     {
       "n": 32,
       "title": "Alejandra Casado EN RED 32",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-01-16",
+      "date_raw": "16.01.2021",
+      "metrics": "16 -349",
       "vuelta": "vuelta 1",
       "tags": [
         "#base12 #base16",
@@ -1207,9 +1207,9 @@
     {
       "n": 33,
       "title": "Alejandra Casado EN RED 33",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-01-23",
+      "date_raw": "23.01.2021",
+      "metrics": "23 -342",
       "vuelta": "vuelta 2",
       "tags": [
         "#estabilidad",
@@ -1245,9 +1245,9 @@
     {
       "n": 34,
       "title": "Alejandra Casado EN RED 34",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-01-30",
+      "date_raw": "30.01.2021",
+      "metrics": "30 -335",
       "vuelta": "vuelta 2",
       "tags": [
         "#sistemaEstable #actualizaciones",
@@ -1342,9 +1342,9 @@
     {
       "n": 36,
       "title": "AlejandraCasadoENRED 36",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-02-13",
+      "date_raw": "13.02.2021",
+      "metrics": "44 -321",
       "vuelta": "vuelta 3",
       "tags": [
         "#Introducción #Lety2#AleEnRed36",
@@ -1380,9 +1380,9 @@
     {
       "n": 37,
       "title": "AlejandraCasadoENRED 37",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-02-20",
+      "date_raw": "20.02.2021",
+      "metrics": "51 -314",
       "vuelta": "vuelta 4",
       "tags": [
         "#AleEnRed37",
@@ -1617,9 +1617,9 @@
     {
       "n": 41,
       "title": "AlejandraCasadoenRed 41",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-04-09",
+      "date_raw": "09.04.2021",
+      "metrics": "99 -266",
       "vuelta": "vuelta 7",
       "tags": [
         "#9abril2021",
@@ -1714,9 +1714,9 @@
     {
       "n": 43,
       "title": "AlejandraCasadoenRed 43",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-05-08",
+      "date_raw": "08-05.2021",
+      "metrics": "128 -237",
       "vuelta": "vuelta 8",
       "tags": [
         "#ValordeAdministración #DictámenlaCorte #serPersonaCalificada",
@@ -1772,9 +1772,9 @@
     {
       "n": 44,
       "title": "AlejandraCasadoenRed 44",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-05-21",
+      "date_raw": "21-05-2021",
+      "metrics": "141 -224",
       "vuelta": "vuelta 9",
       "tags": [
         "#cumpliendoUnAño #PrimeraEmisiónFue23DeMayo #Hace363Días",
@@ -1839,9 +1839,9 @@
     {
       "n": 45,
       "title": "AlejandraCasadoenRed 45",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-06-04",
+      "date_raw": "04.06.2021",
+      "metrics": "155 -210",
       "vuelta": "vuelta 10",
       "tags": [
         "#AleEnRed45",
@@ -1867,9 +1867,9 @@
     {
       "n": 46,
       "title": "AlejandraCasadoenRed 46",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-06-18",
+      "date_raw": "18.06.2021",
+      "metrics": "169 -196",
       "vuelta": "vuelta 11",
       "tags": [
         "#Aleenred46",
@@ -1948,9 +1948,9 @@
     {
       "n": 48,
       "title": "AlejandraCasadoenRed 48",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-07-16",
+      "date_raw": "16-07-2021",
+      "metrics": "197 -168",
       "vuelta": "vuelta 13",
       "tags": [
         "#AleEnRed48",
@@ -2000,9 +2000,9 @@
     {
       "n": 49,
       "title": "AlejandraCasadoenRed 49",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-07-30",
+      "date_raw": "30.07.2021",
+      "metrics": "211 -154",
       "vuelta": "vuelta 14",
       "tags": [
         "#AleEnRed49",
@@ -2049,9 +2049,9 @@
     {
       "n": 50,
       "title": "AlejandraCasadoenRed 50",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2021-08-13",
+      "date_raw": "13.08.2021",
+      "metrics": "225 -140",
       "vuelta": "vuelta 15",
       "tags": [
         "#AleEnRed50",
@@ -2136,10 +2136,10 @@
     {
       "n": 51,
       "title": "AlejandraCasadoenRed 51",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
-      "vuelta": null,
+      "date": "2021-08-27",
+      "date_raw": "27.08.2021",
+      "metrics": "239 -126",
+      "vuelta": "Vuelta 15",
       "tags": [
         "#Vuelta15",
         "#Cuarentena84",
@@ -2154,12 +2154,12 @@
         "#27Agosto"
       ],
       "youtube_url": "https://youtu.be/mb-jw_fsNc0",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/ACenRED/164",
       "pdf_page": 34
     },
     {
       "n": 52,
-      "title": "AlejandraCasadoenRed 52",
+      "title": "Alejandra Casado en Red 52",
       "date": "2021-09-10",
       "date_raw": "10.09.2021",
       "metrics": "253 -112",
@@ -2202,7 +2202,7 @@
     },
     {
       "n": 53,
-      "title": "AlejandraCasadoenRed 53",
+      "title": "Alejandra Casado en Red 53",
       "date": "2021-09-24",
       "date_raw": "24.09.2021",
       "metrics": "267 -98",
@@ -2253,10 +2253,10 @@
     {
       "n": 54,
       "title": "AlejandraCasadoenRed 54",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
-      "vuelta": null,
+      "date": "2021-10-08",
+      "date_raw": "08.10.2021",
+      "metrics": "281 -84",
+      "vuelta": "Vuelta 18",
       "tags": [
         "#AleEnRed54",
         "#8Octubre2021",
@@ -2347,10 +2347,10 @@
     },
     {
       "n": 55,
-      "title": "AlejandraCasadoenRed 55",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "title": "Alejandra Casado en Red 55",
+      "date": "2021-10-22",
+      "date_raw": "22.10.2021",
+      "metrics": "295 -70",
       "vuelta": "vuelta 19",
       "tags": [
         "#AleEnRed55",
@@ -2400,10 +2400,10 @@
     },
     {
       "n": 56,
-      "title": "AlejandraCasadoenRed 56",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "title": "Alejandra Casado en Red 56",
+      "date": "2021-11-13",
+      "date_raw": "13.11.2021",
+      "metrics": "317 -48",
       "vuelta": "vuelta 20",
       "tags": [
         "#AleEnRed56",
@@ -2460,7 +2460,7 @@
     },
     {
       "n": 58,
-      "title": "AlejandraCasadoenRed 58",
+      "title": "Alejandra Casado en Red 58",
       "date": "2021-12-17",
       "date_raw": "17.12.2021",
       "metrics": "351 -14",
@@ -2491,7 +2491,7 @@
       "title": "AlejandraCasadoenRed 59",
       "date": "2022-01-01",
       "date_raw": "01.01.2022",
-      "metrics": "",
+      "metrics": "1 -364",
       "vuelta": "vuelta 1",
       "tags": [
         "#AleEnRed59",
@@ -2523,7 +2523,7 @@
       "title": "Alejandra Casado EN Red 60",
       "date": "2022-01-17",
       "date_raw": "17.01.2022",
-      "metrics": "",
+      "metrics": "17 -248",
       "vuelta": "Vuelta 2",
       "tags": [
         "#AleEnRed60",
@@ -2551,7 +2551,7 @@
       "title": "AlejandraCasadoenRed 61",
       "date": "2022-02-02",
       "date_raw": "02.02.2022",
-      "metrics": "",
+      "metrics": "33 -332",
       "vuelta": "vuelta 3",
       "tags": [
         "#AleEnRed61",
@@ -2672,7 +2672,7 @@
       "title": "AlejandraCasadoenRed 62",
       "date": "2022-02-18",
       "date_raw": "18.02.2022",
-      "metrics": "",
+      "metrics": "49 -316",
       "vuelta": "vuelta 4",
       "tags": [
         "# AleEnRed62",
@@ -2704,7 +2704,7 @@
       "title": "AlejandraCasadoenRed 63",
       "date": "2022-03-06",
       "date_raw": "06.03.2022",
-      "metrics": "",
+      "metrics": "65 -300",
       "vuelta": "vuelta 5",
       "tags": [
         "#AleEnRed63",
@@ -2740,7 +2740,7 @@
       "title": "AlejandraCasadoenRed 64",
       "date": "2022-03-22",
       "date_raw": "22.03.2022",
-      "metrics": "",
+      "metrics": "81 -284",
       "vuelta": "vuelta 6",
       "tags": [
         "#CodigoDe27Letras27X3Es81",
@@ -2763,7 +2763,7 @@
       "title": "AlejandraCasadoenRed 65",
       "date": "2022-04-07",
       "date_raw": "07.04.2022",
-      "metrics": "",
+      "metrics": "97 -268",
       "vuelta": "vuelta 7",
       "tags": [
         "#AleEnRed65",
@@ -2829,7 +2829,7 @@
       "title": "AlejandraCasadoenRed 66",
       "date": "2022-04-23",
       "date_raw": "23.04.2022",
-      "metrics": "",
+      "metrics": "113 -252",
       "vuelta": "vuelta 8",
       "tags": [
         "#AleEnRed66",
@@ -2879,9 +2879,25 @@
       "title": "AlejandraCasadoenRed 67",
       "date": "2022-05-09",
       "date_raw": "09.05.2022",
-      "metrics": "",
+      "metrics": "129 -236",
       "vuelta": "vuelta 9",
-      "tags": [],
+      "tags": [
+        "#Vuelta9",
+        "#JKLfuenteExterna",
+        "#Base12Y21",
+        "#FortalezaEsEmisoraFuerzaEsReceptora",
+        "#ConcienciaReceptoraMenteEmisora",
+        "#AnatomiaDelAño",
+        "#AnatomiaDelPsiquismo",
+        "#IteracionTieneQueVerConCiclos",
+        "#DiferenciaExperienciaEvolucion",
+        "#AparatoPsiquicoYPsicologico",
+        "#SeñalesInterpretadasDocumentadas",
+        "#FuncionPer",
+        "#AlmaInstanciaParticularOColectiva",
+        "#BasesOtasDesdeLGC",
+        "#LaTotalidadFiltraLaFuncionPer"
+      ],
       "youtube_url": "https://youtu.be/olvOra0cPLE",
       "transcripcion_url": "https://t.me/ACenRED/228",
       "pdf_page": 49
@@ -2891,7 +2907,7 @@
       "title": "AlejandraCasadoenRed 68",
       "date": "2022-06-02",
       "date_raw": "02.06.2022",
-      "metrics": "",
+      "metrics": "153 -212",
       "vuelta": "vuelta 10",
       "tags": [
         "#junio2De2023",
@@ -2936,7 +2952,7 @@
       "title": "AlejandraCasadoenRed 69",
       "date": "2022-06-10",
       "date_raw": "10.06.2022",
-      "metrics": "",
+      "metrics": "161 -204",
       "vuelta": "vuelta 11",
       "tags": [
         "#junio2De2023",
@@ -2974,7 +2990,7 @@
       "title": "AlejandraCasadoenRed 70",
       "date": "2022-06-26",
       "date_raw": "26.06.2022",
-      "metrics": "",
+      "metrics": "177 -188",
       "vuelta": "vuelta 12",
       "tags": [
         "# Origen destino - Procesador",
@@ -3014,7 +3030,7 @@
       "title": "AlejandraCasadoenRed 71",
       "date": "2022-07-12",
       "date_raw": "12.07.2022",
-      "metrics": "",
+      "metrics": "193 -172",
       "vuelta": "vuelta 13",
       "tags": [
         "# El otro que no soy yo funcionando",
@@ -3043,7 +3059,7 @@
       "title": "AlejandraCasadoenRed 72",
       "date": "2022-07-28",
       "date_raw": "28.07.2022",
-      "metrics": "",
+      "metrics": "209 -256",
       "vuelta": "vuelta 14",
       "tags": [
         "#AleEnRed72",
@@ -3093,7 +3109,7 @@
       "title": "AlejandraCasadoenRed 73",
       "date": "2022-08-13",
       "date_raw": "13.08.2022",
-      "metrics": "",
+      "metrics": "225 -140",
       "vuelta": "vuelta 15",
       "tags": [
         "#AleEnRed73",
@@ -3148,7 +3164,7 @@
       "title": "AlejandraCasadoenRed 74",
       "date": "2022-08-31",
       "date_raw": "31.08.2022",
-      "metrics": "",
+      "metrics": "243 -122",
       "vuelta": "vuelta 16",
       "tags": [
         "#AleEnRed74",
@@ -3198,7 +3214,7 @@
       "title": "AlejandraCasadoenRed 75",
       "date": "2022-09-14",
       "date_raw": "14.09.2022",
-      "metrics": "",
+      "metrics": "257 -108",
       "vuelta": "vuelta 17",
       "tags": [
         "#AleEnRed75",
@@ -3252,7 +3268,7 @@
       "title": "AlejandraCasadoenRed 76",
       "date": "2022-09-30",
       "date_raw": "30.09.2022",
-      "metrics": "",
+      "metrics": "273 -92",
       "vuelta": "vuelta 18",
       "tags": [
         "#AleEnRed76",
@@ -3294,7 +3310,7 @@
       "title": "AlejandraCasadoenRed 77",
       "date": "2022-10-17",
       "date_raw": "17.10.2022",
-      "metrics": "",
+      "metrics": "290 -75",
       "vuelta": "vuelta 19",
       "tags": [
         "#EN RED 77",
@@ -3346,7 +3362,7 @@
       "title": "AlejandraCasadoenRed 78",
       "date": "2022-11-02",
       "date_raw": "02.11.2022",
-      "metrics": "",
+      "metrics": "306 -59",
       "vuelta": "vuelta 20",
       "tags": [
         "#enRed78",
@@ -3420,7 +3436,7 @@
       "title": "AlejandraCasadoenRed 79",
       "date": "2022-11-17",
       "date_raw": "17.11.2022",
-      "metrics": "",
+      "metrics": "321 -44",
       "vuelta": "vuelta 21",
       "tags": [
         "#enRed79",
@@ -3485,7 +3501,7 @@
       "title": "AlejandraCasadoenRed 80",
       "date": "2022-12-03",
       "date_raw": "03.12.2022",
-      "metrics": "",
+      "metrics": "337 -28",
       "vuelta": "vuelta 22",
       "tags": [
         "#indice80",
@@ -3523,8 +3539,8 @@
       "title": "AlejandraCasadoenRed 81",
       "date": "2022-12-19",
       "date_raw": "19.12.2022",
-      "metrics": "",
-      "vuelta": null,
+      "metrics": "353 -12",
+      "vuelta": "Vuelta 23",
       "tags": [
         "#indice81",
         "#Dic19De2022",
@@ -3554,7 +3570,7 @@
         "#código828Manifiesto"
       ],
       "youtube_url": "https://youtu.be/mh_9xm6UPnY",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/ACenRED/334",
       "pdf_page": 60
     },
     {
@@ -3562,7 +3578,7 @@
       "title": "Alejandra Casado en Red 82",
       "date": "2023-01-01",
       "date_raw": "01.01.2023",
-      "metrics": "",
+      "metrics": "1 -364",
       "vuelta": "vuelta 01",
       "tags": [
         "#Indice82",
@@ -3603,7 +3619,7 @@
       "title": "Alejandra Casado EN RED 83",
       "date": "2023-01-17",
       "date_raw": "17.01.2023",
-      "metrics": "",
+      "metrics": "17 -348",
       "vuelta": "Vuelta 2",
       "tags": [
         "#AleEnRed83",
@@ -3641,7 +3657,7 @@
       "title": "Alejandra Casado EN RED 84",
       "date": "2023-02-02",
       "date_raw": "02.02.2023",
-      "metrics": "",
+      "metrics": "33 -332",
       "vuelta": "vuelta 3",
       "tags": [
         "#AleEnRed84",
@@ -3672,7 +3688,7 @@
         "#calendarioLgcExplicaciónBreve"
       ],
       "youtube_url": "https://youtu.be/leuJnK6hSVQ",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/ACenRED/351",
       "pdf_page": 62
     },
     {
@@ -3680,7 +3696,7 @@
       "title": "Alejandra Casado EN RED 85",
       "date": "2023-02-20",
       "date_raw": "20.02.2023",
-      "metrics": "",
+      "metrics": "51 -344",
       "vuelta": "vuelta 4",
       "tags": [
         "#AleEnRed85",
@@ -3713,7 +3729,7 @@
       "title": "Alejandra Casado EN RED 86",
       "date": "2023-03-06",
       "date_raw": "06.03.2023",
-      "metrics": "",
+      "metrics": "65 -300",
       "vuelta": "vuelta 5",
       "tags": [
         "#PlantillaLGC"
@@ -3727,7 +3743,7 @@
       "title": "Alejandra Casado EN RED 87",
       "date": "2023-03-22",
       "date_raw": "22.03.2023",
-      "metrics": "",
+      "metrics": "81 -284",
       "vuelta": "vuelta 6",
       "tags": [
         "#AleEnRed87",
@@ -3781,7 +3797,7 @@
       "title": "Alejandra Casado EN RED 88",
       "date": "2023-04-10",
       "date_raw": "10.04.2023",
-      "metrics": "",
+      "metrics": "100 -265",
       "vuelta": "vuelta 7",
       "tags": [
         "#AleEnRed88",
@@ -3828,7 +3844,7 @@
       "title": "Alejandra Casado EN RED 89",
       "date": "2023-04-24",
       "date_raw": "24.04.2023",
-      "metrics": "",
+      "metrics": "114 -251",
       "vuelta": "vuelta 8",
       "tags": [
         "#AleEnRed89",
@@ -3878,7 +3894,7 @@
       "title": "Alejandra Casado EN RED 90",
       "date": "2023-05-10",
       "date_raw": "10.05.2023",
-      "metrics": "",
+      "metrics": "130 -235",
       "vuelta": "vuelta 9",
       "tags": [
         "#AleEnRed90",
@@ -3922,7 +3938,7 @@
       "title": "Alejandra Casado EN RED 91",
       "date": "2023-05-26",
       "date_raw": "26.05.2023",
-      "metrics": "",
+      "metrics": "146 -219",
       "vuelta": "vuelta 10",
       "tags": [
         "#AleEnRed91",
@@ -3974,7 +3990,7 @@
       "title": "Alejandra Casado EN RED 92",
       "date": "2023-06-10",
       "date_raw": "10.06.2023",
-      "metrics": "",
+      "metrics": "161 -204",
       "vuelta": "vuelta 11",
       "tags": [
         "#AleEnRed92",
@@ -4036,7 +4052,7 @@
       "title": "Alejandra Casado EN RED 93",
       "date": "2023-06-26",
       "date_raw": "26.06.2023",
-      "metrics": "",
+      "metrics": "177 -188",
       "vuelta": "vuelta 12",
       "tags": [
         "#26DeJunioDe2023",
@@ -4093,7 +4109,7 @@
       "title": "Alejandra Casado EN RED 94",
       "date": "2023-07-12",
       "date_raw": "12.07.2023",
-      "metrics": "",
+      "metrics": "193 -172",
       "vuelta": "vuelta 13",
       "tags": [
         "#julio12De2023",
@@ -4140,7 +4156,7 @@
       "title": "Alejandra Casado EN RED 95",
       "date": "2023-07-28",
       "date_raw": "28.07.2023",
-      "metrics": "",
+      "metrics": "209 -256",
       "vuelta": "vuelta 14",
       "tags": [
         "#AleEnRed95",
@@ -4189,7 +4205,7 @@
       "title": "Alejandra Casado EN RED 96",
       "date": "2023-08-13",
       "date_raw": "13.08.2023",
-      "metrics": "",
+      "metrics": "225 -140",
       "vuelta": "vuelta 15",
       "tags": [
         "#aleEnred96",
@@ -4291,7 +4307,7 @@
       "title": "Alejandra Casado EN RED 97",
       "date": "2023-08-29",
       "date_raw": "29.08.2023",
-      "metrics": "",
+      "metrics": "241 -124",
       "vuelta": "vuelta 16",
       "tags": [
         "#Indice97",
@@ -4340,7 +4356,7 @@
       "title": "Alejandra Casado EN RED 98",
       "date": "2023-09-14",
       "date_raw": "14.09.2023",
-      "metrics": "",
+      "metrics": "257 -108",
       "vuelta": "vuelta 17 (Notas musicales)",
       "tags": [
         "#Indice98",
@@ -4411,7 +4427,7 @@
       "title": "Alejandra Casado EN RED 99",
       "date": "2023-10-01",
       "date_raw": "01.10.2023",
-      "metrics": "",
+      "metrics": "274 -91",
       "vuelta": "vuelta 18",
       "tags": [
         "#AleEnRed99 #IndiceVuelta18 #Vuelta18",
@@ -4465,7 +4481,7 @@
       "title": "Alejandra Casado EN RED 100",
       "date": "2023-10-16",
       "date_raw": "16.10.2023",
-      "metrics": "",
+      "metrics": "289 -76",
       "vuelta": "vuelta 19",
       "tags": [
         "#DiasDeVida19672 #CodigoAntartida #Neutrinos #FuncionPer",
@@ -4523,7 +4539,7 @@
       "title": "Alejandra Casado EN RED 101",
       "date": "2023-11-01",
       "date_raw": "01.11.2023",
-      "metrics": "",
+      "metrics": "305 -60",
       "vuelta": "vuelta 20",
       "tags": [
         "#vuelta20",
@@ -4579,7 +4595,7 @@
       "title": "Alejandra Casado EN RED 102",
       "date": "2023-11-18",
       "date_raw": "18.11.2023",
-      "metrics": "",
+      "metrics": "322 -43",
       "vuelta": "vuelta 21",
       "tags": [
         "#vuelta21",
@@ -4630,7 +4646,7 @@
       "title": "Alejandra Casado EN RED 103",
       "date": "2023-12-05",
       "date_raw": "05.12.2023",
-      "metrics": "",
+      "metrics": "339 -26",
       "vuelta": "vuelta 22",
       "tags": [
         "#vuelta22",
@@ -4738,7 +4754,7 @@
       "title": "Alejandra Casado EN RED 104",
       "date": "2023-12-19",
       "date_raw": "19.12.2023",
-      "metrics": "",
+      "metrics": "353 -12",
       "vuelta": "vuelta 23",
       "tags": [
         "#AleEnRed104",
@@ -4858,7 +4874,7 @@
         "#autenticidad"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=TrwVx01R73I&ab_channel=LeticiaCandelariaSaucedo",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/ACenRED/492",
       "pdf_page": 83
     },
     {
@@ -4866,7 +4882,7 @@
       "title": "Alejandra Casado EN RED 105",
       "date": "2024-01-01",
       "date_raw": "01.01.2024",
-      "metrics": "",
+      "metrics": "1 -365",
       "vuelta": "vuelta 1",
       "tags": [
         "#CG4096",
@@ -4898,7 +4914,7 @@
       "title": "Alejandra Casado EN RED 106",
       "date": "2024-01-17",
       "date_raw": "17.01.2024",
-      "metrics": "",
+      "metrics": "17 -349",
       "vuelta": "vuelta 2",
       "tags": [
         "#indice106",
@@ -4964,7 +4980,7 @@
       "title": "Alejandra Casado EN RED 107",
       "date": "2024-02-02",
       "date_raw": "02.02.2024",
-      "metrics": "",
+      "metrics": "33 -333",
       "vuelta": "vuelta 3",
       "tags": [
         "#EnRed107",
@@ -5007,7 +5023,7 @@
       "title": "Alejandra Casado EN RED 108",
       "date": "2024-02-18",
       "date_raw": "18.02.2024",
-      "metrics": "",
+      "metrics": "49 -317",
       "vuelta": "vuelta 4",
       "tags": [
         "#Indice108",
@@ -5065,7 +5081,7 @@
       "title": "Alejandra Casado EN RED 109",
       "date": "2024-03-05",
       "date_raw": "05.03.2024",
-      "metrics": "",
+      "metrics": "65 -301",
       "vuelta": "vuelta 5",
       "tags": [
         "#indice109",
@@ -5142,7 +5158,7 @@
       "title": "Alejandra Casado EN RED 110",
       "date": "2024-03-21",
       "date_raw": "21.03.2024",
-      "metrics": "",
+      "metrics": "81 -285",
       "vuelta": "vuelta 6",
       "tags": [
         "#indice110",
@@ -5214,7 +5230,7 @@
       "title": "Alejandra Casado EN RED 111",
       "date": "2024-04-07",
       "date_raw": "07.04.2024",
-      "metrics": "",
+      "metrics": "98 -268",
       "vuelta": "vuelta 7",
       "tags": [
         "#AleEnRed111",
@@ -5339,7 +5355,7 @@
       "title": "Alejandra Casado EN RED 112",
       "date": "2024-04-22",
       "date_raw": "22.04.2024",
-      "metrics": "",
+      "metrics": "113 -253",
       "vuelta": "vuelta 8",
       "tags": [
         "#AleEnRed112",
@@ -5430,7 +5446,7 @@
       "title": "Alejandra Casado EN RED 113",
       "date": "2024-05-08",
       "date_raw": "08.05.2024",
-      "metrics": "",
+      "metrics": "129 -237",
       "vuelta": "vuelta 9",
       "tags": [
         "#8mayo2024",
@@ -5477,7 +5493,7 @@
       "title": "Alejandra Casado EN RED 114",
       "date": "2024-05-25",
       "date_raw": "25.05.2024",
-      "metrics": "",
+      "metrics": "146 -120",
       "vuelta": "vuelta 10",
       "tags": [
         "#AleEnRed114",
@@ -5512,7 +5528,7 @@
       "title": "Alejandra Casado EN RED 115",
       "date": "2024-06-10",
       "date_raw": "10.06.2024",
-      "metrics": "",
+      "metrics": "162 -204",
       "vuelta": "vuelta 11",
       "tags": [
         "#aleenred115",
@@ -5572,7 +5588,7 @@
       "title": "Alejandra Casado EN RED 116",
       "date": "2024-06-25",
       "date_raw": "25.06.2024",
-      "metrics": "",
+      "metrics": "177 -189",
       "vuelta": "vuelta 12",
       "tags": [
         "#aleenred116",
@@ -5609,7 +5625,7 @@
       "title": "Alejandra Casado EN RED 117",
       "date": "2024-07-11",
       "date_raw": "11.07.2024",
-      "metrics": "",
+      "metrics": "193 -173",
       "vuelta": "vuelta 13",
       "tags": [
         "#Indice117",
@@ -5656,7 +5672,7 @@
       "title": "Alejandra Casado EN RED 118",
       "date": "2024-07-27",
       "date_raw": "27.07.2024",
-      "metrics": "",
+      "metrics": "209 -157",
       "vuelta": "vuelta 14",
       "tags": [
         "#27DeJulioDe2024",
@@ -5718,7 +5734,7 @@
       "title": "Alejandra Casado EN RED 119",
       "date": "2024-08-12",
       "date_raw": "12.08.2024",
-      "metrics": "",
+      "metrics": "225 -141",
       "vuelta": "vuelta 15",
       "tags": [
         "#12DeAgostoDe2024",
@@ -5769,7 +5785,7 @@
       "title": "Alejandra Casado EN RED 120",
       "date": "2024-08-28",
       "date_raw": "28.08.2024",
-      "metrics": "",
+      "metrics": "241 -125",
       "vuelta": "vuelta 16",
       "tags": [
         "#AleEnRed120",
@@ -5847,7 +5863,7 @@
       "title": "Alejandra Casado EN RED 121",
       "date": "2024-09-13",
       "date_raw": "13.09.2024",
-      "metrics": "",
+      "metrics": "257 -109",
       "vuelta": "vuelta 17",
       "tags": [
         "#AleEnRed121",
@@ -5882,7 +5898,7 @@
         "#actualizacion"
       ],
       "youtube_url": "https://youtu.be/HUg15zuGPnc?si=rhe3mokliFoWK66C",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/204",
       "pdf_page": 106
     },
     {
@@ -5890,7 +5906,7 @@
       "title": "Alejandra Casado EN RED 122",
       "date": "2024-09-30",
       "date_raw": "30.09.2024",
-      "metrics": "",
+      "metrics": "274 -92",
       "vuelta": "vuelta 18",
       "tags": [
         "#AleEnRed122",
@@ -5940,7 +5956,7 @@
       "title": "Alejandra Casado EN RED 123",
       "date": "2024-10-16",
       "date_raw": "16.10.2024",
-      "metrics": "",
+      "metrics": "290 -76",
       "vuelta": "vuelta 19",
       "tags": [
         "#indice123",
@@ -5986,7 +6002,7 @@
       "title": "Alejandra Casado EN RED 124",
       "date": "2024-10-31",
       "date_raw": "31.10.2024",
-      "metrics": "",
+      "metrics": "305 -61",
       "vuelta": "vuelta 20",
       "tags": [
         "#indice124",
@@ -6040,10 +6056,10 @@
     {
       "n": 125,
       "title": "Alejandra Casado EN RED 125",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
-      "vuelta": null,
+      "date": "2024-11-17",
+      "date_raw": "17.11.2024",
+      "metrics": "322 -44",
+      "vuelta": "Vuelta 21",
       "tags": [
         "#AleEnRed125",
         "#Indice125",
@@ -6102,7 +6118,7 @@
         "#ConcienciaPersonal"
       ],
       "youtube_url": "https://youtu.be/v8uswlOnKt0?si=JHh0ITT4rGDQTOqo",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/ACenRED/607",
       "pdf_page": 110
     },
     {
@@ -6110,7 +6126,7 @@
       "title": "Alejandra Casado EN RED 126",
       "date": "2024-12-02",
       "date_raw": "02.12.2024",
-      "metrics": "",
+      "metrics": "337 -29",
       "vuelta": "vuelta 22",
       "tags": [
         "#ConcienciaSolar",
@@ -6170,7 +6186,7 @@
       "title": "Alejandra Casado EN RED 127",
       "date": "2024-12-19",
       "date_raw": "19.12.2024",
-      "metrics": "",
+      "metrics": "354 -12",
       "vuelta": "vuelta 23. Anillo de Fuego",
       "tags": [
         "#Tumi",
@@ -6210,7 +6226,7 @@
       "title": "Alejandra Casado EN RED 128",
       "date": "2025-01-01",
       "date_raw": "01.01.2025",
-      "metrics": "",
+      "metrics": "1 -364",
       "vuelta": "vuelta 1",
       "tags": [
         "#indice128",
@@ -6305,7 +6321,7 @@
         "#foco"
       ],
       "youtube_url": "https://youtu.be/J8rRw5d4C3E?si=rTk3gaLCCw6B-sZm",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/213",
       "pdf_page": 113
     },
     {
@@ -6345,7 +6361,7 @@
         "#desarrollarnosEnEscalaParticular"
       ],
       "youtube_url": "https://youtu.be/E4nfoJVvnxc?si=Dkqcyyu1hQP4oBz0",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/214",
       "pdf_page": 115
     },
     {
@@ -6353,7 +6369,7 @@
       "title": "Alejandra Casado EN RED 130",
       "date": "2025-02-02",
       "date_raw": "02.02.2025",
-      "metrics": "",
+      "metrics": "33 -332",
       "vuelta": "vuelta 3",
       "tags": [
         "#AleEnRed130",
@@ -6386,7 +6402,7 @@
         "#gaia39 #SeguridadEnLaIncertidumbre"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=BROP9K6rdSY&list=PLl1gAjW5tGHkn3km9Xv4Lj4zkLIjRR-Nb&index=19&t=2762s&pp=iAQB",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/217",
       "pdf_page": 116
     },
     {
@@ -6394,7 +6410,7 @@
       "title": "Alejandra Casado EN RED 131",
       "date": "2025-02-20",
       "date_raw": "20.02.2025",
-      "metrics": "",
+      "metrics": "51 -314",
       "vuelta": "vuelta 4",
       "tags": [
         "#AleEnRed131",
@@ -6437,16 +6453,16 @@
         "#eventoAgostoImportantePasadoPresencial"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=QrwOIG7sIL8&list=PLl1gAjW5tGHkn3km9Xv4Lj4zkLIjRR-Nb&index=18&t=3210s&pp=iAQB",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/218",
       "pdf_page": 116
     },
     {
       "n": 132,
       "title": "Alejandra Casado EN RED 132",
-      "date": "2025-01-17",
-      "date_raw": "17.01.2025",
-      "metrics": "",
-      "vuelta": "vuelta 2",
+      "date": "2025-03-06",
+      "date_raw": "06.03.2025",
+      "metrics": "65 -300",
+      "vuelta": "vuelta 5",
       "tags": [
         "#6DeMarzoDe2025",
         "#indice132",
@@ -6490,16 +6506,16 @@
         "#creacionDeSentido"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=OlbQ6Iilf9I&list=PLl1gAjW5tGHkn3km9Xv4Lj4zkLIjRR-Nb&index=17&pp=iAQB",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/219",
       "pdf_page": 117
     },
     {
       "n": 133,
       "title": "Alejandra Casado EN RED 133",
-      "date": "2025-01-17",
-      "date_raw": "17.01.2025",
-      "metrics": "",
-      "vuelta": "vuelta 2",
+      "date": "2025-03-22",
+      "date_raw": "22.03.2025",
+      "metrics": "81 -284",
+      "vuelta": "vuelta 6",
       "tags": [
         "#22DeJunioDe2025",
         "#indice133",
@@ -6543,7 +6559,7 @@
         "#7RolDeProteccion"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=Fi3gJ5g7vl4&list=PLl1gAjW5tGHkn3km9Xv4Lj4zkLIjRR-Nb&index=16&t=5287s&pp=iAQB",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/220",
       "pdf_page": 118
     },
     {
@@ -6551,7 +6567,7 @@
       "title": "Alejandra Casado EN RED 134",
       "date": "2025-04-07",
       "date_raw": "07.04.2025",
-      "metrics": "",
+      "metrics": "97 -268",
       "vuelta": "vuelta 7",
       "tags": [
         "#aleEnRed134",
@@ -6609,7 +6625,7 @@
       "title": "Alejandra Casado EN RED 135",
       "date": "2025-04-24",
       "date_raw": "24.04.2025",
-      "metrics": "",
+      "metrics": "114 -251",
       "vuelta": "vuelta 8",
       "tags": [
         "#aleEnRed135",
@@ -6667,9 +6683,9 @@
     {
       "n": 136,
       "title": "Alejandra Casado EN RED 136",
-      "date": null,
-      "date_raw": null,
-      "metrics": null,
+      "date": "2025-05-09",
+      "date_raw": "09.05.2025",
+      "metrics": "129 -236",
       "vuelta": "vuelta 9",
       "tags": [
         "#aleEnRed136",
@@ -6719,20 +6735,20 @@
       "title": "Alejandra Casado EN RED 137",
       "date": "2025-05-25",
       "date_raw": "25.05.2025",
-      "metrics": "",
+      "metrics": "145 -220",
       "vuelta": "vuelta 10",
       "tags": [],
       "youtube_url": "https://www.youtube.com/watch?v=tJP4SrjIGhg",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/227",
       "pdf_page": 122
     },
     {
       "n": 138,
       "title": "Alejandra Casado EN RED 138",
-      "date": "2025-05-25",
-      "date_raw": "25.05.2025",
-      "metrics": "",
-      "vuelta": "vuelta 10",
+      "date": "2025-06-10",
+      "date_raw": "10.06.2025",
+      "metrics": "161 -204",
+      "vuelta": "vuelta 11",
       "tags": [
         "#mendeleyev",
         "#paradoja",
@@ -6745,7 +6761,7 @@
         "#campoUnificado"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=GamivSgOLtA",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/231",
       "pdf_page": 122
     },
     {
@@ -6753,7 +6769,7 @@
       "title": "Alejandra Casado EN RED 139",
       "date": "2025-06-26",
       "date_raw": "26.06.2025",
-      "metrics": "",
+      "metrics": "177 -188",
       "vuelta": "vuelta 12",
       "tags": [
         "#AleEnRed139",
@@ -6804,7 +6820,7 @@
         "#ActualizaciónDeCódigo"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=1K8QLKYqHiU&t=641s",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/241",
       "pdf_page": 123
     },
     {
@@ -6812,7 +6828,7 @@
       "title": "Alejandra Casado EN RED 140",
       "date": "2025-07-12",
       "date_raw": "12.07.2025",
-      "metrics": "",
+      "metrics": "193 -172",
       "vuelta": "vuelta 13",
       "tags": [
         "#AlejandraCasado",
@@ -6866,7 +6882,7 @@
         "#EventosPresenciales"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=P3p_k2ozH_8",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/252",
       "pdf_page": 124
     },
     {
@@ -6874,7 +6890,7 @@
       "title": "Alejandra Casado EN RED 141",
       "date": "2025-07-28",
       "date_raw": "28.07.2025",
-      "metrics": "",
+      "metrics": "209 -156",
       "vuelta": "vuelta 14",
       "tags": [
         "#AlejandraCasado",
@@ -6923,7 +6939,7 @@
         "#OrigenDigital"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=vA7E6ZI6yvY",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/253",
       "pdf_page": 125
     },
     {
@@ -6931,7 +6947,7 @@
       "title": "Alejandra Casado EN RED 142",
       "date": "2025-08-13",
       "date_raw": "13.08.2025",
-      "metrics": "",
+      "metrics": "225 -140",
       "vuelta": "vuelta 15",
       "tags": [
         "#AlejandraCasado",
@@ -6989,7 +7005,7 @@
         "#ActualizaciónEscalar"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=C4wmcSUBp8w&t=17s",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/254",
       "pdf_page": 126
     },
     {
@@ -6997,7 +7013,7 @@
       "title": "Alejandra Casado EN RED 143",
       "date": "2025-08-31",
       "date_raw": "31.08.2025",
-      "metrics": "",
+      "metrics": "243 -122",
       "vuelta": "vuelta 16",
       "tags": [
         "#AleEnRed143",
@@ -7026,7 +7042,7 @@
         "#CierreEmision"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=v8qAgqcnJis&t=3534s",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/258",
       "pdf_page": 127
     },
     {
@@ -7034,7 +7050,7 @@
       "title": "Alejandra Casado EN RED 144",
       "date": "2025-09-14",
       "date_raw": "14.09.2025",
-      "metrics": "",
+      "metrics": "257 -108",
       "vuelta": "vuelta 17",
       "tags": [
         "#AleEnRed144",
@@ -7061,7 +7077,7 @@
         "#CierreEmision"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=2aI-XkKIYlo&t=48s",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/260",
       "pdf_page": 128
     },
     {
@@ -7069,7 +7085,7 @@
       "title": "Alejandra Casado EN RED 145",
       "date": "2025-09-30",
       "date_raw": "30.09.2025",
-      "metrics": "",
+      "metrics": "273 -92",
       "vuelta": "vuelta 18",
       "tags": [
         "#AleEnRed145",
@@ -7095,7 +7111,7 @@
         "#Ano2026RecreacionDelYe"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=2v74n1DiKaw&t=3305s",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/262",
       "pdf_page": 129
     },
     {
@@ -7103,7 +7119,7 @@
       "title": "Alejandra Casado EN RED 146",
       "date": "2025-10-16",
       "date_raw": "16.10.2025",
-      "metrics": "",
+      "metrics": "289 -76",
       "vuelta": "vuelta 19",
       "tags": [
         "#AleEnRed146",
@@ -7175,7 +7191,7 @@
         "#InterpretezonaMuda"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=gnPcsu0BNXI&t=1687s",
-      "transcripcion_url": null,
+      "transcripcion_url": "http://t.me/TranscripcionesLGC/265",
       "pdf_page": 129
     },
     {
@@ -7183,7 +7199,7 @@
       "title": "Alejandra Casado EN RED 147",
       "date": "2025-11-01",
       "date_raw": "01.11.2025",
-      "metrics": "",
+      "metrics": "305 -60",
       "vuelta": "vuelta 20",
       "tags": [
         "#vuelta20/2025",
@@ -7280,7 +7296,7 @@
         "#desdoblamientoPrimerioGestionaSecundario"
       ],
       "youtube_url": "https://www.youtube.com/watch?v=t_zw-Bem8lg&t=143s",
-      "transcripcion_url": null,
+      "transcripcion_url": "https://t.me/TranscripcionesLGC/266",
       "pdf_page": 130
     },
     {
@@ -7288,7 +7304,7 @@
       "title": "Alejandra Casado EN RED 148",
       "date": "2025-11-21",
       "date_raw": "21.11.2025",
-      "metrics": "",
+      "metrics": "325 -40",
       "vuelta": "vuelta 21",
       "tags": [
         "#aleEnRed148",
@@ -7421,7 +7437,7 @@
       "title": "Alejandra Casado EN RED 149",
       "date": "2025-12-03",
       "date_raw": "03.12.2025",
-      "metrics": "",
+      "metrics": "337 -28",
       "vuelta": "vuelta 22",
       "tags": [
         "#AleEnRed149",
@@ -7543,7 +7559,7 @@
       "title": "Alejandra Casado EN RED 150",
       "date": "2025-12-19",
       "date_raw": "19.12.2025",
-      "metrics": "",
+      "metrics": "353 -12",
       "vuelta": "vuelta 23",
       "tags": [
         "#EnRed150",
@@ -7683,11 +7699,9 @@
       "title": "Alejandra Casado EN RED 151",
       "date": "2026-01-01",
       "date_raw": "01.01.2026",
-      "metrics": "",
+      "metrics": "1 -364",
       "vuelta": "vuelta 1",
       "tags": [
-        "#EnRed151",
-        "#AleEnRed151",
         "#AlejandraCasado",
         "#AleEnRed",
         "#LGC",
@@ -7719,9 +7733,9 @@
         "#EscalaPersonal",
         "#TranscripcionesParaDespertar"
       ],
-      "youtube_url": "https://youtu.be/jtZicaGAlAw",
+      "youtube_url": "https://youtu.be/jtZicaGAlAw?si=gBoRtjDQuR1PwJS2",
       "transcripcion_url": "https://t.me/TranscripcionesLGC/277",
-      "pdf_page": null
+      "pdf_page": 139
     }
   ],
   "generated_from": "INDICE_GENERAL_ALE_EN_RED_1_A_150_2020_2025_docx_Documentos_de_Google.pdf"
