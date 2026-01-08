@@ -167,7 +167,8 @@ function calcBandas(){
   if(!found.ok) return { ok:false, msg: found.msg, dias:dias };
 
   var b = found.b;
-  var faltan = (b.n < 5) ? (b.nextStart - dias) : null;
+  var transcurridos = dias - b.desde;
+  var faltan = (b.hasta + 1) - dias; // días restantes para terminar/cambiar de banda
   var recorridas = Math.max(0, b.n - 1); // bandas completas
 
   return {
@@ -176,6 +177,7 @@ function calcBandas(){
     banda: b.n,
     desde: b.desde,
     hasta: b.hasta,
+    transcurridos: transcurridos,
     faltan: faltan,
     recorridas: recorridas
   };
@@ -275,22 +277,16 @@ if(exA === null || exB === null){
 // --- Bandas etarias ---
 var band = calcBandas();
 if(!band.ok){
-  // Si faltan fechas, no mostramos nada; si hay error real, lo mostramos en "Frecuencias de la banda etaria"
+  // Si faltan fechas, no mostramos nada; si hay error real, lo mostramos en "Días para la próxima"
   if(String(band.msg||'').indexOf('Falta') === 0){
-    setText('bandOut','—'); setText('bandFreq','—'); setText('bandDone','—');
+    setText('bandOut','—'); setText('bandLeft','—'); setText('bandDone','—');
   }else{
     setText('bandOut','—'); setText('bandDone','—');
-    setText('bandFreq', band.msg || '—');
+    setText('bandLeft', band.msg || '—');
   }
 }else{
   setText('bandOut', band.banda + 'ª (' + band.desde + '–' + band.hasta + ')');
-
-  // Frecuencias de la banda: +días transcurridos / -días faltantes para cambiar de banda
-  var trans = band.dias - band.desde;
-  var nextStart = band.hasta + 1; // inicio de la siguiente banda (o fin del rango total)
-  var faltan = nextStart - band.dias; // >= 1 mientras esté dentro de la banda
-  setText('bandFreq', '+' + trans + ' / -' + faltan);
-
+  setText('bandLeft', '+' + String(band.transcurridos) + ' | -' + String(band.faltan));
   setText('bandDone', String(band.recorridas) + ' (completas)');
 }
 
