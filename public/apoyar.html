@@ -83,6 +83,30 @@
     .topActions{display:flex;gap:10px;flex-wrap:wrap}
     .topActions a{min-height:36px}
     .note{margin-top:10px}
+
+    .sectionTitle{
+      margin:0 0 10px 0;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    .about{
+      font-size:15px;
+      line-height:1.6;
+    }
+    .about p{ margin:0 0 12px 0; }
+    .about p:last-child{ margin-bottom:0; }
+    .about ul{
+      margin:8px 0 12px 18px;
+      padding:0;
+    }
+    .about li{ margin:6px 0; }
+    .sectionLabel{
+      margin-top:12px;
+      font-weight:700;
+    }
+
   </style>
 </head>
 <body>
@@ -98,18 +122,31 @@
 
   <div class="wrap">
     <div class="card">
-      <div class="muted">
-        <p style="margin:0 0 10px 0"><b>Calendaria‑LGC</b> comenzó el <b>09-09-2025</b> con un objetivo concreto: construir una aplicación con <b>eficiencia, precisión y practicidad</b> para calcular y visualizar métricas a partir de señales y datos que cada receptor registra como referencia.</p>
-        <p style="margin:0 0 10px 0">El foco está en una participación consciente y ordenada, integrando la experiencia individual con una red de observación e interpretación compartida.</p>
-        <p style="margin:0 0 10px 0">Tu donación contribuye a sostener la aplicación, su desarrollo y su actualización constante a lo largo de las <b>23 vueltas</b> que componen cada año solar en Calendaria.</p>
-        <p style="margin:0 0 10px 0">Desde lo técnico, tu aporte ayuda a cubrir infraestructura (dominio/hosting/despliegues), mantenimiento y evolución (correcciones, rendimiento, compatibilidad), calidad de cálculo (validaciones y casos límite como años bisiestos), experiencia de uso (interfaz y accesibilidad) y confiabilidad (control de versiones y revisión continua).</p>
-        <p style="margin:0">Si te aporta valor y querés apoyar su continuidad y crecimiento, podés hacerlo por cualquiera de estos medios:</p>
+
+      <h2 class="sectionTitle">Sobre el proyecto</h2>
+      <div class="muted about">
+        <p><b>Calendaria‑LGC</b> comenzó el <b>09-09-2025</b> con un objetivo concreto: construir una aplicación con <b>eficiencia, precisión y practicidad</b> para calcular y visualizar métricas a partir de señales y datos que cada receptor registra como referencia.</p>
+        <p>El foco está en una participación consciente y ordenada, integrando la experiencia individual con una red de observación e interpretación compartida.</p>
+        <p>Tu donación contribuye a sostener la aplicación, su desarrollo y su actualización constante a lo largo de las <b>23 vueltas</b> que componen cada año solar en Calendaria. También permite mejorar la estabilidad del sistema y ampliar sus capacidades de forma progresiva.</p>
+
+        <p><b>¿Qué hace posible tu aporte?</b></p>
+        <ul>
+          <li><b>Infraestructura y operación:</b> dominio, hosting, despliegues y disponibilidad.</li>
+          <li><b>Mantenimiento y evolución:</b> correcciones, refactorización, mejoras de rendimiento y compatibilidad entre dispositivos/navegadores.</li>
+          <li><b>Calidad de cálculo:</b> validaciones, control de consistencia y manejo de casos límite (por ejemplo, años bisiestos).</li>
+          <li><b>Experiencia de usuario:</b> interfaz, accesibilidad, legibilidad y claridad de navegación.</li>
+          <li><b>Seguridad y confiabilidad:</b> buenas prácticas, control de versiones, respaldo de cambios y revisión continua.</li>
+        </ul>
+
+        <p>Si te aporta valor y querés apoyar su continuidad y crecimiento, podés hacerlo por cualquiera de estos medios:</p>
       </div>
+      <div class="muted sectionLabel">Formas de apoyar</div>
+
 
       <div class="grid">
         <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago</a>
         <a class="btn" id="ppBtn" href="#" target="_blank" rel="noopener">PayPal</a>
-</div>
+      </div>
 
       <div class="muted" style="margin-top:12px">Contacto del proyecto (comentarios, sugerencias, info):</div>
       <div class="row">
