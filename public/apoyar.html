@@ -100,52 +100,160 @@
     <div class="card">
       <div class="muted">
         Calendaria-LGC es una Aplicación libre, en actualización permanente.<br>
-        Si te aporta valor y quieres apoyar su continuidad y crecimiento, puedes hacerlo por cualquiera de estos medios.<br>También puedes escribir con ideas, devoluciones o material para sumar.
+        Si te aporta valor y quieres apoyar su continuidad y crecimiento, puedes hacerlo por cualquiera de estos medios.
       </div>
 
       <div class="grid">
         <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago</a>
         <a class="btn" id="ppBtn" href="#" target="_blank" rel="noopener">PayPal</a>
-        <a class="btn secondary" id="mailBtn" href="#" rel="noopener">Contacto (email)</a>
 </div>
+
+      <div class="muted" style="margin-top:12px">Contacto del proyecto (comentarios, sugerencias, info):</div>
+      <div class="row">
+        <code id="contactEmail">appcalendaria.lgc@gmail.com</code>
+        <button class="btn secondary" type="button" data-copy-target="contactEmail">Copiar</button>
+        <a class="btn secondary" href="mailto:appcalendaria.lgc@gmail.com" style="text-decoration:none">Escribir</a>
+      </div>
+
 
       <div class="muted note">
         Aporte opcional. La app sigue siendo abierta para todos.
       </div>
     </div>
 
+    
     <div class="card">
-  <div style="font-size:14px;margin-bottom:8px">Transferencia (Argentina) — Global66</div>
+      <div style="font-size:14px;margin-bottom:8px">Transferencia (Argentina) — Global66</div>
 
-  <div class="muted">Alias:</div>
-  <div class="row">
-    <code id="aliasTxt">calendaria-lgc.red</code>
-    <button class="btn secondary" id="copyAliasBtn" type="button">Copiar</button>
-  </div>
+      <div class="muted">Alias:</div>
+      <div class="row">
+        <code id="g66Alias">calendaria-lgc.red</code>
+        <button class="btn secondary" type="button" data-copy-target="g66Alias">Copiar</button>
+      </div>
 
-  <div class="muted" style="margin-top:10px">CVU:</div>
-  <div class="row">
-    <code id="cvuTxt">0000230300000034070798</code>
-    <button class="btn secondary" id="copyCvuBtn" type="button">Copiar</button>
-  </div>
+      <div class="muted" style="margin-top:10px">CVU:</div>
+      <div class="row">
+        <code id="g66Cvu">0000230300000034070798</code>
+        <button class="btn secondary" type="button" data-copy-target="g66Cvu">Copiar</button>
+      </div>
 
-  <div class="muted" style="margin-top:10px">Nombre / Titular:</div>
-  <div class="row">
-    <code id="nameTxt">Joan Andrey Rendon Bahamon</code>
-    <button class="btn secondary" id="copyNameBtn" type="button">Copiar</button>
-  </div>
+      <div class="muted" style="margin-top:10px">Titular:</div>
+      <div class="row">
+        <code id="g66Name">Joan Andrey Rendon Bahamon</code>
+        <button class="btn secondary" type="button" data-copy-target="g66Name">Copiar</button>
+      </div>
 
-  <div class="muted note">
-    Estos datos son para transferencias desde Argentina (CVU).<br>
-    Si estás fuera de Argentina, lo más simple es PayPal. Si preferís transferencia internacional (USD/EUR), escribime al email de contacto y te paso los datos.
-  </div>
-</div>
+      <div class="muted note" style="margin-top:10px">
+        Sugerencia de referencia/concepto: <b>Apoyo Calendaria‑LGC</b> (si tu banco te pide un mensaje).
+      </div>
+    </div>
 
-  <script>
+    <div class="card">
+      <div style="font-size:14px;margin-bottom:8px">Transferencia internacional (opcional)</div>
+      <div class="muted note">
+        Si estás fuera de Argentina, lo más simple suele ser <b>PayPal</b>. Si preferís transferencia bancaria, abrí la sección y copiá los datos.<br><br><b>Nota:</b> no necesitás descargar Global66 para enviarme; podés transferir desde tu banco con estos datos. Si tenés dudas, escribime a <a href="mailto:appcalendaria.lgc@gmail.com">appcalendaria.lgc@gmail.com</a>.
+      </div>
+
+      <details style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:600">USD (EE. UU. — ACH / Wire)</summary>
+        <div style="margin-top:10px">
+
+          <div class="muted">Account Holder Name:</div>
+          <div class="row">
+            <code id="usdHolder">Joan Andrey Rendon Bahamon</code>
+            <button class="btn secondary" type="button" data-copy-target="usdHolder">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Account Number:</div>
+          <div class="row">
+            <code id="usdAccount">8332028219</code>
+            <button class="btn secondary" type="button" data-copy-target="usdAccount">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Routing Number (ACH):</div>
+          <div class="row">
+            <code id="usdRouting">026073150</code>
+            <button class="btn secondary" type="button" data-copy-target="usdRouting">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Bank:</div>
+          <div class="row">
+            <code id="usdBank">Community Federal Savings Bank</code>
+            <button class="btn secondary" type="button" data-copy-target="usdBank">Copiar</button>
+          </div>
+
+          <details style="margin-top:10px">
+            <summary style="cursor:pointer">Datos completos (Wire / SWIFT)</summary>
+            <div style="margin-top:10px">
+              <div class="muted">Swift / BIC:</div>
+              <div class="row">
+                <code id="usdSwift">CMFGUS33</code>
+                <button class="btn secondary" type="button" data-copy-target="usdSwift">Copiar</button>
+              </div>
+
+              <div class="muted" style="margin-top:10px">Bank Address:</div>
+              <div class="row">
+                <code id="usdAddress">5 Penn Plaza, 14th Floor, New York, NY 10001, US</code>
+                <button class="btn secondary" type="button" data-copy-target="usdAddress">Copiar</button>
+              </div>
+
+              <div class="muted" style="margin-top:10px">Account Type:</div>
+              <div class="row">
+                <code id="usdType">Checking</code>
+                <button class="btn secondary" type="button" data-copy-target="usdType">Copiar</button>
+              </div>
+            </div>
+          </details>
+
+          <div class="muted note" style="margin-top:10px">
+            Referencia sugerida: <b>Apoyo Calendaria‑LGC</b>
+          </div>
+        </div>
+      </details>
+
+      <details style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:600">EUR (Unión Europea / SEPA)</summary>
+        <div style="margin-top:10px">
+
+          <div class="muted">Account Holder Name:</div>
+          <div class="row">
+            <code id="eurHolder">Joan Andrey Rendon Bahamon</code>
+            <button class="btn secondary" type="button" data-copy-target="eurHolder">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">IBAN:</div>
+          <div class="row">
+            <code id="eurIban">GB95TCCL00997951894200</code>
+            <button class="btn secondary" type="button" data-copy-target="eurIban">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Bank:</div>
+          <div class="row">
+            <code id="eurBank">The Currency Cloud Limited</code>
+            <button class="btn secondary" type="button" data-copy-target="eurBank">Copiar</button>
+          </div>
+
+          <details style="margin-top:10px">
+            <summary style="cursor:pointer">Dirección del banco (si te la piden)</summary>
+            <div style="margin-top:10px">
+              <div class="muted">Bank Address:</div>
+              <div class="row">
+                <code id="eurAddress">12 Steward Street, The Steward Building, London, E1 6FQ, GB</code>
+                <button class="btn secondary" type="button" data-copy-target="eurAddress">Copiar</button>
+              </div>
+            </div>
+          </details>
+
+          <div class="muted note" style="margin-top:10px">
+            Referencia sugerida: <b>Apoyo Calendaria‑LGC</b>
+          </div>
+        </div>
+      </details>
+    </div>
+<script>
     // Pegá tus links reales acá:
     const MP_URL = "https://link.mercadopago.com.ar/joanandrey";     // ej: https://link.mercadopago.com/...
     const PAYPAL_URL = "https://www.paypal.me/decodificacionbio"; // ej: https://paypal.me/...
-    const CONTACT_EMAIL = "calendaria.lgc.contacto@gmail.com";     // Cambiá esto por tu correo de contacto
 
     const mpBtn = document.getElementById('mpBtn');
     const ppBtn = document.getElementById('ppBtn');
@@ -166,10 +274,6 @@
     }
     setBtn(mpBtn, MP_URL);
     setBtn(ppBtn, PAYPAL_URL);
-const mailBtn = document.getElementById('mailBtn');
-if(mailBtn){
-  mailBtn.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Calendaria-LGC — Comentario / Apoyo");
-}
     async function copyText(txt){
       try{
         await navigator.clipboard.writeText(txt);
@@ -178,15 +282,16 @@ if(mailBtn){
         alert("No se pudo copiar automáticamente. Copialo manual.");
       }
     }
-    document.getElementById('copyAliasBtn').addEventListener('click', ()=>{
-      copyText(document.getElementById('aliasTxt').innerText);
+
+    // Botones de copiar (usa data-copy-target="idDelCode")
+    document.querySelectorAll('[data-copy-target]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-copy-target');
+        const el = document.getElementById(id);
+        if(!el) return;
+        copyText(el.innerText);
+      });
     });
-    document.getElementById('copyCvuBtn').addEventListener('click', ()=>{
-      copyText(document.getElementById('cvuTxt').innerText);
-    });
-document.getElementById('copyNameBtn').addEventListener('click', ()=>{
-  copyText(document.getElementById('nameTxt').innerText);
-});
   </script>
 </body>
 </html>
