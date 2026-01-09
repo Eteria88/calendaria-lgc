@@ -100,12 +100,13 @@
     <div class="card">
       <div class="muted">
         Calendaria-LGC es una Aplicación libre, en actualización permanente.<br>
-        Si te aporta valor y quieres apoyar su continuidad y crecimiento, puedes hacerlo por cualquiera de estos medios.
+        Si te aporta valor y quieres apoyar su continuidad y crecimiento, puedes hacerlo por cualquiera de estos medios.<br>También puedes escribir con ideas, devoluciones o material para sumar.
       </div>
 
       <div class="grid">
         <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago</a>
         <a class="btn" id="ppBtn" href="#" target="_blank" rel="noopener">PayPal</a>
+        <a class="btn secondary" id="mailBtn" href="#" rel="noopener">Contacto (email)</a>
 </div>
 
       <div class="muted note">
@@ -114,29 +115,37 @@
     </div>
 
     <div class="card">
-      <div style="font-size:14px;margin-bottom:8px">Billetera Lemon </div>
+  <div style="font-size:14px;margin-bottom:8px">Transferencia (Argentina) — Global66</div>
 
-      <div class="muted">Alias:</div>
-      <div class="row">
-        <code id="aliasTxt">joan.andrey.rendon</code>
-        <button class="btn secondary" id="copyAliasBtn" type="button">Copiar</button>
-      </div>
-
-      <div class="muted" style="margin-top:10px">CVU:</div>
-      <div class="row">
-        <code id="cvuTxt">0000168300000005792740</code>
-        <button class="btn secondary" id="copyCvuBtn" type="button">Copiar</button>
-      </div>
-
-      <div class="muted" style="margin-top:10px">
-      </div>
-    </div>
+  <div class="muted">Alias:</div>
+  <div class="row">
+    <code id="aliasTxt">calendaria-lgc.red</code>
+    <button class="btn secondary" id="copyAliasBtn" type="button">Copiar</button>
   </div>
+
+  <div class="muted" style="margin-top:10px">CVU:</div>
+  <div class="row">
+    <code id="cvuTxt">0000230300000034070798</code>
+    <button class="btn secondary" id="copyCvuBtn" type="button">Copiar</button>
+  </div>
+
+  <div class="muted" style="margin-top:10px">Nombre / Titular:</div>
+  <div class="row">
+    <code id="nameTxt">Joan Andrey Rendon Bahamon</code>
+    <button class="btn secondary" id="copyNameBtn" type="button">Copiar</button>
+  </div>
+
+  <div class="muted note">
+    Estos datos son para transferencias desde Argentina (CVU).<br>
+    Si estás fuera de Argentina, lo más simple es PayPal. Si preferís transferencia internacional (USD/EUR), escribime al email de contacto y te paso los datos.
+  </div>
+</div>
 
   <script>
     // Pegá tus links reales acá:
     const MP_URL = "https://link.mercadopago.com.ar/joanandrey";     // ej: https://link.mercadopago.com/...
     const PAYPAL_URL = "https://www.paypal.me/decodificacionbio"; // ej: https://paypal.me/...
+    const CONTACT_EMAIL = "calendaria.lgc.contacto@gmail.com";     // Cambiá esto por tu correo de contacto
 
     const mpBtn = document.getElementById('mpBtn');
     const ppBtn = document.getElementById('ppBtn');
@@ -157,6 +166,10 @@
     }
     setBtn(mpBtn, MP_URL);
     setBtn(ppBtn, PAYPAL_URL);
+const mailBtn = document.getElementById('mailBtn');
+if(mailBtn){
+  mailBtn.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Calendaria-LGC — Comentario / Apoyo");
+}
     async function copyText(txt){
       try{
         await navigator.clipboard.writeText(txt);
@@ -171,6 +184,9 @@
     document.getElementById('copyCvuBtn').addEventListener('click', ()=>{
       copyText(document.getElementById('cvuTxt').innerText);
     });
+document.getElementById('copyNameBtn').addEventListener('click', ()=>{
+  copyText(document.getElementById('nameTxt').innerText);
+});
   </script>
 </body>
 </html>
