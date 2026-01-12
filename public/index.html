@@ -2771,4 +2771,34 @@ if ('serviceWorker' in navigator) {
   </div>
 </div>
 
+
+<script>
+(function () {
+  function stripSpacesOnDateInput(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    function sanitize() {
+      const raw = (el.value || "");
+      const cleaned = raw.replace(/\s+/g, "");
+      if (cleaned !== raw) {
+        el.value = cleaned;
+
+        // Re-dispara eventos para actualizar cálculos ligados a input/change
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }
+
+    el.addEventListener("input", sanitize);
+    el.addEventListener("change", sanitize);
+    el.addEventListener("blur", sanitize);
+  }
+
+  // Fecha de referencia y fecha de nacimiento
+  stripSpacesOnDateInput("ref");
+  stripSpacesOnDateInput("dob");
+})();
+</script>
+
 </body></html>
