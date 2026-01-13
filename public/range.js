@@ -141,7 +141,7 @@ function bandaEtaria(dias){
     var b = bandas[i];
     if(dias >= b.desde && dias <= b.hasta) return { ok:true, b:b };
   }
-  return { ok:false, msg:'Fuera de rango (0–28885).' };
+  return { ok:false, msg:'Fuera de rango (0–40439).' };
 }
 
 function calcBandas(){
@@ -167,8 +167,7 @@ function calcBandas(){
   if(!found.ok) return { ok:false, msg: found.msg, dias:dias };
 
   var b = found.b;
-  var transcurridos = dias - b.desde;
-  var faltan = (b.hasta + 1) - dias; // días restantes para terminar/cambiar de banda
+  var faltan = (b.hasta - dias);
   var recorridas = Math.max(0, b.n - 1); // bandas completas
 
   return {
@@ -177,8 +176,6 @@ function calcBandas(){
     banda: b.n,
     desde: b.desde,
     hasta: b.hasta,
-    transcurridos: transcurridos,
-    transcurridos: transcurridos,
     faltan: faltan,
     recorridas: recorridas
   };
@@ -213,11 +210,13 @@ function renderBandSchedule(){
   }
 
   var bands = [
-    {name:'Primera', desde:0, hasta:5777},
-    {name:'Segunda', desde:5778, hasta:11554},
-    {name:'Tercera', desde:11555, hasta:17331},
-    {name:'Cuarta', desde:17332, hasta:23108},
-    {name:'Quinta', desde:23109, hasta:28885}
+    {name:'Primera',  desde:0,     hasta:5777},
+    {name:'Segunda',  desde:5778,  hasta:11554},
+    {name:'Tercera',  desde:11555, hasta:17331},
+    {name:'Cuarta',   desde:17332, hasta:23108},
+    {name:'Quinta',   desde:23109, hasta:28885},
+    {name:'Sexta',    desde:28886, hasta:34662},
+    {name:'Séptima',  desde:34663, hasta:40439}
   ];
 
   var rows = '';
@@ -278,7 +277,7 @@ if(exA === null || exB === null){
 // --- Bandas etarias ---
 var band = calcBandas();
 if(!band.ok){
-  // Si faltan fechas, no mostramos nada; si hay error real, lo mostramos en "Días para la próxima"
+  // Si faltan fechas, no mostramos nada; si hay error real, lo mostramos en "Frecuencias de la banda etaria"
   if(String(band.msg||'').indexOf('Falta') === 0){
     setText('bandOut','—'); setText('bandLeft','—'); setText('bandDone','—');
   }else{
@@ -287,7 +286,12 @@ if(!band.ok){
   }
 }else{
   setText('bandOut', band.banda + 'ª (' + band.desde + '–' + band.hasta + ')');
-  setText('bandLeft', '+' + String(band.transcurridos) + ' / -' + String(band.faltan));
+
+  // Frecuencias de la banda etaria: +transcurridos | -faltan
+  var trans = (band.dias - band.desde);
+  var left = band.faltan;
+  setText('bandLeft', '+' + String(trans) + ' | -' + String(left));
+
   setText('bandDone', String(band.recorridas) + ' (completas)');
 }
 
