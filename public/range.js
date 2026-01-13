@@ -135,15 +135,13 @@ function bandaEtaria(dias){
     { n: 2, desde: 5778,  hasta: 11554, nextStart: 11555 },
     { n: 3, desde: 11555, hasta: 17331, nextStart: 17332 },
     { n: 4, desde: 17332, hasta: 23108, nextStart: 23109 },
-    { n: 5, desde: 23109, hasta: 28885, nextStart: 28886 },
-    { n: 6, desde: 28886, hasta: 34662, nextStart: 34663 },
-    { n: 7, desde: 34663, hasta: 40439, nextStart: 40440 }
+    { n: 5, desde: 23109, hasta: 28885, nextStart: 28886 }
   ];
   for(var i=0;i<bandas.length;i++){
     var b = bandas[i];
     if(dias >= b.desde && dias <= b.hasta) return { ok:true, b:b };
   }
-  return { ok:false, msg:'Fuera de rango (0–40439).' };
+  return { ok:false, msg:'Fuera de rango (0–28885).' };
 }
 
 function calcBandas(){
@@ -169,7 +167,8 @@ function calcBandas(){
   if(!found.ok) return { ok:false, msg: found.msg, dias:dias };
 
   var b = found.b;
-  var faltan = (b.n < 5) ? (b.nextStart - dias) : null;
+  var transcurridos = dias - b.desde;
+  var faltan = (b.hasta + 1) - dias; // días restantes para terminar/cambiar de banda
   var recorridas = Math.max(0, b.n - 1); // bandas completas
 
   return {
@@ -178,6 +177,8 @@ function calcBandas(){
     banda: b.n,
     desde: b.desde,
     hasta: b.hasta,
+    transcurridos: transcurridos,
+    transcurridos: transcurridos,
     faltan: faltan,
     recorridas: recorridas
   };
@@ -212,13 +213,11 @@ function renderBandSchedule(){
   }
 
   var bands = [
-    {name:'Primera',  desde:0,     hasta:5777},
-    {name:'Segunda',  desde:5778,  hasta:11554},
-    {name:'Tercera',  desde:11555, hasta:17331},
-    {name:'Cuarta',   desde:17332, hasta:23108},
-    {name:'Quinta',   desde:23109, hasta:28885},
-    {name:'Sexta',    desde:28886, hasta:34662},
-    {name:'Séptima',  desde:34663, hasta:40439}
+    {name:'Primera', desde:0, hasta:5777},
+    {name:'Segunda', desde:5778, hasta:11554},
+    {name:'Tercera', desde:11555, hasta:17331},
+    {name:'Cuarta', desde:17332, hasta:23108},
+    {name:'Quinta', desde:23109, hasta:28885}
   ];
 
   var rows = '';
@@ -288,11 +287,7 @@ if(!band.ok){
   }
 }else{
   setText('bandOut', band.banda + 'ª (' + band.desde + '–' + band.hasta + ')');
-  if(band.banda >= 5){
-    setText('bandLeft', 'Última banda');
-  }else{
-    setText('bandLeft', String(band.faltan) + ' días');
-  }
+  setText('bandLeft', '+' + String(band.transcurridos) + ' / -' + String(band.faltan));
   setText('bandDone', String(band.recorridas) + ' (completas)');
 }
 
