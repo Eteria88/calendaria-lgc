@@ -6,9 +6,10 @@
     function $(s){return document.querySelector(s);} 
     var ms=86400000;
     function dt(y,m,d){
-      // Normaliza correctamente años 1–99 evitando el offset 1900+ en algunos motores JS
-      // y permite fechas como 0001-01-01 sin corrimientos implícitos.
-      var base = new Date(Date.UTC(0, m-1, d));
+      // Crea fechas en UTC sin el corrimiento 1900+ para años 1–99.
+      // Importante: el "año base" debe ser bisiesto para que 29/02 no se normalice a 01/03.
+      // Usamos 2000 (bisiesto) y luego seteamos el año real.
+      var base = new Date(Date.UTC(2000, m-1, d));
       base.setUTCFullYear(y);
       return base;
     }
