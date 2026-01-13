@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Calculadora de días entre fechas</title>
+<title>Comparador LGC — Fechas</title>
 <meta content="no-store" http-equiv="Cache-Control"/>
-<style>
-:root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
+<style>:root{--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#0b0d10;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:1100px;margin:0 auto;padding:20px}
@@ -30,45 +29,56 @@ body{margin:0;background:#0b0d10;color:#e6f1ff;font-family:system-ui,-apple-syst
 .btn{background:rgba(124,199,255,.15);border:1px solid #2a3642;border-radius:999px;color:#e6f1ff;padding:6px 12px;cursor:pointer;min-height:42px}
 .btn:hover{background:rgba(124,199,255,.25)}
 .status{margin:8px 0;color:#9cffd5;font-size:12px}
-.chip{border:1px solid #2a3642;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04)}
+#rdbg{display:none !important}
+.chip{border:1px solid #2a3642;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04);cursor:pointer}
 .chip.active{background:rgba(124,199,255,.18);border-color:#7cc7ff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed rgba(42,54,66,.8)}
+.kv:last-child{border-bottom:none}
+.k{color:var(--muted);font-size:12px}
+.v{font-family:ui-monospace,Menlo,Consolas,monospace}
+.tab{display:none}
+.tab.show{display:block}
 
 .menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
 @media(max-width:839px){.menuBtn{display:inline-block}}
 body.noScroll{overflow:hidden}
-.mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
-.mobileNav.open{pointer-events:auto}
-.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
-.mobileNav.open .mobileOverlay{opacity:1}
-.mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
-.mobileNav.open .mobileNavPanel{transform:translateX(0)}
-.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
-.closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
-.mobileList{display:flex;flex-direction:column;padding:10px}
-.mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
-.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
-
 
 /* --- Responsive mobile tuning --- */
 @media(max-width:599px){
   .wrap{padding:14px}
   header{padding:8px 0 10px 0}
   .card,.tile{padding:12px}
-  .mcard{grid-column:1/-1}
   .mono.big{font-size:clamp(22px,8vw,34px); word-break:break-word; overflow-wrap:anywhere}
-  .plane{height:220px}
-  .cStep{padding:2px 5px}
-  .memTag{padding:2px 6px}
   .input{min-height:44px}
-  .progress{height:8px}
-  .table-wrap{ -webkit-overflow-scrolling: touch; overflow:auto }
-  .scroll-hint{display:block;margin-top:6px;color:var(--muted);font-size:12px}
-}
-@media(min-width:600px){
-  .scroll-hint{display:none}
 }
 
-</style>  <link rel="manifest" href="/manifest.webmanifest">
+/* ====== Ajustes: menú oculto por defecto + frames lado a lado ====== */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:900px){.compare-grid{grid-template-columns:1fr}}
+
+.layout{display:block;gap:0}
+.menuBtn{display:inline-block}
+
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:40}
+.backdrop.show{opacity:1;pointer-events:auto}
+
+.sidenav{position:fixed;top:0;left:0;width:260px;height:100dvh;overflow:auto;
+  transform:translateX(-110%);transition:transform .22s ease;z-index:50;
+  border:1px solid var(--ol);border-radius:0 16px 16px 0;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+.sidenav.open{transform:translateX(0)}
+/* Bandas etarias — cronograma */
+.tblwrap{overflow:auto;border:1px solid var(--ol);border-radius:12px}
+.tbl{width:100%;border-collapse:collapse;min-width:520px}
+.tbl th,.tbl td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;vertical-align:top}
+.tbl th{font-weight:600;color:rgba(255,255,255,.9);background:rgba(255,255,255,.03)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .mut{color:var(--muted);font-size:12px;margin-top:2px}
+.tbl tr.hi{background:rgba(156,255,213,.06)}
+</style>
+<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b0d10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -76,112 +86,192 @@ body.noScroll{overflow:hidden}
 <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
 </head><body>
 <div class="wrap">
-<div aria-hidden="true" class="mobileNav" id="mobileNav">
-<div class="mobileNavPanel">
-<div class="mobileNavHeader">
-<span>Menú</span>
-<button aria-label="Cerrar" class="closeBtn" id="closeMenu">×</button>
-</div>
-<nav class="mobileList">
-<a class="mnav-link" href="./">Inicio</a>
-<a class="mnav-link active" href="./range.html">Días entre fechas</a>
-<a class="mnav-link" href="./letters.html">Letras → Números</a>
-<a href="./mapa/">Mapa y codigos</a></nav>
-</div>
-<div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-</div>
-<header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><button aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button></header>
-<div class="layout">
-<aside class="sidenav">
-<nav>
-<div class="nav-title">Menú</div>
-<a class="nav-link" href="./">Inicio</a>
-<a class="nav-link active" href="./range.html">Días entre fechas</a>
-<a class="nav-link" href="./mapa/">Mapa y codigos</a></nav>
-</aside>
-<main>
-<div class="wrap">
-<h1 style="margin:0 0 10px 0;font-size:20px">Días entre fechas</h1>
+<header>
+  <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div>
+  <button aria-label="Abrir menú" aria-expanded="false" class="menuBtn" id="menuBtn" title="Menú">☰</button>
+</header>
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
 
+<div class="layout">
+  <aside class="sidenav">
+    <nav>
+      <div class="nav-title">Menú</div>
+      <a class="nav-link" href="./">Inicio</a>
+      <a class="nav-link active" href="./range.html">Comparador LGC</a>
+      <a class="nav-link" href="./letters.html">Letras a números</a>
+      <a class="nav-link" href="./mapa/">Mapa y códigos</a>
+      <a class="nav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
+      <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
+    </nav>
+  </aside>
+
+    <main>
+    <div class="wrap">
+      <h1 style="margin:0 0 4px 0;font-size:20px">Comparador LGC</h1>
 <div class="status" id="rdbg" style="display:none">estado: cargando…</div>
-<div class="card">
-<div class="input-grid">
-<div class="field" style="grid-column:span 6">
-<label class="small">Fecha de inicio</label>
-<input class="input" id="start" max="9999-12-31" min="0001-01-01" type="date"/>
-<button class="btn" id="btnStartToday" style="margin-top:8px" type="button">Hoy</button>
+
+      <!-- RANGO A -->
+      <div class="compare-grid">
+<section class="card" style="margin-bottom:12px">
+        <div class="small" style="margin-bottom:8px;opacity:.9">Rango A</div>
+
+        <div class="input-grid">
+          <div class="field" style="grid-column:span 6">
+            <label class="small">Inicio</label>
+            <input class="input" id="startA" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnStartTodayA" style="margin-top:8px" type="button">Hoy</button>
+          </div>
+          <div class="field" style="grid-column:span 6">
+            <label class="small">Fin</label>
+            <input class="input" id="endA" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnEndTodayA" style="margin-top:8px" type="button">Hoy</button>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;margin-top:12px">
+          <div style="display:flex;gap:32px;justify-content:center">
+            <div style="text-align:center">
+              <div class="small">Días</div>
+              <div class="mono big" id="outA" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+            </div>
+            <div style="text-align:center">
+              <div class="small">Años</div>
+              <div class="mono big" id="yearsOutA" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RANGO B -->
+      <section class="card" style="margin-bottom:12px">
+        <div class="small" style="margin-bottom:8px;opacity:.9">Rango B</div>
+
+        <div class="input-grid">
+          <div class="field" style="grid-column:span 6">
+            <label class="small">Inicio</label>
+            <input class="input" id="startB" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnStartTodayB" style="margin-top:8px" type="button">Hoy</button>
+          </div>
+          <div class="field" style="grid-column:span 6">
+            <label class="small">Fin</label>
+            <input class="input" id="endB" max="9999-12-31" min="0001-01-01" type="date"/>
+            <button class="btn" id="btnEndTodayB" style="margin-top:8px" type="button">Hoy</button>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;margin-top:12px">
+          <div style="display:flex;gap:32px;justify-content:center">
+            <div style="text-align:center">
+              <div class="small">Días</div>
+              <div class="mono big" id="outB" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+            </div>
+            <div style="text-align:center">
+              <div class="small">Años</div>
+              <div class="mono big" id="yearsOutB" style="font-size:clamp(16px,3.5vw,22px)">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
 </div>
-<div class="field" style="grid-column:span 6">
-<label class="small">Fecha de fin</label>
-<input class="input" id="end" max="9999-12-31" min="0001-01-01" type="date"/>
-<button class="btn" id="btnEndToday" style="margin-top:8px" type="button">Hoy</button>
-</div>
-</div>
-<div style="display:flex;justify-content:center;margin-top:12px">
-  <div>
-    <div style="display:flex;gap:32px;justify-content:center">
-      <div style="text-align:center">
-        <div class="small">Días</div>
-        <div class="mono big" id="out" style="font-size:clamp(16px,3.5vw,22px)">—</div>
-      </div>
-      <div style="text-align:center">
-        <div class="small">Años</div>
-        <div class="mono big" id="yearsOut" style="font-size:clamp(16px,3.5vw,22px)">—</div>
-      </div>
+
+      <!-- RESULTADOS -->
+      <section class="card">
+        <div class="small" style="margin-bottom:8px;opacity:.9">Resultado comparado</div>
+
+        <div class="kv"><div class="k">Frecuencia resultante A (días)</div><div class="v" id="resA">—</div></div>
+        <div class="kv"><div class="k">Frecuencia resultante B (días)</div><div class="v" id="resB">—</div></div>
+        <div class="kv"><div class="k">Potenciales</div><div class="v" id="potOut">—</div></div>
+        <div class="kv"><div class="k">Constante</div><div class="v" id="constOut">—</div></div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn" id="clearAll" type="button">Limpiar todo</button>
+        </div>
+
+
+
+</section>
+
+      <!-- BANDAS ETARIAS -->
+<section class="card" style="margin-top:12px">
+  <div class="small" style="margin-bottom:8px;opacity:1;color:rgba(255,255,255,.92)">Bandas etarias</div>
+
+  <div class="input-grid">
+    <div class="field" style="grid-column:span 6">
+      <label class="small">Fecha de nacimiento</label>
+      <input class="input" id="birth" max="9999-12-31" min="0001-01-01" type="date"/>
+    </div>
+    <div class="field" style="grid-column:span 6">
+      <label class="small">Fecha de referencia</label>
+      <input class="input" id="ref" max="9999-12-31" min="0001-01-01" type="date"/>
+      <button class="btn" id="btnRefToday" style="margin-top:8px" type="button">Hoy</button>
     </div>
   </div>
-</div>
-<div style="display:flex;gap:8px;margin-top:12px">
-<button class="btn" id="calc">Calcular</button>
 
-<button class="btn" id="clear">Limpiar</button>
+  <div class="kv"><div class="k">Banda etaria</div><div class="v" id="bandOut">—</div></div>
+  <div class="kv"><div class="k">Frecuencias de la banda etaria</div><div class="v" id="bandLeft">—</div></div>
+  <div class="kv"><div class="k">Bandas recorridas</div><div class="v" id="bandDone">—</div></div>
+
+  <div style="height:1px;background:rgba(255,255,255,.08);margin:14px 0"></div>
+
+  <div class="small" style="margin-bottom:8px;color:rgba(255,255,255,.9)">Rangos de bandas según nacimiento</div>
+  <div class="small" id="bandScheduleHint" style="margin-bottom:10px;color:var(--muted)">Ingresá una fecha de nacimiento para ver el rango de fechas de cada banda.</div>
+
+  <div class="tblwrap" id="bandScheduleWrap" style="display:none">
+    <table class="tbl" aria-label="Cronograma de bandas etarias">
+      <thead>
+        <tr>
+          <th>Banda</th>
+          <th>Rango (días)</th>
+          <th>Del</th>
+          <th>Al</th>
+        </tr>
+      </thead>
+      <tbody id="bandScheduleBody"></tbody>
+    </table>
+  </div>
+
+</section>
+
+
+      <noscript><div style="color:#ff9aa2;padding:8px 0">Necesitás habilitar JavaScript para usar la calculadora.</div></noscript>
+      <script defer src="./range.js"></script>
+    </div>
+  </main>
 </div>
-</div>
-</div>
-<noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para usar la calculadora.</div></noscript>
-<script defer="" src="./range.js"></script>
-</main>
-</div>
+
 <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
 </div>
+
 <script defer="" src="./common.js"></script>
+
+<!-- Botones Hoy (rangos A y B) -->
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  var btn = document.getElementById('btnEndToday');
-  var endInput = document.getElementById('end');
-  if(btn && endInput){
-    btn.addEventListener('click', function(){
-      var d = new Date();
-      var y = d.getFullYear();
-      var m = String(d.getMonth() + 1).padStart(2, '0');
-      var day = String(d.getDate()).padStart(2, '0');
-      var val = y + '-' + m + '-' + day;
-      endInput.value = val;
-      // trigger events for calculators that listen to changes
-      endInput.dispatchEvent(new Event('input', { bubbles: true }));
-      endInput.dispatchEvent(new Event('change', { bubbles: true }));
-    });
+  function toISO(d){
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
   }
+  function bind(btnId, inputId){
+    var btn = document.getElementById(btnId);
+    var input = document.getElementById(inputId);
+    if(btn && input){
+      btn.addEventListener('click', function(){
+        input.value = toISO(new Date());
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
+  }
+  bind('btnStartTodayA','startA');
+  bind('btnEndTodayA','endA');
+  bind('btnStartTodayB','startB');
+  bind('btnEndTodayB','endB');
+  bind('btnRefToday','ref');
 });
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var btn = document.getElementById('btnStartToday');
-  var input = document.getElementById('start');
-  if(btn && input){
-    btn.addEventListener('click', function(){
-      var d = new Date();
-      var y = d.getFullYear();
-      var m = String(d.getMonth() + 1).padStart(2, '0');
-      var day = String(d.getDate()).padStart(2, '0');
-      var val = y + '-' + m + '-' + day;
-      input.value = val;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-  }
-});
-</script>
+
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {

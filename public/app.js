@@ -46,24 +46,84 @@ function fmtDate(d){
     function plane(card){
       var ks=['NE','NO','SE','SO']; for(var i=0;i<ks.length;i++){var el=$('#cell'+ks[i]); if(!el) continue; if(ks[i]===card) el.classList.add('active'); else el.classList.remove('active');}
     }
-    function buildCalog(ref){
+    
+    function buildCalog(ref, futureYears){
       var tbl=$('#calog'); if(!tbl) return;
       var tbody=tbl.querySelector('tbody'); if(!tbody) return;
+
+      futureYears = parseInt(futureYears||0,10) || 0;
+
       tbody.innerHTML='';
-      var y0=2012,y1=2028,yr=ref.getUTCFullYear(),LGC=dt(2015,10,15),INS=dt(2012,10,14),C={};
-      C[2012]=Math.floor((LGC-INS)/ms); C[2013]=Math.floor((dt(2016,1,1)-LGC)/ms);
-      for(var y=2014;y<=y1;y++){ C[y]=C[y-1]+yLen(y-1); }
-      var V={}, d=dOY(ref); V[yr]=d; for(y=yr-1;y>=2013;y--){ V[y]=V[y+1]+yLen(y); } if(yr>=2013) V[2012]=V[2013]-1018;
+
+      // Rango base histórico del Calendario Lógico (según instrucción)
+      var y0 = 2012;
+      var baseEnd = 2028;               // hasta Aparato 507
+      var yr = ref.getUTCFullYear();
+
+      // Extensión a futuro controlada por slider (se suma desde 2028)
+      var y1 = baseEnd + futureYears;
+
+      // Si el usuario pone una referencia más allá del tope, siempre incluimos ese año
+      if(yr > y1) y1 = yr;
+
+      var LGC=dt(2015,10,15), INS=dt(2012,10,14), C={};
+
+      // Constante (secuenciación anual)
+      C[2012]=Math.floor((LGC-INS)/ms);
+      C[2013]=Math.floor((dt(2016,1,1)-LGC)/ms);
+      for(var y=2014;y<=y1;y++){
+        C[y]=C[y-1]+yLen(y-1);
+      }
+
+      // Variable: distancia (en días) desde 01/01 del año hasta la fecha de referencia
+      // Para años futuros queda en negativo (faltante), para años pasados en positivo (transcurrido).
+      var V={}, d=dOY(ref);
+      V[yr]=d;
+
+      // Hacia el pasado
+      for(y=yr-1;y>=2013 && y>=y0;y--){
+        V[y]=V[y+1]+yLen(y);
+      }
+
+      // 2012: mantiene el offset que venías usando (no se ajusta con longitudes de año)
+      if(yr>=2013 && y0<=2012 && V.hasOwnProperty(2013)){
+        V[2012]=V[2013]-1018;
+      }else if(yr===2012){
+        V[2012]=d;
+      }
+
+      // Hacia el futuro (quedan negativos hasta que llegues a ese año)
+      for(y=yr+1;y<=y1;y++){
+        V[y]=V[y-1]-yLen(y-1);
+      }
+
       var s=0;
       for(y=y1;y>=y0;y--){
         var tr=document.createElement('tr');
-        var cells=[''+y, (V.hasOwnProperty(y)?V[y]:''), (C[y]||0), apIdx(y)];
-        for(var i2=0;i2<cells.length;i2++){ var td=document.createElement('td'); td.textContent=cells[i2]; tr.appendChild(td); }
+        if(y===yr) tr.classList.add('calog-current');
+
+        var cells=[
+          ''+y,
+          (V.hasOwnProperty(y)?V[y]:''),
+          (C[y]||0),
+          apIdx(y)
+        ];
+
+        for(var i2=0;i2<cells.length;i2++){
+          var td=document.createElement('td');
+          td.textContent=cells[i2];
+          tr.appendChild(td);
+        }
+
+        // Suma (solo años <= referencia, como venías haciendo)
         if(V.hasOwnProperty(y) && y<=yr) s+=V[y];
+
         tbody.appendChild(tr);
       }
+
       var sumEl=$('#calogSum'); if(sumEl) sumEl.textContent=s;
     }
+
 
     var init=false;
     function parseSearch(){
@@ -613,22 +673,81 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var PHASES = ['0','Asume','Asimila','Desafía','Decide'];
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
-      var A={d_mendeleev:dt(1834,2,8),d_calendaria_web:dt(2025,9,9),d_lgc_inicio:dt(2015,10,15),d_toganesos:dt(2024,1,10),d_rupert:dt(1942,6,28),d_hamer:dt(1935,5,17),d_alcides:dt(1857,8,13),d_quinta:dt(2016,8,28),d_eje258:dt(2017,8,26),d_penta:dt(2022,1,7),d_patrono:dt(1971,8,15),d_uit:dt(1865,5,17),d_google:dt(1899,12,30),d_leapsec:dt(1972,6,30),d_admin:dt(2024,8,12),d_mac:dt(1969,12,6)};
-      for(var key in A){ var el2=document.getElementById(key); if(el2) el2.textContent=Math.max(0,Math.floor((ref-A[key])/ms)); }
+      // Marcas LGC: calcula automáticamente leyendo data-date-iso del DOM (soporta fechas pasadas y futuras)
+      function parseISODate(iso){
+        if(!iso) return null;
+        var m = /^\s*(\d{4})-(\d{2})-(\d{2})\s*$/.exec(String(iso));
+        if(!m) return null;
+        return dt(parseInt(m[1],10), parseInt(m[2],10), parseInt(m[3],10));
+      }
+      function fmtSigned(n){
+        if(!isFinite(n)) return '—';
+        if(n===0) return '0';
+        return n<0 ? ('−'+Math.abs(n)) : String(n);
+      }
+      function updateAnchors(refDate){
+        var grid = document.getElementById('anchorsGrid');
+        if(!grid) return;
 
-      buildCalog(ref);
+        // Orden cronológico (más antiguo → más reciente)
+        var cards = Array.prototype.slice.call(grid.querySelectorAll('.a-card'));
+        var items = cards.map(function(card){
+          var valEl = card.querySelector('[data-date-iso]');
+          var iso = valEl ? valEl.getAttribute('data-date-iso') : null;
+          var d = parseISODate(iso);
+          return {card:card, valEl:valEl, date:d, time:d ? d.getTime() : Number.POSITIVE_INFINITY};
+        });
+        items.sort(function(a,b){ return a.time - b.time; });
+        items.forEach(function(it){ grid.appendChild(it.card); });
+
+        // Conteo: pasado positivo, futuro negativo (evita -0)
+        items.forEach(function(it){
+          if(!it.valEl || !it.date) return;
+          var diff = Math.floor((refDate - it.date)/ms);
+          if(diff===0) diff = 0;
+          it.valEl.textContent = fmtSigned(diff);
+          it.valEl.title = diff<0 ? ('Faltan '+Math.abs(diff)+' días') : '';
+        });
+      }
+      updateAnchors(ref);
+
+
+      // Calendario lógico: slider de años a futuro (desde 2028)
+      var futureYears = 0;
+      var calogRange = document.getElementById('calogFuture');
+      if(calogRange){
+        futureYears = parseInt(calogRange.value||'0',10) || 0;
+        var vEl = document.getElementById('calogFutureVal'); if(vEl) vEl.textContent = futureYears;
+        var toEl = document.getElementById('calogFutureTo'); if(toEl) toEl.textContent = '→ ' + (2028 + futureYears);
+      }
+      buildCalog(ref, futureYears);
       init=true;
       status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
     }
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
     
 document.addEventListener('DOMContentLoaded', function(){
-  up();
-  var ids=['ref','refText','dob','dobText'];
+  // Defer the first heavy update to allow the first paint (helps mobile FCP/LCP)
+  if (window.requestAnimationFrame) {
+    requestAnimationFrame(function(){ setTimeout(up, 0); });
+  } else {
+    setTimeout(up, 0);
+  }
+
+  function debounce(fn, wait){
+    var t;
+    return function(){
+      var ctx=this, args=arguments;
+      clearTimeout(t);
+      t=setTimeout(function(){ fn.apply(ctx, args); }, wait);
+    };
+  }
+  var upDebounced = debounce(up, 250);
+  var ids=['ref','refText','dob','dobText','calogFuture'];
   ids.forEach(function(id){
     var el=document.getElementById(id);
     if(!el) return;
-    el.addEventListener('input', up);
+    el.addEventListener('input', upDebounced);
     el.addEventListener('change', up);
   });
 

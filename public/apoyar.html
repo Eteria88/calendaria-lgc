@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Apoyar — Calendaria-LGC</title>
+
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0d10;
+      --card:rgba(255,255,255,.05);
+      --ol:rgba(255,255,255,.10);
+      --text:#e9eef5;
+      --muted:rgba(233,238,245,.72);
+      --tap:42px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:radial-gradient(1200px 800px at 80% -10%,#12202b 0%, #0b0d10 45%) fixed;
+      color:var(--text);
+      font-family:Cinzel, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    header{
+      position:sticky;top:0;z-index:30;
+      backdrop-filter: blur(10px);
+      background:linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.25));
+      border-bottom:1px solid var(--ol);
+      padding:12px 16px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .sun{width:14px;height:14px;border-radius:50%;background:#ffd86b;box-shadow:0 0 18px rgba(255,216,107,.55)}
+    h1{margin:0;font-size:16px}
+    .wrap{max-width:980px;margin:0 auto;padding:16px}
+    .card{
+      border:1px solid var(--ol);
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
+      border-radius:14px;
+      padding:14px;
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
+      margin:14px 0;
+    }
+    .muted{
+      color:var(--muted);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.45;
+    }
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+    @media(max-width:820px){ .grid{grid-template-columns:1fr} }
+    .btn{
+      display:flex;align-items:center;justify-content:center;
+      min-height:var(--tap);
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--ol);
+      background:rgba(124,199,255,.14);
+      color:var(--text);
+      text-decoration:none;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .btn:hover{background:rgba(124,199,255,.22)}
+    .btn.secondary{background:rgba(255,255,255,.04);font-weight:600}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+    code{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      background:rgba(0,0,0,.25);
+      border:1px solid var(--ol);
+      padding:6px 10px;
+      border-radius:10px;
+      user-select:all;
+    }
+    .topActions{display:flex;gap:10px;flex-wrap:wrap}
+    .topActions a{min-height:36px}
+    .note{margin-top:10px}
+
+    .sectionTitle{
+      margin:0 0 10px 0;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    .about{
+      font-size:15px;
+      line-height:1.6;
+    }
+    .about p{ margin:0 0 12px 0; }
+    .about p:last-child{ margin-bottom:0; }
+    .about ul{
+      margin:8px 0 12px 18px;
+      padding:0;
+    }
+    .about li{ margin:6px 0; }
+    .sectionLabel{
+      margin-top:12px;
+      font-weight:700;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="sun"></span>
+      <h1>Apoyar el proyecto</h1>
+    </div>
+    <div class="topActions">
+      <a class="btn secondary" href="./">← Inicio</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+
+      <h2 class="sectionTitle">Sobre el proyecto</h2>
+      <div class="muted about">
+        <p><b>La App calendaria‑lgc.red</b> comenzó el <b>09-09-2025</b> con un objetivo concreto: construir una aplicación con <b>eficiencia, precisión y practicidad</b> para calcular y visualizar métricas a partir de señales y datos que cada receptor registra como referencia.</p>
+        <p>El foco está en una participación consciente y ordenada, integrando la experiencia individual con una red de observación e interpretación compartida.</p>
+        <p>Tu donación contribuye a sostener la aplicación, su desarrollo y su actualización constante a lo largo de las <b>23 vueltas</b> que componen cada año solar en Calendaria. También permite mejorar la estabilidad del sistema y ampliar sus capacidades de forma progresiva.</p>
+
+        <p><b>¿Qué hace posible tu aporte?</b></p>
+        <ul>
+          <li><b>Infraestructura y operación:</b> dominio, hosting, despliegues y disponibilidad.</li>
+          <li><b>Mantenimiento y evolución:</b> correcciones, refactorización, mejoras de rendimiento y compatibilidad entre dispositivos/navegadores.</li>
+          <li><b>Calidad de cálculo:</b> validaciones, control de consistencia y manejo de casos límite (por ejemplo, años bisiestos).</li>
+          <li><b>Experiencia de usuario:</b> interfaz, accesibilidad, legibilidad y claridad de navegación.</li>
+          <li><b>Seguridad y confiabilidad:</b> buenas prácticas, control de versiones, respaldo de cambios y revisión continua.</li>
+        </ul>
+
+        <p>Si te aporta valor y querés apoyar su continuidad y crecimiento, podés hacerlo por cualquiera de estos medios:</p>
+      </div>
+      <div class="muted sectionLabel">Formas de apoyar</div>
+
+
+      <div class="grid">
+        <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago</a>
+        <a class="btn" id="ppBtn" href="#" target="_blank" rel="noopener">PayPal</a>
+      </div>
+
+      <div class="muted" style="margin-top:12px">Contacto del proyecto (comentarios, sugerencias, info):</div>
+      <div class="row">
+        <code id="contactEmail">appcalendaria.lgc@gmail.com</code>
+        <button class="btn secondary" type="button" data-copy-target="contactEmail">Copiar</button>
+        <a class="btn secondary" href="mailto:appcalendaria.lgc@gmail.com" style="text-decoration:none">Escribir</a>
+      </div>
+
+
+      <div class="muted note">
+        Aporte opcional. La app sigue siendo abierta para todos.
+      </div>
+    </div>
+
+    
+    <div class="card">
+      <div style="font-size:14px;margin-bottom:8px">Transferencia (Argentina) — Global66</div>
+
+      <div class="muted">Alias:</div>
+      <div class="row">
+        <code id="g66Alias">calendaria-lgc.red</code>
+        <button class="btn secondary" type="button" data-copy-target="g66Alias">Copiar</button>
+      </div>
+
+      <div class="muted" style="margin-top:10px">CVU:</div>
+      <div class="row">
+        <code id="g66Cvu">0000230300000034070798</code>
+        <button class="btn secondary" type="button" data-copy-target="g66Cvu">Copiar</button>
+      </div>
+
+      <div class="muted" style="margin-top:10px">Titular:</div>
+      <div class="row">
+        <code id="g66Name">Joan Andrey Rendon Bahamon</code>
+        <button class="btn secondary" type="button" data-copy-target="g66Name">Copiar</button>
+      </div>
+
+      <div class="muted note" style="margin-top:10px">
+        Sugerencia de referencia/concepto: <b>Apoyo Calendaria‑LGC</b> (si tu banco te pide un mensaje).
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px;margin-bottom:8px">Transferencia internacional (opcional)</div>
+      <div class="muted note">
+        Si estás fuera de Argentina, lo más simple suele ser <b>PayPal</b>. Si preferís transferencia bancaria, abrí la sección y copiá los datos.<br><br><b>Nota:</b> no necesitás descargar Global66 para enviarme; podés transferir desde tu banco con estos datos. Si tenés dudas, escribime a <a href="mailto:appcalendaria.lgc@gmail.com">appcalendaria.lgc@gmail.com</a>.
+      </div>
+
+      <details style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:600">USD (EE. UU. — ACH / Wire)</summary>
+        <div style="margin-top:10px">
+
+          <div class="muted">Account Holder Name:</div>
+          <div class="row">
+            <code id="usdHolder">Joan Andrey Rendon Bahamon</code>
+            <button class="btn secondary" type="button" data-copy-target="usdHolder">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Account Number:</div>
+          <div class="row">
+            <code id="usdAccount">8332028219</code>
+            <button class="btn secondary" type="button" data-copy-target="usdAccount">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Routing Number (ACH):</div>
+          <div class="row">
+            <code id="usdRouting">026073150</code>
+            <button class="btn secondary" type="button" data-copy-target="usdRouting">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Bank:</div>
+          <div class="row">
+            <code id="usdBank">Community Federal Savings Bank</code>
+            <button class="btn secondary" type="button" data-copy-target="usdBank">Copiar</button>
+          </div>
+
+          <details style="margin-top:10px">
+            <summary style="cursor:pointer">Datos completos (Wire / SWIFT)</summary>
+            <div style="margin-top:10px">
+              <div class="muted">Swift / BIC:</div>
+              <div class="row">
+                <code id="usdSwift">CMFGUS33</code>
+                <button class="btn secondary" type="button" data-copy-target="usdSwift">Copiar</button>
+              </div>
+
+              <div class="muted" style="margin-top:10px">Bank Address:</div>
+              <div class="row">
+                <code id="usdAddress">5 Penn Plaza, 14th Floor, New York, NY 10001, US</code>
+                <button class="btn secondary" type="button" data-copy-target="usdAddress">Copiar</button>
+              </div>
+
+              <div class="muted" style="margin-top:10px">Account Type:</div>
+              <div class="row">
+                <code id="usdType">Checking</code>
+                <button class="btn secondary" type="button" data-copy-target="usdType">Copiar</button>
+              </div>
+            </div>
+          </details>
+
+          <div class="muted note" style="margin-top:10px">
+            Referencia sugerida: <b>Apoyo Calendaria‑LGC</b>
+          </div>
+        </div>
+      </details>
+
+      <details style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:600">EUR (Unión Europea / SEPA)</summary>
+        <div style="margin-top:10px">
+
+          <div class="muted">Account Holder Name:</div>
+          <div class="row">
+            <code id="eurHolder">Joan Andrey Rendon Bahamon</code>
+            <button class="btn secondary" type="button" data-copy-target="eurHolder">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">IBAN:</div>
+          <div class="row">
+            <code id="eurIban">GB95TCCL00997951894200</code>
+            <button class="btn secondary" type="button" data-copy-target="eurIban">Copiar</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Bank:</div>
+          <div class="row">
+            <code id="eurBank">The Currency Cloud Limited</code>
+            <button class="btn secondary" type="button" data-copy-target="eurBank">Copiar</button>
+          </div>
+
+          <details style="margin-top:10px">
+            <summary style="cursor:pointer">Dirección del banco (si te la piden)</summary>
+            <div style="margin-top:10px">
+              <div class="muted">Bank Address:</div>
+              <div class="row">
+                <code id="eurAddress">12 Steward Street, The Steward Building, London, E1 6FQ, GB</code>
+                <button class="btn secondary" type="button" data-copy-target="eurAddress">Copiar</button>
+              </div>
+            </div>
+          </details>
+
+          <div class="muted note" style="margin-top:10px">
+            Referencia sugerida: <b>Apoyo Calendaria‑LGC</b>
+          </div>
+        </div>
+      </details>
+    </div>
+<script>
+    // Pegá tus links reales acá:
+    const MP_URL = "https://link.mercadopago.com.ar/joanandrey";     // ej: https://link.mercadopago.com/...
+    const PAYPAL_URL = "https://www.paypal.me/decodificacionbio"; // ej: https://paypal.me/...
+
+    const mpBtn = document.getElementById('mpBtn');
+    const ppBtn = document.getElementById('ppBtn');
+    function setBtn(btn, url){
+      if(url && url.trim()){
+        url = url.trim();
+        // Si falta esquema (http/https), se asume https
+        if(!/^https?:\/\//i.test(url)) url = "https://" + url;
+        btn.href = url;
+      }else{
+        btn.href = "#";
+        btn.style.opacity = ".55";
+        btn.addEventListener('click', (e)=>{
+          e.preventDefault();
+          alert("Link sin configurar. Editá public/apoyar.html y pegá tu URL.");
+        });
+      }
+    }
+    setBtn(mpBtn, MP_URL);
+    setBtn(ppBtn, PAYPAL_URL);
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt);
+        alert("Copiado ✅");
+      }catch(e){
+        alert("No se pudo copiar automáticamente. Copialo manual.");
+      }
+    }
+
+    // Botones de copiar (usa data-copy-target="idDelCode")
+    document.querySelectorAll('[data-copy-target]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-copy-target');
+        const el = document.getElementById(id);
+        if(!el) return;
+        copyText(el.innerText);
+      });
+    });
+  </script>
+</body>
+</html>
