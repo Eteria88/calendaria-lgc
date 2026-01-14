@@ -288,11 +288,12 @@ if(!band.ok){
   setText('bandOut', band.banda + 'ª (' + band.desde + '–' + band.hasta + ')');
 
   // Frecuencias de la banda etaria: +transcurridos | -faltan
-  var trans = (band.dias - band.desde);
-  var left = band.faltan;
+  // Transcurridos: incluye el día actual (primer día de banda = 1)
+  // Faltan: días restantes después de hoy (último día de banda = 0)
+  var trans = (band.dias - band.desde) + 1;
+  var left = Math.max(0, band.hasta - band.dias);
   setText('bandLeft', '+' + String(trans) + ' | -' + String(left));
-
-  setText('bandDone', String(band.recorridas) + ' (completas)');
+setText('bandDone', String(band.recorridas) + ' (completas)');
 }
 
 // Cronograma informativo de bandas (independiente)
