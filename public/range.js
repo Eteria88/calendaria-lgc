@@ -94,56 +94,29 @@
 
 function flex(str){
       if(!str) return null;
-      // Acepta: YYYY-MM-DD, DD/MM/YYYY, DD·MM·YYYY, DD MM YYYY, etc.
-      var s = String(str).trim();
-      // extrae grupos numéricos
-      var parts = s.match(/\d+/g);
-      if(!parts || parts.length !== 3) return null;
+      var s=String(str).trim().replace(/\//g,'-');
+      var p=s.split('-'); if(p.length!==3) return null;
 
-      var a = parseInt(parts[0],10);
-      var b = parseInt(parts[1],10);
-      var c = parseInt(parts[2],10);
-      if([a,b,c].some(function(x){ return isNaN(x); })) return null;
-
-      // Detectar cuál parte es el año:
-      //  - si alguna tiene 4+ dígitos => año
-      //  - si no, si alguna es > 31 => año
-      //  - si no, asumimos año al final (DD/MM/YYY)
-      var idxY = -1;
+      // Detecta año por tener 4+ dígitos
+      var idxY=-1;
       for(var i=0;i<3;i++){
-        if(parts[i].length >= 4){ idxY=i; break; }
+        if(/^\d{4,6}$/.test(p[i])){ idxY=i; break; }
       }
-      if(idxY < 0){
-        if(a > 31) idxY = 0;
-        else if(b > 31) idxY = 1;
-        else if(c > 31) idxY = 2;
-        else idxY = 2;
-      }
-
       var y,m,d;
-      if(idxY === 0){
-        // y-m-d (ISO)
-        y = a; m = b; d = c;
-      }else if(idxY === 2){
-        // d-m-y
-        d = a; m = b; y = c;
+      if(idxY>=0){
+        y=parseInt(p[idxY],10);
+        var r=[];
+        for(i=0;i<3;i++){ if(i!==idxY) r.push(parseInt(p[i],10)); }
+        if(r.length!==2||isNaN(r[0])||isNaN(r[1])) return null;
+        if(idxY===0){ m=r[0]; d=r[1]; } else { d=r[0]; m=r[1]; }
       }else{
-        // formato poco común: d-y-m o m-y-d; intentamos inferir
-        y = b;
-        if(a <= 12 && c <= 31){
-          // m-y-d
-          m = a; d = c;
-        }else{
-          // d-y-m
-          d = a; m = c;
-        }
+        y=parseInt(p[0],10); m=parseInt(p[1],10); d=parseInt(p[2],10);
       }
-
       if(!(y>=1&&y<=275760&&m>=1&&m<=12&&d>=1&&d<=31)) return null;
       return {y:y,m:m,d:d};
     }
 
-function calcRange(startId, endId){
+    function calcRange(startId, endId){
       var sI = $(startId) ? $(startId).value : '';
       var eI = $(endId) ? $(endId).value : '';
       var S = flex(sI), E = flex(eI);
