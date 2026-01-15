@@ -26,17 +26,59 @@ function fmtDate(d){
     function pad(n){n=String(n); return n.length<2?('0'+n):n;}
 
     function flex(str){
+      // Parser flexible para fechas escritas por el usuario.
+      // Soporta separadores: / - . · espacios (y cualquier no-dígito).
+      // También soporta año de 1 a 4 dígitos (ej: 491, 0491, 2026).
       if(!str) return null;
-      var s=String(str).trim().replace(/\//g,'-');
-      var p=s.split('-'); if(p.length!==3) return null;
-      var idxY=-1; for(var i=0;i<3;i++){ if(/^\d{4}$/.test(p[i])){ idxY=i; break; } }
+
+      // Normalizar: todo lo que no sea dígito se vuelve separador
+      var s = String(str).trim();
+      if(!s) return null;
+      s = s.replace(/[^0-9]+/g,'-').replace(/^-+|-+$/g,'');
+      var p = s.split('-').filter(Boolean);
+      if(p.length!==3) return null;
+
+      var n0 = parseInt(p[0],10), n1 = parseInt(p[1],10), n2 = parseInt(p[2],10);
+      if(isNaN(n0)||isNaN(n1)||isNaN(n2)) return null;
+
+      var lens = [p[0].length, p[1].length, p[2].length];
+      var nums = [n0,n1,n2];
+
+      // Detectar índice de año:
+      // 1) Preferir el token de 4 dígitos.
+      // 2) Si no hay, usar el que sea > 31 (día/mes no superan 31).
+      // 3) Si sigue ambiguo, asumir formato dd-mm-yy/yyy cuando los 2 primeros parecen día/mes.
+      var idxY = -1;
+      for(var i=0;i<3;i++){ if(lens[i]===4){ idxY=i; break; } }
+      if(idxY<0){
+        var cand = [];
+        for(i=0;i<3;i++){ if(nums[i]>31) cand.push(i); }
+        if(cand.length===1){
+          idxY=cand[0];
+        }else if(cand.length>1){
+          // Probable yyyy-mm-dd si el primero es grande; si no, tomamos el último grande.
+          idxY = (nums[0]>31 ? 0 : cand[cand.length-1]);
+        }else{
+          // Ninguno >31: si parece dd-mm-yy/yyy, tomamos el último como año.
+          if(nums[0]>=1 && nums[0]<=31 && nums[1]>=1 && nums[1]<=12){
+            idxY = 2;
+          }else{
+            // Fallback conservador
+            idxY = 0;
+          }
+        }
+      }
+
       var y,m,d;
-      if(idxY>=0){
-        y=parseInt(p[idxY],10);
-        var r=[]; for(i=0;i<3;i++){ if(i!==idxY) r.push(parseInt(p[i],10)); }
-        if(r.length!==2||isNaN(r[0])||isNaN(r[1])) return null;
-        if(idxY===0){ m=r[0]; d=r[1]; } else { d=r[0]; m=r[1]; }
-      }else{ y=parseInt(p[0],10); m=parseInt(p[1],10); d=parseInt(p[2],10); }
+      if(idxY===0){ y=nums[0]; m=nums[1]; d=nums[2]; }
+      else if(idxY===2){ d=nums[0]; m=nums[1]; y=nums[2]; }
+      else {
+        // idxY===1 (raro): intentar inferir mm-YYYY-dd o dd-YYYY-mm
+        y=nums[1];
+        if(nums[0]>=1 && nums[0]<=12 && nums[2]>=1 && nums[2]<=31){ m=nums[0]; d=nums[2]; }
+        else { d=nums[0]; m=nums[2]; }
+      }
+
       if(!(y>=1&&y<=9999&&m>=1&&m<=12&&d>=1&&d<=31)) return null;
       return {y:y,m:m,d:d};
     }
@@ -675,56 +717,45 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
       // Marcas LGC: calcula automáticamente leyendo data-date-iso del DOM (soporta fechas pasadas y futuras)
-      // Importante: para coherencia con "Día solar", usa calendario Juliano antes del 15/10/1582
-      // y Gregoriano desde esa fecha (la misma regla que aplica el cómputo de días solares en esta app).
-      function parseISOYMD(iso){
+      function parseISODate(iso){
         if(!iso) return null;
         var m = /^\s*(\d{4})-(\d{2})-(\d{2})\s*$/.exec(String(iso));
         if(!m) return null;
-        return { y: parseInt(m[1],10), m: parseInt(m[2],10), d: parseInt(m[3],10) };
-      }
-      function isGregYMD(y,m,d){
-        return (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
-      }
-      function ymdToJDN(y,m,d){
-        return isGregYMD(y,m,d) ? jdnG(y,m,d) : jdnJ(y,m,d);
+        return dt(parseInt(m[1],10), parseInt(m[2],10), parseInt(m[3],10));
       }
       function fmtSigned(n){
         if(!isFinite(n)) return '—';
         if(n===0) return '0';
         return n<0 ? ('−'+Math.abs(n)) : String(n);
       }
-      function updateAnchors(refYMD){
+      function updateAnchors(refDate){
         var grid = document.getElementById('anchorsGrid');
         if(!grid) return;
 
-        var refJ = (refYMD && isFinite(refYMD.y) && isFinite(refYMD.m) && isFinite(refYMD.d))
-          ? ymdToJDN(refYMD.y, refYMD.m, refYMD.d)
-          : NaN;
-
-        // Orden cronológico (más antiguo → más reciente) usando el mismo criterio de calendario LGC
+        // Orden cronológico (más antiguo → más reciente)
         var cards = Array.prototype.slice.call(grid.querySelectorAll('.a-card'));
         var items = cards.map(function(card){
           var valEl = card.querySelector('[data-date-iso]');
           var iso = valEl ? valEl.getAttribute('data-date-iso') : null;
-          var ymd = parseISOYMD(iso);
-          var j = (ymd ? ymdToJDN(ymd.y, ymd.m, ymd.d) : Number.POSITIVE_INFINITY);
-          return {card:card, valEl:valEl, ymd:ymd, jdn:j};
+          var d = parseISODate(iso);
+          return {card:card, valEl:valEl, date:d, time:d ? d.getTime() : Number.POSITIVE_INFINITY};
         });
-        items.sort(function(a,b){ return a.jdn - b.jdn; });
+        items.sort(function(a,b){ return a.time - b.time; });
         items.forEach(function(it){ grid.appendChild(it.card); });
 
         // Conteo: pasado positivo, futuro negativo (evita -0)
         items.forEach(function(it){
-          if(!it.valEl || !it.ymd || !isFinite(refJ) || !isFinite(it.jdn)) return;
-          var diff = (refJ - it.jdn);
+          if(!it.valEl || !it.date) return;
+          var diff = Math.floor((refDate - it.date)/ms);
           if(diff===0) diff = 0;
           it.valEl.textContent = fmtSigned(diff);
           it.valEl.title = diff<0 ? ('Faltan '+Math.abs(diff)+' días') : '';
         });
       }
-      updateAnchors(Rf);
-// Calendario lógico: slider de años a futuro (desde 2028)
+      updateAnchors(ref);
+
+
+      // Calendario lógico: slider de años a futuro (desde 2028)
       var futureYears = 0;
       var calogRange = document.getElementById('calogFuture');
       if(calogRange){
