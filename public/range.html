@@ -21,11 +21,11 @@ header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(1
 
 body{margin:0;background:#0b0d10;color:#e6f1ff;font-family:system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:720px;margin:0 auto;padding:20px}
-.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid #2a3642;border-radius:16px;padding:14px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid #2a3642;border-radius:16px;padding:14px;overflow:hidden}
 .small{font-size:12px;color:#9fb3c8}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.mono.big{font-size:clamp(26px,7vw,40px)}
-.input{background:rgba(255,255,255,.05);border:1px solid #2a3642;border-radius:8px;color:#e6f1ff;padding:6px 8px;min-height:42px;width:100%}
+.input{background:rgba(255,255,255,.05);border:1px solid #2a3642;border-radius:8px;color:#e6f1ff;padding:6px 8px;min-height:42px;width:100%;max-width:100%;min-width:0;display:block;-webkit-appearance:none;appearance:none;background-clip:padding-box}
 .input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
-.field{display:flex;flex-direction:column}
+.field{display:flex;flex-direction:column;min-width:0}
 .btn{background:rgba(124,199,255,.15);border:1px solid #2a3642;border-radius:999px;color:#e6f1ff;padding:6px 12px;cursor:pointer;min-height:42px}
 .btn:hover{background:rgba(124,199,255,.25)}
 .status{margin:8px 0;color:#9cffd5;font-size:12px}
@@ -53,6 +53,13 @@ body.noScroll{overflow:hidden}
   .input{min-height:44px}
 }
 
+/* --- Mobile: inputs a 1 columna + evitar desborde por inline grid-column --- */
+@media(max-width:520px){
+  .input-grid{grid-template-columns:1fr !important}
+  .input-grid .field{grid-column:1 / -1 !important}
+  .btn{width:100%}
+}
+
 /* ====== Ajustes: menú oculto por defecto + frames lado a lado ====== */
 .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
 @media(max-width:900px){.compare-grid{grid-template-columns:1fr}}
@@ -77,17 +84,6 @@ body.noScroll{overflow:hidden}
 .tbl tr:last-child td{border-bottom:none}
 .tbl .mut{color:var(--muted);font-size:12px;margin-top:2px}
 .tbl tr.hi{background:rgba(156,255,213,.06)}
-
-
-/* Mobile layout fixes: prevent overflow / superposición de inputs */
-.field{min-width:0}
-.input{min-width:0}
-@media (max-width: 520px){
-  .input-grid{grid-template-columns:1fr;gap:12px}
-  .input-grid > .field{grid-column:1 / -1 !important}
-  .btn{width:100%}
-}
-
 </style>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b0d10">
