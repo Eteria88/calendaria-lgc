@@ -91,28 +91,63 @@
     function fmtDMY(ymd){
       return ymd.d + '/' + ymd.m + '/' + ymd.y;
     }
+    function fmtInput(ymd){
+      if(!ymd) return '';
+      var d = String(ymd.d).padStart(2,'0');
+      var m = String(ymd.m).padStart(2,'0');
+      var y = String(ymd.y).padStart(4,'0');
+      return d + '/' + m + '/' + y;
+    }
+    function setTodayTo(id){
+      var el = $(id);
+      if(!el) return;
+      var now = new Date();
+      var ymd = { y: now.getFullYear(), m: now.getMonth()+1, d: now.getDate() };
+      el.value = fmtInput(ymd);
+    }
+
 
 function flex(str){
       if(!str) return null;
-      var s=String(str).trim().replace(/\//g,'-');
-      var p=s.split('-'); if(p.length!==3) return null;
+      var s = String(str).trim();
+      // Normaliza separadores: / . · espacios -> -
+      s = s.replace(/[\.\/·\s]+/g,'-').replace(/[^0-9\-]/g,'-');
+      var parts = s.match(/\d+/g);
+      if(!parts || parts.length !== 3) return null;
 
-      // Detecta año por tener 4+ dígitos
-      var idxY=-1;
+      var a = parts.map(function(x){ return parseInt(x,10); });
+      if(a.some(function(n){ return isNaN(n); })) return null;
+
+      // Detecta año:
+      // 1) si alguna parte tiene 4+ dígitos => año
+      // 2) si no, la parte > 31 => año (ej: 491)
+      var idxY = -1;
       for(var i=0;i<3;i++){
-        if(/^\d{4,6}$/.test(p[i])){ idxY=i; break; }
+        if(parts[i].length >= 4){ idxY = i; break; }
       }
-      var y,m,d;
-      if(idxY>=0){
-        y=parseInt(p[idxY],10);
-        var r=[];
-        for(i=0;i<3;i++){ if(i!==idxY) r.push(parseInt(p[i],10)); }
-        if(r.length!==2||isNaN(r[0])||isNaN(r[1])) return null;
-        if(idxY===0){ m=r[0]; d=r[1]; } else { d=r[0]; m=r[1]; }
+      if(idxY < 0){
+        for(i=0;i<3;i++){
+          if(a[i] > 31){ idxY = i; break; }
+        }
+      }
+      if(idxY < 0) return null;
+
+      var y = a[idxY];
+      var r = [];
+      for(i=0;i<3;i++){ if(i!==idxY) r.push(a[i]); }
+      if(r.length !== 2) return null;
+
+      var d,m;
+      if(idxY === 0){
+        // Y-M-D
+        m = r[0]; d = r[1];
       }else{
-        y=parseInt(p[0],10); m=parseInt(p[1],10); d=parseInt(p[2],10);
+        // D-M-Y o M-D-Y (si el año está al final o en medio)
+        // Por convención de la app: si año no es primero => D-M-Y
+        d = r[0]; m = r[1];
       }
-      if(!(y>=1&&y<=275760&&m>=1&&m<=12&&d>=1&&d<=31)) return null;
+
+      if(!(y>=1 && y<=275760 && m>=1 && m<=12 && d>=1 && d<=31)) return null;
       return {y:y,m:m,d:d};
     }
 
@@ -316,6 +351,24 @@ renderBandSchedule();
         if(el){
           el.addEventListener('change', render);
           el.addEventListener('input', render);
+      // Botones "Hoy" (compat móvil + inputs texto)
+      var map = [
+        ['btnStartTodayA','startA'],
+        ['btnEndTodayA','endA'],
+        ['btnStartTodayB','startB'],
+        ['btnEndTodayB','endB'],
+        ['btnRefToday','ref']
+      ];
+      map.forEach(function(p){
+        var b = $(p[0]);
+        if(b){
+          b.addEventListener('click', function(){
+            setTodayTo(p[1]);
+            render();
+          });
+        }
+      });
+
         }
       });
       var btn = $('clearAll');
@@ -332,7 +385,7 @@ renderBandSchedule();
     var y = d.getFullYear();
     var m = String(d.getMonth()+1).padStart(2,'0');
     var day = String(d.getDate()).padStart(2,'0');
-    refEl.value = y + '-' + m + '-' + day;
+    refEl.value = day + '/' + m + '/' + y;
   }
 })();
     document.addEventListener('DOMContentLoaded', function(){ bind(); render(); }, {once:true});
