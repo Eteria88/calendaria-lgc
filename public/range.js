@@ -337,6 +337,45 @@ renderBandSchedule();
       status('ok', true);
     }
 
+    
+    // --- Máscara para escribir fechas solo con números (iOS teclado numérico) ---
+    function maskDateInput(el){
+      if(!el) return;
+      var before = String(el.value || '');
+      // Mantener posición del cursor (best-effort)
+      var caret = 0;
+      try{ caret = el.selectionStart || 0; }catch(e){ caret = before.length; }
+
+      var digits = before.replace(/\D/g,'');
+      if(digits.length > 8) digits = digits.slice(0,8);
+
+      var out = '';
+      if(digits.length <= 2){
+        out = digits;
+      }else if(digits.length <= 4){
+        out = digits.slice(0,2) + '/' + digits.slice(2);
+      }else{
+        out = digits.slice(0,2) + '/' + digits.slice(2,4) + '/' + digits.slice(4);
+      }
+      el.value = out;
+
+      // Reubicar cursor según cantidad de dígitos antes del caret
+      try{
+        var digitsBefore = before.slice(0, caret).replace(/\D/g,'').length;
+        var newPos;
+        if(digitsBefore <= 2) newPos = digitsBefore;
+        else if(digitsBefore <= 4) newPos = digitsBefore + 1; // 1er "/"
+        else newPos = digitsBefore + 2; // dos "/"
+        el.setSelectionRange(newPos, newPos);
+      }catch(e){}
+    }
+
+    function normalizeOnBlur(el){
+      if(!el) return;
+      // Si el usuario pegó con separadores raros, lo dejamos en formato dd/mm/a... (ya lo hace mask)
+      maskDateInput(el);
+    }
+
     function clearAll(){
       ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
         var el = $(id); if(el) el.value = '';
@@ -346,50 +385,54 @@ renderBandSchedule();
     }
 
     function bind(){
+      // Inputs de fecha: máscara + render
       ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
         var el = $(id);
-        if(el){
-          el.addEventListener('change', render);
-          el.addEventListener('input', render);
-      // Botones "Hoy" (compat móvil + inputs texto)
-      var map = [
+        if(!el) return;
+
+        var onAny = function(){
+          if(el.classList && el.classList.contains('date-input')) maskDateInput(el);
+          render();
+        };
+
+        el.addEventListener('input', onAny);
+        el.addEventListener('change', onAny);
+        el.addEventListener('blur', function(){
+          if(el.classList && el.classList.contains('date-input')) normalizeOnBlur(el);
+          render();
+        });
+      });
+
+      // Botones "Hoy"
+      [
         ['btnStartTodayA','startA'],
         ['btnEndTodayA','endA'],
         ['btnStartTodayB','startB'],
         ['btnEndTodayB','endB'],
         ['btnRefToday','ref']
-      ];
-      map.forEach(function(p){
+      ].forEach(function(p){
         var b = $(p[0]);
-        if(b){
-          b.addEventListener('click', function(){
-            setTodayTo(p[1]);
-            render();
-          });
-        }
+        if(!b) return;
+        b.addEventListener('click', function(){
+          setTodayTo(p[1]);
+          render();
+        });
       });
 
-        }
-      });
       var btn = $('clearAll');
       if(btn){ btn.addEventListener('click', clearAll); }
     }
 
+    function initDefaults(){
+      var refEl = $('ref');
+      if(refEl && !refEl.value){
+        setTodayTo('ref');
+      }
+    }
+
     bind();
-
-
-(function initBandRefToday(){
-  var refEl = $('ref');
-  if(refEl && !refEl.value){
-    var d = new Date();
-    var y = d.getFullYear();
-    var m = String(d.getMonth()+1).padStart(2,'0');
-    var day = String(d.getDate()).padStart(2,'0');
-    refEl.value = day + '/' + m + '/' + y;
-  }
-})();
-    document.addEventListener('DOMContentLoaded', function(){ bind(); render(); }, {once:true});
-    setTimeout(function(){ bind(); }, 250);
+    initDefaults();
+    render();
 
   }catch(e){
     status('error init: ' + e.message, false);
