@@ -27,16 +27,39 @@ function fmtDate(d){
 
     function flex(str){
       if(!str) return null;
-      var s=String(str).trim().replace(/\//g,'-');
-      var p=s.split('-'); if(p.length!==3) return null;
-      var idxY=-1; for(var i=0;i<3;i++){ if(/^\d{4}$/.test(p[i])){ idxY=i; break; } }
-      var y,m,d;
-      if(idxY>=0){
-        y=parseInt(p[idxY],10);
-        var r=[]; for(i=0;i<3;i++){ if(i!==idxY) r.push(parseInt(p[i],10)); }
-        if(r.length!==2||isNaN(r[0])||isNaN(r[1])) return null;
-        if(idxY===0){ m=r[0]; d=r[1]; } else { d=r[0]; m=r[1]; }
-      }else{ y=parseInt(p[0],10); m=parseInt(p[1],10); d=parseInt(p[2],10); }
+      // Normaliza separadores: acepta / . · espacios, etc.
+      var s = String(str).trim();
+      s = s.replace(/[^\d]/g,'-');      // todo lo no numérico → -
+      s = s.replace(/-+/g,'-');         // colapsa ---
+      s = s.replace(/^-|-$/g,'');       // recorta - al inicio/fin
+      var p = s.split('-'); 
+      if(p.length!==3) return null;
+
+      // Parseo numérico base
+      var nums = p.map(function(x){ return parseInt(x,10); });
+      if(nums.some(function(n){ return isNaN(n); })) return null;
+
+      // Detecta el año:
+      // 1) token de 4 dígitos, si existe
+      // 2) si no, token cuyo valor > 31 (día/mes nunca superan 31) => debe ser año
+      var idxY = -1;
+      for(var i=0;i<3;i++){
+        if(/^\d{4}$/.test(p[i])) { idxY=i; break; }
+      }
+      if(idxY<0){
+        for(i=0;i<3;i++){
+          if(nums[i] > 31) { idxY=i; break; }
+        }
+      }
+      if(idxY<0) return null;
+
+      var y = nums[idxY], m, d;
+      if(idxY===0){ m = nums[1]; d = nums[2]; }
+      else if(idxY===2){ d = nums[0]; m = nums[1]; }
+      else { // raro, pero por si el año está en el medio: dd-yyyy-mm o mm-yyyy-dd
+        d = nums[0]; m = nums[2];
+      }
+
       if(!(y>=1&&y<=9999&&m>=1&&m<=12&&d>=1&&d<=31)) return null;
       return {y:y,m:m,d:d};
     }
@@ -675,56 +698,45 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       var apBadge = document.getElementById('apPhaseBadge'); if(apBadge){ apBadge.textContent = 'Aparato Nº '+apIndexVal+' · Año '+yearPhase+' — '+PHASES[yearPhase]; }
 
       // Marcas LGC: calcula automáticamente leyendo data-date-iso del DOM (soporta fechas pasadas y futuras)
-      // Importante: para coherencia con "Día solar", usa calendario Juliano antes del 15/10/1582
-      // y Gregoriano desde esa fecha (la misma regla que aplica el cómputo de días solares en esta app).
-      function parseISOYMD(iso){
+      function parseISODate(iso){
         if(!iso) return null;
         var m = /^\s*(\d{4})-(\d{2})-(\d{2})\s*$/.exec(String(iso));
         if(!m) return null;
-        return { y: parseInt(m[1],10), m: parseInt(m[2],10), d: parseInt(m[3],10) };
-      }
-      function isGregYMD(y,m,d){
-        return (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
-      }
-      function ymdToJDN(y,m,d){
-        return isGregYMD(y,m,d) ? jdnG(y,m,d) : jdnJ(y,m,d);
+        return dt(parseInt(m[1],10), parseInt(m[2],10), parseInt(m[3],10));
       }
       function fmtSigned(n){
         if(!isFinite(n)) return '—';
         if(n===0) return '0';
         return n<0 ? ('−'+Math.abs(n)) : String(n);
       }
-      function updateAnchors(refYMD){
+      function updateAnchors(refDate){
         var grid = document.getElementById('anchorsGrid');
         if(!grid) return;
 
-        var refJ = (refYMD && isFinite(refYMD.y) && isFinite(refYMD.m) && isFinite(refYMD.d))
-          ? ymdToJDN(refYMD.y, refYMD.m, refYMD.d)
-          : NaN;
-
-        // Orden cronológico (más antiguo → más reciente) usando el mismo criterio de calendario LGC
+        // Orden cronológico (más antiguo → más reciente)
         var cards = Array.prototype.slice.call(grid.querySelectorAll('.a-card'));
         var items = cards.map(function(card){
           var valEl = card.querySelector('[data-date-iso]');
           var iso = valEl ? valEl.getAttribute('data-date-iso') : null;
-          var ymd = parseISOYMD(iso);
-          var j = (ymd ? ymdToJDN(ymd.y, ymd.m, ymd.d) : Number.POSITIVE_INFINITY);
-          return {card:card, valEl:valEl, ymd:ymd, jdn:j};
+          var d = parseISODate(iso);
+          return {card:card, valEl:valEl, date:d, time:d ? d.getTime() : Number.POSITIVE_INFINITY};
         });
-        items.sort(function(a,b){ return a.jdn - b.jdn; });
+        items.sort(function(a,b){ return a.time - b.time; });
         items.forEach(function(it){ grid.appendChild(it.card); });
 
         // Conteo: pasado positivo, futuro negativo (evita -0)
         items.forEach(function(it){
-          if(!it.valEl || !it.ymd || !isFinite(refJ) || !isFinite(it.jdn)) return;
-          var diff = (refJ - it.jdn);
+          if(!it.valEl || !it.date) return;
+          var diff = Math.floor((refDate - it.date)/ms);
           if(diff===0) diff = 0;
           it.valEl.textContent = fmtSigned(diff);
           it.valEl.title = diff<0 ? ('Faltan '+Math.abs(diff)+' días') : '';
         });
       }
-      updateAnchors(Rf);
-// Calendario lógico: slider de años a futuro (desde 2028)
+      updateAnchors(ref);
+
+
+      // Calendario lógico: slider de años a futuro (desde 2028)
       var futureYears = 0;
       var calogRange = document.getElementById('calogFuture');
       if(calogRange){
