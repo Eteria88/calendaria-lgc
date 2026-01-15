@@ -109,7 +109,7 @@
 
 function flex(str){
       if(!str) return null;
-      var s = String(str).trim();
+      var s = String(str).trim().replace(/\s+/g,'');
       // Normaliza separadores: / . · espacios -> -
       s = s.replace(/[\.\/·\s]+/g,'-').replace(/[^0-9\-]/g,'-');
       var parts = s.match(/\d+/g);
@@ -345,12 +345,22 @@ renderBandSchedule();
       status('ok (limpio)', true);
     }
 
-    function bind(){
+    
+    // Sanitiza espacios en inputs de fecha (evita desajustes por espacios)
+    function sanitizeDateInput(el){
+      if(!el) return;
+      var v = String(el.value || '');
+      var nv = v.replace(/\s+/g,'');
+      if(nv !== v) el.value = nv;
+    }
+
+function bind(){
       ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
         var el = $(id);
         if(el){
-          el.addEventListener('change', render);
-          el.addEventListener('input', render);
+          el.addEventListener('change', function(){ sanitizeDateInput(el); render(); });
+          el.addEventListener('input', function(){ sanitizeDateInput(el); render(); });
+          el.addEventListener('blur', function(){ sanitizeDateInput(el); render(); });
       // Botones "Hoy" (compat móvil + inputs texto)
       var map = [
         ['btnStartTodayA','startA'],
