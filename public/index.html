@@ -523,14 +523,14 @@ body.noScroll{overflow:hidden}
         <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
       </div>
       <nav class="mobileList">
-        <a class="mnav-link active" href="./">Inicio</a>
-        <a class="mnav-link" href="./range.html">Comparador LGC</a>
-        <a class="mnav-link" href="./letters.html">Letras a números</a>      <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
+        <a class="mnav-link active" href="/">Inicio</a>
+        <a class="mnav-link" href="/range.html">Comparador LGC</a>
+        <a class="mnav-link" href="/letters.html">Letras a números</a>      <a class="mnav-link" href="/mapa/">Mapa y códigos</a>
 
         
-        <a class="mnav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
-        <a class="mnav-link" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="mnav-link" href="./apoyar.html">Apoyar el proyecto</a>
+        <a class="mnav-link" href="/indice-ale-en-red.html">Instrucción ACR</a>
+        <a class="mnav-link" href="/marcas-lgc.html">Marcas LGC</a>
+        <a class="mnav-link" href="/apoyar.html">Apoyar el proyecto</a>
       </nav>
     </div>
     <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
@@ -542,14 +542,14 @@ body.noScroll{overflow:hidden}
     <aside class="sidenav">
       <nav>
         <div class="nav-title">Menú</div>
-        <a class="nav-link active" href="./">Inicio</a>
-        <a class="nav-link" href="./range.html">Comparador LGC</a>
-        <a class="nav-link" href="./letters.html">Letras a números</a>        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
+        <a class="nav-link active" href="/">Inicio</a>
+        <a class="nav-link" href="/range.html">Comparador LGC</a>
+        <a class="nav-link" href="/letters.html">Letras a números</a>        <a class="nav-link" href="/mapa/">Mapa y códigos</a>
 
         
-        <a class="nav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
-          <a class="nav-link" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
+        <a class="nav-link" href="/indice-ale-en-red.html">Instrucción ACR</a>
+          <a class="nav-link" href="/marcas-lgc.html">Marcas LGC</a>
+        <a class="nav-link" href="/apoyar.html">Apoyar el proyecto</a>
       </nav>
     </aside>
     <main>
@@ -557,10 +557,10 @@ body.noScroll{overflow:hidden}
 
       <section class="card top-card">
     <div class="elementBadge" title="Hydrogen — 1">
-      <img id="elementTile" src="./hydrogen.png" alt="Hydrogen element tile">
+      <img id="elementTile" src="/hydrogen.png" alt="Hydrogen element tile">
     </div>
     <div style="position:absolute;top:110px;right:16px;">
-      <a href="./periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
+      <a href="/periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
     </div>
 
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
@@ -786,8 +786,8 @@ body.noScroll{overflow:hidden}
   <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
 </div>
 <noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para ver los cálculos.</div></noscript>
-<script src="./app.js" defer></script>
-<script src="./common.js" defer></script>
+<script src="/app.js" defer></script>
+<script src="/common.js" defer></script>
 
   <script>
   (function(){
@@ -1315,7 +1315,7 @@ body.noScroll{overflow:hidden}
 function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
   function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
   function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
-    if(el){ tile.src="./"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
+    if(el){ tile.src="/"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
     else { badge.style.display="none"; badge.setAttribute("aria-hidden","true"); }
   }
   if(ref){ ref.addEventListener('change',renderBadge); ref.addEventListener('input',renderBadge); }
@@ -2486,7 +2486,7 @@ if ('serviceWorker' in navigator) {
     }
 
         var iso = activeISO();
-        var href = './periodic.html?el=' + encodeURIComponent(symbol);
+        var href = '/periodic.html?el=' + encodeURIComponent(symbol);
         if(iso){
           href += '&ref=' + encodeURIComponent(iso);
         }
