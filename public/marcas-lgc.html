@@ -853,4 +853,54 @@ body.noScroll{overflow:hidden}
 })();
 </script>
 
+
+<script>
+(function(){
+  // Install only once
+  if (window.__cal_ref_mobile_mask_installed) return;
+  window.__cal_ref_mobile_mask_installed = true;
+
+  const mobile = document.getElementById('ref_mobile');
+  const ref = document.getElementById('ref');
+  if(!mobile || !ref) return;
+
+  function maskDMY(value){
+    const digits = String(value||'').replace(/\D/g,'').slice(0,8);
+    if(digits.length <= 2) return digits;
+    let out = digits.slice(0,2) + '/';
+    if(digits.length <= 4) return out + digits.slice(2);
+    out += digits.slice(2,4) + '/';
+    out += digits.slice(4);
+    return out;
+  }
+  function dmyToIso(dmy){
+    const m = String(dmy||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if(!m) return '';
+    const dd=m[1], mm=m[2], yyyy=m[3];
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  function syncIfComplete(){
+    const iso = dmyToIso(mobile.value);
+    if(!iso) return;
+    ref.value = iso;
+    ref.dispatchEvent(new Event('input', {bubbles:true}));
+    ref.dispatchEvent(new Event('change', {bubbles:true}));
+  }
+
+  mobile.addEventListener('input', ()=>{
+    const prev = mobile.value;
+    const masked = maskDMY(prev);
+    if(masked !== prev) mobile.value = masked;
+    // sync only when full date is present
+    if(/^\d{2}\/\d{2}\/\d{4}$/.test(mobile.value)) syncIfComplete();
+  });
+
+  mobile.addEventListener('blur', ()=>{
+    mobile.value = maskDMY(mobile.value);
+    if(/^\d{2}\/\d{2}\/\d{4}$/.test(mobile.value)) syncIfComplete();
+  });
+})();
+</script>
+
 </body></html>
