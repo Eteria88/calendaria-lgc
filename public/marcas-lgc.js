@@ -19,7 +19,57 @@
     return 31;
   }
 
-  function flex(str){
+  function attachDMYMask(el, onISOChange){
+    if(!el || el._dmyMask) return;
+    el._dmyMask = true;
+
+    function digitsOnly(v){ return (v||'').replace(/\D+/g,'').slice(0,8); }
+    function toDMY(dig){
+      var dd=dig.slice(0,2);
+      var mm=dig.slice(2,4);
+      var yy=dig.slice(4,8);
+      var out='';
+      if(dd) out += dd;
+      if(dig.length>=3) out += '/' + mm;
+      else if(dig.length>2) out += '/' + mm; // safety
+      if(dig.length>=5) out += '/' + yy;
+      return out;
+    }
+    function toISO(dig){
+      if(!dig || dig.length!==8) return '';
+      var dd=dig.slice(0,2), mm=dig.slice(2,4), yy=dig.slice(4,8);
+      return yy+'-'+mm+'-'+dd;
+    }
+
+    el.addEventListener('input', function(){
+      var start = el.selectionStart;
+      var dig = digitsOnly(el.value);
+      var formatted = toDMY(dig);
+      el.value = formatted;
+
+      // intentar mantener cursor (simple)
+      try{
+        var pos = formatted.length;
+        el.setSelectionRange(pos,pos);
+      }catch(e){}
+
+      if(typeof onISOChange === 'function'){
+        onISOChange(toISO(dig));
+      }
+    });
+
+    el.addEventListener('blur', function(){
+      var dig = digitsOnly(el.value);
+      if(dig.length===8){
+        el.value = toDMY(dig);
+      }
+      if(typeof onISOChange === 'function'){
+        onISOChange(toISO(dig));
+      }
+    });
+  }
+
+function flex(str){
     // Parser tolerante: dd/mm/aaaa / dd/mm/aaaa / dd mm aaaa, etc.
     if(!str) return null;
     var s = String(str).trim();
@@ -97,20 +147,36 @@
   function setRefInputsFromUTCDate(d){
     var refI=$('ref');
     var y=d.getUTCFullYear(), m=d.getUTCMonth()+1, da=d.getUTCDate();
-    var iso=String(y).padStart(4,'0')+'-'+pad(m)+'-'+pad(da);
+    var y4=String(y).padStart(4,'0');
+    var iso=y4+'-'+pad(m)+'-'+pad(da);
+    var dmy=pad(da)+'/'+pad(m)+'/'+y4;
 
+    // input principal (puede ser date o text)
     if(refI){
-      // si el input quedó como texto en móviles, ponemos dd/mm/aaaa
       if(refI.type === 'date') refI.value = iso;
-      else refI.value = pad(da)+'-'+pad(m)+'-'+String(y).padStart(4,'0');
+      else refI.value = dmy;
     }
 
-    if(refI){
-      try{
+    // input visible alternativo en móvil (si existe)
+    var disp = document.getElementById('refMobile') ||
+               document.getElementById('refText') ||
+               document.getElementById('refDisplay') ||
+               document.querySelector('input[data-ref-display]');
+    if(disp && disp !== refI){
+      disp.value = dmy;
+    }
+
+    // Disparar eventos para refrescar UI (y para que el mask se aplique)
+    try{
+      if(refI){
         refI.dispatchEvent(new Event('input', {bubbles:true}));
         refI.dispatchEvent(new Event('change', {bubbles:true}));
-      }catch(e){}
-    }
+      }
+      if(disp && disp !== refI){
+        disp.dispatchEvent(new Event('input', {bubbles:true}));
+        disp.dispatchEvent(new Event('change', {bubbles:true}));
+      }
+    }catch(e){}
   }
 
   function readRefParts(){
@@ -160,47 +226,22 @@
   }
 
   function up(){
-    // Ajuste móvil: forzar input a texto para evitar teclado raro + permitir años 0001
+    // Ajuste móvil: input como texto con máscara dd/mm/aaaa
     try{
       var ua = navigator.userAgent || '';
       var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
       var refI=$('ref');
       if(isMobile && refI && !refI._mobilePatched){
-        // En móviles usamos input de texto para poder mostrar dd/mm/aaaa
         refI.type='text';
         refI.inputMode='numeric';
         refI.autocomplete='off';
-        refI.autocapitalize='off';
         refI.spellcheck=false;
-        refI.maxLength=10; // dd/mm/aaaa
+        refI.maxLength=10;
         if(!refI.placeholder) refI.placeholder='dd/mm/aaaa';
-
-        function formatDMY(v){
-          var s=String(v||'').trim();
-
-          // Si viene en ISO yyyy-mm-dd, conviértelo sin pasar por el teclado
-          if(/^\d{4}-\d{2}-\d{2}$/.test(s)){
-            var p=flex(s);
-            if(p) return pad(p.d)+'/'+pad(p.m)+'/'+String(p.y).padStart(4,'0');
-          }
-
-          var dig=s.replace(/\D/g,'').slice(0,8);
-          var d=dig.slice(0,2), m=dig.slice(2,4), y=dig.slice(4,8);
-          if(dig.length<=2) return dig;
-          if(dig.length<=4) return d+'/'+dig.slice(2);
-          return d+'/'+m+'/'+y;
-        }
-
-        // Auto-inserta "/" mientras escribe (sin necesitar tecla "/")
-        refI.addEventListener('input', function(){
-          var before=refI.value;
-          var after=formatDMY(before);
-          if(after!==before) refI.value=after;
-        }, {passive:true});
-
-        // Normaliza valor actual si venía en ISO u otro formato compatible
-        try{ var p0=flex(refI.value); if(p0) refI.value=pad(p0.d)+'/'+pad(p0.m)+'/'+String(p0.y).padStart(4,'0'); }catch(e){}
-
+        attachDMYMask(refI, function(isoVal){
+          // mantener compatibilidad: si alguien espera ISO, lo guardamos en data-iso
+          refI.dataset.iso = isoVal || '';
+        });
         refI._mobilePatched=true;
       }
     }catch(e){}
@@ -211,7 +252,7 @@
 
     var lbl=$('refLabel');
     if(lbl){
-      lbl.textContent = pad(p.d)+'-'+pad(p.m)+'-'+String(p.y).padStart(4,'0');
+      lbl.textContent = pad(p.d)+'/'+pad(p.m)+'/'+String(p.y).padStart(4,'0');
     }
   }
 
@@ -244,14 +285,12 @@
       var base=dt(p.y,p.m,p.d);
       var moved=new Date(base.getTime()+deltaDays*ms);
       setRefInputsFromUTCDate(moved);
-      try{ up(); }catch(e){}
     }
 
     var btnToday=$('btnToday');
     if(btnToday){ btnToday.addEventListener('click', function(){
       var now=new Date();
       setRefInputsFromUTCDate(dt(now.getFullYear(), now.getMonth()+1, now.getDate()));
-      try{ up(); }catch(e){}
     });}
     var btnPrev=$('btnPrevDay');
     if(btnPrev){ btnPrev.addEventListener('click', function(){ shiftRefBy(-1); });}
