@@ -393,6 +393,18 @@ body.noScroll{overflow:hidden}
 .input--date{width:100%;max-width:220px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
+
+
+/* Mobile date format (dd/mm/aaaa) */
+#ref_mobile{display:none}
+@media(max-width:599px){
+  #ref{display:none}
+  #ref_mobile{display:block}
+}
+@media(min-width:600px){
+  #ref_mobile{display:none}
+}
+
 </style>
   
 <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
@@ -418,6 +430,7 @@ body.noScroll{overflow:hidden}
         <div class="field" style="grid-column:span 6">
         <label class="sr-only" for="ref">Fecha de referencia</label>
 <input class="input input--date" type="date" id="ref" min="0001-01-01" max="9999-12-31">
+<input class="input input--date" type="text" id="ref_mobile" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="dd/mm/aaaa" aria-label="Fecha de referencia (dd/mm/aaaa)">
         <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
 
         <div class="field" style="margin-top:8px">
@@ -703,4 +716,95 @@ body.noScroll{overflow:hidden}
   <script defer src="/_vercel/insights/script.js"></script>
   <script src="./marcas-lgc.js" defer></script>
   <script src="./common.js" defer></script>
+
+
+<script>
+(function(){
+  const ref = document.getElementById('ref');
+  const refM = document.getElementById('ref_mobile');
+  if(!ref || !refM) return;
+
+  const isMobile = () => window.matchMedia('(max-width: 599px)').matches;
+
+  function isoToDMY(iso){
+    if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return '';
+    const [y,m,d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  function dmyToIso(dmy){
+    if(!dmy) return null;
+    let s = String(dmy).trim().replace(/\s+/g,'');
+    // Accept dd/mm/yyyy, dd-mm-yyyy, dd.mm.yyyy
+    const m = s.match(/^([0-3]?\d)[\/\-.]([01]?\d)[\/\-.](\d{4})$/);
+    if(!m) return null;
+    let dd = m[1].padStart(2,'0');
+    let mm = m[2].padStart(2,'0');
+    let yy = m[3];
+    const iso = `${yy}-${mm}-${dd}`;
+    // Validate real date
+    const dt = new Date(iso + 'T00:00:00Z');
+    if(Number.isNaN(dt.getTime())) return null;
+    // JS Date will autocorrect invalid dates; verify
+    const y2 = dt.getUTCFullYear().toString().padStart(4,'0');
+    const m2 = (dt.getUTCMonth()+1).toString().padStart(2,'0');
+    const d2 = dt.getUTCDate().toString().padStart(2,'0');
+    if(`${y2}-${m2}-${d2}` !== iso) return null;
+    return iso;
+  }
+
+  function syncFromRef(){
+    refM.value = isoToDMY(ref.value);
+  }
+
+  function commitMobile(){
+    const iso = dmyToIso(refM.value);
+    if(!iso) return;
+    if(ref.value !== iso){
+      ref.value = iso;
+      // Trigger listeners in marcas-lgc.js
+      ref.dispatchEvent(new Event('change', {bubbles:true}));
+      ref.dispatchEvent(new Event('input', {bubbles:true}));
+    }
+    // normalize display
+    refM.value = isoToDMY(iso);
+  }
+
+  // Keep mobile in sync when ref changes (buttons/JS)
+  ref.addEventListener('change', syncFromRef);
+  ref.addEventListener('input', syncFromRef);
+
+  // Mobile typing behaviour
+  refM.addEventListener('blur', commitMobile);
+  refM.addEventListener('change', commitMobile);
+
+  // While typing, auto-insert slashes lightly (optional)
+  refM.addEventListener('input', () => {
+    let s = refM.value.replace(/\s+/g,'');
+    // allow only digits and separators
+    s = s.replace(/[^0-9\/\-.]/g,'');
+    refM.value = s;
+  });
+
+  // When navigation buttons are pressed, marcas-lgc.js likely updates #ref; ensure sync after click too
+  ['btnPrevDay','btnNextDay','btnToday'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b) b.addEventListener('click', ()=>setTimeout(syncFromRef, 0));
+  });
+
+  // Initial sync
+  syncFromRef();
+
+  // If we land on mobile and ref is empty, try to fill with today (same behaviour many pages use)
+  if(isMobile() && !ref.value){
+    const now = new Date();
+    const y = now.getFullYear().toString().padStart(4,'0');
+    const m = (now.getMonth()+1).toString().padStart(2,'0');
+    const d = now.getDate().toString().padStart(2,'0');
+    ref.value = `${y}-${m}-${d}`;
+    syncFromRef();
+  }
+})();
+</script>
+
 </body></html>
