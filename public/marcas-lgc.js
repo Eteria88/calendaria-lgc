@@ -20,7 +20,7 @@
   }
 
   function flex(str){
-    // Parser tolerante: dd-mm-aaaa / dd/mm/aaaa / dd mm aaaa, etc.
+    // Parser tolerante: dd/mm/aaaa / dd/mm/aaaa / dd mm aaaa, etc.
     if(!str) return null;
     var s = String(str).trim();
     // Sanitiza espacios para que no afecten el parseo
@@ -100,9 +100,9 @@
     var iso=String(y).padStart(4,'0')+'-'+pad(m)+'-'+pad(da);
 
     if(refI){
-      // si el input quedó como texto en móviles, ponemos dd-mm-aaaa
+      // si el input quedó como texto en móviles, ponemos dd/mm/aaaa
       if(refI.type === 'date') refI.value = iso;
-      else refI.value = pad(da)+'/'+pad(m)+'/'+String(y).padStart(4,'0');
+      else refI.value = pad(da)+'-'+pad(m)+'-'+String(y).padStart(4,'0');
     }
 
     if(refI){
@@ -166,30 +166,42 @@
       var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
       var refI=$('ref');
       if(isMobile && refI && !refI._mobilePatched){
+        // En móviles usamos input de texto para poder mostrar dd/mm/aaaa
         refI.type='text';
+        refI.inputMode='numeric';
+        refI.autocomplete='off';
+        refI.autocapitalize='off';
+        refI.spellcheck=false;
+        refI.maxLength=10; // dd/mm/aaaa
         if(!refI.placeholder) refI.placeholder='dd/mm/aaaa';
-        refI._mobilePatched=true;
-        // En móvil: teclado numérico y autoformato dd/mm/aaaa (sin teclear '/')
-        try{
-          refI.setAttribute('inputmode','numeric');
-          refI.setAttribute('autocomplete','off');
-          refI.setAttribute('spellcheck','false');
-          refI.addEventListener('beforeinput', function(ev){
-            // Evitar espacios
-            if(ev && ev.data === ' ') ev.preventDefault();
-          });
-          refI.addEventListener('input', function(){
-            var el = refI;
-            var digits = (el.value||'').replace(/\D+/g,'').slice(0,8); // ddmmyyyy
-            var dd = digits.slice(0,2), mm = digits.slice(2,4), yy = digits.slice(4,8);
-            var out = dd;
-            if(digits.length > 2) out += '/' + mm;
-            if(digits.length > 4) out += '/' + yy;
-            // Mantener cursor cerca del final (simple y estable)
-            el.value = out;
-          });
-        }catch(e){}
 
+        function formatDMY(v){
+          var s=String(v||'').trim();
+
+          // Si viene en ISO yyyy-mm-dd, conviértelo sin pasar por el teclado
+          if(/^\d{4}-\d{2}-\d{2}$/.test(s)){
+            var p=flex(s);
+            if(p) return pad(p.d)+'/'+pad(p.m)+'/'+String(p.y).padStart(4,'0');
+          }
+
+          var dig=s.replace(/\D/g,'').slice(0,8);
+          var d=dig.slice(0,2), m=dig.slice(2,4), y=dig.slice(4,8);
+          if(dig.length<=2) return dig;
+          if(dig.length<=4) return d+'/'+dig.slice(2);
+          return d+'/'+m+'/'+y;
+        }
+
+        // Auto-inserta "/" mientras escribe (sin necesitar tecla "/")
+        refI.addEventListener('input', function(){
+          var before=refI.value;
+          var after=formatDMY(before);
+          if(after!==before) refI.value=after;
+        }, {passive:true});
+
+        // Normaliza valor actual si venía en ISO u otro formato compatible
+        try{ var p0=flex(refI.value); if(p0) refI.value=pad(p0.d)+'/'+pad(p0.m)+'/'+String(p0.y).padStart(4,'0'); }catch(e){}
+
+        refI._mobilePatched=true;
       }
     }catch(e){}
 
@@ -232,12 +244,14 @@
       var base=dt(p.y,p.m,p.d);
       var moved=new Date(base.getTime()+deltaDays*ms);
       setRefInputsFromUTCDate(moved);
+      try{ up(); }catch(e){}
     }
 
     var btnToday=$('btnToday');
     if(btnToday){ btnToday.addEventListener('click', function(){
       var now=new Date();
       setRefInputsFromUTCDate(dt(now.getFullYear(), now.getMonth()+1, now.getDate()));
+      try{ up(); }catch(e){}
     });}
     var btnPrev=$('btnPrevDay');
     if(btnPrev){ btnPrev.addEventListener('click', function(){ shiftRefBy(-1); });}
