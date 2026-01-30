@@ -19,58 +19,8 @@
     return 31;
   }
 
-  function attachDMYMask(el, onISOChange){
-    if(!el || el._dmyMask) return;
-    el._dmyMask = true;
-
-    function digitsOnly(v){ return (v||'').replace(/\D+/g,'').slice(0,8); }
-    function toDMY(dig){
-      var dd=dig.slice(0,2);
-      var mm=dig.slice(2,4);
-      var yy=dig.slice(4,8);
-      var out='';
-      if(dd) out += dd;
-      if(dig.length>=3) out += '/' + mm;
-      else if(dig.length>2) out += '/' + mm; // safety
-      if(dig.length>=5) out += '/' + yy;
-      return out;
-    }
-    function toISO(dig){
-      if(!dig || dig.length!==8) return '';
-      var dd=dig.slice(0,2), mm=dig.slice(2,4), yy=dig.slice(4,8);
-      return yy+'-'+mm+'-'+dd;
-    }
-
-    el.addEventListener('input', function(){
-      var start = el.selectionStart;
-      var dig = digitsOnly(el.value);
-      var formatted = toDMY(dig);
-      el.value = formatted;
-
-      // intentar mantener cursor (simple)
-      try{
-        var pos = formatted.length;
-        el.setSelectionRange(pos,pos);
-      }catch(e){}
-
-      if(typeof onISOChange === 'function'){
-        onISOChange(toISO(dig));
-      }
-    });
-
-    el.addEventListener('blur', function(){
-      var dig = digitsOnly(el.value);
-      if(dig.length===8){
-        el.value = toDMY(dig);
-      }
-      if(typeof onISOChange === 'function'){
-        onISOChange(toISO(dig));
-      }
-    });
-  }
-
-function flex(str){
-    // Parser tolerante: dd/mm/aaaa / dd/mm/aaaa / dd mm aaaa, etc.
+  function flex(str){
+    // Parser tolerante: dd-mm-aaaa / dd/mm/aaaa / dd mm aaaa, etc.
     if(!str) return null;
     var s = String(str).trim();
     // Sanitiza espacios para que no afecten el parseo
@@ -144,60 +94,81 @@ function flex(str){
     return n<0 ? ('−'+Math.abs(n)) : String(n);
   }
 
-  function setRefInputsFromUTCDate(d){
+  
+  function isMobileMode(){
+    try{
+      return window.matchMedia && window.matchMedia("(max-width: 520px)").matches;
+    }catch(e){ return false; }
+  }
+
+  function toISO(p){
+    return String(p.y).padStart(4,'0')+'-'+pad(p.m)+'-'+pad(p.d);
+  }
+
+  function fmtDMY(p){
+    return pad(p.d)+'/'+pad(p.m)+'/'+String(p.y).padStart(4,'0');
+  }
+
+  function setRefInputsFromParts(p){
     var refI=$('ref');
-    var y=d.getUTCFullYear(), m=d.getUTCMonth()+1, da=d.getUTCDate();
-    var y4=String(y).padStart(4,'0');
-    var iso=y4+'-'+pad(m)+'-'+pad(da);
-    var dmy=pad(da)+'/'+pad(m)+'/'+y4;
-
-    // input principal (puede ser date o text)
-    if(refI){
-      if(refI.type === 'date') refI.value = iso;
-      else refI.value = dmy;
-    }
-
-    // input visible alternativo en móvil (si existe)
-    var disp = document.getElementById('refMobile') ||
-               document.getElementById('refText') ||
-               document.getElementById('refDisplay') ||
-               document.querySelector('input[data-ref-display]');
-    if(disp && disp !== refI){
-      disp.value = dmy;
-    }
-
-    // Disparar eventos para refrescar UI (y para que el mask se aplique)
+    var refM=$('refMobile');
+    var iso = toISO(p);
+    if(refI){ refI.value = iso; }
+    if(refM){ refM.value = fmtDMY(p); }
+    // Dispara eventos para que el resto del sistema actualice
     try{
       if(refI){
         refI.dispatchEvent(new Event('input', {bubbles:true}));
         refI.dispatchEvent(new Event('change', {bubbles:true}));
       }
-      if(disp && disp !== refI){
-        disp.dispatchEvent(new Event('input', {bubbles:true}));
-        disp.dispatchEvent(new Event('change', {bubbles:true}));
+      if(refM){
+        refM.dispatchEvent(new Event('input', {bubbles:true}));
+        refM.dispatchEvent(new Event('change', {bubbles:true}));
       }
     }catch(e){}
   }
 
+  function setRefInputsFromUTCDate(d){
+    var p={y:d.getUTCFullYear(), m:d.getUTCMonth()+1, d:d.getUTCDate()};
+    setRefInputsFromParts(p);
+  }
+
+
+  
   function readRefParts(){
     var refI=$('ref');
-    var raw = (refI && refI.value) ? refI.value : '';
-    raw = (raw||'').trim();
+    var refM=$('refMobile');
+    var raw='';
+
+    // En móvil, se toma el input visible dd/mm/aaaa
+    if(isMobileMode() && refM && refM.value!=null){
+      raw = String(refM.value||'').trim();
+    }else if(refI && refI.value!=null){
+      raw = String(refI.value||'').trim();
+    }
+
     if(!raw){
       var now=new Date();
       return {y:now.getFullYear(), m:now.getMonth()+1, d:now.getDate()};
     }
+
+    // dd/mm/aaaa o dd-mm-aaaa o yyyy-mm-dd, tolerante
     var p=flex(raw);
     if(p) return p;
+
+    var isoP = parseISODateParts(raw);
+    if(isoP) return isoP;
 
     var t=Date.parse(raw);
     if(!isNaN(t)){
       var tmp=new Date(t);
       return {y:tmp.getUTCFullYear(), m:tmp.getUTCMonth()+1, d:tmp.getUTCDate()};
     }
+
     var now2=new Date();
     return {y:now2.getFullYear(), m:now2.getMonth()+1, d:now2.getDate()};
   }
+
 
   function updateAnchors(refJDN){
     var grid = $('anchorsGrid');
@@ -226,25 +197,6 @@ function flex(str){
   }
 
   function up(){
-    // Ajuste móvil: input como texto con máscara dd/mm/aaaa
-    try{
-      var ua = navigator.userAgent || '';
-      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-      var refI=$('ref');
-      if(isMobile && refI && !refI._mobilePatched){
-        refI.type='text';
-        refI.inputMode='numeric';
-        refI.autocomplete='off';
-        refI.spellcheck=false;
-        refI.maxLength=10;
-        if(!refI.placeholder) refI.placeholder='dd/mm/aaaa';
-        attachDMYMask(refI, function(isoVal){
-          // mantener compatibilidad: si alguien espera ISO, lo guardamos en data-iso
-          refI.dataset.iso = isoVal || '';
-        });
-        refI._mobilePatched=true;
-      }
-    }catch(e){}
 
     var p=readRefParts();
     var refJDN = jdnCut(p.y,p.m,p.d);
@@ -252,8 +204,12 @@ function flex(str){
 
     var lbl=$('refLabel');
     if(lbl){
-      lbl.textContent = pad(p.d)+'/'+pad(p.m)+'/'+String(p.y).padStart(4,'0');
+      lbl.textContent = pad(p.d)+'-'+pad(p.m)+'-'+String(p.y).padStart(4,'0');
     }
+    // Mantiene sincronizado el campo móvil visible (dd/mm/aaaa)
+    var refM=$('refMobile');
+    if(refM){ refM.value = pad(p.d)+'/'+pad(p.m)+'/'+String(p.y).padStart(4,'0'); }
+
   }
 
   document.addEventListener('DOMContentLoaded', function(){
@@ -264,6 +220,37 @@ function flex(str){
       setRefInputsFromUTCDate(dt(now.getFullYear(), now.getMonth()+1, now.getDate()));
     }
     up();
+
+    // Si viene con valor (por cache/navegador), sincroniza el input móvil
+    var refMInit=$('refMobile');
+    if(refI && refI.value && refMInit){
+      var pInit = readRefParts();
+      refMInit.value = fmtDMY(pInit);
+    }
+
+
+
+    function maskDMY(value){
+      var digits = String(value||'').replace(/\D/g,'').slice(0,8); // ddmmyyyy
+      var out = digits;
+      if(digits.length>2) out = digits.slice(0,2) + '/' + digits.slice(2);
+      if(digits.length>4) out = digits.slice(0,2) + '/' + digits.slice(2,4) + '/' + digits.slice(4);
+      return out;
+    }
+
+    function trySyncMobileToISO(){
+      var refM=$('refMobile');
+      var refI=$('ref');
+      if(!refM || !refI) return;
+      var v = String(refM.value||'').trim();
+      var p = flex(v);
+      if(!p) return;
+      refI.value = toISO(p);
+      try{
+        refI.dispatchEvent(new Event('input', {bubbles:true}));
+        refI.dispatchEvent(new Event('change', {bubbles:true}));
+      }catch(e){}
+    }
 
     function debounce(fn, wait){
       var t;
