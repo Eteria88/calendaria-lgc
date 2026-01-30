@@ -1,0 +1,849 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calendaria · Marcas LGC</title>
+<meta http-equiv="Cache-Control" content="no-store">
+<style>
+:root{--accent:#ffd166;--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(1200px 800px at 80% -10%,#12202b 0%,#0b0d10 40%) fixed;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(11,13,16,.85),rgba(11,13,16,.65));backdrop-filter:saturate(130%) blur(8px);padding:10px 0 12px 0;display:flex;justify-content:space-between;align-items:center}
+.sun{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);box-shadow:0 0 18px #ffb347;display:inline-block;margin-right:8px}
+.small{font-size:12px;color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.mono.big{font-size:clamp(26px,7vw,40px)}
+.badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.6px;text-transform:uppercase}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--ol);border-radius:16px;padding:14px}
+.hero{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin:14px 0}
+.tile{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;border:1px solid var(--ol);border-radius:16px;padding:14px}
+@media(min-width:840px){.tile{grid-column:span 6}}
+.solarBreak{display:grid;gap:8px;margin-top:8px}
+.sb{border:1px solid var(--ol);border-radius:10px;overflow:hidden}
+.sb .h{background:rgba(255,255,255,.06);text-align:center;font-weight:700;padding:6px 8px}
+.sb .v{text-align:center;padding:8px}
+.q-mini{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.q-item{display:flex;justify-content:space-between;border:1px dashed var(--ol);border-radius:10px;padding:8px}
+.q-item-wide{grid-column:1 / -1}
+table{width:100%;border-collapse:collapse;border:1px solid var(--ol);border-radius:10px;overflow:hidden}
+th,td{padding:10px 12px;border-bottom:1px solid var(--ol);text-align:right}
+th:first-child,td:first-child{text-align:left}
+.metrics{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:12px}
+.mcard{grid-column:1/-1;border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+@media(min-width:640px){.mcard{grid-column:span 6}}
+@media(min-width:1024px){.mcard{grid-column:span 4}}
+.progress{height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.05);border:1px solid var(--ol);margin-top:6px}
+.progressInner{height:100%;background:linear-gradient(90deg,#63a8ff,#7cc7ff)}
+.chips{display:flex;gap:8px;margin-top:6px}.chip{border:1px solid var(--ol);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04)}
+.anchors-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
+.anchors-scroll{max-height:420px;overflow-y:auto;padding-right:6px}
+.anchors-grid .a-dot{background:#7cc7ff !important;box-shadow:0 0 10px #7cc7ff !important}
+.a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02)}
+.a-dot{width:10px;height:10px;border-radius:50%}
+.plane{position:relative;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+@media(min-width:480px){.plane{height:240px}} @media(min-width:768px){.plane{height:260px}} @media(min-width:1024px){.plane{height:300px}}
+.planeGrid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.cell{display:flex;align-items:center;justify-content:center;border:1px dashed var(--ol);position:relative;flex-direction:column;gap:4px}
+.cell.active{background:rgba(124,199,255,.10);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.6)}
+.cellInner{display:flex;flex-direction:column;align-items:center;gap:2px}
+.cTitle{font-weight:700;letter-spacing:.5px}
+.cRange{font-size:11px;color:var(--muted)}
+.cSteps{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.cStep{font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 6px;background:rgba(255,255,255,.04)}
+.cStep.active{border-color:#7cc7ff;background:rgba(124,199,255,.18);box-shadow:0 0 6px rgba(124,199,255,.5)}
+.memRow{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:4}
+.memTag{position:relative;font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.04)}
+.memTag.active{border-color:#ffd166;box-shadow:0 0 6px rgba(255,209,102,.5)}
+.section-title{margin:6px 0 8px 0;color:#9fb3c8;font-size:14px;font-weight:700}
+.input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+.field{display:flex;flex-direction:column}
+.input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap)}
+.btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
+.btn:hover{background:rgba(124,199,255,.25)}
+.dayNav{display:flex;gap:10px;flex-wrap:wrap}
+.btnLabelShort{display:none}
+@media(max-width:599px){
+  .dayNav{flex-wrap:nowrap}
+  .dayNav .btn{flex:1 1 0;justify-content:center;white-space:nowrap;padding:10px 8px}
+  .btnLabelLong{display:none}
+  .btnLabelShort{display:inline}
+}
+.table-wrap{overflow:auto;border:1px solid var(--ol);border-radius:10px}
+.table-wrap table{min-width:680px}
+/* Scrollbars azules (vertical y horizontal) */
+.table-wrap, .anchors-scroll{
+  scrollbar-width:thin;
+  scrollbar-color:#7cc7ff rgba(255,255,255,.06);
+}
+.table-wrap::-webkit-scrollbar, .anchors-scroll::-webkit-scrollbar{width:10px;height:10px}
+.table-wrap::-webkit-scrollbar-track, .anchors-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:999px}
+.table-wrap::-webkit-scrollbar-thumb, .anchors-scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#63a8ff,#7cc7ff);border-radius:999px;border:2px solid rgba(11,13,16,.85)}
+.table-wrap::-webkit-scrollbar-thumb:hover, .anchors-scroll::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#7cc7ff,#63a8ff)}
+
+.status{margin:8px 0;color:#9cffd5;font-size:12px}
+
+.layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
+.sidenav{position:sticky;top:58px;height:calc(100dvh - 70px);border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+.nav-title{font-size:12px;color:var(--muted);margin-bottom:8px}
+.nav-link{display:block;padding:8px 10px;margin:4px 0;border-radius:8px;border:1px solid var(--ol);color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+.nav-link:hover{background:rgba(255,255,255,.06)}
+.nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+@media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
+
+
+.menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
+@media(max-width:839px){.menuBtn{display:inline-block}}
+body.noScroll{overflow:hidden}
+.mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
+.mobileNav.open{pointer-events:auto}
+.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
+.mobileNav.open .mobileOverlay{opacity:1}
+.mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
+.mobileNav.open .mobileNavPanel{transform:translateX(0)}
+.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
+.closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
+.mobileList{display:flex;flex-direction:column;padding:10px}
+.mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+
+
+/* --- Responsive mobile tuning --- */
+@media(max-width:599px){
+  .wrap{padding:14px}
+  header{padding:8px 0 10px 0}
+  .card,.tile{padding:12px}
+  .mcard{grid-column:1/-1}
+  .mono.big{font-size:clamp(22px,8vw,34px); word-break:break-word; overflow-wrap:anywhere}
+  .plane{height:220px}
+  .cStep{padding:2px 5px}
+  .memTag{padding:2px 6px}
+  .input{min-height:44px}
+  .progress{height:8px}
+  .table-wrap{ -webkit-overflow-scrolling: touch; overflow:auto }
+  .scroll-hint{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+}
+@media(min-width:600px){
+  .scroll-hint{display:none}
+}
+
+
+/* Link "Volver a portada" en header */
+.header-actions{display:flex;gap:10px;align-items:center}
+.header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none}
+.header-actions a:hover{border-color:#6f8aa6;color:#d7e6ff}
+@media (max-width:480px){
+  .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
+}
+
+
+/* Periodic element badge (overlay, non-intrusive) */
+.top-card{position:relative}
+.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
+.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
+@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+.anilloTitle{
+  text-align:center;
+  margin-top:6px;
+  margin-bottom:8px;
+  font-size:15px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-weight:600;
+  color:var(--accent);
+}
+
+/* Anillo de Fuego (Vuelta 23) - layout por cajas como en el PDF */
+#anilloPlane{
+  height:auto;                 /* override del .plane */
+  padding:10px;
+}
+.anilloGrid{
+  width:100%;
+  border:1px solid var(--ol);
+  border-radius:14px;
+  background:rgba(255,255,255,.02);
+  padding:10px;
+  display:grid;
+  grid-template-columns:repeat(5, minmax(0,1fr));
+  grid-template-rows:auto auto auto;
+  gap:10px;
+}
+@media(max-width:479px){
+  .anilloGrid{gap:8px;padding:8px}
+}
+
+/* Caja extra (solo años bisiestos): Día 14 (31/12) · Frecuencia 366, flotante arriba-derecha */
+.anilloLeapWrap{
+  display:flex;
+  justify-content:flex-end;
+  margin:0 0 -34px 0; /* superpone levemente sobre el frame */
+  pointer-events:none;
+}
+.anilloLeapWrap .anBox{ pointer-events:auto; }
+.anBox--leapOverlay{
+  width:160px;
+  transform:translateY(-34px);
+}
+
+@media(max-width:479px){
+  .anilloLeapWrap{ margin-bottom: -32px; }
+  .anBox--leapOverlay{ width:40vw; max-width:190px; transform:translateY(-26px); }
+}
+
+
+.anBox{
+  border:1px solid var(--ol);
+  border-radius:12px;
+  background:rgba(0,0,0,.18);
+  display:flex;
+  flex-direction:column;
+  min-height:88px;
+  overflow:hidden; /* recorta el encabezado dentro del radio del cuadro */
+}
+@media(min-width:768px){
+  .anBox{min-height:100px}
+}
+
+.anBoxHead{
+  background:rgba(0,0,0,.78);
+  border-bottom:1px solid var(--ol);
+  padding:3px 5px;
+  border-top-left-radius:12px;
+  border-top-right-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:4px;
+  font-size:9px;
+  line-height:1.0;
+  white-space:nowrap;
+  flex-wrap:nowrap;
+}
+.anBoxHead span{display:inline-block;}
+@media (max-width:420px){
+  .anBoxHead{font-size:8px; gap:3px;}
+}
+.anBoxHead .solar{
+  color:var(--accent);
+  font-weight:700;
+}
+.anBoxHead .dow{
+  color:#7cc7ff;
+  font-weight:700;
+}
+
+.anBoxBody{
+  flex:1;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.anBoxFreq{
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:28px;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+@media(max-width:479px){
+  /* En celular bajamos solo el número (el encabezado se mantiene legible) */
+  .anBoxFreq{font-size:21px}
+}
+
+@media(max-width:360px){
+  .anBoxFreq{font-size:19px}
+}
+
+/* Centro (Día 1 / 353) */
+.anBox--center{
+  grid-column:2 / span 3;
+  grid-row:2;
+  min-height:98px;
+}
+.anBox--center .anBoxHead{
+  justify-content:center;
+}
+/* Posiciones exactas del PDF */
+.anBox--d4 {grid-column:1;grid-row:1}
+.anBox--d3 {grid-column:2;grid-row:1}
+.anBox--d2 {grid-column:3;grid-row:1}
+.anBox--d13{grid-column:4;grid-row:1}
+.anBox--d12{grid-column:5;grid-row:1}
+
+.anBox--d5 {grid-column:1;grid-row:2}
+.anBox--d11{grid-column:5;grid-row:2}
+
+.anBox--d6 {grid-column:1;grid-row:3}
+.anBox--d7 {grid-column:2;grid-row:3}
+.anBox--d8 {grid-column:3;grid-row:3}
+.anBox--d9 {grid-column:4;grid-row:3}
+.anBox--d10{grid-column:5;grid-row:3}
+
+/* Alineación del número dentro de cada caja (según PDF) */
+.anBox[data-align="c"]  .anBoxBody{align-items:center;justify-content:center}
+.anBox[data-align="t"]  .anBoxBody{align-items:flex-start;justify-content:center}
+.anBox[data-align="b"]  .anBoxBody{align-items:flex-end;justify-content:center}
+.anBox[data-align="tl"] .anBoxBody{align-items:flex-start;justify-content:flex-start}
+.anBox[data-align="tr"] .anBoxBody{align-items:flex-start;justify-content:flex-end}
+.anBox[data-align="bl"] .anBoxBody{align-items:flex-end;justify-content:flex-start}
+.anBox[data-align="br"] .anBoxBody{align-items:flex-end;justify-content:flex-end}
+
+.anBox--future{opacity:.30}
+.anBox--active{box-shadow:inset 0 0 0 2px rgba(124,199,255,.35)}
+
+
+/* Modal "zoom" para ver el encabezado completo en celular */
+.anModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.anModal.isOpen{ display:flex; }
+.anModalBackdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.62);
+}
+.anModalCard{
+  position:relative;
+  width:min(92vw, 420px);
+  border:1px solid var(--ol);
+  border-radius:16px;
+  background:rgba(11,13,16,.94);
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  padding:14px 14px 18px;
+}
+.anModalClose{
+  position:absolute;
+  /* Alineado al marco del header (misma sangría del padding del card) */
+  top:14px;
+  right:14px;
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  border:1px solid var(--ol);
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.anModalHead{
+  border:1px solid var(--ol);
+  border-radius:12px;
+  /* Deja espacio para el botón cerrar sin desalinear el marco */
+  padding:10px 56px 10px 12px;
+  background:rgba(0,0,0,.72);
+  margin-bottom:14px;
+}
+.anModalLine1{
+  font-size:14px;
+  font-weight:700;
+  white-space:normal;
+}
+.anModalLine2{
+  margin-top:6px;
+  font-size:13px;
+  opacity:.95;
+}
+.anModalLine2 .solar{ color:var(--accent); font-weight:800; }
+.anModalLine2 .dow{ color:#7cc7ff; font-weight:800; }
+.anModalFreq{
+  text-align:center;
+  font-size:72px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+/* Solo en mobile: el modal existe, en desktop queda deshabilitado */
+@media(min-width:521px){
+  .anModal{ display:none !important; }
+}
+
+
+    .calog-controls{margin:8px 0 10px;display:flex;flex-direction:column;gap:6px}
+    .calog-controls input[type=range]{width:100%;accent-color:#7cc7ff}
+    .calog-wrap{max-height:360px;overflow:auto}
+    #calog thead th{position:sticky;top:0;background:var(--bg);z-index:2}
+    #calog tr.calog-current td{background:rgba(255,255,255,.06)}
+
+</style>
+  <!-- Splash Landing v3 (forzado) + mobile responsive -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+  <style id="splash-spiral-css">
+    .splash{position:fixed;inset:0;display:grid;place-items:center;background:
+      radial-gradient(1200px 800px at 60% -10%, rgba(255,200,120,.07), transparent 60%),
+      radial-gradient(1000px 900px at 10% 110%, rgba(120,180,255,.07), transparent 60%),
+      #0b0d10;color:#e6f1ff;z-index:9999;transition:opacity .6s ease,visibility .6s ease}
+    .splash[hidden]{opacity:0;visibility:hidden}
+    .splash__inner{text-align:center;padding:24px;padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+    .brand{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;display:inline-block;position:relative;filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
+    .brand .row{display:block}
+    .brand__layout{position:relative;opacity:0;pointer-events:none;user-select:none;display:inline-block}
+    .brand__layout .row{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;text-align:center;white-space:pre}
+    .brand__layout .row[data-row="0"]{font-weight:600;font-size:clamp(56px,11vw,128px)}
+    .brand__layout .row[data-row="1"]{font-weight:600;font-size:clamp(38px,9vw,96px)}
+    .brand__stage{position:relative;width:min(94vw,1200px);height:clamp(240px,46dvh,520px);margin:auto;display:grid;place-items:center}
+    .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
+      background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15)transform:translate(-50%,-50%);}
+    .row-0 .char{font-size:clamp(56px,11vw,128px)}
+    .row-1 .char{font-size:clamp(38px,9vw,96px);opacity:.95}
+    .enter{margin-top:28px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#cfe1ff;border:1px solid rgba(156,178,200,.4);
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:12px 18px;border-radius:12px;cursor:pointer;transition:transform .1s ease,opacity .3s ease;border-color}
+    .enter:active{transform:scale(.98)}
+    @media (max-width: 480px){
+      .brand{letter-spacing:.10em}
+      .brand__stage{width:100vw;height:clamp(260px,48dvh,560px)}
+      .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
+      .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
+    }
+    @media (max-width: 360px){
+      .brand{letter-spacing:.08em}
+      .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
+      .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
+    }
+  
+/* Modal "zoom" para ver el encabezado completo en celular */
+.anModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.anModal.isOpen{ display:flex; }
+.anModalBackdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.62);
+}
+.anModalCard{
+  position:relative;
+  width:min(92vw, 420px);
+  border:1px solid var(--ol);
+  border-radius:16px;
+  background:rgba(11,13,16,.94);
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  padding:14px 14px 18px;
+}
+.anModalClose{
+  position:absolute;
+  /* Alineado al marco del header (misma sangría del padding del card) */
+  top:14px;
+  right:14px;
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  border:1px solid var(--ol);
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.anModalHead{
+  border:1px solid var(--ol);
+  border-radius:12px;
+  /* Deja espacio para el botón cerrar sin desalinear el marco */
+  padding:10px 56px 10px 12px;
+  background:rgba(0,0,0,.72);
+  margin-bottom:14px;
+}
+.anModalLine1{
+  font-size:14px;
+  font-weight:700;
+  white-space:normal;
+}
+.anModalLine2{
+  margin-top:6px;
+  font-size:13px;
+  opacity:.95;
+}
+.anModalLine2 .solar{ color:var(--accent); font-weight:800; }
+.anModalLine2 .dow{ color:#7cc7ff; font-weight:800; }
+.anModalFreq{
+  text-align:center;
+  font-size:72px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+/* Solo en mobile: el modal existe, en desktop queda deshabilitado */
+@media(min-width:521px){
+  .anModal{ display:none !important; }
+}
+
+</style>
+
+
+  <!-- Vercel Web Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
+  <link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0b0d10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calendaria">
+<link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+</head>
+<body>
+
+  <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
+    <div class="splash__inner">
+      <div id="brand" class="brand">
+        <div id="brandLayout" class="brand__layout" aria-hidden="true">
+          <div class="row" data-row="0">CALENDARIA</div>
+          <div class="row" data-row="1">LGC</div>
+        </div>
+        <div id="brandStage" class="brand__stage" aria-hidden="true"></div>
+      </div>
+      <div><button id="enterBtn" class="enter" disabled>Entrar</button></div>
+    </div>
+  </div>
+
+<div class="wrap">
+
+  <div class="mobileNav" id="mobileNav" aria-hidden="true">
+    <div class="mobileNavPanel">
+      <div class="mobileNavHeader">
+        <span>Menú</span>
+        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
+      </div>
+      <nav class="mobileList">
+        <a class="mnav-link active" href="./">Inicio</a>
+        <a class="mnav-link" href="./range.html">Comparador LGC</a>
+        <a class="mnav-link" href="./letters.html">Letras a números</a>      <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
+
+        
+        <a class="mnav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
+        <a class="mnav-link" href="./marcas-lgc.html">Marcas LGC</a>
+        <a class="mnav-link" href="./apoyar.html">Apoyar el proyecto</a>
+      </nav>
+    </div>
+    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
+  </div>
+
+  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
+
+  <div class="layout">
+    <aside class="sidenav">
+      <nav>
+        <div class="nav-title">Menú</div>
+        <a class="nav-link active" href="./">Inicio</a>
+        <a class="nav-link" href="./range.html">Comparador LGC</a>
+        <a class="nav-link" href="./letters.html">Letras a números</a>        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
+
+        
+        <a class="nav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
+          <a class="nav-link" href="./marcas-lgc.html">Marcas LGC</a>
+        <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
+      </nav>
+    </aside>
+    <main>
+<section class="card" style="margin-top:12px">
+      <div class="small" style="margin-bottom:8px">Fecha de referencia (Marcas)</div>
+      <div class="grid">
+        <div class="field" style="grid-column:span 6">
+        <label class="small" for="ref">Fecha de referencia</label>
+        <div class="small" style="margin-top:6px">Referencia seleccionada: <span class="mono" id="refLabel">—</span></div>
+        <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
+        <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
+
+        <div class="field" style="margin-top:8px">
+          <div class="dayNav">
+            <button class="btn" id="btnPrevDay" type="button" title="Ir al día anterior"><span class="btnLabelLong">← Día anterior</span><span class="btnLabelShort">Anterior</span></button>
+            <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
+            <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente"><span class="btnLabelLong">Día siguiente →</span><span class="btnLabelShort">Siguiente</span></button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="small" style="opacity:.85;margin-top:8px">Esta fecha solo afecta el conteo de Marcas LGC.</div>
+    </section>
+
+<section class="card" style="margin-top:12px">
+    <div class="small" style="margin-bottom:8px">Marcas LGC</div>
+    <div class="anchors-scroll">
+      <div class="anchors-grid" id="anchorsGrid">
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Inicio del proceso de autoreferencia de Tierra, incremento de la octava del DÍA (09·08·491)</div>
+        </div>
+        <div class="mono" id="d_autoref_tierra" data-date-iso="0491-08-09">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Dmitri Mendeléyev (08·02·1834)</div>
+        </div>
+        <div class="mono" id="d_mendeleev" data-date-iso="1834-02-08">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Alcides Carrión (13·08·1857)</div>
+        </div>
+        <div class="mono" id="d_alcides" data-date-iso="1857-08-13">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Inicio de la UIT (17·05·1865)</div>
+        </div>
+        <div class="mono" id="d_uit" data-date-iso="1865-05-17">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Tabla Periódica de los Elementos (06·03·1869)</div>
+        </div>
+        <div class="mono" id="d_tabla_periodica" data-date-iso="1869-03-06">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Inicialización de la plata (08·11·1877)</div>
+        </div>
+        <div class="mono" id="d_plata_init" data-date-iso="1877-11-08">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Ley #1130 del Bimetalismo en Argentina (05·11·1881)</div>
+        </div>
+        <div class="mono" id="d_ley_1130" data-date-iso="1881-11-05">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Día Google (30·12·1899)</div>
+        </div>
+        <div class="mono" id="d_google" data-date-iso="1899-12-30">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Inauguración del Canal de Panamá (15·08·1914)</div>
+        </div>
+        <div class="mono" id="d_canal_panama" data-date-iso="1914-08-15">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Tipografía Times New Roman (30·10·1932)</div>
+        </div>
+        <div class="mono" id="d_times_tnr" data-date-iso="1932-10-30">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Ryke Geerd Hamer (17·05·1935)</div>
+        </div>
+        <div class="mono" id="d_hamer" data-date-iso="1935-05-17">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Rupert Sheldrake (28·06·1942)</div>
+        </div>
+        <div class="mono" id="d_rupert" data-date-iso="1942-06-28">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>María Alejandra Casado (06·12·1969)</div>
+        </div>
+        <div class="mono" id="d_mac" data-date-iso="1969-12-06">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Quita del patrón oro (15·08·1971)</div>
+        </div>
+        <div class="mono" id="d_patrono" data-date-iso="1971-08-15">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Primer segundo intercalar (30·06·1972)</div>
+        </div>
+        <div class="mono" id="d_leapsec" data-date-iso="1972-06-30">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Segundo intercalar N (13-N+13) (31·12·1987)</div>
+        </div>
+        <div class="mono" id="d_leapsec_n" data-date-iso="1987-12-31">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Plataforma 500 (01·01·1997)</div>
+        </div>
+        <div class="mono" id="d_plataforma_500" data-date-iso="1997-01-01">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Determinacion Unidad Astronomica Internacional (UIA) (31·08·2012)</div>
+        </div>
+        <div class="mono" id="d_uai" data-date-iso="2012-08-31">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Recepción de la Señal Educativa (16·09·2012)</div>
+        </div>
+        <div class="mono" id="d_senal_educativa" data-date-iso="2012-09-16">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Cambio de la tipografía Times New Roman (03·10·2013)</div>
+        </div>
+        <div class="mono" id="d_times_change" data-date-iso="2013-10-03">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Inicio del calendario LGC (15·10·2015)</div>
+        </div>
+        <div class="mono" id="d_lgc_inicio" data-date-iso="2015-10-15">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Ley No. 30381 que cambia el nombre de Nuevo Sol a Sol (12·11·2015)</div>
+        </div>
+        <div class="mono" id="d_ley_30381" data-date-iso="2015-11-12">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Diseño Global Interconectado (22·07·2016)</div>
+        </div>
+        <div class="mono" id="d_diseno_global" data-date-iso="2016-07-22">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Quinta etapa (28·08·2016)</div>
+        </div>
+        <div class="mono" id="d_quinta" data-date-iso="2016-08-28">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Calendaria (26·01·2017)</div>
+        </div>
+        <div class="mono" id="d_calendaria_2017" data-date-iso="2017-01-26">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Eje 258 (26·08·2017)</div>
+        </div>
+        <div class="mono" id="d_eje258" data-date-iso="2017-08-26">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Universo Base 30 (19·11·2017)</div>
+        </div>
+        <div class="mono" id="d_universo_base30" data-date-iso="2017-11-19">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Matriz Psiquica de la Mente Digital de la Tierra (28·05·2020)</div>
+        </div>
+        <div class="mono" id="d_matriz_psiquica" data-date-iso="2020-05-28">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Recepcion de rayo Amaterasu (27·05·2021)</div>
+        </div>
+        <div class="mono" id="d_rayo_amaterasu" data-date-iso="2021-05-27">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Pentagrama LGC (07·01·2022)</div>
+        </div>
+        <div class="mono" id="d_penta" data-date-iso="2022-01-07">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Día de la Interdependencia (12·07·2022)</div>
+        </div>
+        <div class="mono" id="d_interdependencia" data-date-iso="2022-07-12">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Nombramiento del Toganesón como elemento 119 (10·01·2024)</div>
+        </div>
+        <div class="mono" id="d_toganesos" data-date-iso="2024-01-10">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Edad Administrativa (12·08·2024)</div>
+        </div>
+        <div class="mono" id="d_admin" data-date-iso="2024-08-12">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>App Calendaria-LGC Digital (09·09·2025)</div>
+        </div>
+        <div class="mono" id="d_calendaria_web" data-date-iso="2025-09-09">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Segmento al día solar 739996 (13·01·2027)</div>
+        </div>
+        <div class="mono" id="d_segmento_739996" data-date-iso="2027-01-13">—</div>
+      </div>
+      <div class="a-card">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="a-dot"></div>
+          <div>Cierre del aparato 599 (31·12·2396)</div>
+        </div>
+        <div class="mono" id="d_cierre_ap599" data-date-iso="2396-12-31">—</div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+  </div>
+
+  <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
+</div>
+<noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para ver los cálculos.</div></noscript>
+
+
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script src="./marcas-lgc.js" defer></script>
+  <script src="./common.js" defer></script>
+</body></html>
