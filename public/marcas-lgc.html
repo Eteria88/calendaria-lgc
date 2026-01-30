@@ -37,7 +37,19 @@ th:first-child,td:first-child{text-align:left}
 .anchors-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
 .anchors-scroll{max-height:420px;overflow-y:auto;padding-right:6px}
 .anchors-grid .a-dot{background:#7cc7ff !important;box-shadow:0 0 10px #7cc7ff !important}
-.a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02)}
+.a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02);align-items:flex-start}
+.a-card>div:first-child{flex:1 1 auto;min-width:0}
+.a-card>div:first-child div{overflow-wrap:anywhere;word-break:break-word}
+.a-card>.mono{flex:0 0 86px;min-width:86px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;line-height:1.1}
+@media(max-width:520px){
+  .anchors-grid .a-card{grid-column:1/-1}
+  .a-card{gap:10px;padding:10px}
+  .a-card>div:first-child div{font-size:clamp(13px,4.1vw,15px);line-height:1.25}
+  .a-card>.mono{flex-basis:74px;min-width:74px;font-size:clamp(15px,4.6vw,18px)}
+}
+@media(max-width:380px){
+  .a-card>.mono{flex-basis:68px;min-width:68px}
+}
 .a-dot{width:10px;height:10px;border-radius:50%}
 .plane{position:relative;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
 @media(min-width:480px){.plane{height:240px}} @media(min-width:768px){.plane{height:260px}} @media(min-width:1024px){.plane{height:300px}}
