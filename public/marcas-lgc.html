@@ -409,6 +409,26 @@ body.noScroll{overflow:hidden}
   
 <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
 
+<!-- Mobile menu drawer -->
+<div class="mobileNav" id="mobileNav" aria-hidden="true">
+  <div class="mobileOverlay" id="mobileOverlay"></div>
+  <div class="mobileNavPanel" role="dialog" aria-modal="true" aria-label="Menú">
+    <div class="mobileNavHeader">
+      <div class="nav-title">Menú</div>
+      <button class="closeBtn" id="menuCloseBtn" type="button" aria-label="Cerrar menú" title="Cerrar">✕</button>
+    </div>
+    <nav class="mobileList">
+      <a class="mnav-link" href="./">Inicio</a>
+        <a class="mnav-link" href="./range.html">Comparador LGC</a>
+        <a class="mnav-link" href="./letters.html">Letras a números</a>        <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
+        <a class="mnav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
+          <a class="mnav-link active" href="./marcas-lgc.html">Marcas LGC</a>
+        <a class="mnav-link" href="./apoyar.html">Apoyar el proyecto</a>
+    </nav>
+  </div>
+</div>
+
+
   <div class="layout">
     <aside class="sidenav">
       <nav>
@@ -899,6 +919,46 @@ body.noScroll{overflow:hidden}
   mobile.addEventListener('blur', ()=>{
     mobile.value = maskDMY(mobile.value);
     if(/^\d{2}\/\d{2}\/\d{4}$/.test(mobile.value)) syncIfComplete();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  if (window.__cal_mobile_menu_drawer) return;
+  window.__cal_mobile_menu_drawer = true;
+
+  const btn = document.getElementById('menuBtn');
+  const nav = document.getElementById('mobileNav');
+  const overlay = document.getElementById('mobileOverlay');
+  const closeBtn = document.getElementById('menuCloseBtn');
+
+  if (!btn || !nav) return;
+
+  function setOpen(open){
+    nav.classList.toggle('open', open);
+    nav.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.classList.toggle('noScroll', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  btn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    setOpen(true);
+  });
+
+  if (overlay) overlay.addEventListener('click', ()=>setOpen(false));
+  if (closeBtn) closeBtn.addEventListener('click', ()=>setOpen(false));
+
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Escape') setOpen(false);
+  });
+
+  // Close when user taps a link
+  nav.addEventListener('click', (e)=>{
+    const a = e.target && e.target.closest ? e.target.closest('a') : null;
+    if (a) setOpen(false);
   });
 })();
 </script>
