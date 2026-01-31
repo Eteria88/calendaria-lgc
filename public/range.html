@@ -23,9 +23,9 @@ body{margin:0;background:#0b0d10;color:#e6f1ff;font-family:system-ui,-apple-syst
 .wrap{max-width:720px;margin:0 auto;padding:20px}
 .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid #2a3642;border-radius:16px;padding:14px}
 .small{font-size:12px;color:#9fb3c8}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.mono.big{font-size:clamp(26px,7vw,40px)}
-.input{background:rgba(255,255,255,.05);border:1px solid #2a3642;border-radius:8px;color:#e6f1ff;padding:6px 8px;min-height:42px;width:100%}
-.input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
-.field{display:flex;flex-direction:column}
+.input{background:rgba(255,255,255,.05);border:1px solid #2a3642;border-radius:8px;color:#e6f1ff;padding:6px 8px;min-height:42px;width:100%;min-width:0;max-width:100%}
+.input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;column-gap:12px;row-gap:12px}
+.field{display:flex;flex-direction:column;min-width:0}
 .btn{background:rgba(124,199,255,.15);border:1px solid #2a3642;border-radius:999px;color:#e6f1ff;padding:6px 12px;cursor:pointer;min-height:42px}
 .btn:hover{background:rgba(124,199,255,.25)}
 .status{margin:8px 0;color:#9cffd5;font-size:12px}
@@ -118,12 +118,12 @@ body.noScroll{overflow:hidden}
         <div class="input-grid">
           <div class="field" style="grid-column:span 6">
             <label class="small">Inicio</label>
-            <input class="input date-input" id="startA" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
+            <input class="input date-input" id="startA" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false">
             <button class="btn" id="btnStartTodayA" style="margin-top:8px" type="button">Hoy</button>
           </div>
           <div class="field" style="grid-column:span 6">
             <label class="small">Fin</label>
-            <input class="input date-input" id="endA" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
+            <input class="input date-input" id="endA" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false">
             <button class="btn" id="btnEndTodayA" style="margin-top:8px" type="button">Hoy</button>
           </div>
         </div>
@@ -149,12 +149,12 @@ body.noScroll{overflow:hidden}
         <div class="input-grid">
           <div class="field" style="grid-column:span 6">
             <label class="small">Inicio</label>
-            <input class="input date-input" id="startB" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
+            <input class="input date-input" id="startB" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false">
             <button class="btn" id="btnStartTodayB" style="margin-top:8px" type="button">Hoy</button>
           </div>
           <div class="field" style="grid-column:span 6">
             <label class="small">Fin</label>
-            <input class="input date-input" id="endB" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
+            <input class="input date-input" id="endB" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false">
             <button class="btn" id="btnEndTodayB" style="margin-top:8px" type="button">Hoy</button>
           </div>
         </div>
@@ -198,11 +198,11 @@ body.noScroll{overflow:hidden}
   <div class="input-grid">
     <div class="field" style="grid-column:span 6">
       <label class="small">Fecha de nacimiento</label>
-      <input class="input date-input" id="birth" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
+      <input class="input date-input" id="birth" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false">
     </div>
     <div class="field" style="grid-column:span 6">
       <label class="small">Fecha de referencia</label>
-      <input class="input date-input" id="ref" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
+      <input class="input date-input" id="ref" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false">
       <button class="btn" id="btnRefToday" style="margin-top:8px" type="button">Hoy</button>
     </div>
   </div>
