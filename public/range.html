@@ -118,12 +118,12 @@ body.noScroll{overflow:hidden}
         <div class="input-grid">
           <div class="field" style="grid-column:span 6">
             <label class="small">Inicio</label>
-            <input class="input date-input" id="startA" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa" inputmode="numeric" pattern="\d*" maxlength="10">
+            <input class="input date-input" id="startA" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
             <button class="btn" id="btnStartTodayA" style="margin-top:8px" type="button">Hoy</button>
           </div>
           <div class="field" style="grid-column:span 6">
             <label class="small">Fin</label>
-            <input class="input date-input" id="endA" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa" inputmode="numeric" pattern="\d*" maxlength="10">
+            <input class="input date-input" id="endA" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
             <button class="btn" id="btnEndTodayA" style="margin-top:8px" type="button">Hoy</button>
           </div>
         </div>
@@ -149,12 +149,12 @@ body.noScroll{overflow:hidden}
         <div class="input-grid">
           <div class="field" style="grid-column:span 6">
             <label class="small">Inicio</label>
-            <input class="input date-input" id="startB" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa" inputmode="numeric" pattern="\d*" maxlength="10">
+            <input class="input date-input" id="startB" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
             <button class="btn" id="btnStartTodayB" style="margin-top:8px" type="button">Hoy</button>
           </div>
           <div class="field" style="grid-column:span 6">
             <label class="small">Fin</label>
-            <input class="input date-input" id="endB" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa" inputmode="numeric" pattern="\d*" maxlength="10">
+            <input class="input date-input" id="endB" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
             <button class="btn" id="btnEndTodayB" style="margin-top:8px" type="button">Hoy</button>
           </div>
         </div>
@@ -198,11 +198,11 @@ body.noScroll{overflow:hidden}
   <div class="input-grid">
     <div class="field" style="grid-column:span 6">
       <label class="small">Fecha de nacimiento</label>
-      <input class="input date-input" id="birth" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa" inputmode="numeric" pattern="\d*" maxlength="10">
+      <input class="input date-input" id="birth" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
     </div>
     <div class="field" style="grid-column:span 6">
       <label class="small">Fecha de referencia</label>
-      <input class="input date-input" id="ref" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa" inputmode="numeric" pattern="\d*" maxlength="10">
+      <input class="input date-input" id="ref" type="date" min="0001-01-01" max="9999-12-31" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="dd/mm/aaaa">
       <button class="btn" id="btnRefToday" style="margin-top:8px" type="button">Hoy</button>
     </div>
   </div>
@@ -243,6 +243,34 @@ body.noScroll{overflow:hidden}
 </div>
 
 <script defer="" src="./common.js"></script>
+
+<!-- Botones Hoy (rangos A y B) -->
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  function toISO(d){
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+  function bind(btnId, inputId){
+    var btn = document.getElementById(btnId);
+    var input = document.getElementById(inputId);
+    if(btn && input){
+      btn.addEventListener('click', function(){
+        input.value = toISO(new Date());
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
+  }
+  bind('btnStartTodayA','startA');
+  bind('btnEndTodayA','endA');
+  bind('btnStartTodayB','startB');
+  bind('btnEndTodayB','endB');
+  bind('btnRefToday','ref');
+});
+</script>
 
 <script>
 if ('serviceWorker' in navigator) {
