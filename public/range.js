@@ -346,44 +346,138 @@ renderBandSchedule();
     }
 
     
-    // Sanitiza espacios en inputs de fecha (evita desajustes por espacios)
-    function sanitizeDateInput(el){
-      if(!el) return;
-      var v = String(el.value || '');
-      var nv = v.replace(/\s+/g,'');
-      if(nv !== v) el.value = nv;
+    // Sanitiza + máscara dd/mm/aaaa (inserta / automático al tipear)
+function sanitizeSpaces(v){
+  return String(v || '').replace(/\s+/g,'');
+}
+
+function tryIsoLikeToDmy(raw){
+  var s = sanitizeSpaces(raw);
+
+  // yyyy-mm-dd / yyyy/mm/dd / yyyy.mm.dd
+  var m = s.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})$/);
+  if(m){
+    var y = m[1];
+    var mo = String(parseInt(m[2],10)).padStart(2,'0');
+    var d  = String(parseInt(m[3],10)).padStart(2,'0');
+    return d + '/' + mo + '/' + y;
+  }
+
+  // yyyymmdd (solo si es claramente ISO)
+  var dig = s.replace(/\D/g,'');
+  if(dig.length === 8){
+    var y2  = parseInt(dig.slice(0,4),10);
+    var mo2 = parseInt(dig.slice(4,6),10);
+    var d2  = parseInt(dig.slice(6,8),10);
+    if(y2 >= 1 && y2 <= 275760 && mo2 >= 1 && mo2 <= 12 && d2 >= 1 && d2 <= 31){
+      return String(d2).padStart(2,'0') + '/' + String(mo2).padStart(2,'0') + '/' + String(y2).padStart(4,'0');
     }
+  }
+  return null;
+}
+
+function formatPartialDMYFromDigits(dig){
+  dig = String(dig || '').replace(/\D/g,'').slice(0,8);
+  var a = dig.slice(0,2);
+  var b = dig.slice(2,4);
+  var c = dig.slice(4,8);
+
+  if(dig.length <= 2) return a;
+  if(dig.length <= 4) return a + '/' + b;
+  return a + '/' + b + '/' + c;
+}
+
+function applyDateMask(el){
+  if(!el) return;
+
+  // Normaliza espacios primero
+  var raw = sanitizeSpaces(el.value);
+
+  // Si pegó una fecha ISO completa, la pasamos a dd/mm/aaaa
+  var iso = tryIsoLikeToDmy(raw);
+  if(iso){
+    el.value = iso;
+    if(el.setSelectionRange){
+      var end = el.value.length;
+      el.setSelectionRange(end,end);
+    }
+    return;
+  }
+
+  // Máscara incremental por dígitos (ddmmyyyy -> dd/mm/yyyy)
+  var caret = (typeof el.selectionStart === 'number') ? el.selectionStart : raw.length;
+  var digitsBeforeCaret = raw.slice(0, caret).replace(/\D/g,'').length;
+
+  var dig = raw.replace(/\D/g,'').slice(0,8);
+  var formatted = formatPartialDMYFromDigits(dig);
+
+  el.value = formatted;
+
+  // Reposiciona caret para que "salte" al insertar las barras
+  var dc = Math.min(digitsBeforeCaret, dig.length);
+  var newCaret = dc;
+  if(dc > 2) newCaret += 1;
+  if(dc > 4) newCaret += 1;
+
+  if(el.setSelectionRange){
+    newCaret = Math.min(newCaret, formatted.length);
+    el.setSelectionRange(newCaret, newCaret);
+  }
+}
 
 function bind(){
-      ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
-        var el = $(id);
-        if(el){
-          el.addEventListener('change', function(){ sanitizeDateInput(el); render(); });
-          el.addEventListener('input', function(){ sanitizeDateInput(el); render(); });
-          el.addEventListener('blur', function(){ sanitizeDateInput(el); render(); });
-      // Botones "Hoy" (compat móvil + inputs texto)
-      var map = [
-        ['btnStartTodayA','startA'],
-        ['btnEndTodayA','endA'],
-        ['btnStartTodayB','startB'],
-        ['btnEndTodayB','endB'],
-        ['btnRefToday','ref']
-      ];
-      map.forEach(function(p){
-        var b = $(p[0]);
-        if(b){
-          b.addEventListener('click', function(){
-            setTodayTo(p[1]);
-            render();
-          });
-        }
-      });
+  // Inputs fecha
+  ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
+    var el = $(id);
+    if(!el) return;
 
-        }
-      });
-      var btn = $('clearAll');
-      if(btn){ btn.addEventListener('click', clearAll); }
+    if(el.dataset && el.dataset.boundDate === '1') return;
+    if(el.dataset) el.dataset.boundDate = '1';
+
+    function onInput(){
+      applyDateMask(el);
+      render();
     }
+
+    el.addEventListener('input', onInput);
+    el.addEventListener('change', onInput);
+    el.addEventListener('blur', onInput);
+    el.addEventListener('paste', function(){
+      setTimeout(function(){ onInput(); }, 0);
+    });
+  });
+
+  // Botones "Hoy"
+  var map = [
+    ['btnStartTodayA','startA'],
+    ['btnEndTodayA','endA'],
+    ['btnStartTodayB','startB'],
+    ['btnEndTodayB','endB'],
+    ['btnRefToday','ref']
+  ];
+  map.forEach(function(p){
+    var b = $(p[0]);
+    if(!b) return;
+
+    if(b.dataset && b.dataset.boundToday === '1') return;
+    if(b.dataset) b.dataset.boundToday = '1';
+
+    b.addEventListener('click', function(){
+      setTodayTo(p[1]);
+      // asegurar formato dd/mm/aaaa
+      var el = $(p[1]);
+      if(el) applyDateMask(el);
+      render();
+    });
+  });
+
+  // Limpiar
+  var btn = $('clearAll');
+  if(btn && !(btn.dataset && btn.dataset.boundClear === '1')){
+    if(btn.dataset) btn.dataset.boundClear = '1';
+    btn.addEventListener('click', clearAll);
+  }
+}
 
     bind();
 
