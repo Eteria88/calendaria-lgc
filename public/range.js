@@ -98,22 +98,19 @@
       var y = String(ymd.y).padStart(4,'0');
       return d + '/' + m + '/' + y;
     }
-
-    function fmtISO(ymd){
-      if(!ymd) return '';
-      var y = String(ymd.y).padStart(4,'0');
-      var m = String(ymd.m).padStart(2,'0');
-      var d = String(ymd.d).padStart(2,'0');
-      return y + '-' + m + '-' + d;
-    }
-
     function setTodayTo(id){
       var el = $(id);
       if(!el) return;
       var now = new Date();
-      var ymd = { y: now.getFullYear(), m: now.getMonth()+1, d: now.getDate() };
-      // Si es input type="date", el.value debe ser ISO (YYYY-MM-DD)
-      el.value = (String(el.type||"").toLowerCase() === "date") ? fmtISO(ymd) : fmtInput(ymd);
+      var y = now.getFullYear();
+      var m = String(now.getMonth()+1).padStart(2,'0');
+      var d = String(now.getDate()).padStart(2,'0');
+      // Si es input nativo (type=date) usa ISO YYYY-MM-DD, si no usa D/M/Y
+      if(String(el.type).toLowerCase() === 'date'){
+        el.value = y + '-' + m + '-' + d;
+      }else{
+        el.value = d + '/' + m + '/' + y;
+      }
     }
 
 
@@ -405,7 +402,11 @@ function bind(){
     var y = d.getFullYear();
     var m = String(d.getMonth()+1).padStart(2,'0');
     var day = String(d.getDate()).padStart(2,'0');
-    refEl.value = (String(refEl.type||'').toLowerCase() === 'date') ? (y + '-' + m + '-' + day) : (day + '/' + m + '/' + y);
+    if(String(refEl.type).toLowerCase() === 'date'){
+      refEl.value = y + '-' + m + '-' + day;
+    }else{
+      refEl.value = day + '/' + m + '/' + y;
+    }
   }
 })();
     document.addEventListener('DOMContentLoaded', function(){ bind(); render(); }, {once:true});
