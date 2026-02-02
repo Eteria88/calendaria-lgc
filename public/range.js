@@ -137,7 +137,10 @@ function flex(str){
           if(a[i] > 31){ idxY = i; break; }
         }
       }
-      if(idxY < 0) return null;
+      if(idxY < 0){
+        // Caso como 1/1/1: por convención, asumimos D-M-Y (año al final)
+        idxY = 2;
+      }
 
       var y = a[idxY];
       var r = [];
@@ -357,7 +360,7 @@ renderBandSchedule();
     function sanitizeDateInput(el){
       if(!el) return;
       var v = String(el.value || '');
-      var nv = v.replace(/\s+/g,'');
+      var nv = v.replace(/\s+/g,'').replace(/[^0-9\/\-\.·]/g,'');
       if(nv !== v) el.value = nv;
 
       // En inputs de texto, normaliza a dd/mm/aaaa para evitar valores raros (ej: 1/1/1)
@@ -395,7 +398,10 @@ renderBandSchedule();
           var cur = el.value;
           el.setAttribute('data-original-type','date');
           el.type = 'text';
-          try{ el.inputMode = 'numeric'; }catch(_){}
+          try{ el.inputMode = 'text'; }catch(_){}
+          try{ el.setAttribute('inputmode','text'); }catch(_){ }
+          el.setAttribute('maxlength','10');
+          el.setAttribute('pattern','[0-9]{1,2}[/\\-\\.][0-9]{1,2}[/\\-\\.][0-9]{1,4}');
           el.setAttribute('autocomplete','off');
           el.setAttribute('placeholder','dd/mm/aaaa');
           el.removeAttribute('min');
