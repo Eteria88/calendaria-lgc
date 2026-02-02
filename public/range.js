@@ -161,7 +161,7 @@ function flex(str){
       return {y:y,m:m,d:d};
     }
 
-    function calcRange(startId, endId){
+    function calcRangeExclusive(startId, endId){
   var sI = $(startId) ? $(startId).value : '';
   var eI = $(endId) ? $(endId).value : '';
   var S = flex(sI), E = flex(eI);
@@ -172,9 +172,19 @@ function flex(str){
   return (baseB - baseA); // EXCLUSIVO (mismo día = 0)
 }
 
-function calcRangeIncl(startId, endId){
-  var ex = calcRange(startId, endId);
-  return (ex === null) ? null : (ex + 1); // INCLUSIVO (mismo día = 1)
+// Auto: si el inicio es 01/01/0001, devolvemos INCLUSIVO para que coincida con "Día Solar".
+function calcRangeAuto(startId, endId){
+  var sI = $(startId) ? $(startId).value : '';
+  var eI = $(endId) ? $(endId).value : '';
+  var S = flex(sI), E = flex(eI);
+  if(!(S && E)) return null;
+
+  var ex = jdnMixed(E.y,E.m,E.d) - jdnMixed(S.y,S.m,S.d);
+
+  // Si el usuario está calculando desde 01/01/0001 (Día Solar), sumamos 1.
+  if(S.y === 1 && S.m === 1 && S.d === 1) return ex + 1;
+
+  return ex;
 }
 
 
@@ -289,28 +299,23 @@ function renderBandSchedule(){
 
 
     function render(){
-      var exA = calcRange('startA','endA');
-      var exAInc = calcRangeIncl('startA','endA');
-      var exB = calcRange('startB','endB');
-      var exBInc = calcRangeIncl('startB','endB');
-
+      var exA = calcRangeAuto('startA','endA');
+      var exB = calcRangeAuto('startB','endB');
       // Salidas por rango
       if(exA === null){
-  setText('outA','—'); setText('outAInc','—'); setText('yearsOutA','—'); setText('resA','—');
+  setText('outA','—'); setText('yearsOutA','—'); setText('resA','—');
 }else{
   setText('outA', String(exA));
-  setText('outAInc', String(exAInc));
   setText('resA', String(exA));
-  setText('yearsOutA', String(Math.floor((exAInc) / 365.2425)));
+  setText('yearsOutA', String(Math.floor((exA) / 365.2425)));
 }
 
       if(exB === null){
-  setText('outB','—'); setText('outBInc','—'); setText('yearsOutB','—'); setText('resB','—');
+  setText('outB','—'); setText('yearsOutB','—'); setText('resB','—');
 }else{
   setText('outB', String(exB));
-  setText('outBInc', String(exBInc));
   setText('resB', String(exB));
-  setText('yearsOutB', String(Math.floor((exBInc) / 365.2425)));
+  setText('yearsOutB', String(Math.floor((exB) / 365.2425)));
 }
 
       
