@@ -62,3 +62,22 @@
   #search-code-badge,#search-code-name{min-width:54px}
 }
 
+
+/* --- Mobile toggle (Lista / Mapa) --- */
+.mobile-toggle{display:none;gap:8px;padding:10px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:1000}
+.toggle-btn{flex:1;border:1px solid var(--line);background:transparent;color:var(--text);padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer}
+.toggle-btn.is-active{border-color:rgba(97,218,251,.6);box-shadow:0 0 0 2px rgba(97,218,251,.12) inset}
+@media(max-width: 900px){
+  .layout{grid-template-columns:1fr}
+  .mobile-toggle{display:flex}
+  .panel{border-right:none}
+  /* Default: lista */
+  body[data-view="list"] .panel{display:block}
+  body[data-view="list"] .map-wrap{display:none}
+  /* Mapa */
+  body[data-view="map"] .panel{display:none}
+  body[data-view="map"] .map-wrap{display:block}
+  .map-wrap{height:calc(100vh - 56px)}
+  #map{height:100%}
+  .panel{max-height:calc(100vh - 56px);overflow:auto}
+}

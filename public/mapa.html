@@ -19,8 +19,12 @@
 <meta name="apple-mobile-web-app-title" content="Calendaria">
 <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
 </head>
-<body>
+<body data-view="list">
   <main class="layout">
+  <div class="mobile-toggle" role="tablist" aria-label="Vista">
+      <button id="view-list" class="toggle-btn is-active" type="button" aria-pressed="true">Lista</button>
+      <button id="view-map" class="toggle-btn" type="button" aria-pressed="false">Mapa</button>
+    </div>
     <aside class="panel">
       <h2>Mapa y códigos (UIT)</h2>
 

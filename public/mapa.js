@@ -29,7 +29,7 @@ async function getEmbedArray(){
   async function init(){
     listEl = $("#country-list"); searchEl = $("#search"); badgeEl = $("#search-code-badge");
     searchCodeEl = $("#search-code"); codeNameBadge = $("#search-code-name"); tooltip=$("#tooltip");
-    await loadEmbed(); exposeDebug(); initMap();
+    await loadEmbed(); exposeDebug(); initMap(); setupMobileToggle();
   }
 
   function exposeDebug(){
@@ -96,6 +96,38 @@ function initMap(){
     map.setView([15,0],2);
     loadCountries();
   }
+
+  // --- Mobile toggle (Lista / Mapa) ---
+  function setupMobileToggle(){
+    const btnList = document.getElementById("view-list");
+    const btnMap  = document.getElementById("view-map");
+    if(!btnList || !btnMap) return;
+
+    // Only meaningful on mobile; still safe on desktop.
+    const saved = localStorage.getItem("mapa_view");
+    const initial = saved || "list";
+    setView(initial);
+
+    btnList.addEventListener("click", () => setView("list"));
+    btnMap.addEventListener("click",  () => setView("map"));
+
+    function setView(view){
+      document.body.dataset.view = view;
+      localStorage.setItem("mapa_view", view);
+
+      const isList = view === "list";
+      btnList.classList.toggle("is-active", isList);
+      btnMap.classList.toggle("is-active", !isList);
+      btnList.setAttribute("aria-pressed", String(isList));
+      btnMap.setAttribute("aria-pressed", String(!isList));
+
+      // Leaflet necesita recalcular tamaño cuando el mapa pasa de hidden→visible.
+      if(!isList && state.map){
+        setTimeout(() => { try{ state.map.invalidateSize(); }catch(e){} }, 60);
+      }
+    }
+  }
+
 
   async function loadCountries(){
     const r=await fetch("https://unpkg.com/world-atlas@2/countries-110m.json",{cache:"no-store"});
