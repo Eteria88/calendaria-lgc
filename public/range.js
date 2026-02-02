@@ -116,42 +116,56 @@
 
 function flex(str){
       if(!str) return null;
-      var s = String(str).trim().replace(/\s+/g,'');
+      var s = String(str).trim();
+
+      // Quita espacios (incluye espacios invisibles)
+      s = s.replace(/\s+/g,'');
+
       // Normaliza separadores: / . · espacios -> -
       s = s.replace(/[\.\/·\s]+/g,'-').replace(/[^0-9\-]/g,'-');
+
+      // Partes numéricas
       var parts = s.match(/\d+/g);
       if(!parts || parts.length !== 3) return null;
 
       var a = parts.map(function(x){ return parseInt(x,10); });
       if(a.some(function(n){ return isNaN(n); })) return null;
 
-      // Detecta año:
-      // 1) si alguna parte tiene 4+ dígitos => año
-      // 2) si no, la parte > 31 => año (ej: 491)
-      var idxY = -1;
-      for(var i=0;i<3;i++){
-        if(parts[i].length >= 4){ idxY = i; break; }
-      }
-      if(idxY < 0){
-        for(i=0;i<3;i++){
-          if(a[i] > 31){ idxY = i; break; }
-        }
-      }
-      if(idxY < 0) return null;
+      var y, m, d;
 
-      var y = a[idxY];
-      var r = [];
-      for(i=0;i<3;i++){ if(i!==idxY) r.push(a[i]); }
-      if(r.length !== 2) return null;
-
-      var d,m;
-      if(idxY === 0){
-        // Y-M-D
-        m = r[0]; d = r[1];
+      // 1) ISO YYYY-MM-DD (típico de <input type="date">)
+      if(parts[0].length === 4){
+        y = a[0]; m = a[1]; d = a[2];
       }else{
-        // D-M-Y o M-D-Y (si el año está al final o en medio)
-        // Por convención de la app: si año no es primero => D-M-Y
-        d = r[0]; m = r[1];
+        // 2) Si alguna parte tiene 4+ dígitos => año
+        var idxY = -1;
+        for(var i=0;i<3;i++){
+          if(parts[i].length >= 4){ idxY = i; break; }
+        }
+        // 3) Si no, la parte > 31 => año (ej: 491)
+        if(idxY < 0){
+          for(i=0;i<3;i++){
+            if(a[i] > 31){ idxY = i; break; }
+          }
+        }
+
+        if(idxY >= 0){
+          y = a[idxY];
+          var r = [];
+          for(i=0;i<3;i++){ if(i!==idxY) r.push(a[i]); }
+          if(r.length !== 2) return null;
+
+          if(idxY === 0){
+            // Y-M-D
+            m = r[0]; d = r[1];
+          }else{
+            // Convención de la app: si el año no es primero => D-M-Y
+            d = r[0]; m = r[1];
+          }
+        }else{
+          // 4) Caso ultra-ambiguo (ej: 1/1/1): asumimos D-M-Y
+          d = a[0]; m = a[1]; y = a[2];
+        }
       }
 
       if(!(y>=1 && y<=275760 && m>=1 && m<=12 && d>=1 && d<=31)) return null;
@@ -166,7 +180,9 @@ function flex(str){
 
       var baseA = jdnMixed(S.y,S.m,S.d);
       var baseB = jdnMixed(E.y,E.m,E.d);
-      return baseB - baseA; // EXCLUSIVO
+      var diff = baseB - baseA;
+      // INCLUSIVO: cuenta ambos extremos (si es el mismo día => 1)
+      return (diff >= 0) ? (diff + 1) : (diff - 1);
     }
 
 
