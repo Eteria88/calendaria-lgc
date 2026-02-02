@@ -144,9 +144,11 @@ function initMap(){
     const phone = p.phone || state.phoneByN3[n3] || state.phoneByName[normText(name)] || "";
 
     const nameEl=document.querySelector("#selected-country .name");
+    const codeEl=document.getElementById("selected-code");
     const n3El=document.getElementById("n3-label");
     const codesInput=document.getElementById("codes-input");
     if (nameEl) nameEl.textContent = name;
+    if (codeEl) codeEl.textContent = phone || "—";
     const hintEl=document.getElementById("selected-hint");
     if (hintEl) hintEl.style.display = name && name !== "—" ? "none" : "block";
     if (n3El) n3El.textContent = ""; // oculto por HTML/CSS
