@@ -162,15 +162,20 @@ function flex(str){
     }
 
     function calcRange(startId, endId){
-      var sI = $(startId) ? $(startId).value : '';
-      var eI = $(endId) ? $(endId).value : '';
-      var S = flex(sI), E = flex(eI);
-      if(!(S && E)) return null;
+  var sI = $(startId) ? $(startId).value : '';
+  var eI = $(endId) ? $(endId).value : '';
+  var S = flex(sI), E = flex(eI);
+  if(!(S && E)) return null;
 
-      var baseA = jdnMixed(S.y,S.m,S.d);
-      var baseB = jdnMixed(E.y,E.m,E.d);
-      return (baseB - baseA) + 1; // INCLUSIVO
-    }
+  var baseA = jdnMixed(S.y,S.m,S.d);
+  var baseB = jdnMixed(E.y,E.m,E.d);
+  return (baseB - baseA); // EXCLUSIVO (mismo día = 0)
+}
+
+function calcRangeIncl(startId, endId){
+  var ex = calcRange(startId, endId);
+  return (ex === null) ? null : (ex + 1); // INCLUSIVO (mismo día = 1)
+}
 
 
 
@@ -285,24 +290,28 @@ function renderBandSchedule(){
 
     function render(){
       var exA = calcRange('startA','endA');
+      var exAInc = calcRangeIncl('startA','endA');
       var exB = calcRange('startB','endB');
+      var exBInc = calcRangeIncl('startB','endB');
 
       // Salidas por rango
       if(exA === null){
-        setText('outA','—'); setText('yearsOutA','—'); setText('resA','—');
-      }else{
-        setText('outA', String(exA));
-        setText('resA', String(exA));
-        setText('yearsOutA', String(Math.floor(exA / 365.2425)));
-      }
+  setText('outA','—'); setText('outAInc','—'); setText('yearsOutA','—'); setText('resA','—');
+}else{
+  setText('outA', String(exA));
+  setText('outAInc', String(exAInc));
+  setText('resA', String(exA));
+  setText('yearsOutA', String(Math.floor((exAInc) / 365.2425)));
+}
 
       if(exB === null){
-        setText('outB','—'); setText('yearsOutB','—'); setText('resB','—');
-      }else{
-        setText('outB', String(exB));
-        setText('resB', String(exB));
-        setText('yearsOutB', String(Math.floor(exB / 365.2425)));
-      }
+  setText('outB','—'); setText('outBInc','—'); setText('yearsOutB','—'); setText('resB','—');
+}else{
+  setText('outB', String(exB));
+  setText('outBInc', String(exBInc));
+  setText('resB', String(exB));
+  setText('yearsOutB', String(Math.floor((exBInc) / 365.2425)));
+}
 
       
 // Potenciales / Constante (solo cuando hay ambos)
@@ -356,22 +365,30 @@ renderBandSchedule();
     }
 
     
-    // Sanitiza espacios en inputs de fecha (evita desajustes por espacios)
-    function sanitizeDateInput(el){
-      if(!el) return;
-      var v = String(el.value || '');
-      var nv = v.replace(/\s+/g,'').replace(/[^0-9\/\-\.·]/g,'');
-      if(nv !== v) el.value = nv;
+    // Sanitiza caracteres permitidos en fechas (sin re-formatear mientras se escribe)
+function sanitizeDateInputLite(el){
+  if(!el) return;
+  var v = String(el.value || '');
+  var nv = v.replace(/\s+/g,'').replace(/[^0-9\/\-\.·]/g,'');
+  if(nv !== v) el.value = nv;
+}
 
-      // En inputs de texto, normaliza a dd/mm/aaaa para evitar valores raros (ej: 1/1/1)
-      if(String(el.type).toLowerCase() !== 'date'){
-        var P = flex(el.value);
-        if(P){
-          el.value = fmtInput(P); // 1/1/1 -> 01/01/0001
-        }
+// Normaliza a dd/mm/aaaa SOLO cuando el usuario termina (blur/change)
+function normalizeDateInput(el){
+  if(!el) return;
+  sanitizeDateInputLite(el);
+
+  // En inputs de texto, normaliza a dd/mm/aaaa (ej: 1/1/1 -> 01/01/0001)
+  if(String(el.type).toLowerCase() !== 'date'){
+    var raw = String(el.value || '');
+    if((raw.match(/\d+/g) || []).length === 3){
+      var P = flex(raw);
+      if(P){
+        el.value = fmtInput(P);
       }
     }
-
+  }
+}
 
     // En móviles, los inputs type=date suelen tener comportamientos raros con años muy antiguos (ej: 0001),
     // porque usan calendario gregoriano "proléptico" y/o limitan el rango. Para evitar que 01/01/0001
@@ -416,9 +433,9 @@ function bind(){
       ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
         var el = $(id);
         if(el){
-          el.addEventListener('change', function(){ sanitizeDateInput(el); render(); });
-          el.addEventListener('input', function(){ sanitizeDateInput(el); render(); });
-          el.addEventListener('blur', function(){ sanitizeDateInput(el); render(); });
+          el.addEventListener('input', function(){ sanitizeDateInputLite(el); render(); });
+          el.addEventListener('change', function(){ normalizeDateInput(el); render(); });
+          el.addEventListener('blur', function(){ normalizeDateInput(el); render(); });
       // Botones "Hoy" (compat móvil + inputs texto)
       var map = [
         ['btnStartTodayA','startA'],
