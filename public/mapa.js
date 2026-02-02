@@ -55,7 +55,42 @@ async function getEmbedArray(){
     }
   }
 
-  function initMap(){
+  
+  // --- Antimeridiano: evita "franjas" por polígonos que cruzan ±180° ---
+  // Leaflet puede dibujar líneas/zonas enormes cuando un país cruza el antimeridiano (ej. Rusia/EE.UU.).
+  // Esta función "desenrolla" longitudes para mantener continuidad visual.
+  function unwrapLine(line){
+    if (!Array.isArray(line) || line.length === 0) return line;
+    let prev = line[0][0];
+    const out = [ [line[0][0], line[0][1]] ];
+    for (let i=1;i<line.length;i++){
+      const lon=line[i][0], lat=line[i][1];
+      const cands=[lon, lon+360, lon-360];
+      let best=cands[0];
+      for (let k=1;k<cands.length;k++){
+        if (Math.abs(cands[k]-prev) < Math.abs(best-prev)) best=cands[k];
+      }
+      prev=best;
+      out.push([best, lat]);
+    }
+    return out;
+  }
+
+  function unwrapGeometry(geom){
+    if (!geom || !geom.type) return geom;
+    const t = geom.type;
+    if (t === "Polygon"){
+      geom.coordinates = geom.coordinates.map(ring => unwrapLine(ring));
+    } else if (t === "MultiPolygon"){
+      geom.coordinates = geom.coordinates.map(poly => poly.map(ring => unwrapLine(ring)));
+    } else if (t === "LineString"){
+      geom.coordinates = unwrapLine(geom.coordinates);
+    } else if (t === "MultiLineString"){
+      geom.coordinates = geom.coordinates.map(line => unwrapLine(line));
+    }
+    return geom;
+  }
+function initMap(){
     const map=L.map("map",{worldCopyJump:true}); state.map=map;
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:6,minZoom:1,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
     map.setView([15,0],2);
@@ -66,6 +101,9 @@ async function getEmbedArray(){
     const r=await fetch("https://unpkg.com/world-atlas@2/countries-110m.json",{cache:"no-store"});
     const topo=await r.json();
     const geo=topojson.feature(topo, topo.objects.countries);
+
+    // corrige geometrías que cruzan el antimeridiano
+    geo.features.forEach(f => unwrapGeometry(f.geometry));
 
     const layer=L.geoJSON(geo,{style:baseStyle,onEachFeature:onEach}); layer.addTo(state.map); state.layers.countries=layer;
 
@@ -109,6 +147,8 @@ async function getEmbedArray(){
     const n3El=document.getElementById("n3-label");
     const codesInput=document.getElementById("codes-input");
     if (nameEl) nameEl.textContent = name;
+    const hintEl=document.getElementById("selected-hint");
+    if (hintEl) hintEl.style.display = name && name !== "—" ? "none" : "block";
     if (n3El) n3El.textContent = ""; // oculto por HTML/CSS
     if (codesInput) codesInput.value = phone || "";
 
