@@ -131,9 +131,7 @@ body.noScroll{overflow:hidden}
 .header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none}
 .header-actions a:hover{border-color:#6f8aa6;color:#d7e6ff}
 @media (max-width:480px){
-  .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em
-  .splash__inner{padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
-}
+  .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
 }
 
 
@@ -387,14 +385,14 @@ body.noScroll{overflow:hidden}
       radial-gradient(1000px 900px at 10% 110%, rgba(120,180,255,.07), transparent 60%),
       #0b0d10;color:#e6f1ff;z-index:9999;transition:opacity .6s ease,visibility .6s ease}
     .splash[hidden]{opacity:0;visibility:hidden}
-    .splash__inner{text-align:center;padding:24px;padding-left:max(36px,env(safe-area-inset-left));padding-right:max(36px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+    .splash__inner{text-align:center;padding:24px;padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom))}
     .brand{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;display:inline-block;position:relative;filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
     .brand .row{display:block}
     .brand__layout{position:relative;opacity:0;pointer-events:none;user-select:none;display:inline-block}
     .brand__layout .row{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;text-align:center;white-space:pre}
     .brand__layout .row[data-row="0"]{font-weight:600;font-size:clamp(56px,11vw,128px)}
     .brand__layout .row[data-row="1"]{font-weight:600;font-size:clamp(38px,9vw,96px)}
-    .brand__stage{position:relative;width:100%;max-width:1200px;height:clamp(240px,46dvh,520px);margin:auto;display:grid;place-items:center}
+    .brand__stage{position:relative;width:min(94vw,1200px);height:clamp(240px,46dvh,520px);margin:auto;display:grid;place-items:center}
     .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
       background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
       -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -406,7 +404,7 @@ body.noScroll{overflow:hidden}
     .enter:active{transform:scale(.98)}
     @media (max-width: 480px){
       .brand{letter-spacing:.10em}
-      .brand__stage{width:100vw;height:clamp(260px,48dvh,560px)}
+      .brand__stage{width:100%;height:clamp(260px,48dvh,560px)}
       .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
       .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
     }
@@ -842,6 +840,29 @@ body.noScroll{overflow:hidden}
     });
 
     var w=stage.clientWidth, h=stage.clientHeight;
+    // --- Mobile/Small screens: re-center computed target positions so the word never gets cut ---
+    // Safari/iOS (and some Android browsers) can report slightly different widths because of dynamic toolbars.
+    // We normalize by measuring the final target bounds and shifting everything so the title is centered in the stage.
+    (function recenterTargets(){
+      try{
+        var pad = (stage.clientWidth < 420) ? 14 : 0; // small breathing room
+        var row0 = letters.filter(function(t){ return t.row===0; });
+        if(!row0.length) return;
+        var minX = Infinity, maxX = -Infinity;
+        row0.forEach(function(t){ minX=Math.min(minX,t.target.x); maxX=Math.max(maxX,t.target.x); });
+        var center = (minX+maxX)/2;
+        var desired = stage.clientWidth/2;
+        var shift = desired - center;
+
+        // clamp shift so we don't push outside padding
+        var newMin = minX + shift, newMax = maxX + shift;
+        if(newMin < pad) shift += (pad - newMin);
+        if(newMax > stage.clientWidth - pad) shift -= (newMax - (stage.clientWidth - pad));
+
+        letters.forEach(function(t){ t.target.x += shift; });
+      }catch(e){}
+    })();
+
     var aspect = w / Math.max(h,1);
     var isNarrow = (w < 420) || (aspect < 0.72);
     var swirlMs = isNarrow ? 2200 : 2600;
@@ -859,10 +880,15 @@ body.noScroll{overflow:hidden}
       chars.forEach(function(c, idx){
         var t=Math.max(0, now - t0 - idx*stagger);
         if(t >= (swirlMs+settleMs)){
-          if(!c.settled){
-            c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
-            c.settled=true;
-          }
+          // settled: keep centered, add a tiny drift so the logo feels alive
+          var u2=(now/1000)*0.6 + (idx*0.35);
+          var driftX=Math.sin(u2)*1.2;
+          var driftY=Math.sin(u2*1.3)*0.9;
+          c.el.style.left = (c.target.x + driftX) + 'px';
+          c.el.style.top  = (c.target.y + driftY) + 'px';
+          c.el.style.transform='translate(-50%,-50%)';
+          c.el.style.opacity=1;
+          c.settled=true;
           return;
         }
         anyRunning=true;
@@ -881,7 +907,9 @@ body.noScroll{overflow:hidden}
         c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)';
         c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
       });
-      if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
+      // keep a subtle infinite drift after settle (no more stopping the loop)
+      if(!anyRunning){ btn && btn.removeAttribute('disabled'); }
+      requestAnimationFrame(anim);
     }
     requestAnimationFrame(anim);
 
