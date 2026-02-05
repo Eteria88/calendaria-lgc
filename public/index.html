@@ -380,7 +380,7 @@ body.noScroll{overflow:hidden}
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
   <style id="splash-spiral-css">
-    .splash{position:fixed;inset:0;display:grid;place-items:center;background:
+    .splash{position:fixed;inset:0;display:grid;place-items:center;overflow-x:hidden;background:
       radial-gradient(1200px 800px at 60% -10%, rgba(255,200,120,.07), transparent 60%),
       radial-gradient(1000px 900px at 10% 110%, rgba(120,180,255,.07), transparent 60%),
       #0b0d10;color:#e6f1ff;z-index:9999;transition:opacity .6s ease,visibility .6s ease}
@@ -396,8 +396,7 @@ body.noScroll{overflow:hidden}
     .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
       background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
       -webkit-background-clip:text;background-clip:text;color:transparent;
-      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15);
-      transform:translate(-50%,-50%);}
+      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15);transform:translate(-50%,-50%);}
     .row-0 .char{font-size:clamp(56px,11vw,128px)}
     .row-1 .char{font-size:clamp(38px,9vw,96px);opacity:.95}
     .enter{margin-top:28px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#cfe1ff;border:1px solid rgba(156,178,200,.4);
@@ -490,21 +489,16 @@ body.noScroll{overflow:hidden}
 }
 
 
-    @media (max-width: 430px){
-      /* Mobile-only: keep desktop unchanged; prevent right-cropping and center the whole word */
+    @media (max-width: 520px){
+      /* Mobile: NO tocamos animación, solo encuadre/centrado */
       .splash__inner{
         padding-left:max(16px,env(safe-area-inset-left));
         padding-right:max(16px,env(safe-area-inset-right));
       }
-      /* Use the real available width (inside padding), not vw */
-      .brand__stage{
-        width:100%;
-        max-width:100%;
-      }
-      /* Slightly tighten tracking so CALENDARIA fits without clipping */
-      .brand__layout .row{
-        letter-spacing:.16em;
-      }
+      /* clave: evitar vw en mobile (Safari/Android UI bars) */
+      .brand__stage{width:100% !important;max-width:100% !important;}
+      /* un toque menos de separación para que no se corte la 'A' */
+      .brand,.brand__layout .row{letter-spacing:.16em !important;}
     }
 </style>
 
