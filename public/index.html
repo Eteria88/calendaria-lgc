@@ -392,20 +392,28 @@ body.noScroll{overflow:hidden}
     .brand__layout .row{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;text-align:center;white-space:pre}
     .brand__layout .row[data-row="0"]{font-weight:600;font-size:clamp(56px,11vw,128px)}
     .brand__layout .row[data-row="1"]{font-weight:600;font-size:clamp(38px,9vw,96px)}
-    .brand__stage{position:relative;width:min(94vw,1200px);height:clamp(240px,46dvh,520px);margin:auto;display:grid;place-items:center}
+    .brand__stage{position:relative;width:100%;max-width:1200px;height:clamp(240px,46dvh,520px);margin:0 auto;display:grid;place-items:center}
     .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
       background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
       -webkit-background-clip:text;background-clip:text;color:transparent;
       text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15);transform:translate(-50%,-50%);}
     .row-0 .char{font-size:clamp(56px,11vw,128px)}
     .row-1 .char{font-size:clamp(38px,9vw,96px);opacity:.95}
+    @media (max-width:420px){
+      .brand{letter-spacing:.14em}
+      .brand__layout .row[data-row="0"]{font-size:clamp(44px,9.5vw,92px)}
+      .brand__layout .row[data-row="1"]{font-size:clamp(30px,7.5vw,72px)}
+      .row-0 .char{font-size:clamp(44px,9.5vw,92px)}
+      .row-1 .char{font-size:clamp(30px,7.5vw,72px)}
+      .splash__inner{padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
+    }
+
     .enter{margin-top:28px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#cfe1ff;border:1px solid rgba(156,178,200,.4);
       background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:12px 18px;border-radius:12px;cursor:pointer;transition:transform .1s ease,opacity .3s ease;border-color}
     .enter:active{transform:scale(.98)}
     @media (max-width: 480px){
-      .splash__inner{padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
       .brand{letter-spacing:.10em}
-      .brand__stage{width:100%;height:clamp(260px,48dvh,560px)}
+      .brand__stage{width:100vw;height:clamp(260px,48dvh,560px)}
       .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
       .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
     }
@@ -853,15 +861,23 @@ body.noScroll{overflow:hidden}
     function lissajous(u){ var x=Math.sin(u), y=Math.sin(2*u)*0.7; return {x:x,y:y}; }
 
     var t0=performance.now();
+    var enabled=false;
     function anim(now){
       var anyRunning=false;
       chars.forEach(function(c, idx){
         var t=Math.max(0, now - t0 - idx*stagger);
         if(t >= (swirlMs+settleMs)){
-          if(!c.settled){
-            c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
-            c.settled=true;
-          }
+          // Keep a subtle infinite drift once letters are settled (works on iPhone + Android).
+          if(!c.settled){ c.settled=true; }
+          var tt = now/1000;
+          var amp = isNarrow ? 2.2 : 3.0;      // px
+          var spd = isNarrow ? 0.85 : 0.75;    // hz-ish
+          var ox = Math.sin((tt*spd) + idx*0.7) * amp;
+          var oy = Math.cos((tt*spd) + idx*0.9) * (amp*0.85);
+          c.el.style.left = (c.target.x + ox) + 'px';
+          c.el.style.top  = (c.target.y + oy) + 'px';
+          c.el.style.transform='translate(-50%,-50%)';
+          c.el.style.opacity = 1;
           return;
         }
         anyRunning=true;
@@ -880,7 +896,7 @@ body.noScroll{overflow:hidden}
         c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)';
         c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
       });
-      if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
+      if(anyRunning){ requestAnimationFrame(anim); } else { if(!enabled){ btn.removeAttribute('disabled'); enabled=true; } requestAnimationFrame(anim); }
     }
     requestAnimationFrame(anim);
 
