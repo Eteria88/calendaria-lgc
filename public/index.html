@@ -392,7 +392,7 @@ body.noScroll{overflow:hidden}
     .brand__layout .row{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;text-align:center;white-space:pre}
     .brand__layout .row[data-row="0"]{font-weight:600;font-size:clamp(56px,11vw,128px)}
     .brand__layout .row[data-row="1"]{font-weight:600;font-size:clamp(38px,9vw,96px)}
-    .brand__stage{position:relative;width:min(94vw,1200px);height:clamp(240px,46dvh,520px);margin:auto;display:grid;place-items:center}
+    .brand__stage{position:relative;width:100%;max-width:1200px;height:clamp(240px,46dvh,520px);margin:auto;display:grid;place-items:center}
     .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
       background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
       -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -403,8 +403,8 @@ body.noScroll{overflow:hidden}
       background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:12px 18px;border-radius:12px;cursor:pointer;transition:transform .1s ease,opacity .3s ease;border-color}
     .enter:active{transform:scale(.98)}
     @media (max-width: 480px){
-      .brand{letter-spacing:.10em}
-      .brand__stage{width:100vw;height:clamp(260px,48dvh,560px)}
+      .brand{letter-spacing:.07em}
+      .brand__stage{width:100%;height:clamp(260px,48dvh,560px)}
       .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
       .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
     }
@@ -828,44 +828,6 @@ body.noScroll{overflow:hidden}
         targets.push({x:x,y:y,row:rowIdx,char:sp.textContent});
       });
     });
-
-    // Normalize per-row centering (helps on mobile browsers where text metrics can shift)
-    (function normalizeRowCenters(){
-      var margin = 18; // breathing room so letters don't kiss screen edges
-      var groups = {};
-      targets.forEach(function(t){
-        (groups[t.row] = groups[t.row] || []).push(t);
-      });
-
-      Object.keys(groups).forEach(function(k){
-        var arr = groups[k];
-        if(!arr || !arr.length) return;
-
-        var minX = Infinity, maxX = -Infinity;
-        arr.forEach(function(t){
-          if(t.x < minX) minX = t.x;
-          if(t.x > maxX) maxX = t.x;
-        });
-
-        var currentCenter = (minX + maxX) / 2;
-        var desiredCenter = w / 2;
-        var dx = desiredCenter - currentCenter;
-
-        arr.forEach(function(t){ t.x += dx; });
-        minX += dx; maxX += dx;
-
-        var leftLimit = margin;
-        var rightLimit = w - margin;
-
-        if(minX < leftLimit){
-          var shift = leftLimit - minX;
-          arr.forEach(function(t){ t.x += shift; });
-        } else if(maxX > rightLimit){
-          var shift2 = rightLimit - maxX;
-          arr.forEach(function(t){ t.x += shift2; });
-        }
-      });
-    })();
 
     layout.parentNode && layout.parentNode.removeChild(layout);
     var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
