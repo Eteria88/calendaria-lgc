@@ -396,7 +396,7 @@ body.noScroll{overflow:hidden}
     .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
       background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
       -webkit-background-clip:text;background-clip:text;color:transparent;
-      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15);transform:translate(-50%,-50%);}
+      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15)transform:translate(-50%,-50%);}
     .row-0 .char{font-size:clamp(56px,11vw,128px)}
     .row-1 .char{font-size:clamp(38px,9vw,96px);opacity:.95}
     .enter{margin-top:28px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#cfe1ff;border:1px solid rgba(156,178,200,.4);
@@ -404,7 +404,7 @@ body.noScroll{overflow:hidden}
     .enter:active{transform:scale(.98)}
     @media (max-width: 480px){
       .brand{letter-spacing:.10em}
-      .brand__stage{width:100%;height:clamp(260px,48dvh,560px)}
+      .brand__stage{width:100vw;height:clamp(260px,48dvh,560px)}
       .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
       .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
     }
@@ -829,6 +829,44 @@ body.noScroll{overflow:hidden}
       });
     });
 
+    // Normalize per-row centering (helps on mobile browsers where text metrics can shift)
+    (function normalizeRowCenters(){
+      var margin = 18; // breathing room so letters don't kiss screen edges
+      var groups = {};
+      targets.forEach(function(t){
+        (groups[t.row] = groups[t.row] || []).push(t);
+      });
+
+      Object.keys(groups).forEach(function(k){
+        var arr = groups[k];
+        if(!arr || !arr.length) return;
+
+        var minX = Infinity, maxX = -Infinity;
+        arr.forEach(function(t){
+          if(t.x < minX) minX = t.x;
+          if(t.x > maxX) maxX = t.x;
+        });
+
+        var currentCenter = (minX + maxX) / 2;
+        var desiredCenter = w / 2;
+        var dx = desiredCenter - currentCenter;
+
+        arr.forEach(function(t){ t.x += dx; });
+        minX += dx; maxX += dx;
+
+        var leftLimit = margin;
+        var rightLimit = w - margin;
+
+        if(minX < leftLimit){
+          var shift = leftLimit - minX;
+          arr.forEach(function(t){ t.x += shift; });
+        } else if(maxX > rightLimit){
+          var shift2 = rightLimit - maxX;
+          arr.forEach(function(t){ t.x += shift2; });
+        }
+      });
+    })();
+
     layout.parentNode && layout.parentNode.removeChild(layout);
     var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
     var chars = letters.map(function(t, idx){
@@ -840,29 +878,6 @@ body.noScroll{overflow:hidden}
     });
 
     var w=stage.clientWidth, h=stage.clientHeight;
-    // --- Mobile/Small screens: re-center computed target positions so the word never gets cut ---
-    // Safari/iOS (and some Android browsers) can report slightly different widths because of dynamic toolbars.
-    // We normalize by measuring the final target bounds and shifting everything so the title is centered in the stage.
-    (function recenterTargets(){
-      try{
-        var pad = (stage.clientWidth < 420) ? 14 : 0; // small breathing room
-        var row0 = letters.filter(function(t){ return t.row===0; });
-        if(!row0.length) return;
-        var minX = Infinity, maxX = -Infinity;
-        row0.forEach(function(t){ minX=Math.min(minX,t.target.x); maxX=Math.max(maxX,t.target.x); });
-        var center = (minX+maxX)/2;
-        var desired = stage.clientWidth/2;
-        var shift = desired - center;
-
-        // clamp shift so we don't push outside padding
-        var newMin = minX + shift, newMax = maxX + shift;
-        if(newMin < pad) shift += (pad - newMin);
-        if(newMax > stage.clientWidth - pad) shift -= (newMax - (stage.clientWidth - pad));
-
-        letters.forEach(function(t){ t.target.x += shift; });
-      }catch(e){}
-    })();
-
     var aspect = w / Math.max(h,1);
     var isNarrow = (w < 420) || (aspect < 0.72);
     var swirlMs = isNarrow ? 2200 : 2600;
@@ -880,15 +895,10 @@ body.noScroll{overflow:hidden}
       chars.forEach(function(c, idx){
         var t=Math.max(0, now - t0 - idx*stagger);
         if(t >= (swirlMs+settleMs)){
-          // settled: keep centered, add a tiny drift so the logo feels alive
-          var u2=(now/1000)*0.6 + (idx*0.35);
-          var driftX=Math.sin(u2)*1.2;
-          var driftY=Math.sin(u2*1.3)*0.9;
-          c.el.style.left = (c.target.x + driftX) + 'px';
-          c.el.style.top  = (c.target.y + driftY) + 'px';
-          c.el.style.transform='translate(-50%,-50%)';
-          c.el.style.opacity=1;
-          c.settled=true;
+          if(!c.settled){
+            c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
+            c.settled=true;
+          }
           return;
         }
         anyRunning=true;
@@ -907,9 +917,7 @@ body.noScroll{overflow:hidden}
         c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)';
         c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
       });
-      // keep a subtle infinite drift after settle (no more stopping the loop)
-      if(!anyRunning){ btn && btn.removeAttribute('disabled'); }
-      requestAnimationFrame(anim);
+      if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
     }
     requestAnimationFrame(anim);
 
