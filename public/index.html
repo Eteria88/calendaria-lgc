@@ -698,7 +698,7 @@ body.noScroll{overflow:hidden}
   .splash::before{ --L: 46px; --G: 14px; opacity: .52; }
 }
 
-/* === Celestial (Sol arriba + Tierra abajo) === */
+/* === Celestial (Sol arriba + Tierra wireframe abajo-izq) === */
 .splash::after{
   content:"";
   position:absolute;
@@ -706,13 +706,13 @@ body.noScroll{overflow:hidden}
   pointer-events:none;
   z-index:0;
 
-  /* controles rápidos */
-  --sunI: 0.18;      /* intensidad sol */
-  --globeI: 0.28;    /* intensidad malla tierra */
-  --globeSize: 78vmin; /* tamaño esfera */
+  /* controles */
+  --sunI: 0.18;
+  --globeOpacity: 0.42;
+  --globeSize: 78vmin;
 
   background-image:
-    /* SOL: punto + halo (arriba) */
+    /* SOL: punto + halo */
     radial-gradient(circle at 72% 12%,
       rgba(255,255,255, calc(var(--sunI) * 1.2)) 0 2.5px,
       rgba(255,255,255,0) 12px),
@@ -720,58 +720,27 @@ body.noScroll{overflow:hidden}
       rgba(124,199,255, var(--sunI)) 0,
       rgba(124,199,255,0) 120px),
 
-    /* TIERRA: esfera wireframe en esquina inferior-izq */
-    url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20600%20600%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id=%22fade%22%20cx=%2250%25%22%20cy=%2245%25%22%20r=%2260%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset=%220%22%20stop-color=%22#7cc7ff%22%20stop-opacity=%220.22%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset=%221%22%20stop-color=%22#7cc7ff%22%20stop-opacity=%220.00%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Cg%20fill=%22none%22%20stroke-linecap=%22round%22%20stroke=%22#7cc7ff%22%3E%0A%20%20%20%20%3Ccircle%20cx=%22300%22%20cy=%22300%22%20r=%22250%22%20stroke-opacity=%220.22%22%20stroke-width=%222%22/%3E%0A%20%20%20%20%3C%21--%20meridians%20--%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22250%22%20ry=%22110%22%20stroke-opacity=%220.14%22%20stroke-width=%221.2%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22250%22%20ry=%22160%22%20stroke-opacity=%220.12%22%20stroke-width=%221.2%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22250%22%20ry=%2260%22%20%20stroke-opacity=%220.10%22%20stroke-width=%221.1%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22110%22%20ry=%22250%22%20stroke-opacity=%220.12%22%20stroke-width=%221.2%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22160%22%20ry=%22250%22%20stroke-opacity=%220.10%22%20stroke-width=%221.2%22/%3E%0A%20%20%20%20%3C%21--%20diagonals%20(triangulated%20feel)%20--%3E%0A%20%20%20%20%3Cg%20stroke-opacity=%220.10%22%20stroke-width=%221.1%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M110%20210%20L490%20390%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M110%20390%20L490%20210%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M170%20130%20L430%20470%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M170%20470%20L430%20130%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M80%20300%20L520%20300%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M300%2080%20L300%20520%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%20%20%3Ccircle%20cx=%22300%22%20cy=%22300%22%20r=%22255%22%20fill=%22url(#fade)%22%20opacity=%220.30%22/%3E%0A%3C/svg%3E");
+    /* TIERRA: esfera wireframe (sin mask para máxima compatibilidad) */
+    url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20600%20600%27%3E%0A%3Cg%20fill=%27none%27%20stroke=%27#7cc7ff%27%20stroke-linecap=%27round%27%3E%0A%3Ccircle%20cx=%27300%27%20cy=%27300%27%20r=%27250%27%20stroke-opacity=%27.22%27%20stroke-width=%272%27/%3E%0A%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%27140%27%20stroke-opacity=%27.12%27%20stroke-width=%271.2%27/%3E%0A%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%2790%27%20stroke-opacity=%27.10%27%20stroke-width=%271.1%27/%3E%0A%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27140%27%20ry=%27250%27%20stroke-opacity=%27.10%27%20stroke-width=%271.1%27/%3E%0A%3Cg%20stroke-opacity=%27.10%27%20stroke-width=%271.05%27%3E%0A%3Cpath%20d=%27M100%20240%20L500%20360%27/%3E%3Cpath%20d=%27M100%20360%20L500%20240%27/%3E%0A%3Cpath%20d=%27M80%20300%20L520%20300%27/%3E%3Cpath%20d=%27M300%2080%20L300%20520%27/%3E%0A%3C/g%3E%0A%3C/g%3E%0A%3C/svg%3E");
 
-  background-repeat: no-repeat;
-  background-size:
-    100% 100%,
-    100% 100%,
-    var(--globeSize) var(--globeSize);
-
-  background-position:
-    0 0,
-    0 0,
-    -16vmin calc(100% + 18vmin);
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: 100% 100%, 100% 100%, var(--globeSize) var(--globeSize);
+  background-position: 0 0, 0 0, -16vmin calc(100% + 18vmin);
 
   mix-blend-mode: screen;
-  opacity: 0.85;
-
-  /* limitar: sol arriba; tierra abajo-izq */
-  -webkit-mask-image:
-    radial-gradient(circle at 72% 12%,
-      rgba(255,255,255,1) 0%,
-      rgba(255,255,255,1) 30%,
-      rgba(255,255,255,0) 58%),
-    radial-gradient(circle at 18% 86%,
-      rgba(255,255,255,1) 0%,
-      rgba(255,255,255,1) 58%,
-      rgba(255,255,255,0) 85%);
-          mask-image:
-    radial-gradient(circle at 72% 12%,
-      rgba(255,255,255,1) 0%,
-      rgba(255,255,255,1) 30%,
-      rgba(255,255,255,0) 58%),
-    radial-gradient(circle at 18% 86%,
-      rgba(255,255,255,1) 0%,
-      rgba(255,255,255,1) 58%,
-      rgba(255,255,255,0) 85%);
+  opacity: 0.95;
+  filter: drop-shadow(0 0 12px rgba(124,199,255,.08));
 }
 
-/* orden de capas */
-.splash::after{ z-index:0; }
-.splash::before{ z-index:1; }
-.splash__inner{ z-index:2; }
+/* afinamos opacidad SOLO de la tierra con un truco: duplicamos el SVG como capa con opacity vía mask no disponible,
+   así que lo controlamos con el alpha interno del svg + este opacity global. */
 
 @media (max-width: 599px){
   .splash::after{
     --sunI: 0.16;
     --globeSize: 86vmin;
-    opacity: 0.80;
-    background-position:
-      0 0,
-      0 0,
-      -26vmin calc(100% + 22vmin);
+    background-position: 0 0, 0 0, -26vmin calc(100% + 22vmin);
+    opacity: 0.92;
   }
 }
 }
