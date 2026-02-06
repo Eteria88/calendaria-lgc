@@ -509,8 +509,8 @@ body.noScroll{overflow:hidden}
   pointer-events:none;
   z-index:1;
 
-  --silver: rgba(230,241,255,.28);
-  --cyan:   rgba(124,199,255,.30);
+  --silver: rgba(230,241,255,.34);
+  --cyan:   rgba(124,199,255,.28);
 
   --L: 54px;
   --G: 16px;
@@ -710,7 +710,7 @@ body.noScroll{overflow:hidden}
 .enter-btn{
   position:relative;
   overflow:hidden;
-  border: 1px solid rgba(230,241,255,.28) !important;
+  border: 1px solid rgba(230,241,255,.34) !important;
   box-shadow:
     inset 0 0 0 1px rgba(124,199,255,.16),
     0 6px 18px rgba(0,0,0,.25);
@@ -734,12 +734,29 @@ body.noScroll{overflow:hidden}
 .enter-btn:hover::after,
 .enter-btn:focus-visible::after{
   opacity:1;
-  animation: scanline 520ms ease-out 1;
+  animation: scanline 250ms ease-out 1;
 }
 
 @keyframes scanline{
   0%   { transform: translateX(-120%); }
   100% { transform: translateX(120%); }
+}
+
+/* === Parallax CSS vars === */
+:root{
+  --parX: 0px;
+  --parY: 0px;
+  --earthX: 0px;
+  --earthY: 0px;
+}
+/* Move celestial layer gently */
+.splash::after{
+  transform: translate3d(var(--parX), var(--parY), 0);
+  will-change: transform;
+}
+/* Keep HUD crosses fixed (explicit) */
+.splash::before{
+  transform: none !important;
 }
 </style>
 
@@ -2797,4 +2814,52 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 
+<script>
+/* === Parallax (lentísimo) === */
+(function(){
+  const root = document.documentElement;
+  const splash = document.querySelector('.splash');
+  if(!splash) return;
+
+  // Limits in px
+  const HAZE_X = 10, HAZE_Y = 8;   // haze+sol
+  const EARTH_X = 2, EARTH_Y = 2;  // tierra casi fija
+
+  function setVars(nx, ny){
+    // nx, ny in [-1..1]
+    root.style.setProperty('--parX', (nx * HAZE_X).toFixed(2) + 'px');
+    root.style.setProperty('--parY', (ny * HAZE_Y).toFixed(2) + 'px');
+    root.style.setProperty('--earthX', (nx * EARTH_X).toFixed(2) + 'px');
+    root.style.setProperty('--earthY', (ny * EARTH_Y).toFixed(2) + 'px');
+  }
+
+  // Desktop mouse
+  function onMove(e){
+    const r = splash.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const nx = (e.clientX - cx) / (r.width/2);
+    const ny = (e.clientY - cy) / (r.height/2);
+    setVars(Math.max(-1, Math.min(1, nx)), Math.max(-1, Math.min(1, ny)));
+  }
+
+  // Optional: very subtle device orientation (mobile)
+  function onOrient(e){
+    // gamma: left-right (-90..90), beta: front-back (-180..180)
+    const gx = (e.gamma || 0) / 30; // scale down
+    const by = (e.beta  || 0) / 30;
+    setVars(Math.max(-1, Math.min(1, gx)), Math.max(-1, Math.min(1, by)));
+  }
+
+  // Enable only if user hasn't requested reduced motion
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce){
+    window.addEventListener('mousemove', onMove, {passive:true});
+    // Try device orientation without prompting; browsers that require permission will simply not fire.
+    window.addEventListener('deviceorientation', onOrient, {passive:true});
+  } else {
+    setVars(0,0);
+  }
+})();
+</script>
 </body></html>
