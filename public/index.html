@@ -709,7 +709,7 @@ body.noScroll{overflow:hidden}
   /* controles */
   --sunI: 0.18;
   --globeOpacity: 0.30;
-  --globeSize: 60vmin;
+  --globeSize: 74vmin;
 
   background-image:
     /* SOL: punto + halo */
@@ -721,14 +721,14 @@ body.noScroll{overflow:hidden}
       rgba(124,199,255,0) 120px),
 
     /* TIERRA: esfera wireframe (sin mask para máxima compatibilidad) */
-    url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20600%20600%27%3E%0A%3Cg%20fill=%27none%27%20stroke=%27rgb(124,199,255)%27%20stroke-linecap=%27round%27%3E%0A%3Ccircle%20cx=%27300%27%20cy=%27300%27%20r=%27250%27%20stroke-opacity=%27.22%27%20stroke-width=%272%27/%3E%0A%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%27140%27%20stroke-opacity=%27.12%27%20stroke-width=%271.2%27/%3E%0A%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%2790%27%20%20stroke-opacity=%27.10%27%20stroke-width=%271.1%27/%3E%0A%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27140%27%20ry=%27250%27%20stroke-opacity=%27.10%27%20stroke-width=%271.1%27/%3E%0A%3Cg%20stroke-opacity=%27.10%27%20stroke-width=%271.05%27%3E%0A%3Cpath%20d=%27M100%20240%20L500%20360%27/%3E%3Cpath%20d=%27M100%20360%20L500%20240%27/%3E%0A%3Cpath%20d=%27M80%20300%20L520%20300%27/%3E%3Cpath%20d=%27M300%2080%20L300%20520%27/%3E%0A%3C/g%3E%0A%3C/g%3E%0A%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20600%20600%27%3E%0A%3Cg%20transform=%27rotate(-23.0%20300%20300)%27%20fill=%27none%27%20stroke=%27rgb(124,199,255)%27%20stroke-linecap=%27round%27%3E%0A%20%20%3Ccircle%20cx=%27300%27%20cy=%27300%27%20r=%27250%27%20stroke-opacity=%27.22%27%20stroke-width=%272%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%27140%27%20stroke-opacity=%27.12%27%20stroke-width=%271.2%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%2790%27%20%20stroke-opacity=%27.10%27%20stroke-width=%271.1%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27140%27%20ry=%27250%27%20stroke-opacity=%27.10%27%20stroke-width=%271.1%27/%3E%0A%20%20%3Cg%20stroke-opacity=%27.10%27%20stroke-width=%271.05%27%3E%0A%20%20%20%20%3Cpath%20d=%27M100%20240%20L500%20360%27/%3E%3Cpath%20d=%27M100%20360%20L500%20240%27/%3E%0A%20%20%20%20%3Cpath%20d=%27M80%20300%20L520%20300%27/%3E%3Cpath%20d=%27M300%2080%20L300%20520%27/%3E%0A%20%20%3C/g%3E%0A%3C/g%3E%0A%3C/svg%3E");
 
   background-repeat: no-repeat, no-repeat, no-repeat;
   background-size: 100% 100%, 100% 100%, var(--globeSize) var(--globeSize);
-  background-position: 0 0, 0 0, -42vmin calc(100% - 6vmin);
+  background-position: 0 0, 0 0, -26vmin calc(100% - 18vmin);
 
   mix-blend-mode: screen;
-  opacity: 0.92;
+  opacity: 0.88;
   filter: drop-shadow(0 0 12px rgba(124,199,255,.08));
 }
 
@@ -738,9 +738,9 @@ body.noScroll{overflow:hidden}
 @media (max-width: 599px){
   .splash::after{
     --sunI: 0.16;
-    --globeSize: 60vmin;
-    background-position: 0 0, 0 0, -46vmin calc(100% - 4vmin);
-    opacity: 0.92;
+    --globeSize: 74vmin;
+    background-position: 0 0, 0 0, -30vmin calc(100% - 20vmin);
+    opacity: 0.88;
   }
 }
 }
