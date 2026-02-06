@@ -496,10 +496,9 @@ body.noScroll{overflow:hidden}
       .splash{--brandShiftX:-4.8vw;}
     }
 
-/* === HUD Cartesian Axes (cruce X/Y para cardinalidades) === */
+/* === HUD Floating Crosshairs (como tu guía) === */
 .splash{ isolation:isolate; }
 
-/* Un cruce de ejes estilo HUD, con fade y ticks, sin “enmarcar” */
 .splash::before{
   content:"";
   position:absolute;
@@ -507,84 +506,30 @@ body.noScroll{overflow:hidden}
   pointer-events:none;
   z-index:0;
 
-  /* Paleta: cian + plateado */
-  --silver: rgba(230,241,255,.26);
-  --cyan:   rgba(124,199,255,.24);
-
-  /* Punto de cruce (ajustable) */
-  --cx: 50%;
-  --cy: 46%;
-
-  /* Largo visible de los ejes (no toda la pantalla) */
-  --hx: 62vmin; /* horizontal total */
-  --vy: 62vmin; /* vertical total */
-
-  /* Grosor */
-  --thick: 2px;
-  --thin: 1px;
-
-  /* Ejes + ticks */
-  background-image:
-    /* Horizontal principal (plateado) */
-    linear-gradient(to right, var(--silver), var(--silver)),
-    /* Vertical principal (cian) */
-    linear-gradient(to bottom, var(--cyan), var(--cyan)),
-
-    /* Ticks horizontales (pequeñas marcas) */
-    repeating-linear-gradient(to right,
-      transparent 0 22px,
-      rgba(230,241,255,.18) 22px 23px,
-      transparent 23px 44px
-    ),
-    /* Ticks verticales */
-    repeating-linear-gradient(to bottom,
-      transparent 0 22px,
-      rgba(124,199,255,.16) 22px 23px,
-      transparent 23px 44px
-    );
-
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%20600%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3Cfilter%20id=%22glow%22%20x=%22-40%25%22%20y=%22-40%25%22%20width=%22180%25%22%20height=%22180%25%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation=%221.1%22%20result=%22b%22/%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in=%22b%22/%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in=%22SourceGraphic%22/%3E%0A%20%20%20%20%20%20%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%20%20%3Cg%20fill=%22none%22%20stroke-linecap=%22round%22%20filter=%22url(#glow)%22%3E%0A%20%20%20%20%3Cg%20stroke=%22#7cc7ff%22%20stroke-opacity=%220.34%22%3E%0A%20%20%20%20%20%20%3Cg%20opacity=%220.70%22%20stroke-width=%222.2%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M143.0%2095%20H98.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M157.0%2095%20H202.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%2088.0%20V43.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20102.0%20V147.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22150%22%20cy=%2295%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.58%22%20stroke-width=%222.0%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M493.0%2080%20H454.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M507.0%2080%20H546.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M500%2073.0%20V34.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M500%2087.0%20V126.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22500%22%20cy=%2280%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.56%22%20stroke-width=%222.0%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M853.0%2095%20H810.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M867.0%2095%20H910.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M860%2088.0%20V45.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M860%20102.0%20V145.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22860%22%20cy=%2295%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.54%22%20stroke-width=%222.1%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M143.0%20515%20H98.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M157.0%20515%20H202.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20508.0%20V463.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20522.0%20V567.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22150%22%20cy=%22515%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.50%22%20stroke-width=%222.0%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M513.0%20520%20H470.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M527.0%20520%20H570.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M520%20513.0%20V470.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M520%20527.0%20V570.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22520%22%20cy=%22520%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.52%22%20stroke-width=%222.1%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M873.0%20470%20H826.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M887.0%20470%20H934.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M880%20463.0%20V416.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M880%20477.0%20V524.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22880%22%20cy=%22470%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%20%20%3Cg%20stroke=%22#e6f1ff%22%20stroke-opacity=%220.18%22%3E%0A%20%20%20%20%20%20%3C%21--%20faint%20secondary%20ticks%20to%20give%20%E2%80%9Cengineering%E2%80%9D%20feel%20--%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M118%2095%20h14%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20127%20v14%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M500%2052%20v12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M862%20128%20v12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20488%20v12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M520%20492%20h12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M850%20470%20h12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E");
   background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 
-  /* Ubicamos los 4 layers centrados en el punto de cruce */
-  background-position:
-    calc(var(--cx) - (var(--hx) / 2)) var(--cy),  /* horizontal */
-    var(--cx) calc(var(--cy) - (var(--vy) / 2)),  /* vertical */
-    calc(var(--cx) - (var(--hx) / 2)) var(--cy),  /* ticks horiz */
-    var(--cx) calc(var(--cy) - (var(--vy) / 2));  /* ticks vert */
-
-  background-size:
-    var(--hx) var(--thick),  /* horizontal */
-    var(--thick) var(--vy),  /* vertical */
-    var(--hx) var(--thin),   /* ticks horiz */
-    var(--thin) var(--vy);   /* ticks vert */
-
-  /* Look HUD */
   mix-blend-mode: screen;
-  opacity: .48;
-  filter: drop-shadow(0 0 10px rgba(124,199,255,.10));
+  opacity: .82;
 
-  /* Fade hacia los extremos (no “barra infinita”), dejando el cruce más fuerte */
-  -webkit-mask-image:
-    radial-gradient(circle at var(--cx) var(--cy),
-      rgba(255,255,255,1) 0%,
+  /* Fade general para que no “contamine” el centro */
+  -webkit-mask-image: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.10) 0%,
       rgba(255,255,255,1) 38%,
-      rgba(255,255,255,0) 100%);
-          mask-image:
-    radial-gradient(circle at var(--cx) var(--cy),
-      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 100%);
+          mask-image: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.10) 0%,
       rgba(255,255,255,1) 38%,
-      rgba(255,255,255,0) 100%);
+      rgba(255,255,255,1) 100%);
 }
 
 .splash__inner{ position:relative; z-index:1; }
 
-/* Mobile: ejes un poco más cortos */
 @media (max-width: 599px){
-  .splash::before{
-    --hx: 54vmin;
-    --vy: 54vmin;
-    opacity: .44;
-  }
+  .splash::before{ opacity: .72; }
+}
 }
 }
 </style>
