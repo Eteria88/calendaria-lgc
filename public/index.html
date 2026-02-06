@@ -496,7 +496,81 @@ body.noScroll{overflow:hidden}
       .splash{--brandShiftX:-4.8vw;}
     }
 
-/* === HUD Floating Crosshairs (como tu guía) === */
+/* === HUD Corner Cross (georreferencia en una esquina) === */
+.splash{ isolation:isolate; }
+
+/* Sólo un cruce de ejes en la esquina (sin cruzar toda la pantalla) */
+.splash::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+
+  /* tonos “cian plateado” suaves */
+  --lineMain: rgba(230,241,255,.34);  /* plateado azulado */
+  --lineCyan: rgba(124,199,255,.22);  /* cian LGC */
+
+  /* Tamaño del “HUD” en la esquina */
+  --hudW: 42vmin;   /* ancho máximo del tramo horizontal */
+  --hudH: 42vmin;   /* alto máximo del tramo vertical */
+  --thick: 2px;
+  --thin: 1px;
+
+  background-image:
+    /* Horizontal (desde la izquierda hacia adentro) */
+    linear-gradient(to right, var(--lineMain), var(--lineMain)),
+    /* Vertical (desde arriba hacia abajo) */
+    linear-gradient(to bottom, var(--lineCyan), var(--lineCyan)),
+
+    /* Ticks horizontales (marcas pequeñas) */
+    repeating-linear-gradient(to right,
+      rgba(230,241,255,0) 0 26px,
+      rgba(230,241,255,.22) 26px 28px,
+      rgba(230,241,255,0) 28px 46px
+    ),
+    /* Ticks verticales (marcas pequeñas) */
+    repeating-linear-gradient(to bottom,
+      rgba(124,199,255,0) 0 26px,
+      rgba(124,199,255,.18) 26px 28px,
+      rgba(124,199,255,0) 28px 46px
+    );
+
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+
+  /* Posición del cruce: esquina superior izquierda, pero separado del borde */
+  background-position:
+    6vmin 22vmin,   /* horizontal */
+    6vmin 22vmin,   /* vertical */
+    6vmin 22vmin,   /* ticks horizontal */
+    6vmin 22vmin;   /* ticks vertical */
+
+  /* El tramo horizontal y vertical NO ocupan toda la pantalla */
+  background-size:
+    var(--hudW) var(--thick),     /* horizontal */
+    var(--thick) var(--hudH),     /* vertical */
+    var(--hudW) var(--thin),      /* ticks horizontal */
+    var(--thin) var(--hudH);      /* ticks vertical */
+
+  /* Se integra sin “iluminar” todo */
+  mix-blend-mode: screen;
+  opacity: .55;
+
+  /* Desvanecer suavemente hacia adentro para que no “pegue” sobre el título */
+  -webkit-mask-image: radial-gradient(circle at 6vmin 22vmin,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 45%,
+      rgba(255,255,255,0) 100%);
+          mask-image: radial-gradient(circle at 6vmin 22vmin,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 45%,
+      rgba(255,255,255,0) 100%);
+}
+
+/* contenido arriba */
+.splash__inner{ position:relative; z-index:1; }
+
+/* === HUD Floating Crosshairs (CSS-only, visible) === */
 .splash{ isolation:isolate; }
 
 .splash::before{
@@ -506,31 +580,122 @@ body.noScroll{overflow:hidden}
   pointer-events:none;
   z-index:0;
 
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%20600%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3Cfilter%20id=%22glow%22%20x=%22-40%25%22%20y=%22-40%25%22%20width=%22180%25%22%20height=%22180%25%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation=%221.1%22%20result=%22b%22/%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in=%22b%22/%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in=%22SourceGraphic%22/%3E%0A%20%20%20%20%20%20%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%20%20%3Cg%20fill=%22none%22%20stroke-linecap=%22round%22%20filter=%22url(#glow)%22%3E%0A%20%20%20%20%3Cg%20stroke=%22#7cc7ff%22%20stroke-opacity=%220.34%22%3E%0A%20%20%20%20%20%20%3Cg%20opacity=%220.70%22%20stroke-width=%222.2%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M143.0%2095%20H98.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M157.0%2095%20H202.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%2088.0%20V43.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20102.0%20V147.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22150%22%20cy=%2295%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.58%22%20stroke-width=%222.0%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M493.0%2080%20H454.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M507.0%2080%20H546.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M500%2073.0%20V34.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M500%2087.0%20V126.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22500%22%20cy=%2280%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.56%22%20stroke-width=%222.0%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M853.0%2095%20H810.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M867.0%2095%20H910.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M860%2088.0%20V45.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M860%20102.0%20V145.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22860%22%20cy=%2295%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.54%22%20stroke-width=%222.1%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M143.0%20515%20H98.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M157.0%20515%20H202.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20508.0%20V463.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20522.0%20V567.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22150%22%20cy=%22515%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.50%22%20stroke-width=%222.0%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M513.0%20520%20H470.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M527.0%20520%20H570.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M520%20513.0%20V470.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M520%20527.0%20V570.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22520%22%20cy=%22520%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%3Cg%20opacity=%220.52%22%20stroke-width=%222.1%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M873.0%20470%20H826.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M887.0%20470%20H934.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M880%20463.0%20V416.0%22%20/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M880%20477.0%20V524.0%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx=%22880%22%20cy=%22470%22%20r=%221.2%22%20fill=%22#7cc7ff%22%20fill-opacity=%220.10%22%20stroke=%22none%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%20%20%3Cg%20stroke=%22#e6f1ff%22%20stroke-opacity=%220.18%22%3E%0A%20%20%20%20%20%20%3C%21--%20faint%20secondary%20ticks%20to%20give%20%E2%80%9Cengineering%E2%80%9D%20feel%20--%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M118%2095%20h14%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20127%20v14%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M500%2052%20v12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M862%20128%20v12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M150%20488%20v12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M520%20492%20h12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M850%20470%20h12%22%20stroke-width=%221%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E");
+  /* colores */
+  --silver: rgba(230,241,255,.30);
+  --cyan:   rgba(124,199,255,.32);
+
+  /* tamaño de cruz */
+  --L: 54px;    /* largo brazo */
+  --G: 16px;    /* gap centro */
+  --T: 2px;     /* grosor */
+  --tick: 1px;
+
+  /* helper: para cada cruz usamos 4 segmentos (izq/der/arriba/abajo) */
+  background-image:
+    /* TL */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* TC */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* TR */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* BL */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* BC */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* BR */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver));
+
   background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+
+  /* posiciones (centros de cada cruz) */
+  --x1: 12vmin; --y1: 14vmin;                   /* TL */
+  --x2: 50%;   --y2: 12vmin;                    /* TC */
+  --x3: calc(100% - 12vmin); --y3: 14vmin;      /* TR */
+  --x4: 12vmin; --y4: calc(100% - 16vmin);      /* BL */
+  --x5: 50%;   --y5: calc(100% - 10vmin);       /* BC */
+  --x6: calc(100% - 14vmin); --y6: calc(100% - 16vmin); /* BR */
+
+  /* Cada cruz: 4 capas
+     1) horiz izq  2) horiz der  3) vert arriba  4) vert abajo
+     Para el gap: ubicamos cada segmento a distancia G/2 del centro.
+  */
+  background-position:
+    /* TL */
+    calc(var(--x1) - (var(--G)/2) - (var(--L)/2)) var(--y1),
+    calc(var(--x1) + (var(--G)/2))                var(--y1),
+    var(--x1) calc(var(--y1) - (var(--G)/2) - (var(--L)/2)),
+    var(--x1) calc(var(--y1) + (var(--G)/2)),
+
+    /* TC */
+    calc(var(--x2) - (var(--G)/2) - (var(--L)/2)) var(--y2),
+    calc(var(--x2) + (var(--G)/2))                var(--y2),
+    var(--x2) calc(var(--y2) - (var(--G)/2) - (var(--L)/2)),
+    var(--x2) calc(var(--y2) + (var(--G)/2)),
+
+    /* TR */
+    calc(var(--x3) - (var(--G)/2) - (var(--L)/2)) var(--y3),
+    calc(var(--x3) + (var(--G)/2))                var(--y3),
+    var(--x3) calc(var(--y3) - (var(--G)/2) - (var(--L)/2)),
+    var(--x3) calc(var(--y3) + (var(--G)/2)),
+
+    /* BL */
+    calc(var(--x4) - (var(--G)/2) - (var(--L)/2)) var(--y4),
+    calc(var(--x4) + (var(--G)/2))                var(--y4),
+    var(--x4) calc(var(--y4) - (var(--G)/2) - (var(--L)/2)),
+    var(--x4) calc(var(--y4) + (var(--G)/2)),
+
+    /* BC */
+    calc(var(--x5) - (var(--G)/2) - (var(--L)/2)) var(--y5),
+    calc(var(--x5) + (var(--G)/2))                var(--y5),
+    var(--x5) calc(var(--y5) - (var(--G)/2) - (var(--L)/2)),
+    var(--x5) calc(var(--y5) + (var(--G)/2)),
+
+    /* BR */
+    calc(var(--x6) - (var(--G)/2) - (var(--L)/2)) var(--y6),
+    calc(var(--x6) + (var(--G)/2))                var(--y6),
+    var(--x6) calc(var(--y6) - (var(--G)/2) - (var(--L)/2)),
+    var(--x6) calc(var(--y6) + (var(--G)/2));
+
+  background-size:
+    /* TL */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* TC */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* TR */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* BL */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* BC */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* BR */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2);
 
   mix-blend-mode: screen;
-  opacity: .82;
-
-  /* Fade general para que no “contamine” el centro */
-  -webkit-mask-image: radial-gradient(circle at 50% 45%,
-      rgba(255,255,255,0.10) 0%,
-      rgba(255,255,255,1) 38%,
-      rgba(255,255,255,1) 100%);
-          mask-image: radial-gradient(circle at 50% 45%,
-      rgba(255,255,255,0.10) 0%,
-      rgba(255,255,255,1) 38%,
-      rgba(255,255,255,1) 100%);
+  opacity: .60;
+  filter: drop-shadow(0 0 10px rgba(124,199,255,.10));
 }
 
 .splash__inner{ position:relative; z-index:1; }
 
 @media (max-width: 599px){
-  .splash::before{ opacity: .72; }
-}
-}
+  .splash::before{ --L: 46px; --G: 14px; opacity: .52; }
 }
 </style>
 
