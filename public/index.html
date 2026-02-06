@@ -496,16 +496,10 @@ body.noScroll{overflow:hidden}
       .splash{--brandShiftX:-4.8vw;}
     }
 
-/* === HUD Lines (georreferenciación, sin círculos) sobre la splash === */
+/* === HUD Corner Cross (georreferencia en una esquina) === */
 .splash{ isolation:isolate; }
 
-/* Reveal: se arma desde los bordes hacia el centro */
-@keyframes hudEdgeToCenter{
-  0%   { --hudR: 70%; opacity: 0.00; }
-  18%  { --hudR: 70%; opacity: 0.24; }
-  100% { --hudR: 0%;  opacity: 0.26; }
-}
-
+/* Sólo un cruce de ejes en la esquina (sin cruzar toda la pantalla) */
 .splash::before{
   content:"";
   position:absolute;
@@ -513,54 +507,67 @@ body.noScroll{overflow:hidden}
   pointer-events:none;
   z-index:0;
 
-  /* Recomendación: “cian plateado” (coherente con tu paleta oscura) */
-  --lineMain: rgba(230,241,255,.39);  /* plateado azulado */
-  --lineCyan: rgba(124,199,255,.24);  /* cian LGC */
+  /* tonos “cian plateado” suaves */
+  --lineMain: rgba(230,241,255,.34);  /* plateado azulado */
+  --lineCyan: rgba(124,199,255,.22);  /* cian LGC */
+
+  /* Tamaño del “HUD” en la esquina */
+  --hudW: 42vmin;   /* ancho máximo del tramo horizontal */
+  --hudH: 42vmin;   /* alto máximo del tramo vertical */
+  --thick: 2px;
+  --thin: 1px;
 
   background-image:
-    /* horizontales grandes */
-    repeating-linear-gradient(to bottom,
-      transparent 0,
-      transparent 148px,
-      var(--lineMain) 150px,
-      transparent 152px,
-      transparent 260px
-    ),
-    /* verticales grandes */
+    /* Horizontal (desde la izquierda hacia adentro) */
+    linear-gradient(to right, var(--lineMain), var(--lineMain)),
+    /* Vertical (desde arriba hacia abajo) */
+    linear-gradient(to bottom, var(--lineCyan), var(--lineCyan)),
+
+    /* Ticks horizontales (marcas pequeñas) */
     repeating-linear-gradient(to right,
-      transparent 0,
-      transparent 218px,
-      var(--lineCyan) 220px,
-      transparent 222px,
-      transparent 360px
+      rgba(230,241,255,0) 0 26px,
+      rgba(230,241,255,.22) 26px 28px,
+      rgba(230,241,255,0) 28px 46px
+    ),
+    /* Ticks verticales (marcas pequeñas) */
+    repeating-linear-gradient(to bottom,
+      rgba(124,199,255,0) 0 26px,
+      rgba(124,199,255,.18) 26px 28px,
+      rgba(124,199,255,0) 28px 46px
     );
 
-  background-repeat: no-repeat, no-repeat;
-  background-size: 100% 100%, 100% 100%;
-  background-position: 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
 
-  /* Se ve “HUD” sin ensuciar */
+  /* Posición del cruce: esquina superior izquierda, pero separado del borde */
+  background-position:
+    6vmin 22vmin,   /* horizontal */
+    6vmin 22vmin,   /* vertical */
+    6vmin 22vmin,   /* ticks horizontal */
+    6vmin 22vmin;   /* ticks vertical */
+
+  /* El tramo horizontal y vertical NO ocupan toda la pantalla */
+  background-size:
+    var(--hudW) var(--thick),     /* horizontal */
+    var(--thick) var(--hudH),     /* vertical */
+    var(--hudW) var(--thin),      /* ticks horizontal */
+    var(--thin) var(--hudH);      /* ticks vertical */
+
+  /* Se integra sin “iluminar” todo */
   mix-blend-mode: screen;
+  opacity: .55;
 
-  /* 1) sector izquierda  2) reveal desde bordes → centro */
-  -webkit-mask-image:
-    linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 48%, rgba(255,255,255,0) 76%),
-    radial-gradient(circle at 50% 45%,
-      transparent 0%,
-      transparent var(--hudR),
-      rgba(255,255,255,1) calc(var(--hudR) + 8%),
-      rgba(255,255,255,1) 100%);
-          mask-image:
-    linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 48%, rgba(255,255,255,0) 76%),
-    radial-gradient(circle at 50% 45%,
-      transparent 0%,
-      transparent var(--hudR),
-      rgba(255,255,255,1) calc(var(--hudR) + 8%),
-      rgba(255,255,255,1) 100%);
-
-  animation: hudEdgeToCenter 1.8s ease-out both;
+  /* Desvanecer suavemente hacia adentro para que no “pegue” sobre el título */
+  -webkit-mask-image: radial-gradient(circle at 6vmin 22vmin,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 45%,
+      rgba(255,255,255,0) 100%);
+          mask-image: radial-gradient(circle at 6vmin 22vmin,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 45%,
+      rgba(255,255,255,0) 100%);
 }
 
+/* contenido arriba */
 .splash__inner{ position:relative; z-index:1; }
 </style>
 
