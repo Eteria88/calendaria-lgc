@@ -707,12 +707,12 @@ body.noScroll{overflow:hidden}
   z-index:0;
 
   /* controles rápidos */
-  --sunI: 0.18;     /* intensidad sol */
-  --earthI: 0.14;   /* intensidad líneas tierra */
-  --earthLimbI: 0.22;
+  --sunI: 0.18;      /* intensidad sol */
+  --globeI: 0.28;    /* intensidad malla tierra */
+  --globeSize: 78vmin; /* tamaño esfera */
 
   background-image:
-    /* SOL: punto + halo (arriba, como tu captura) */
+    /* SOL: punto + halo (arriba) */
     radial-gradient(circle at 72% 12%,
       rgba(255,255,255, calc(var(--sunI) * 1.2)) 0 2.5px,
       rgba(255,255,255,0) 12px),
@@ -720,49 +720,42 @@ body.noScroll{overflow:hidden}
       rgba(124,199,255, var(--sunI)) 0,
       rgba(124,199,255,0) 120px),
 
-    /* TIERRA: “limbo” (arco principal) abajo-izquierda */
-    radial-gradient(circle at -8% 112%,
-      rgba(230,241,255,0) 0 62vmin,
-      rgba(230,241,255, var(--earthLimbI)) 62.2vmin 62.6vmin,
-      rgba(230,241,255,0) 63vmin),
-    /* TIERRA: paralelos sutiles */
-    radial-gradient(circle at -8% 112%,
-      rgba(124,199,255,0) 0 55vmin,
-      rgba(124,199,255, var(--earthI)) 55.1vmin 55.35vmin,
-      rgba(124,199,255,0) 55.7vmin),
-    radial-gradient(circle at -8% 112%,
-      rgba(124,199,255,0) 0 48vmin,
-      rgba(124,199,255, calc(var(--earthI) * 0.9)) 48.1vmin 48.32vmin,
-      rgba(124,199,255,0) 48.7vmin),
-    radial-gradient(circle at -8% 112%,
-      rgba(124,199,255,0) 0 41vmin,
-      rgba(124,199,255, calc(var(--earthI) * 0.75)) 41.1vmin 41.28vmin,
-      rgba(124,199,255,0) 41.7vmin);
+    /* TIERRA: esfera wireframe en esquina inferior-izq */
+    url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20600%20600%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id=%22fade%22%20cx=%2250%25%22%20cy=%2245%25%22%20r=%2260%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset=%220%22%20stop-color=%22#7cc7ff%22%20stop-opacity=%220.22%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset=%221%22%20stop-color=%22#7cc7ff%22%20stop-opacity=%220.00%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Cg%20fill=%22none%22%20stroke-linecap=%22round%22%20stroke=%22#7cc7ff%22%3E%0A%20%20%20%20%3Ccircle%20cx=%22300%22%20cy=%22300%22%20r=%22250%22%20stroke-opacity=%220.22%22%20stroke-width=%222%22/%3E%0A%20%20%20%20%3C%21--%20meridians%20--%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22250%22%20ry=%22110%22%20stroke-opacity=%220.14%22%20stroke-width=%221.2%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22250%22%20ry=%22160%22%20stroke-opacity=%220.12%22%20stroke-width=%221.2%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22250%22%20ry=%2260%22%20%20stroke-opacity=%220.10%22%20stroke-width=%221.1%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22110%22%20ry=%22250%22%20stroke-opacity=%220.12%22%20stroke-width=%221.2%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22300%22%20cy=%22300%22%20rx=%22160%22%20ry=%22250%22%20stroke-opacity=%220.10%22%20stroke-width=%221.2%22/%3E%0A%20%20%20%20%3C%21--%20diagonals%20(triangulated%20feel)%20--%3E%0A%20%20%20%20%3Cg%20stroke-opacity=%220.10%22%20stroke-width=%221.1%22%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M110%20210%20L490%20390%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M110%20390%20L490%20210%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M170%20130%20L430%20470%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M170%20470%20L430%20130%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M80%20300%20L520%20300%22/%3E%0A%20%20%20%20%20%20%3Cpath%20d=%22M300%2080%20L300%20520%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%20%20%3Ccircle%20cx=%22300%22%20cy=%22300%22%20r=%22255%22%20fill=%22url(#fade)%22%20opacity=%220.30%22/%3E%0A%3C/svg%3E");
 
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size:
+    100% 100%,
+    100% 100%,
+    var(--globeSize) var(--globeSize);
+
+  background-position:
+    0 0,
+    0 0,
+    -16vmin calc(100% + 18vmin);
+
   mix-blend-mode: screen;
   opacity: 0.85;
 
-  /* limitar: sol arriba; tierra esquina inferior-izq */
+  /* limitar: sol arriba; tierra abajo-izq */
   -webkit-mask-image:
     radial-gradient(circle at 72% 12%,
       rgba(255,255,255,1) 0%,
       rgba(255,255,255,1) 30%,
       rgba(255,255,255,0) 58%),
-    radial-gradient(circle at -8% 112%,
+    radial-gradient(circle at 18% 86%,
       rgba(255,255,255,1) 0%,
       rgba(255,255,255,1) 58%,
-      rgba(255,255,255,0) 78%);
+      rgba(255,255,255,0) 85%);
           mask-image:
     radial-gradient(circle at 72% 12%,
       rgba(255,255,255,1) 0%,
       rgba(255,255,255,1) 30%,
       rgba(255,255,255,0) 58%),
-    radial-gradient(circle at -8% 112%,
+    radial-gradient(circle at 18% 86%,
       rgba(255,255,255,1) 0%,
       rgba(255,255,255,1) 58%,
-      rgba(255,255,255,0) 78%);
+      rgba(255,255,255,0) 85%);
 }
 
 /* orden de capas */
@@ -773,10 +766,14 @@ body.noScroll{overflow:hidden}
 @media (max-width: 599px){
   .splash::after{
     --sunI: 0.16;
-    --earthI: 0.12;
-    --earthLimbI: 0.18;
+    --globeSize: 86vmin;
     opacity: 0.80;
+    background-position:
+      0 0,
+      0 0,
+      -26vmin calc(100% + 22vmin);
   }
+}
 }
 </style>
 
