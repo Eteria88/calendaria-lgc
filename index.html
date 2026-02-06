@@ -1,0 +1,2803 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calendaria</title>
+<meta http-equiv="Cache-Control" content="no-store">
+<style>
+:root{--accent:#ffd166;--bg:#0b0d10;--text:#e6f1ff;--muted:#9fb3c8;--ol:#2a3642;--tap:42px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(1200px 800px at 80% -10%,#12202b 0%,#0b0d10 40%) fixed;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(11,13,16,.85),rgba(11,13,16,.65));backdrop-filter:saturate(130%) blur(8px);padding:10px 0 12px 0;display:flex;justify-content:space-between;align-items:center}
+.sun{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);box-shadow:0 0 18px #ffb347;display:inline-block;margin-right:8px}
+.small{font-size:12px;color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.mono.big{font-size:clamp(26px,7vw,40px)}
+.badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.6px;text-transform:uppercase}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--ol);border-radius:16px;padding:14px}
+.hero{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin:14px 0}
+.tile{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;border:1px solid var(--ol);border-radius:16px;padding:14px}
+@media(min-width:840px){.tile{grid-column:span 6}}
+.solarBreak{display:grid;gap:8px;margin-top:8px}
+.sb{border:1px solid var(--ol);border-radius:10px;overflow:hidden}
+.sb .h{background:rgba(255,255,255,.06);text-align:center;font-weight:700;padding:6px 8px}
+.sb .v{text-align:center;padding:8px}
+.q-mini{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.q-item{display:flex;justify-content:space-between;border:1px dashed var(--ol);border-radius:10px;padding:8px}
+.q-item-wide{grid-column:1 / -1}
+table{width:100%;border-collapse:collapse;border:1px solid var(--ol);border-radius:10px;overflow:hidden}
+th,td{padding:10px 12px;border-bottom:1px solid var(--ol);text-align:right}
+th:first-child,td:first-child{text-align:left}
+.metrics{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:12px}
+.mcard{grid-column:1/-1;border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+@media(min-width:640px){.mcard{grid-column:span 6}}
+@media(min-width:1024px){.mcard{grid-column:span 4}}
+.progress{height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.05);border:1px solid var(--ol);margin-top:6px}
+.progressInner{height:100%;background:linear-gradient(90deg,#63a8ff,#7cc7ff)}
+.chips{display:flex;gap:8px;margin-top:6px}.chip{border:1px solid var(--ol);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04)}
+.anchors-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
+.anchors-scroll{max-height:420px;overflow-y:auto;padding-right:6px}
+.anchors-grid .a-dot{background:#7cc7ff !important;box-shadow:0 0 10px #7cc7ff !important}
+.a-card{grid-column:span 6;display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--ol);border-radius:12px;padding:10px;background:rgba(255,255,255,.02)}
+.a-dot{width:10px;height:10px;border-radius:50%}
+.plane{position:relative;width:100%;height:220px;border:1px solid var(--ol);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+@media(min-width:480px){.plane{height:240px}} @media(min-width:768px){.plane{height:260px}} @media(min-width:1024px){.plane{height:300px}}
+.planeGrid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.cell{display:flex;align-items:center;justify-content:center;border:1px dashed var(--ol);position:relative;flex-direction:column;gap:4px}
+.cell.active{background:rgba(124,199,255,.10);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.6)}
+.cellInner{display:flex;flex-direction:column;align-items:center;gap:2px}
+.cTitle{font-weight:700;letter-spacing:.5px}
+.cRange{font-size:11px;color:var(--muted)}
+.cSteps{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.cStep{font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 6px;background:rgba(255,255,255,.04)}
+.cStep.active{border-color:#7cc7ff;background:rgba(124,199,255,.18);box-shadow:0 0 6px rgba(124,199,255,.5)}
+.memRow{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:4}
+.memTag{position:relative;font-size:11px;border:1px solid var(--ol);border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.04)}
+.memTag.active{border-color:#ffd166;box-shadow:0 0 6px rgba(255,209,102,.5)}
+.section-title{margin:6px 0 8px 0;color:#9fb3c8;font-size:14px;font-weight:700}
+.input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+.field{display:flex;flex-direction:column}
+.input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap)}
+.btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
+.btn:hover{background:rgba(124,199,255,.25)}
+.dayNav{display:flex;gap:10px;flex-wrap:wrap}
+.btnLabelShort{display:none}
+@media(max-width:599px){
+  .dayNav{flex-wrap:nowrap}
+  .dayNav .btn{flex:1 1 0;justify-content:center;white-space:nowrap;padding:10px 8px}
+  .btnLabelLong{display:none}
+  .btnLabelShort{display:inline}
+}
+.table-wrap{overflow:auto;border:1px solid var(--ol);border-radius:10px}
+.table-wrap table{min-width:680px}
+/* Scrollbars azules (vertical y horizontal) */
+.table-wrap, .anchors-scroll{
+  scrollbar-width:thin;
+  scrollbar-color:#7cc7ff rgba(255,255,255,.06);
+}
+.table-wrap::-webkit-scrollbar, .anchors-scroll::-webkit-scrollbar{width:10px;height:10px}
+.table-wrap::-webkit-scrollbar-track, .anchors-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:999px}
+.table-wrap::-webkit-scrollbar-thumb, .anchors-scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#63a8ff,#7cc7ff);border-radius:999px;border:2px solid rgba(11,13,16,.85)}
+.table-wrap::-webkit-scrollbar-thumb:hover, .anchors-scroll::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#7cc7ff,#63a8ff)}
+
+.status{margin:8px 0;color:#9cffd5;font-size:12px}
+
+.layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
+.sidenav{position:sticky;top:58px;height:calc(100dvh - 70px);border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+.nav-title{font-size:12px;color:var(--muted);margin-bottom:8px}
+.nav-link{display:block;padding:8px 10px;margin:4px 0;border-radius:8px;border:1px solid var(--ol);color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+.nav-link:hover{background:rgba(255,255,255,.06)}
+.nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+@media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
+
+
+.menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
+@media(max-width:839px){.menuBtn{display:inline-block}}
+body.noScroll{overflow:hidden}
+.mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
+.mobileNav.open{pointer-events:auto}
+.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
+.mobileNav.open .mobileOverlay{opacity:1}
+.mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
+.mobileNav.open .mobileNavPanel{transform:translateX(0)}
+.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
+.closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
+.mobileList{display:flex;flex-direction:column;padding:10px}
+.mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+
+
+/* --- Responsive mobile tuning --- */
+@media(max-width:599px){
+  .wrap{padding:14px}
+  header{padding:8px 0 10px 0}
+  .card,.tile{padding:12px}
+  .mcard{grid-column:1/-1}
+  .mono.big{font-size:clamp(22px,8vw,34px); word-break:break-word; overflow-wrap:anywhere}
+  .plane{height:220px}
+  .cStep{padding:2px 5px}
+  .memTag{padding:2px 6px}
+  .input{min-height:44px}
+  .progress{height:8px}
+  .table-wrap{ -webkit-overflow-scrolling: touch; overflow:auto }
+  .scroll-hint{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+}
+@media(min-width:600px){
+  .scroll-hint{display:none}
+}
+
+
+/* Link "Volver a portada" en header */
+.header-actions{display:flex;gap:10px;align-items:center}
+.header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none}
+.header-actions a:hover{border-color:#6f8aa6;color:#d7e6ff}
+@media (max-width:480px){
+  .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
+}
+
+
+/* Periodic element badge (overlay, non-intrusive) */
+.top-card{position:relative}
+.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
+.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
+@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+.anilloTitle{
+  text-align:center;
+  margin-top:6px;
+  margin-bottom:8px;
+  font-size:15px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-weight:600;
+  color:var(--accent);
+}
+
+/* Anillo de Fuego (Vuelta 23) - layout por cajas como en el PDF */
+#anilloPlane{
+  height:auto;                 /* override del .plane */
+  padding:10px;
+}
+.anilloGrid{
+  width:100%;
+  border:1px solid var(--ol);
+  border-radius:14px;
+  background:rgba(255,255,255,.02);
+  padding:10px;
+  display:grid;
+  grid-template-columns:repeat(5, minmax(0,1fr));
+  grid-template-rows:auto auto auto;
+  gap:10px;
+}
+@media(max-width:479px){
+  .anilloGrid{gap:8px;padding:8px}
+}
+
+/* Caja extra (solo años bisiestos): Día 14 (31/12) · Frecuencia 366, flotante arriba-derecha */
+.anilloLeapWrap{
+  display:flex;
+  justify-content:flex-end;
+  margin:0 0 -34px 0; /* superpone levemente sobre el frame */
+  pointer-events:none;
+}
+.anilloLeapWrap .anBox{ pointer-events:auto; }
+.anBox--leapOverlay{
+  width:160px;
+  transform:translateY(-34px);
+}
+
+@media(max-width:479px){
+  .anilloLeapWrap{ margin-bottom: -32px; }
+  .anBox--leapOverlay{ width:40vw; max-width:190px; transform:translateY(-26px); }
+}
+
+
+.anBox{
+  border:1px solid var(--ol);
+  border-radius:12px;
+  background:rgba(0,0,0,.18);
+  display:flex;
+  flex-direction:column;
+  min-height:88px;
+  overflow:hidden; /* recorta el encabezado dentro del radio del cuadro */
+}
+@media(min-width:768px){
+  .anBox{min-height:100px}
+}
+
+.anBoxHead{
+  background:rgba(0,0,0,.78);
+  border-bottom:1px solid var(--ol);
+  padding:3px 5px;
+  border-top-left-radius:12px;
+  border-top-right-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:4px;
+  font-size:9px;
+  line-height:1.0;
+  white-space:nowrap;
+  flex-wrap:nowrap;
+}
+.anBoxHead span{display:inline-block;}
+@media (max-width:420px){
+  .anBoxHead{font-size:8px; gap:3px;}
+}
+.anBoxHead .solar{
+  color:var(--accent);
+  font-weight:700;
+}
+.anBoxHead .dow{
+  color:#7cc7ff;
+  font-weight:700;
+}
+
+.anBoxBody{
+  flex:1;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.anBoxFreq{
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:28px;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+@media(max-width:479px){
+  /* En celular bajamos solo el número (el encabezado se mantiene legible) */
+  .anBoxFreq{font-size:21px}
+}
+
+@media(max-width:360px){
+  .anBoxFreq{font-size:19px}
+}
+
+/* Centro (Día 1 / 353) */
+.anBox--center{
+  grid-column:2 / span 3;
+  grid-row:2;
+  min-height:98px;
+}
+.anBox--center .anBoxHead{
+  justify-content:center;
+}
+/* Posiciones exactas del PDF */
+.anBox--d4 {grid-column:1;grid-row:1}
+.anBox--d3 {grid-column:2;grid-row:1}
+.anBox--d2 {grid-column:3;grid-row:1}
+.anBox--d13{grid-column:4;grid-row:1}
+.anBox--d12{grid-column:5;grid-row:1}
+
+.anBox--d5 {grid-column:1;grid-row:2}
+.anBox--d11{grid-column:5;grid-row:2}
+
+.anBox--d6 {grid-column:1;grid-row:3}
+.anBox--d7 {grid-column:2;grid-row:3}
+.anBox--d8 {grid-column:3;grid-row:3}
+.anBox--d9 {grid-column:4;grid-row:3}
+.anBox--d10{grid-column:5;grid-row:3}
+
+/* Alineación del número dentro de cada caja (según PDF) */
+.anBox[data-align="c"]  .anBoxBody{align-items:center;justify-content:center}
+.anBox[data-align="t"]  .anBoxBody{align-items:flex-start;justify-content:center}
+.anBox[data-align="b"]  .anBoxBody{align-items:flex-end;justify-content:center}
+.anBox[data-align="tl"] .anBoxBody{align-items:flex-start;justify-content:flex-start}
+.anBox[data-align="tr"] .anBoxBody{align-items:flex-start;justify-content:flex-end}
+.anBox[data-align="bl"] .anBoxBody{align-items:flex-end;justify-content:flex-start}
+.anBox[data-align="br"] .anBoxBody{align-items:flex-end;justify-content:flex-end}
+
+.anBox--future{opacity:.30}
+.anBox--active{box-shadow:inset 0 0 0 2px rgba(124,199,255,.35)}
+
+
+/* Modal "zoom" para ver el encabezado completo en celular */
+.anModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.anModal.isOpen{ display:flex; }
+.anModalBackdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.62);
+}
+.anModalCard{
+  position:relative;
+  width:min(92vw, 420px);
+  border:1px solid var(--ol);
+  border-radius:16px;
+  background:rgba(11,13,16,.94);
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  padding:14px 14px 18px;
+}
+.anModalClose{
+  position:absolute;
+  /* Alineado al marco del header (misma sangría del padding del card) */
+  top:14px;
+  right:14px;
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  border:1px solid var(--ol);
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.anModalHead{
+  border:1px solid var(--ol);
+  border-radius:12px;
+  /* Deja espacio para el botón cerrar sin desalinear el marco */
+  padding:10px 56px 10px 12px;
+  background:rgba(0,0,0,.72);
+  margin-bottom:14px;
+}
+.anModalLine1{
+  font-size:14px;
+  font-weight:700;
+  white-space:normal;
+}
+.anModalLine2{
+  margin-top:6px;
+  font-size:13px;
+  opacity:.95;
+}
+.anModalLine2 .solar{ color:var(--accent); font-weight:800; }
+.anModalLine2 .dow{ color:#7cc7ff; font-weight:800; }
+.anModalFreq{
+  text-align:center;
+  font-size:72px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+/* Solo en mobile: el modal existe, en desktop queda deshabilitado */
+@media(min-width:521px){
+  .anModal{ display:none !important; }
+}
+
+
+    .calog-controls{margin:8px 0 10px;display:flex;flex-direction:column;gap:6px}
+    .calog-controls input[type=range]{width:100%;accent-color:#7cc7ff}
+    .calog-wrap{max-height:360px;overflow:auto}
+    #calog thead th{position:sticky;top:0;background:var(--bg);z-index:2}
+    #calog tr.calog-current td{background:rgba(255,255,255,.06)}
+
+</style>
+  <!-- Splash Landing v3 (forzado) + mobile responsive -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+  <style id="splash-spiral-css">
+    .splash{--brandShiftX:0px;position:fixed;inset:0;display:grid;place-items:center;background:
+      radial-gradient(1200px 800px at 60% -10%, rgba(255,200,120,.07), transparent 60%),
+      radial-gradient(1000px 900px at 10% 110%, rgba(120,180,255,.07), transparent 60%),
+      #0b0d10;color:#e6f1ff;z-index:9999;transition:opacity .6s ease,visibility .6s ease}
+    .splash[hidden]{opacity:0;visibility:hidden}
+    .splash__inner{text-align:center;padding:24px;padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+    .brand{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;display:inline-block;position:relative;filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
+    .brand .row{display:block}
+    .brand__layout{position:relative;opacity:0;pointer-events:none;user-select:none;display:inline-block}
+    .brand__layout .row{font-family:"Cinzel",serif;letter-spacing: .18em;text-transform:uppercase;line-height:1.05;text-align:center;white-space:pre}
+    .brand__layout .row[data-row="0"]{font-weight:600;font-size:clamp(56px,11vw,128px)}
+    .brand__layout .row[data-row="1"]{font-weight:600;font-size:clamp(38px,9vw,96px)}
+    .brand__stage{position:relative;width:min(94vw,1200px);height:clamp(240px,46dvh,520px);margin:auto;display:grid;place-items:center;transform:translateX(var(--brandShiftX));}
+    .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
+      background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15);
+      transform:translate(-50%,-50%);
+    }
+    .row-0 .char{font-size:clamp(56px,11vw,128px)}
+    .row-1 .char{font-size:clamp(38px,9vw,96px);opacity:.95}
+    .enterWrap{display:flex;justify-content:center;transform:translateX(var(--brandShiftX));}
+    .enter{margin-top:28px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#cfe1ff;border:1px solid rgba(156,178,200,.4);
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:12px 18px;border-radius:12px;cursor:pointer;transition:transform .1s ease,opacity .3s ease;border-color}
+    .enter:active{transform:scale(.98)}
+    @media (max-width: 480px){
+      .brand{letter-spacing:.10em}
+      .brand__stage{width:100vw;height:clamp(260px,48dvh,560px)}
+      .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
+      .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
+    }
+    @media (max-width: 360px){
+      .brand{letter-spacing:.08em}
+      .brand__layout .row[data-row="0"], .row-0 .char{font-size:clamp(34px,11vw,82px)}
+      .brand__layout .row[data-row="1"], .row-1 .char{font-size:clamp(24px,10vw,66px)}
+    }
+  
+/* Modal "zoom" para ver el encabezado completo en celular */
+.anModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.anModal.isOpen{ display:flex; }
+.anModalBackdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.62);
+}
+.anModalCard{
+  position:relative;
+  width:min(92vw, 420px);
+  border:1px solid var(--ol);
+  border-radius:16px;
+  background:rgba(11,13,16,.94);
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  padding:14px 14px 18px;
+}
+.anModalClose{
+  position:absolute;
+  /* Alineado al marco del header (misma sangría del padding del card) */
+  top:14px;
+  right:14px;
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  border:1px solid var(--ol);
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.anModalHead{
+  border:1px solid var(--ol);
+  border-radius:12px;
+  /* Deja espacio para el botón cerrar sin desalinear el marco */
+  padding:10px 56px 10px 12px;
+  background:rgba(0,0,0,.72);
+  margin-bottom:14px;
+}
+.anModalLine1{
+  font-size:14px;
+  font-weight:700;
+  white-space:normal;
+}
+.anModalLine2{
+  margin-top:6px;
+  font-size:13px;
+  opacity:.95;
+}
+.anModalLine2 .solar{ color:var(--accent); font-weight:800; }
+.anModalLine2 .dow{ color:#7cc7ff; font-weight:800; }
+.anModalFreq{
+  text-align:center;
+  font-size:72px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+/* Solo en mobile: el modal existe, en desktop queda deshabilitado */
+@media(min-width:521px){
+  .anModal{ display:none !important; }
+}
+
+
+    @media (max-width: 599px){
+      .splash{--brandShiftX:-4.8vw;}
+    }
+
+/* === HUD Corner Cross (georreferencia en una esquina) === */
+.splash{ isolation:isolate; }
+
+/* Sólo un cruce de ejes en la esquina (sin cruzar toda la pantalla) */
+.splash::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+
+  /* tonos “cian plateado” suaves */
+  --lineMain: rgba(230,241,255,.34);  /* plateado azulado */
+  --lineCyan: rgba(124,199,255,.22);  /* cian LGC */
+
+  /* Tamaño del “HUD” en la esquina */
+  --hudW: 42vmin;   /* ancho máximo del tramo horizontal */
+  --hudH: 42vmin;   /* alto máximo del tramo vertical */
+  --thick: 2px;
+  --thin: 1px;
+
+  background-image:
+    /* Horizontal (desde la izquierda hacia adentro) */
+    linear-gradient(to right, var(--lineMain), var(--lineMain)),
+    /* Vertical (desde arriba hacia abajo) */
+    linear-gradient(to bottom, var(--lineCyan), var(--lineCyan)),
+
+    /* Ticks horizontales (marcas pequeñas) */
+    repeating-linear-gradient(to right,
+      rgba(230,241,255,0) 0 26px,
+      rgba(230,241,255,.22) 26px 28px,
+      rgba(230,241,255,0) 28px 46px
+    ),
+    /* Ticks verticales (marcas pequeñas) */
+    repeating-linear-gradient(to bottom,
+      rgba(124,199,255,0) 0 26px,
+      rgba(124,199,255,.18) 26px 28px,
+      rgba(124,199,255,0) 28px 46px
+    );
+
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+
+  /* Posición del cruce: esquina superior izquierda, pero separado del borde */
+  background-position:
+    6vmin 22vmin,   /* horizontal */
+    6vmin 22vmin,   /* vertical */
+    6vmin 22vmin,   /* ticks horizontal */
+    6vmin 22vmin;   /* ticks vertical */
+
+  /* El tramo horizontal y vertical NO ocupan toda la pantalla */
+  background-size:
+    var(--hudW) var(--thick),     /* horizontal */
+    var(--thick) var(--hudH),     /* vertical */
+    var(--hudW) var(--thin),      /* ticks horizontal */
+    var(--thin) var(--hudH);      /* ticks vertical */
+
+  /* Se integra sin “iluminar” todo */
+  mix-blend-mode: screen;
+  opacity: .55;
+
+  /* Desvanecer suavemente hacia adentro para que no “pegue” sobre el título */
+  -webkit-mask-image: radial-gradient(circle at 6vmin 22vmin,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 45%,
+      rgba(255,255,255,0) 100%);
+          mask-image: radial-gradient(circle at 6vmin 22vmin,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 45%,
+      rgba(255,255,255,0) 100%);
+}
+
+/* contenido arriba */
+.splash__inner{ position:relative; z-index:1; }
+
+/* === HUD Floating Crosshairs (CSS-only, visible) === */
+.splash{ isolation:isolate; }
+
+.splash::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+
+  /* colores */
+  --silver: rgba(230,241,255,.30);
+  --cyan:   rgba(124,199,255,.32);
+
+  /* tamaño de cruz */
+  --L: 54px;    /* largo brazo */
+  --G: 16px;    /* gap centro */
+  --T: 2px;     /* grosor */
+  --tick: 1px;
+
+  /* helper: para cada cruz usamos 4 segmentos (izq/der/arriba/abajo) */
+  background-image:
+    /* TL */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* TC */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* TR */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* BL */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* BC */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver)),
+
+    /* BR */
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--cyan), var(--cyan)),
+    linear-gradient(var(--silver), var(--silver)),
+    linear-gradient(var(--silver), var(--silver));
+
+  background-repeat: no-repeat;
+
+  /* posiciones (centros de cada cruz) */
+  --x1: 12vmin; --y1: 14vmin;                   /* TL */
+  --x2: 50%;   --y2: 12vmin;                    /* TC */
+  --x3: calc(100% - 12vmin); --y3: 14vmin;      /* TR */
+  --x4: 12vmin; --y4: calc(100% - 16vmin);      /* BL */
+  --x5: 50%;   --y5: calc(100% - 10vmin);       /* BC */
+  --x6: calc(100% - 14vmin); --y6: calc(100% - 16vmin); /* BR */
+
+  /* Cada cruz: 4 capas
+     1) horiz izq  2) horiz der  3) vert arriba  4) vert abajo
+     Para el gap: ubicamos cada segmento a distancia G/2 del centro.
+  */
+  background-position:
+    /* TL */
+    calc(var(--x1) - (var(--G)/2) - (var(--L)/2)) var(--y1),
+    calc(var(--x1) + (var(--G)/2))                var(--y1),
+    var(--x1) calc(var(--y1) - (var(--G)/2) - (var(--L)/2)),
+    var(--x1) calc(var(--y1) + (var(--G)/2)),
+
+    /* TC */
+    calc(var(--x2) - (var(--G)/2) - (var(--L)/2)) var(--y2),
+    calc(var(--x2) + (var(--G)/2))                var(--y2),
+    var(--x2) calc(var(--y2) - (var(--G)/2) - (var(--L)/2)),
+    var(--x2) calc(var(--y2) + (var(--G)/2)),
+
+    /* TR */
+    calc(var(--x3) - (var(--G)/2) - (var(--L)/2)) var(--y3),
+    calc(var(--x3) + (var(--G)/2))                var(--y3),
+    var(--x3) calc(var(--y3) - (var(--G)/2) - (var(--L)/2)),
+    var(--x3) calc(var(--y3) + (var(--G)/2)),
+
+    /* BL */
+    calc(var(--x4) - (var(--G)/2) - (var(--L)/2)) var(--y4),
+    calc(var(--x4) + (var(--G)/2))                var(--y4),
+    var(--x4) calc(var(--y4) - (var(--G)/2) - (var(--L)/2)),
+    var(--x4) calc(var(--y4) + (var(--G)/2)),
+
+    /* BC */
+    calc(var(--x5) - (var(--G)/2) - (var(--L)/2)) var(--y5),
+    calc(var(--x5) + (var(--G)/2))                var(--y5),
+    var(--x5) calc(var(--y5) - (var(--G)/2) - (var(--L)/2)),
+    var(--x5) calc(var(--y5) + (var(--G)/2)),
+
+    /* BR */
+    calc(var(--x6) - (var(--G)/2) - (var(--L)/2)) var(--y6),
+    calc(var(--x6) + (var(--G)/2))                var(--y6),
+    var(--x6) calc(var(--y6) - (var(--G)/2) - (var(--L)/2)),
+    var(--x6) calc(var(--y6) + (var(--G)/2));
+
+  background-size:
+    /* TL */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* TC */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* TR */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* BL */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* BC */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
+    /* BR */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2);
+
+  mix-blend-mode: screen;
+  opacity: .60;
+  filter: drop-shadow(0 0 10px rgba(124,199,255,.10));
+}
+
+.splash__inner{ position:relative; z-index:1; }
+
+@media (max-width: 599px){
+  .splash::before{ --L: 46px; --G: 14px; opacity: .52; }
+}
+
+/* === Celestial (Sol arriba + Tierra wireframe abajo-izq) === */
+.splash::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+
+  /* controles */
+  --sunI: 0.18;
+  --globeOpacity: 0.30;
+  --globeSize: 74vmin;
+
+  background-image:
+    /* SOL: punto + halo */
+    radial-gradient(circle at 72% 12%,
+      rgba(255,255,255, calc(var(--sunI) * 1.2)) 0 2.5px,
+      rgba(255,255,255,0) 12px),
+    radial-gradient(circle at 72% 12%,
+      rgba(124,199,255, var(--sunI)) 0,
+      rgba(124,199,255,0) 120px),
+
+    /* TIERRA: esfera wireframe (sin mask para máxima compatibilidad) */
+    url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20600%20600%27%3E%0A%3Cg%20transform=%27rotate(-23.0%20300%20300)%27%20fill=%27none%27%20stroke=%27rgb(124,199,255)%27%20stroke-linecap=%27round%27%3E%0A%20%20%3Ccircle%20cx=%27300%27%20cy=%27300%27%20r=%27250%27%20stroke-opacity=%27.22%27%20stroke-width=%272%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%27140%27%20stroke-opacity=%27.12%27%20stroke-width=%271.2%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%2790%27%20%20stroke-opacity=%27.10%27%20stroke-width=%271.1%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27140%27%20ry=%27250%27%20stroke-opacity=%27.10%27%20stroke-width=%271.1%27/%3E%0A%20%20%3Cg%20stroke-opacity=%27.10%27%20stroke-width=%271.05%27%3E%0A%20%20%20%20%3Cpath%20d=%27M100%20240%20L500%20360%27/%3E%3Cpath%20d=%27M100%20360%20L500%20240%27/%3E%0A%20%20%20%20%3Cpath%20d=%27M80%20300%20L520%20300%27/%3E%3Cpath%20d=%27M300%2080%20L300%20520%27/%3E%0A%20%20%3C/g%3E%0A%3C/g%3E%0A%3C/svg%3E");
+
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: 100% 100%, 100% 100%, var(--globeSize) var(--globeSize);
+  background-position: 0 0, 0 0, -30vmin calc(100% - 10vmin);
+
+  mix-blend-mode: screen;
+  opacity: 0.88;
+  filter: drop-shadow(0 0 12px rgba(124,199,255,.08));
+}
+
+/* afinamos opacidad SOLO de la tierra con un truco: duplicamos el SVG como capa con opacity vía mask no disponible,
+   así que lo controlamos con el alpha interno del svg + este opacity global. */
+
+@media (max-width: 599px){
+  .splash::after{
+    --sunI: 0.16;
+    --globeSize: 74vmin;
+    background-position: 0 0, 0 0, -34vmin calc(100% - 12vmin);
+    opacity: 0.88;
+  }
+}
+}
+</style>
+
+
+  <!-- Vercel Web Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
+  <link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0b0d10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calendaria">
+<link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+</head><body>
+
+  <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
+    <div class="splash__inner">
+      <div id="brand" class="brand">
+        <div id="brandLayout" class="brand__layout" aria-hidden="true">
+          <div class="row" data-row="0">CALENDARIA</div>
+          <div class="row" data-row="1">LGC</div>
+        </div>
+        <div id="brandStage" class="brand__stage" aria-hidden="true"></div>
+      </div>
+      <div class="enterWrap"><button id="enterBtn" class="enter" disabled>Entrar</button></div>
+    </div>
+  </div>
+
+<div class="wrap">
+
+  <div class="mobileNav" id="mobileNav" aria-hidden="true">
+    <div class="mobileNavPanel">
+      <div class="mobileNavHeader">
+        <span>Menú</span>
+        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
+      </div>
+      <nav class="mobileList">
+                <a class="mnav-link active" href="/">Inicio</a>
+        <a class="mnav-link" href="/marcas-lgc.html">Marcas LGC</a>
+        <a class="mnav-link" href="/range.html">Comparador LGC</a>
+        <a class="mnav-link" href="/letters.html">Letras a números</a>
+        <a class="mnav-link" href="/mapa/">Mapa y códigos</a>
+        <a class="mnav-link" href="/indice-ale-en-red.html">Instrucción ACR</a>
+        <a class="mnav-link" href="/apoyar.html">Apoyar el proyecto</a>
+      </nav>
+    </div>
+    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
+  </div>
+
+  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
+
+  <div class="layout">
+    <aside class="sidenav">
+      <nav>
+        <div class="nav-title">Menú</div>
+                <a class="nav-link active" href="/">Inicio</a>
+        <a class="nav-link" href="/marcas-lgc.html">Marcas LGC</a>
+        <a class="nav-link" href="/range.html">Comparador LGC</a>
+        <a class="nav-link" href="/letters.html">Letras a números</a>
+        <a class="nav-link" href="/mapa/">Mapa y códigos</a>
+        <a class="nav-link" href="/indice-ale-en-red.html">Instrucción ACR</a>
+        <a class="nav-link" href="/apoyar.html">Apoyar el proyecto</a>
+      </nav>
+    </aside>
+    <main>
+      <div id="dbg" class="status">estado: cargando…</div>
+
+      <section class="card top-card">
+    <div class="elementBadge" title="Hydrogen — 1">
+      <img id="elementTile" src="/hydrogen.png" alt="Hydrogen element tile">
+    </div>
+    <div style="position:absolute;top:110px;right:16px;">
+      <a href="/periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+      <div>
+        <div class="badge" id="apPhaseBadge">—</div>
+        <div class="small" id="calCycleLabel" style="margin-bottom:14px">&nbsp;</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div id="calCardBlock"><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
+          <div id="calStepBlock"><div class="small">Columna</div><div class="mono" id="calStep">—</div></div>
+          <div><div class="small" id="calDayLabel">Paso</div><div class="mono" id="calDay" style="font-size:20px">—</div></div>
+          <div id="anilloDayBlock" style="display:none"><div class="small">Día</div><div class="mono" id="anilloSeqDay" style="font-size:20px">—</div></div>
+          <div id="calMemBlock"><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
+          <div id="calTurnBlock">
+            <div class="small">Vuelta</div>
+            <div class="mono" id="calTurn">—</div>
+            <div class="small" id="calTurnRange" style="display:none">—</div>
+            <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
+            <div style="margin-top:10px">
+            </div>
+<!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta </span><span class="mono" id="turnDay">—</span></div> -->
+<!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Paso en cuadrante (1–4) </span><span class="mono" id="blockDay">—</span></div> -->
+          </div>
+        </div>
+      </div>
+      <div id="cardinalPlane" class="plane"><div class="planeGrid">
+        <div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+        <div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+        <div class="cell" id="cellSO" style="grid-area:2/1"><div class="cellInner"><div class="cTitle">SO</div><div class="cRange">1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div>
+          <div class="memRow"><span class="memTag" data-mem="RAM">RAM</span><span class="memTag" data-mem="REM">REM</span><span class="memTag" data-mem="ROM">ROM</span><span class="memTag" data-mem="RUM">RUM</span></div>
+        </div>
+        <div class="cell" id="cellSE" style="grid-area:2/2"><div class="cellInner"><div class="cTitle">SE</div><div class="cRange">13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
+      </div></div>
+
+      <div id="anilloPlane" class="plane" style="display:none">
+  <div class="anilloTitle mono">Anillo de Fuego</div>
+
+  <div class="anilloLeapWrap" id="anilloLeapWrap" style="display:none">
+    <div class="anBox anBox--leapOverlay" id="anilloLeapBox" data-seq="14" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 14:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+  </div>
+
+  <div class="anilloGrid" id="anilloGrid">
+    <!-- Fila 1 -->
+    <div class="anBox anBox--d4" data-seq="4" data-align="br">
+      <div class="anBoxHead mono"><span class="lbl">Día 4:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d3" data-seq="3" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 3:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d2" data-seq="2" data-align="t">
+      <div class="anBoxHead mono"><span class="lbl">Día 2:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d13" data-seq="13" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 13:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d12" data-seq="12" data-align="bl">
+      <div class="anBoxHead mono"><span class="lbl">Día 12:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <!-- Fila 2 -->
+    <div class="anBox anBox--d5" data-seq="5" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 5:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--center" data-seq="1" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 1:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">353</div></div>
+    </div>
+
+    <div class="anBox anBox--d11" data-seq="11" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 11:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <!-- Fila 3 -->
+    <div class="anBox anBox--d6" data-seq="6" data-align="tr">
+      <div class="anBoxHead mono"><span class="lbl">Día 6:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d7" data-seq="7" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 7:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d8" data-seq="8" data-align="b">
+      <div class="anBoxHead mono"><span class="lbl">Día 8:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d9" data-seq="9" data-align="c">
+      <div class="anBoxHead mono"><span class="lbl">Día 9:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+
+    <div class="anBox anBox--d10" data-seq="10" data-align="tl">
+      <div class="anBoxHead mono"><span class="lbl">Día 10:</span><span class="dm">—/—</span><span class="solar">—</span><span class="dow">—</span></div>
+      <div class="anBoxBody"><div class="anBoxFreq">—</div></div>
+    </div>
+  </div>
+</div>
+    </div>
+  </section>
+
+
+<div class="card">
+    <div class="input-grid">
+      <div class="field" style="grid-column:span 6">
+        <label class="small" for="dob">Fecha de nacimiento</label>
+        <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
+        <div class="small">Ingresa la fecha de nacimiento para calcular los días de vida</div>
+
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
+          <div class="mcard" style="flex:1 1 140px">
+            <div class="badge">Días de vida</div>
+            <div class="mono big" id="lifeDays" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
+          </div>
+          <div class="mcard" style="flex:1 1 140px">
+            <div class="badge">Día solar nativo</div>
+            <div class="mono big" id="nativeSolarDay" style="font-size:clamp(16px,5vw,26px); margin-top:8px">—</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="field" style="grid-column:span 6">
+        <label class="small" for="ref">Fecha de referencia</label>
+        <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
+        <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
+
+        <div class="field" style="margin-top:8px">
+          <div class="dayNav">
+            <button class="btn" id="btnPrevDay" type="button" title="Ir al día anterior"><span class="btnLabelLong">← Día anterior</span><span class="btnLabelShort">Anterior</span></button>
+            <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
+            <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente"><span class="btnLabelLong">Día siguiente →</span><span class="btnLabelShort">Siguiente</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+
+
+<section class="hero">
+    <div class="tile">
+      <div><h2 style="margin:0;color:#9fb3c8;font-size:14px">Días Solares desde 01·01·0001</h2>
+        <div class="small">Fecha de referencia: <span id="refLabel">—</span></div>
+        <div class="solarBreak">
+          <div class="sb"><div class="h">DÍAS SOLARES</div><div class="v mono" id="sb_total" style="font-size:clamp(16px,5vw,26px)">—</div></div>
+          <div class="sb"><div class="h">Días Julianos hasta 04/10/1582</div><div class="v mono" id="sb_jul">—</div><div class="small" style="text-align:center; display:none">JDN 1721424 → 2299160</div></div>
+          <div class="sb"><div class="h">Inicio del A-Gregoriano 15/10/1582</div><div class="v mono" id="sb_first_greg">577738</div></div>
+          <div class="sb"><div class="h">Días A-Gregorianos</div><div class="v mono" id="sb_greg">—</div><div class="small" style="text-align:center"><span style="display:none">JDN 2299161 → <span class="mono" id="sb_greg_jdn_b">—</span></span></div></div>
+          
+        </div>
+      </div>
+      <div class="mono big" id="solarDays" style="font-size:clamp(20px,6vw,30px); display:none">—</div>
+    </div>
+
+    <div class="tile">
+      <div style="flex:1">
+        <h2 style="margin:0;color:#9fb3c8;font-size:14px">Cuarentena Global (14·10·2012)</h2>
+        <div class="small">Duración por cuarentena: 39 días · transcurridos: <span id="qDays" style="font-size:clamp(16px,5vw,26px); color:#ffffff">—</span></div>
+        <div class="q-mini">
+          <div class="q-item"><span class="small">Nº de cuarentena</span><span class="mono" id="qIdx">—</span></div>
+          <div class="q-item"><span class="small">Día de cuarentena</span><span class="mono" id="qDay">—</span></div>
+          <div class="q-item"><span class="small">Ladrillo Nº (3 días)</span><span class="mono" id="brickIdx">—</span></div>
+          <div class="q-item"><span class="small">Día dentro del ladrillo</span><span class="mono" id="brickDay">—</span></div>
+          <div class="q-item q-item-wide"><span class="small">Totalidad de ladrillos</span><span class="mono" id="qBricks">—</span></div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="metrics">
+    </div>
+    <div class="mcard">
+      <div class="badge">Frecuencias del año</div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Fecha</span><span class="mono" style="font-size:11px"><span id="doy">—</span></span></div>
+      <div class="progress"><div class="progressInner" id="yearProgressInner" style="width:0%"></div></div>
+      <div class="chips"><span class="chip mono" id="freqYearPos">+—</span><span class="chip mono" id="freqYearNeg">−—</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación anual</span><span class="mono" id="annYear">—</span></div>
+    </div>
+    <div class="mcard">
+      <div class="badge">Aparato (ciclo 1461)</div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndex">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
+      <div class="progress"><div class="progressInner" id="appProgressInner" style="width:0%"></div></div>
+      <div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación del aparato</span><span class="mono" id="annApp">—</span></div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:12px">
+    <div class="section-title">Calendario Lógico</div>
+    <div class="calog-controls">
+      <div class="small">Años a futuro: <span id="calogFutureVal">80</span> <span class="mono" id="calogFutureTo"></span></div>
+      <input id="calogFuture" type="range" min="0" max="200" step="1" value="80" aria-label="Años a futuro">
+    </div>
+    <div class="table-wrap calog-wrap" id="calogWrap"><table id="calog"><thead><tr><th>Año</th><th>Variable (+)</th><th>Constante</th><th>Aparato</th></tr></thead><tbody></tbody><tfoot><tr><td>SUMA</td><td id="calogSum">—</td><td></td><td></td></tr></tfoot></table></div>
+    <div class="scroll-hint">Desliza ↔ para ver la tabla completa</div>
+    <div class="small" style="display:none">Constante: 2012=1096, 2013=78; Variable: inicia en +doy y desciende sumando largos; en 2012 ajuste −1018.</div>
+  </section>
+
+  
+
+
+    </main>
+  </div>
+
+  <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
+</div>
+<noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para ver los cálculos.</div></noscript>
+<script src="/app.js" defer></script>
+<script src="/common.js" defer></script>
+
+  <script>
+  (function(){
+    var key="calendaria_seen_splash_v3";
+    var splash=document.getElementById('splash');
+    var btn=document.getElementById('enterBtn');
+    var stage=document.getElementById('brandStage');
+    var layout=document.getElementById('brandLayout');
+
+    function hide(){splash.setAttribute('hidden','');}
+
+    var forceSplash = /[?&]splash=1/.test(location.search) || location.hash === '#splash';
+    try{ if(localStorage.getItem(key)==="1" && !forceSplash){ hide(); return; } }catch(e){}
+
+    function makeSpans(rowEl){
+      var text = rowEl.textContent;
+      rowEl.textContent='';
+      for(var i=0;i<text.length;i++){
+        var ch=text[i];
+        var span=document.createElement('span');
+        if(ch===' '){ span.innerHTML='&nbsp;'; span.dataset.space='1'; }
+        else { span.textContent=ch; }
+        rowEl.appendChild(span);
+      }
+      return text;
+    }
+
+    var rows=[].slice.call(layout.querySelectorAll('.row'));
+    rows.map(makeSpans);
+    stage.appendChild(layout);
+
+    var targets=[];
+    var stageRect=stage.getBoundingClientRect();
+    rows.forEach(function(rowEl,rowIdx){
+      var spans=[].slice.call(rowEl.querySelectorAll('span'));
+      spans.forEach(function(sp){
+        var r=sp.getBoundingClientRect();
+        var x=r.left + r.width/2 - stageRect.left;
+        var y=r.top + r.height/2 - stageRect.top;
+        targets.push({x:x,y:y,row:rowIdx,char:sp.textContent});
+      });
+    });
+
+    layout.parentNode && layout.parentNode.removeChild(layout);
+    var letters = targets.filter(function(t){ return t.char && t.char.trim().length>0; });
+    var chars = letters.map(function(t, idx){
+      var el=document.createElement('div');
+      el.className='char row-' + t.row;
+      el.textContent=t.char;
+      stage.appendChild(el);
+      return {el:el, target:t, i:idx, settled:false};
+    });
+
+    var w=stage.clientWidth, h=stage.clientHeight;
+    var aspect = w / Math.max(h,1);
+    var isNarrow = (w < 420) || (aspect < 0.72);
+    var swirlMs = isNarrow ? 2200 : 2600;
+    var settleMs = 900;
+    var stagger = isNarrow ? 20 : 24;
+    var A0 = Math.min(w,h) * (isNarrow ? 0.56 : 0.48);
+    var freq = isNarrow ? 1.6 : 1.8;
+
+    function easeOutCubic(p){ return 1 - Math.pow(1-p,3); }
+    function lissajous(u){ var x=Math.sin(u), y=Math.sin(2*u)*0.7; return {x:x,y:y}; }
+
+    var t0=performance.now();
+    function anim(now){
+      var anyRunning=false;
+      chars.forEach(function(c, idx){
+        var t=Math.max(0, now - t0 - idx*stagger);
+        if(t >= (swirlMs+settleMs)){
+          if(!c.settled){
+            c.el.style.left = c.target.x + 'px'; c.el.style.top = c.target.y + 'px'; c.el.style.transform='translate(-50%,-50%)';
+            c.settled=true;
+          }
+          return;
+        }
+        anyRunning=true;
+        var p=Math.min(1, t/swirlMs);
+        var damp=Math.pow(0.02, p);
+        var u=(t/1000)*freq + (idx*0.35);
+        var path=lissajous(u);
+        var cx=w/2, cy=h/2;
+        var px=cx + path.x * A0 * damp;
+        var py=cy + path.y * A0 * damp;
+        if(t>swirlMs){
+          var q=easeOutCubic((t - swirlMs)/settleMs);
+          px = px + (c.target.x - px) * q;
+          py = py + (c.target.y - py) * q;
+        }
+        c.el.style.left = px + 'px'; c.el.style.top = py + 'px'; c.el.style.transform='translate(-50%,-50%)';
+        c.el.style.opacity=Math.min(1, 0.15 + p*1.1);
+      });
+      if(anyRunning){ requestAnimationFrame(anim); } else { btn.removeAttribute('disabled'); }
+    }
+    requestAnimationFrame(anim);
+
+    btn && btn.addEventListener('click', function(){
+      try{ localStorage.setItem(key,'1'); }catch(e){}
+      hide();
+    });
+  })();
+  </script>
+
+
+<!-- ELEMENT_BADGE_LOGIC_START -->
+<script>
+(function(){
+  const MAP = {
+    "01-01": {img:"hydrogen.png",  title:"Hydrogen — 1"},
+    "01-02": {img:"helium.png",    title:"Helium — 2"},
+    "01-03": {img:"lithium.png",   title:"Lithium — 3"},
+    "01-04": {img:"beryllium.png", title:"Beryllium — 4"},
+    "01-05": {img:"boron.png",     title:"Boron — 5"},
+    "01-06": {img:"carbon.png",    title:"Carbon — 6"},
+    "01-07": {img:"nitrogen.png",  title:"Nitrogen — 7"},
+    "01-08": {img:"oxygen.png",    title:"Oxygen — 8"},
+    "01-09": {img:"fluorine.png",  title:"Fluorine — 9"},
+    "01-10": {img:"neon.png",      title:"Neon — 10"},
+    "01-11": {img:"sodium.png",    title:"Sodium — 11"},
+    "01-12": {img:"magnesium.png", title:"Magnesium — 12"},
+    "01-13": {img:"aluminium.png", title:"Aluminium — 13"},
+    "01-14": {img:"silicon.png",   title:"Silicon — 14"},
+    "01-15": {img:"phosphorus.png",title:"Phosphorus — 15"},
+    "01-16": {img:"sulphur.png",   title:"Sulphur — 16"},
+    "01-17": {img:"chlorine.png",  title:"Chlorine — 17"},
+    "01-18": {img:"argon.png",     title:"Argon — 18"},
+    "01-19": {img:"potassium.png", title:"Potassium — 19"},
+    "01-20": {img:"calcium.png",   title:"Calcium — 20"},
+    "01-21": {img:"scandium.png",  title:"Scandium — 21"},
+    "01-22": {img:"titanium.png",  title:"Titanium — 22"},
+    "01-23": {img:"vanadium.png",  title:"Vanadium — 23"},
+    "01-24": {img:"chromium.png",  title:"Chromium — 24"},
+    "01-25": {img:"manganese.png", title:"Manganese — 25"},
+    "01-26": {img:"iron.png",      title:"Iron — 26"},
+    "01-27": {img:"cobalt.png",    title:"Cobalt — 27"},
+    "01-28": {img:"nickel.png",    title:"Nickel — 28"},
+    "01-29": {img:"copper.png",    title:"Copper — 29"},
+    "01-30": {img:"zinc.png",      title:"Zinc — 30"},
+    "01-31": {img:"gallium.png",   title:"Gallium — 31"},
+    "02-01": {img:"germanium.png", title:"Germanium — 32"},
+    "02-02": {img:"arsenic.png",   title:"Arsenic — 33"},
+    "02-03": {img:"selenium.png",  title:"Selenium — 34"},
+    "02-04": {img:"bromine.png",   title:"Bromine — 35"},
+    "02-05": {img:"krypton.png",   title:"Krypton — 36"},
+    "02-06": {img:"rubidium.png",  title:"Rubidium — 37"},
+    "02-07": {img:"strontium.png", title:"Strontium — 38"},
+    "02-08": {img:"yttrium.png",   title:"Yttrium — 39"},
+    "02-09": {img:"zirconium.png", title:"Zirconium — 40"},
+    "02-10": {img:"niobium.png",   title:"Niobium — 41"},
+    "02-11": {img:"molybdenum.png",title:"Molybdenum — 42"},
+    "02-12": {img:"technetium.png",title:"Technetium — 43"},
+    "02-13": {img:"ruthenium.png", title:"Ruthenium — 44"},
+    "02-14": {img:"rhodium.png",   title:"Rhodium — 45"},
+    "02-15": {img:"palladium.png", title:"Palladium — 46"},
+    "02-16": {img:"silver.png",    title:"Silver — 47"},
+    "02-17": {img:"cadmium.png",   title:"Cadmium — 48"},
+    "02-18": {img:"indium.png",    title:"Indium — 49"},
+    "02-19": {img:"tin.png",       title:"Tin — 50"},
+    "02-20": {img:"antimony.png",  title:"Antimony — 51"},
+    "02-21": {img:"tellurium.png", title:"Tellurium — 52"},
+    "02-22": {img:"iodine.png",    title:"Iodine — 53"},
+    "02-23": {img:"xenon.png",     title:"Xenon — 54"},
+    "02-24": {img:"caesium.png",   title:"Caesium — 55"},
+    "02-25": {img:"barium.png",    title:"Barium — 56"},
+    "02-26": {img:"lanthanum.png",    title:"Lanthanum — 57"},
+    "02-27": {img:"cerium.png",       title:"Cerium — 58"},
+    "02-28": {img:"praseodymium.png", title:"Praseodymium — 59"},
+    "03-01": {img:"neodymium.png",    title:"Neodymium — 60"},
+    "03-02": {img:"promethium.png",   title:"Promethium — 61"},
+    "03-03": {img:"samarium.png",     title:"Samarium — 62"},
+    "03-04": {img:"europium.png",     title:"Europium — 63"},
+    "03-05": {img:"gadolinium.png",   title:"Gadolinium — 64"},
+    "03-06": {img:"terbium.png",      title:"Terbium — 65"},
+    "03-07": {img:"dysprosium.png",   title:"Dysprosium — 66"},
+    "03-08": {img:"holmium.png",   title:"Holmium — 67"},
+    "03-09": {img:"erbium.png",    title:"Erbium — 68"},
+    "03-10": {img:"thulium.png",   title:"Thulium — 69"},
+    "03-11": {img:"ytterbium.png", title:"Ytterbium — 70"},
+    "03-12": {img:"lutetium.png",  title:"Lutetium — 71"},
+    "03-13": {img:"hafnium.png",   title:"Hafnium — 72"},
+    "03-14": {img:"tantalum.png",  title:"Tantalum — 73"},
+    "03-15": {img:"tungsten.png",  title:"Tungsten — 74"},
+    "03-16": {img:"rhenium.png",   title:"Rhenium — 75"},
+    "03-17": {img:"osmium.png",    title:"Osmium — 76"},
+    "03-18": {img:"iridium.png",   title:"Iridium — 77"},
+    "03-19": {img:"platinum.png",  title:"Platinum — 78"},
+    "03-20": {img:"gold.png",      title:"Gold — 79"},
+    "03-21": {img:"mercury.png",   title:"Mercury — 80"},
+    "03-22": {img:"thallium.png",  title:"Thallium — 81"},
+    "03-23": {img:"lead.png",      title:"Lead — 82"},
+    "03-24": {img:"bismuth.png",   title:"Bismuth — 83"},
+    "03-25": {img:"polonium.png",  title:"Polonium — 84"},
+    "03-26": {img:"astatine.png",  title:"Astatine — 85"},
+    "03-27": {img:"radon.png",     title:"Radon — 86"},
+    "03-28": {img:"francium.png",     title:"Francium — 87"},
+    "03-29": {img:"radium.png",       title:"Radium — 88"},
+    "03-30": {img:"actinium.png",     title:"Actinium — 89"},
+    "03-31": {img:"thorium.png",      title:"Thorium — 90"},
+    "04-01": {img:"protactinium.png", title:"Protactinium — 91"},
+    "04-02": {img:"uranium.png",      title:"Uranium — 92"},
+    "04-03": {img:"neptunium.png",    title:"Neptunium — 93"},
+    "04-04": {img:"plutonium.png",    title:"Plutonium — 94"},
+    "04-05": {img:"americium.png",    title:"Americium — 95"},
+    "04-06": {img:"curium.png",       title:"Curium — 96"},
+    "04-07": {img:"berkelium.png",    title:"Berkelium — 97"},
+    "04-08": {img:"californium.png",  title:"Californium — 98"},
+    "04-09": {img:"einsteinium.png",  title:"Einsteinium — 99"},
+    "04-10": {img:"fermium.png",      title:"Fermium — 100"},
+    "04-11": {img:"mendelevium.png",  title:"Mendelevium — 101"},
+    "04-12": {img:"nobelium.png",     title:"Nobelium — 102"},
+    "04-13": {img:"lawrencium.png",   title:"Lawrencium — 103"},
+    "04-14": {img:"rutherfordium.png",title:"Rutherfordium — 104"},
+    "04-15": {img:"dubnium.png",      title:"Dubnium — 105"},
+    "04-16": {img:"seaborgium.png",   title:"Seaborgium — 106"},
+    "04-17": {img:"bohrium.png",      title:"Bohrium — 107"},
+    "04-18": {img:"hassium.png",      title:"Hassium — 108"},
+    "04-19": {img:"meitnerium.png",   title:"Meitnerium — 109"},
+    "04-20": {img:"darmstadtium.png", title:"Darmstadtium — 110"},
+    "04-21": {img:"roentgenium.png",  title:"Roentgenium — 111"},
+    "04-22": {img:"copernicium.png",  title:"Copernicium — 112"},
+    "04-23": {img:"nihonium.png",     title:"Nihonium — 113"},
+    "04-24": {img:"flerovium.png",    title:"Flerovium — 114"},
+    "04-25": {img:"moscovium.png",    title:"Moscovium — 115"},
+    "04-26": {img:"livermorium.png",  title:"Livermorium — 116"},
+    "04-27": {img:"tennessine.png", title:"Tennessine — 117"},
+    "04-28": {img:"oganesson.png",  title:"Oganesson — 118"},
+    "04-29": {img:"promesa-119.png", title:"Promesa — 119"},
+    "04-30": {img:"promesa-120.png", title:"Promesa — 120"},
+    "05-01": {img:"promesa-121.png", title:"Promesa — 121"},
+    "05-02": {img:"promesa-122.png", title:"Promesa — 122"},
+    "05-03": {img:"promesa-123.png", title:"Promesa — 123"},
+    "05-04": {img:"promesa-124.png", title:"Promesa — 124"},
+    "05-05": {img:"promesa-125.png", title:"Promesa — 125"},
+    "05-06": {img:"promesa-126.png", title:"Promesa — 126"},
+    "05-07": {img:"promesa-127.png", title:"Promesa — 127"},
+    "05-08": {img:"promesa-128.png", title:"Promesa — 128"},
+    "05-09": {img:"promesa-129.png", title:"Promesa — 129"},
+    "05-10": {img:"promesa-130.png", title:"Promesa — 130"},
+    "05-11": {img:"promesa-131.png", title:"Promesa — 131"},
+    "05-12": {img:"promesa-132.png", title:"Promesa — 132"},
+    "05-13": {img:"promesa-133.png", title:"Promesa — 133"},
+    "05-14": {img:"promesa-134.png", title:"Promesa — 134"},
+    "05-15": {img:"promesa-135.png", title:"Promesa — 135"},
+    "05-16": {img:"promesa-136.png", title:"Promesa — 136"},
+    "05-17": {img:"promesa-137.png", title:"Promesa — 137"},
+    "05-18": {img:"promesa-138.png", title:"Promesa — 138"},
+    "05-19": {img:"promesa-139.png", title:"Promesa — 139"},
+    "05-20": {img:"promesa-140.png", title:"Promesa — 140"},
+    "05-21": {img:"promesa-141.png", title:"Promesa — 141"},
+    "05-22": {img:"promesa-142.png", title:"Promesa — 142"},
+    "05-23": {img:"promesa-143.png", title:"Promesa — 143"},
+    "05-24": {img:"promesa-144.png", title:"Promesa — 144"},
+    "05-25": {img:"promesa-145.png", title:"Promesa — 145"},
+    "05-26": {img:"promesa-146.png", title:"Promesa — 146"},
+    "05-27": {img:"promesa-147.png", title:"Promesa — 147"},
+    "05-28": {img:"promesa-148.png", title:"Promesa — 148"},
+    "05-29": {img:"vacio-149.png", title:"Espacio vacío — 149"},
+    "05-30": {img:"vacio-150.png", title:"Espacio vacío — 150"},
+    "05-31": {img:"vacio-151.png", title:"Espacio vacío — 151"},
+    "06-01": {img:"vacio-152.png", title:"Espacio vacío — 152"},
+    "06-02": {img:"vacio-153.png", title:"Espacio vacío — 153"},
+    "06-03": {img:"vacio-154.png", title:"Espacio vacío — 154"},
+    "06-04": {img:"vacio-155.png", title:"Espacio vacío — 155"},
+    "06-05": {img:"vacio-156.png", title:"Espacio vacío — 156"},
+    "06-06": {img:"vacio-157.png", title:"Espacio vacío — 157"},
+    "06-07": {img:"vacio-158.png", title:"Espacio vacío — 158"},
+    
+    "06-08": {img:"vacio-159.png", title:"Espacio vacío — 159"},
+    "06-09": {img:"vacio-160.png", title:"Espacio vacío — 160"},
+    "06-10": {img:"vacio-161.png", title:"Espacio vacío — 161"},
+    "06-11": {img:"vacio-162.png", title:"Espacio vacío — 162"},
+    "06-12": {img:"vacio-163.png", title:"Espacio vacío — 163"},
+    "06-13": {img:"vacio-164.png", title:"Espacio vacío — 164"},
+    "06-14": {img:"vacio-165.png", title:"Espacio vacío — 165"},
+    "06-15": {img:"vacio-166.png", title:"Espacio vacío — 166"},
+    "06-16": {img:"vacio-167.png", title:"Espacio vacío — 167"},
+    "06-17": {img:"vacio-168.png", title:"Espacio vacío — 168"},
+    "06-18": {img:"vacio-169.png", title:"Espacio vacío — 169"},
+    "06-19": {img:"vacio-170.png", title:"Espacio vacío — 170"},
+    "06-20": {img:"vacio-171.png", title:"Espacio vacío — 171"},
+    "06-21": {img:"vacio-172.png", title:"Espacio vacío — 172"},
+    "06-22": {img:"vacio-173.png", title:"Espacio vacío — 173"},
+    "06-23": {img:"vacio-174.png", title:"Espacio vacío — 174"},
+    "06-24": {img:"vacio-175.png", title:"Espacio vacío — 175"},
+    "06-25": {img:"vacio-176.png", title:"Espacio vacío — 176"},
+    "06-26": {img:"vacio-177.png", title:"Espacio vacío — 177"},
+    "06-27": {img:"vacio-178.png", title:"Espacio vacío — 178"},
+    "06-28": {img:"vacio-179.png", title:"Espacio vacío — 179"},
+    "06-29": {img:"vacio-180.png", title:"Espacio vacío — 180"},
+    "06-30": {img:"vacio-181.png", title:"Espacio vacío — 181"},
+    "07-01": {img:"vacio-182.png", title:"Espacio vacío — 182"},
+    "07-02": {img:"vacio-183.png", title:"Espacio vacío — 183"},
+    "07-03": {img:"vacio-184.png", title:"Espacio vacío — 184"},
+    "07-04": {img:"vacio-185.png", title:"Espacio vacío — 185"},
+    "07-05": {img:"vacio-186.png", title:"Espacio vacío — 186"},
+    "07-06": {img:"vacio-187.png", title:"Espacio vacío — 187"},
+    "07-07": {img:"vacio-188.png", title:"Espacio vacío — 188"},
+    "07-08": {img:"vacio-189.png", title:"Espacio vacío — 189"},
+    "07-09": {img:"vacio-190.png", title:"Espacio vacío — 190"},
+    "07-10": {img:"vacio-191.png", title:"Espacio vacío — 191"},
+    "07-11": {img:"vacio-192.png", title:"Espacio vacío — 192"},
+    "07-12": {img:"vacio-193.png", title:"Espacio vacío — 193"},
+    "07-13": {img:"vacio-194.png", title:"Espacio vacío — 194"},
+    "07-14": {img:"vacio-195.png", title:"Espacio vacío — 195"},
+    "07-15": {img:"vacio-196.png", title:"Espacio vacío — 196"},
+    "07-16": {img:"vacio-197.png", title:"Espacio vacío — 197"},
+    "07-17": {img:"vacio-198.png", title:"Espacio vacío — 198"},
+    "07-18": {img:"vacio-199.png", title:"Espacio vacío — 199"},
+    "07-19": {img:"vacio-200.png", title:"Espacio vacío — 200"},
+    "07-20": {img:"vacio-201.png", title:"Espacio vacío — 201"},
+    "07-21": {img:"vacio-202.png", title:"Espacio vacío — 202"},
+    "07-22": {img:"vacio-203.png", title:"Espacio vacío — 203"},
+    "07-23": {img:"vacio-204.png", title:"Espacio vacío — 204"},
+    "07-24": {img:"vacio-205.png", title:"Espacio vacío — 205"},
+    "07-25": {img:"vacio-206.png", title:"Espacio vacío — 206"},
+    "07-26": {img:"vacio-207.png", title:"Espacio vacío — 207"},
+    "07-27": {img:"vacio-208.png", title:"Espacio vacío — 208"},
+    "07-28": {img:"vacio-209.png", title:"Espacio vacío — 209"},
+    "07-29": {img:"vacio-210.png", title:"Espacio vacío — 210"},
+    "07-30": {img:"vacio-211.png", title:"Espacio vacío — 211"},
+    "07-31": {img:"vacio-212.png", title:"Espacio vacío — 212"},
+    "08-01": {img:"vacio-213.png", title:"Espacio vacío — 213"},
+    "08-02": {img:"vacio-214.png", title:"Espacio vacío — 214"},
+    "08-03": {img:"vacio-215.png", title:"Espacio vacío — 215"},
+    "08-04": {img:"vacio-216.png", title:"Espacio vacío — 216"},
+    "08-05": {img:"vacio-217.png", title:"Espacio vacío — 217"},
+    "08-06": {img:"vacio-218.png", title:"Espacio vacío — 218"},
+    "08-07": {img:"vacio-219.png", title:"Espacio vacío — 219"},
+    "08-08": {img:"vacio-220.png", title:"Espacio vacío — 220"},
+    "08-09": {img:"vacio-221.png", title:"Espacio vacío — 221"},
+    "08-10": {img:"vacio-222.png", title:"Espacio vacío — 222"},
+    "08-11": {img:"vacio-223.png", title:"Espacio vacío — 223"},
+    "08-12": {img:"vacio-224.png", title:"Espacio vacío — 224"},
+    
+    "08-13": {img:"Ri-1.png", title:"Ri — 1"},
+    "08-14": {img:"Ri-2.png", title:"Ri — 2"},
+    "08-15": {img:"Ri-3.png", title:"Ri — 3"},
+    "08-16": {img:"Ri-4.png", title:"Ri — 4"},
+    "08-17": {img:"Ri-5.png", title:"Ri — 5"},
+    "08-18": {img:"Ri-6.png", title:"Ri — 6"},
+    "08-19": {img:"Ri-7.png", title:"Ri — 7"},
+    "08-20": {img:"Ri-8.png", title:"Ri — 8"},
+    "08-21": {img:"Ri-9.png", title:"Ri — 9"},
+    "08-22": {img:"Ri-10.png", title:"Ri — 10"},
+    "08-23": {img:"Ri-11.png", title:"Ri — 11"},
+    "08-24": {img:"Ri-12.png", title:"Ri — 12"},
+    "08-25": {img:"Ri-13.png", title:"Ri — 13"},
+    "08-26": {img:"Ri-14.png", title:"Ri — 14"},
+    "08-27": {img:"Ri-15.png", title:"Ri — 15"},
+    "08-28": {img:"Ri-16.png", title:"Ri — 16"},
+    "08-29": {img:"Ri-17.png", title:"Ri — 17"},
+    "08-30": {img:"Ri-18.png", title:"Ri — 18"},
+    "08-31": {img:"Ri-19.png", title:"Ri — 19"},
+    "09-01": {img:"Ri-20.png", title:"Ri — 20"},
+    "09-02": {img:"Ri-21.png", title:"Ri — 21"},
+    "09-03": {img:"Ri-22.png", title:"Ri — 22"},
+    "09-04": {img:"Ri-23.png", title:"Ri — 23"},
+    "09-05": {img:"Ri-24.png", title:"Ri — 24"},
+    "09-06": {img:"Ri-25.png", title:"Ri — 25"},
+    "09-07": {img:"Ri-26.png", title:"Ri — 26"},
+    "09-08": {img:"Ri-27.png", title:"Ri — 27"},
+    "09-09": {img:"Ri-28.png", title:"Ri — 28"},
+    "09-10": {img:"Ri-29.png", title:"Ri — 29"},
+    "09-11": {img:"Ri-30.png", title:"Ri — 30"},
+    "09-12": {img:"Ri-31.png", title:"Ri — 31"},
+    "09-13": {img:"Ri-32.png", title:"Ri — 32"},
+    "09-14": {img:"Ri-33.png", title:"Ri — 33"},
+    "09-15": {img:"Ri-34.png", title:"Ri — 34"},
+    "09-16": {img:"Ri-35.png", title:"Ri — 35"},
+    "09-17": {img:"Ri-36.png", title:"Ri — 36"},
+    "09-18": {img:"Ri-37.png", title:"Ri — 37"},
+    "09-19": {img:"Ri-38.png", title:"Ri — 38"},
+    "09-20": {img:"Ri-39.png", title:"Ri — 39"},
+    "09-21": {img:"Ri-40.png", title:"Ri — 40"},
+    "09-22": {img:"Ri-41.png", title:"Ri — 41"},
+    "09-23": {img:"Ri-42.png", title:"Ri — 42"},
+    "09-24": {img:"Ri-43.png", title:"Ri — 43"},
+    "09-25": {img:"Ri-44.png", title:"Ri — 44"},
+    "09-26": {img:"Ri-45.png", title:"Ri — 45"},
+    "09-27": {img:"Ri-46.png", title:"Ri — 46"},
+    "09-28": {img:"Ri-47.png", title:"Ri — 47"},
+    "09-29": {img:"Ri-48.png", title:"Ri — 48"},
+    "09-30": {img:"Ri-49.png", title:"Ri — 49"},
+    "10-01": {img:"Ri-50.png", title:"Ri — 50"},
+    "10-02": {img:"Ri-51.png", title:"Ri — 51"},
+    "10-03": {img:"Ri-52.png", title:"Ri — 52"},
+    "10-04": {img:"Ri-53.png", title:"Ri — 53"},
+    "10-05": {img:"Ri-54.png", title:"Ri — 54"},
+    "10-06": {img:"Ri-55.png", title:"Ri — 55"},
+    "10-07": {img:"Ri-56.png", title:"Ri — 56"},
+    "10-08": {img:"Ri-57.png", title:"Ri — 57"},
+    "10-09": {img:"Ri-58.png", title:"Ri — 58"},
+    "10-10": {img:"Ri-59.png", title:"Ri — 59"},
+    "10-11": {img:"Ri-60.png", title:"Ri — 60"},
+    "10-12": {img:"Ri-61.png", title:"Ri — 61"},
+    "10-13": {img:"Ri-62.png", title:"Ri — 62"},
+    "10-14": {img:"Ri-63.png", title:"Ri — 63"},
+    "10-15": {img:"Ri-64.png", title:"Ri — 64"},
+    "10-16": {img:"Ri-65.png", title:"Ri — 65"},
+    "10-17": {img:"Ri-66.png", title:"Ri — 66"},
+    "10-18": {img:"Ri-67.png", title:"Ri — 67"},
+    "10-19": {img:"Ri-68.png", title:"Ri — 68"},
+    "10-20": {img:"Ri-69.png", title:"Ri — 69"},
+    "10-21": {img:"Ri-70.png", title:"Ri — 70"},
+    "10-22": {img:"Ri-71.png", title:"Ri — 71"},
+    "10-23": {img:"Ri-72.png", title:"Ri — 72"},
+    "10-24": {img:"Ri-73.png", title:"Ri — 73"},
+    "10-25": {img:"Ri-74.png", title:"Ri — 74"},
+    "10-26": {img:"Ri-75.png", title:"Ri — 75"},
+    "10-27": {img:"Ri-76.png", title:"Ri — 76"},
+    "10-28": {img:"Ri-77.png", title:"Ri — 77"},
+    "10-29": {img:"Ri-78.png", title:"Ri — 78"},
+    "10-30": {img:"Ri-79.png", title:"Ri — 79"},
+    "10-31": {img:"Ri-80.png", title:"Ri — 80"},
+    "11-01": {img:"Ri-81.png", title:"Ri — 81"},
+    "11-02": {img:"Ri-82.png", title:"Ri — 82"},
+    "11-03": {img:"Ri-83.png", title:"Ri — 83"},
+    "11-04": {img:"Ri-84.png", title:"Ri — 84"},
+    "11-05": {img:"Ri-85.png", title:"Ri — 85"},
+    "11-06": {img:"Ri-86.png", title:"Ri — 86"},
+    "11-07": {img:"Ri-87.png", title:"Ri — 87"},
+    "11-08": {img:"Ri-88.png", title:"Ri — 88"},
+    "11-09": {img:"Ri-89.png", title:"Ri — 89"},
+    "11-10": {img:"Ri-90.png", title:"Ri — 90"},
+    "11-11": {img:"Ri-91.png", title:"Ri — 91"},
+    "11-12": {img:"Ri-92.png", title:"Ri — 92"},
+    "11-13": {img:"Ri-93.png", title:"Ri — 93"},
+    "11-14": {img:"Ri-94.png", title:"Ri — 94"},
+    "11-15": {img:"Ri-95.png", title:"Ri — 95"},
+    "11-16": {img:"Ri-96.png", title:"Ri — 96"},
+    "11-17": {img:"Ri-97.png", title:"Ri — 97"},
+    "11-18": {img:"Ri-98.png", title:"Ri — 98"},
+    "11-19": {img:"Ri-99.png", title:"Ri — 99"},
+    "11-20": {img:"Ri-100.png", title:"Ri — 100"},
+    "11-21": {img:"Ri-101.png", title:"Ri — 101"},
+    "11-22": {img:"Ri-102.png", title:"Ri — 102"},
+    "11-23": {img:"Ri-103.png", title:"Ri — 103"},
+    "11-24": {img:"Ri-104.png", title:"Ri — 104"},
+    "11-25": {img:"Ri-105.png", title:"Ri — 105"},
+    "11-26": {img:"Ri-106.png", title:"Ri — 106"},
+    "11-27": {img:"Ri-107.png", title:"Ri — 107"},
+    "11-28": {img:"Ri-108.png", title:"Ri — 108"},
+    "11-29": {img:"Ri-109.png", title:"Ri — 109"},
+    "11-30": {img:"Ri-110.png", title:"Ri — 110"},
+    "12-01": {img:"Ri-111.png", title:"Ri — 111"},
+    "12-02": {img:"Ri-112.png", title:"Ri — 112"},
+    "12-03": {img:"Ri-113.png", title:"Ri — 113"},
+    "12-04": {img:"Ri-114.png", title:"Ri — 114"},
+    "12-05": {img:"Ri-115.png", title:"Ri — 115"},
+    "12-06": {img:"Ri-116.png", title:"Ri — 116"},
+    "12-07": {img:"Ri-117.png", title:"Ri — 117"},
+    "12-08": {img:"Ri-118.png", title:"Ri — 118"},
+    "12-09": {img:"Ri-119.png", title:"Ri — 119"},
+    "12-10": {img:"Ri-120.png", title:"Ri — 120"},
+    "12-11": {img:"Ri-121.png", title:"Ri — 121"},
+    "12-12": {img:"Ri-122.png", title:"Ri — 122"},
+    "12-13": {img:"Ri-123.png", title:"Ri — 123"},
+    "12-14": {img:"Ri-124.png", title:"Ri — 124"},
+    "12-15": {img:"Ri-125.png", title:"Ri — 125"},
+    "12-16": {img:"Ri-126.png", title:"Ri — 126"},
+    "12-17": {img:"Ri-127.png", title:"Ri — 127"},
+    "12-18": {img:"Ri-128.png", title:"Ri — 128"},
+  };
+
+  const badge = document.querySelector('.elementBadge');
+  const tile  = document.getElementById('elementTile');
+  const ref   = document.getElementById('ref');
+  function isoToMD(iso){
+    if(!iso) return null;
+    const parts = iso.split('-');
+    if(parts.length !== 3) return null;
+
+    let y, m, d;
+    if(parts[0].length === 4){
+      // Formato aaaa-mm-dd
+      y = parseInt(parts[0], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[2], 10);
+    } else if(parts[2].length === 4){
+      // Formato dd-mm-aaaa
+      y = parseInt(parts[2], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[0], 10);
+    } else {
+      return null;
+    }
+
+    function isLeap(year){
+      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
+    }
+
+    // Fechas de Anillo de Fuego para el badge:
+    // - Bisiestos: 18/12 al 31/12
+    // - No bisiestos: 19/12 al 31/12
+    if(isLeap(y)){
+      if(m === 12 && d >= 18){
+        return null;
+      }
+    } else {
+      if(m === 12 && d >= 19){
+        return null;
+      }
+    }
+
+    // Ajuste bisiesto: del 29/02 al 17/12 inclusive
+    // se corre un día hacia adelante.
+    if(isLeap(y)){
+      const inShiftRange =
+        (m === 2 && d === 29) ||
+        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if(inShiftRange){
+        const date = new Date(y, m - 1, d);
+        date.setDate(date.getDate() + 1);
+        m = date.getMonth() + 1;
+        d = date.getDate();
+      }
+    }
+
+    const mm = String(m).padStart(2, "0");
+    const dd = String(d).padStart(2, "0");
+    return mm + "-" + dd;
+  }
+
+function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
+  function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
+  function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
+    if(el){ tile.src="/"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
+    else { badge.style.display="none"; badge.setAttribute("aria-hidden","true"); }
+  }
+  if(ref){ ref.addEventListener('change',renderBadge); ref.addEventListener('input',renderBadge); }
+  document.addEventListener('DOMContentLoaded', renderBadge);
+  window.addEventListener('load', ()=>setTimeout(renderBadge,0));
+})();
+</script>
+<!-- ELEMENT_BADGE_LOGIC_END -->
+
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+      console.log('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
+
+<script>
+(function(){
+  const ref = document.getElementById('ref');
+  const link = document.getElementById('openPeriodicLink');
+
+  function isoToMD(iso){
+    if(!iso) return null;
+    var parts = iso.split('-');
+    if(parts.length !== 3) return null;
+
+    var y, m, d;
+    if(parts[0].length === 4){
+      // aaaa-mm-dd
+      y = parseInt(parts[0], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[2], 10);
+    } else if(parts[2].length === 4){
+      // dd-mm-aaaa
+      y = parseInt(parts[2], 10);
+      m = parseInt(parts[1], 10);
+      d = parseInt(parts[0], 10);
+    } else {
+      return null;
+    }
+
+    function isLeap(year){
+      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
+    }
+
+    // Anillo de Fuego: sin elemento/tabla
+    if(isLeap(y)){
+      if(m === 12 && d >= 18){
+        return null;
+      }
+    } else {
+      if(m === 12 && d >= 19){
+        return null;
+      }
+    }
+
+    // Ajuste bisiesto de corrimiento desde 29/02 hasta 17/12 inclusive
+    if(isLeap(y)){
+      var inShiftRange =
+        (m === 2 && d === 29) ||
+        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if(inShiftRange){
+        var date = new Date(y, m - 1, d);
+        date.setDate(date.getDate() + 1);
+        m = date.getMonth() + 1;
+        d = date.getDate();
+      }
+    }
+
+    var mm = String(m).padStart(2,'0');
+    var dd = String(d).padStart(2,'0');
+    return mm + '-' + dd;
+  }
+
+  function todayISO(){
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var day = String(d.getDate()).padStart(2,'0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function activeISO(){
+    if(ref && ref.value) return ref.value;
+    return todayISO();
+  }
+
+  function updatePeriodicLink(){
+    if(!link) return;
+    var md = isoToMD(activeISO());
+
+    // Fechas sin elemento (Anillo de Fuego): ocultar botón
+    if(!md){
+      link.style.display = 'none';
+      link.removeAttribute('href');
+      link.setAttribute('aria-disabled','true');
+      return;
+    }
+
+    // Asegurar que el botón esté visible cuando hay elemento
+    link.style.display = '';
+    link.removeAttribute('aria-disabled');
+
+    var symbol = 'H'; // por defecto
+    if(md === '01-01'){
+      symbol = 'H';
+    }
+    else if(md === '01-02'){
+      symbol = 'He';
+    }
+    else if(md === '01-03'){
+      symbol = 'Li';
+    }
+    else if(md === '01-04'){
+      symbol = 'Be';
+    }
+    else if(md === '01-05'){
+      symbol = 'B';
+    }
+    else if(md === '01-06'){
+      symbol = 'C';
+    }
+    else if(md === '01-07'){
+      symbol = 'N';
+    }
+    else if(md === '01-08'){
+      symbol = 'O';
+    }
+    else if(md === '01-09'){
+      symbol = 'F';
+    }
+    else if(md === '01-10'){
+      symbol = 'Ne';
+    }
+    else if(md === '01-11'){
+      symbol = 'Na';
+    }
+    else if(md === '01-12'){
+      symbol = 'Mg';
+    }
+    else if(md === '01-13'){
+      symbol = 'Al';
+    }
+    else if(md === '01-14'){
+      symbol = 'Si';
+    }
+    else if(md === '01-15'){
+      symbol = 'P';
+    }
+    else if(md === '01-16'){
+      symbol = 'S';
+    }
+    else if(md === '01-17'){
+      symbol = 'Cl';
+    }
+    else if(md === '01-18'){
+      symbol = 'Ar';
+    }
+    else if(md === '01-19'){
+      symbol = 'K';
+    }
+    else if(md === '01-20'){
+      symbol = 'Ca';
+    }
+    else if(md === '01-21'){
+      symbol = 'Sc';
+    }
+    else if(md === '01-22'){
+      symbol = 'Ti';
+    }
+    else if(md === '01-23'){
+      symbol = 'V';
+    }
+    else if(md === '01-24'){
+      symbol = 'Cr';
+    }
+    else if(md === '01-25'){
+      symbol = 'Mn';
+    }
+    else if(md === '01-26'){
+      symbol = 'Fe';
+    }
+    else if(md === '01-27'){
+      symbol = 'Co';
+    }
+    else if(md === '01-28'){
+      symbol = 'Ni';
+    }
+    else if(md === '01-29'){
+      symbol = 'Cu';
+    }
+    else if(md === '01-30'){
+      symbol = 'Zn';
+    }
+    else if(md === '01-31'){
+      symbol = 'Ga';
+    }
+    else if(md === '02-01'){
+      symbol = 'Ge';
+    }
+    else if(md === '02-02'){
+      symbol = 'As';
+    }
+    else if(md === '02-03'){
+      symbol = 'Se';
+    }
+    else if(md === '02-04'){
+      symbol = 'Br';
+    }
+    else if(md === '02-05'){
+      symbol = 'Kr';
+    }
+    else if(md === '02-06'){
+      symbol = 'Rb';
+    }
+    else if(md === '02-07'){
+      symbol = 'Sr';
+    }
+    else if(md === '02-08'){
+      symbol = 'Y';
+    }
+    else if(md === '02-09'){
+      symbol = 'Zr';
+    }
+    else if(md === '02-10'){
+      symbol = 'Nb';
+    }
+    else if(md === '02-11'){
+      symbol = 'Mo';
+    }
+    else if(md === '02-12'){
+      symbol = 'Tc';
+    }
+    else if(md === '02-13'){
+      symbol = 'Ru';
+    }
+    else if(md === '02-14'){
+      symbol = 'Rh';
+    }
+    else if(md === '02-15'){
+      symbol = 'Pd';
+    }
+    else if(md === '02-16'){
+      symbol = 'Ag';
+    }
+    else if(md === '02-17'){
+      symbol = 'Cd';
+    }
+    else if(md === '02-18'){
+      symbol = 'In';
+    }
+    else if(md === '02-19'){
+      symbol = 'Sn';
+    }
+    else if(md === '02-20'){
+      symbol = 'Sb';
+    }
+    else if(md === '02-21'){
+      symbol = 'Te';
+    }
+    else if(md === '02-22'){
+      symbol = 'I';
+    }
+    else if(md === '02-23'){
+      symbol = 'Xe';
+    }
+    else if(md === '02-24'){
+      symbol = 'Cs';
+    }
+    else if(md === '02-25'){
+      symbol = 'Ba';
+    }
+    else if(md === '02-26'){
+      symbol = 'La';
+    }
+    else if(md === '02-27'){
+      symbol = 'Ce';
+    }
+    else if(md === '02-28'){
+      symbol = 'Pr';
+    }
+    else if(md === '03-01'){
+      symbol = 'Nd';
+    }
+    else if(md === '03-02'){
+      symbol = 'Pm';
+    }
+    else if(md === '03-03'){
+      symbol = 'Sm';
+    }
+    else if(md === '03-04'){
+      symbol = 'Eu';
+    }
+    else if(md === '03-05'){
+      symbol = 'Gd';
+    }
+    else if(md === '03-06'){
+      symbol = 'Tb';
+    }
+    else if(md === '03-07'){
+      symbol = 'Dy';
+    }
+    else if(md === '03-08'){
+      symbol = 'Ho';
+    }
+    else if(md === '03-09'){
+      symbol = 'Er';
+    }
+    else if(md === '03-10'){
+      symbol = 'Tm';
+    }
+    else if(md === '03-11'){
+      symbol = 'Yb';
+    }
+    else if(md === '03-12'){
+      symbol = 'Lu';
+    }
+    else if(md === '03-13'){
+      symbol = 'Hf';
+    }
+    else if(md === '03-14'){
+      symbol = 'Ta';
+    }
+    else if(md === '03-15'){
+      symbol = 'W';
+    }
+    else if(md === '03-16'){
+      symbol = 'Re';
+    }
+    else if(md === '03-17'){
+      symbol = 'Os';
+    }
+    else if(md === '03-18'){
+      symbol = 'Ir';
+    }
+    else if(md === '03-19'){
+      symbol = 'Pt';
+    }
+    else if(md === '03-20'){
+      symbol = 'Au';
+    }
+    else if(md === '03-21'){
+      symbol = 'Hg';
+    }
+    else if(md === '03-22'){
+      symbol = 'Tl';
+    }
+    else if(md === '03-23'){
+      symbol = 'Pb';
+    }
+    else if(md === '03-24'){
+      symbol = 'Bi';
+    }
+    else if(md === '03-25'){
+      symbol = 'Po';
+    }
+    else if(md === '03-26'){
+      symbol = 'At';
+    }
+    else if(md === '03-27'){
+      symbol = 'Rn';
+    }
+
+        else if(md === '03-28'){
+      symbol = 'Fr';
+    }
+    else if(md === '03-29'){
+      symbol = 'Ra';
+    }
+    else if(md === '03-30'){
+      symbol = 'Ac';
+    }
+    else if(md === '03-31'){
+      symbol = 'Th';
+    }
+    else if(md === '04-01'){
+      symbol = 'Pa';
+    }
+    else if(md === '04-02'){
+      symbol = 'U';
+    }
+    else if(md === '04-03'){
+      symbol = 'Np';
+    }
+    else if(md === '04-04'){
+      symbol = 'Pu';
+    }
+    else if(md === '04-05'){
+      symbol = 'Am';
+    }
+    else if(md === '04-06'){
+      symbol = 'Cm';
+    }
+    else if(md === '04-07'){
+      symbol = 'Bk';
+    }
+    else if(md === '04-08'){
+      symbol = 'Cf';
+    }
+    else if(md === '04-09'){
+      symbol = 'Es';
+    }
+    else if(md === '04-10'){
+      symbol = 'Fm';
+    }
+    else if(md === '04-11'){
+      symbol = 'Md';
+    }
+    else if(md === '04-12'){
+      symbol = 'No';
+    }
+    else if(md === '04-13'){
+      symbol = 'Lr';
+    }
+    else if(md === '04-14'){
+      symbol = 'Rf';
+    }
+    else if(md === '04-15'){
+      symbol = 'Db';
+    }
+    else if(md === '04-16'){
+      symbol = 'Sg';
+    }
+    else if(md === '04-17'){
+      symbol = 'Bh';
+    }
+    else if(md === '04-18'){
+      symbol = 'Hs';
+    }
+    else if(md === '04-19'){
+      symbol = 'Mt';
+    }
+    else if(md === '04-20'){
+      symbol = 'Ds';
+    }
+    else if(md === '04-21'){
+      symbol = 'Rg';
+    }
+    else if(md === '04-22'){
+      symbol = 'Cn';
+    }
+    else if(md === '04-23'){
+      symbol = 'Nh';
+    }
+    else if(md === '04-24'){
+      symbol = 'Fl';
+    }
+    else if(md === '04-25'){
+      symbol = 'Mc';
+    }
+    else if(md === '04-26'){
+      symbol = 'Lv';
+    }
+    else if(md === '04-27'){
+      symbol = 'Ts';
+    }
+    else if(md === '04-28'){
+      symbol = 'Og';
+    }
+    else if(md === '04-29'){
+      symbol = 'P119';
+    }
+    else if(md === '04-30'){
+      symbol = 'P120';
+    }
+    else if(md === '05-01'){
+      symbol = 'P121';
+    }
+    else if(md === '05-02'){
+      symbol = 'P122';
+    }
+    else if(md === '05-03'){
+      symbol = 'P123';
+    }
+    else if(md === '05-04'){
+      symbol = 'P124';
+    }
+    else if(md === '05-05'){
+      symbol = 'P125';
+    }
+    else if(md === '05-06'){
+      symbol = 'P126';
+    }
+    else if(md === '05-07'){
+      symbol = 'P127';
+    }
+    else if(md === '05-08'){
+      symbol = 'P128';
+    }
+    else if(md === '05-09'){
+      symbol = 'P129';
+    }
+    else if(md === '05-10'){
+      symbol = 'P130';
+    }
+    else if(md === '05-11'){
+      symbol = 'P131';
+    }
+    else if(md === '05-12'){
+      symbol = 'P132';
+    }
+    else if(md === '05-13'){
+      symbol = 'P133';
+    }
+    else if(md === '05-14'){
+      symbol = 'P134';
+    }
+    else if(md === '05-15'){
+      symbol = 'P135';
+    }
+    else if(md === '05-16'){
+      symbol = 'P136';
+    }
+    else if(md === '05-17'){
+      symbol = 'P137';
+    }
+    else if(md === '05-18'){
+      symbol = 'P138';
+    }
+    else if(md === '05-19'){
+      symbol = 'P139';
+    }
+    else if(md === '05-20'){
+      symbol = 'P140';
+    }
+    else if(md === '05-21'){
+      symbol = 'P141';
+    }
+    else if(md === '05-22'){
+      symbol = 'P142';
+    }
+    else if(md === '05-23'){
+      symbol = 'P143';
+    }
+    else if(md === '05-24'){
+      symbol = 'P144';
+    }
+    else if(md === '05-25'){
+      symbol = 'P145';
+    }
+    else if(md === '05-26'){
+      symbol = 'P146';
+    }
+    else if(md === '05-27'){
+      symbol = 'P147';
+    }
+    else if(md === '05-28'){
+      symbol = 'P148';
+    }
+    else if(md === '05-29'){
+      symbol = 'BN149';
+    }
+    else if(md === '05-30'){
+      symbol = 'BN150';
+    }
+    else if(md === '05-31'){
+      symbol = 'BN151';
+    }
+    else if(md === '06-01'){
+      symbol = 'BN152';
+    }
+    else if(md === '06-02'){
+      symbol = 'BN153';
+    }
+    else if(md === '06-03'){
+      symbol = 'BN154';
+    }
+    else if(md === '06-04'){
+      symbol = 'BN155';
+    }
+    else if(md === '06-05'){
+      symbol = 'BN156';
+    }
+    else if(md === '06-06'){
+      symbol = 'BN157';
+    }
+    else if(md === '06-07'){
+      symbol = 'BN158';
+    }
+    else if(md === '06-08'){
+      symbol = 'BN159';
+    }
+    else if(md === '06-09'){
+      symbol = 'BN160';
+    }
+    else if(md === '06-10'){
+      symbol = 'BN161';
+    }
+    else if(md === '06-11'){
+      symbol = 'BN162';
+    }
+    else if(md === '06-12'){
+      symbol = 'BN163';
+    }
+    else if(md === '06-13'){
+      symbol = 'BN164';
+    }
+    else if(md === '06-14'){
+      symbol = 'BN165';
+    }
+    else if(md === '06-15'){
+      symbol = 'BN166';
+    }
+    else if(md === '06-16'){
+      symbol = 'BN167';
+    }
+    else if(md === '06-17'){
+      symbol = 'BN168';
+    }
+    else if(md === '06-18'){
+      symbol = 'BN169';
+    }
+    else if(md === '06-19'){
+      symbol = 'BN170';
+    }
+    else if(md === '06-20'){
+      symbol = 'BN171';
+    }
+    else if(md === '06-21'){
+      symbol = 'BN172';
+    }
+    else if(md === '06-22'){
+      symbol = 'BN173';
+    }
+    else if(md === '06-23'){
+      symbol = 'BN174';
+    }
+    else if(md === '06-24'){
+      symbol = 'BN175';
+    }
+    else if(md === '06-25'){
+      symbol = 'BN176';
+    }
+    else if(md === '06-26'){
+      symbol = 'BN177';
+    }
+    else if(md === '06-27'){
+      symbol = 'BN178';
+    }
+    else if(md === '06-28'){
+      symbol = 'BN179';
+    }
+    else if(md === '06-29'){
+      symbol = 'BN180';
+    }
+    else if(md === '06-30'){
+      symbol = 'BN181';
+    }
+    else if(md === '07-01'){
+      symbol = 'BN182';
+    }
+    else if(md === '07-02'){
+      symbol = 'BN183';
+    }
+    else if(md === '07-03'){
+      symbol = 'BN184';
+    }
+    else if(md === '07-04'){
+      symbol = 'BN185';
+    }
+    else if(md === '07-05'){
+      symbol = 'BN186';
+    }
+    else if(md === '07-06'){
+      symbol = 'BN187';
+    }
+    else if(md === '07-07'){
+      symbol = 'BN188';
+    }
+    else if(md === '07-08'){
+      symbol = 'BN189';
+    }
+    else if(md === '07-09'){
+      symbol = 'BN190';
+    }
+    else if(md === '07-10'){
+      symbol = 'BN191';
+    }
+    else if(md === '07-11'){
+      symbol = 'BN192';
+    }
+    else if(md === '07-12'){
+      symbol = 'BN193';
+    }
+    else if(md === '07-13'){
+      symbol = 'BN194';
+    }
+    else if(md === '07-14'){
+      symbol = 'BN195';
+    }
+    else if(md === '07-15'){
+      symbol = 'BN196';
+    }
+    else if(md === '07-16'){
+      symbol = 'BN197';
+    }
+    else if(md === '07-17'){
+      symbol = 'BN198';
+    }
+    else if(md === '07-18'){
+      symbol = 'BN199';
+    }
+    else if(md === '07-19'){
+      symbol = 'BN200';
+    }
+    else if(md === '07-20'){
+      symbol = 'BN201';
+    }
+    else if(md === '07-21'){
+      symbol = 'BN202';
+    }
+    else if(md === '07-22'){
+      symbol = 'BN203';
+    }
+    else if(md === '07-23'){
+      symbol = 'BN204';
+    }
+    else if(md === '07-24'){
+      symbol = 'BN205';
+    }
+    else if(md === '07-25'){
+      symbol = 'BN206';
+    }
+    else if(md === '07-26'){
+      symbol = 'BN207';
+    }
+    else if(md === '07-27'){
+      symbol = 'BN208';
+    }
+    else if(md === '07-28'){
+      symbol = 'BN209';
+    }
+    else if(md === '07-29'){
+      symbol = 'BN210';
+    }
+    else if(md === '07-30'){
+      symbol = 'BN211';
+    }
+    else if(md === '07-31'){
+      symbol = 'BN212';
+    }
+    else if(md === '08-01'){
+      symbol = 'BN213';
+    }
+    else if(md === '08-02'){
+      symbol = 'BN214';
+    }
+    else if(md === '08-03'){
+      symbol = 'BN215';
+    }
+    else if(md === '08-04'){
+      symbol = 'BN216';
+    }
+    else if(md === '08-05'){
+      symbol = 'BN217';
+    }
+    else if(md === '08-06'){
+      symbol = 'BN218';
+    }
+    else if(md === '08-07'){
+      symbol = 'BN219';
+    }
+    else if(md === '08-08'){
+      symbol = 'BN220';
+    }
+    else if(md === '08-09'){
+      symbol = 'BN221';
+    }
+    else if(md === '08-10'){
+      symbol = 'BN222';
+    }
+    else if(md === '08-11'){
+      symbol = 'BN223';
+    }
+    else if(md === '08-12'){
+      symbol = 'BN224';
+    }
+
+    else if(md === '08-13'){
+      symbol = 'L1';
+    }
+    else if(md === '08-14'){
+      symbol = 'L2';
+    }
+    else if(md === '08-15'){
+      symbol = 'L3';
+    }
+    else if(md === '08-16'){
+      symbol = 'L4';
+    }
+    else if(md === '08-17'){
+      symbol = 'L5';
+    }
+    else if(md === '08-18'){
+      symbol = 'L6';
+    }
+    else if(md === '08-19'){
+      symbol = 'L7';
+    }
+    else if(md === '08-20'){
+      symbol = 'L8';
+    }
+    else if(md === '08-21'){
+      symbol = 'L9';
+    }
+    else if(md === '08-22'){
+      symbol = 'L10';
+    }
+    else if(md === '08-23'){
+      symbol = 'L11';
+    }
+    else if(md === '08-24'){
+      symbol = 'L12';
+    }
+    else if(md === '08-25'){
+      symbol = 'L13';
+    }
+    else if(md === '08-26'){
+      symbol = 'L14';
+    }
+    else if(md === '08-27'){
+      symbol = 'L15';
+    }
+    else if(md === '08-28'){
+      symbol = 'L16';
+    }
+    else if(md === '08-29'){
+      symbol = 'L17';
+    }
+    else if(md === '08-30'){
+      symbol = 'L18';
+    }
+    else if(md === '08-31'){
+      symbol = 'L19';
+    }
+    else if(md === '09-01'){
+      symbol = 'L20';
+    }
+    else if(md === '09-02'){
+      symbol = 'L21';
+    }
+    else if(md === '09-03'){
+      symbol = 'L22';
+    }
+    else if(md === '09-04'){
+      symbol = 'L23';
+    }
+    else if(md === '09-05'){
+      symbol = 'L24';
+    }
+    else if(md === '09-06'){
+      symbol = 'L25';
+    }
+    else if(md === '09-07'){
+      symbol = 'L26';
+    }
+    else if(md === '09-08'){
+      symbol = 'L27';
+    }
+    else if(md === '09-09'){
+      symbol = 'L28';
+    }
+    else if(md === '09-10'){
+      symbol = 'L29';
+    }
+    else if(md === '09-11'){
+      symbol = 'L30';
+    }
+    else if(md === '09-12'){
+      symbol = 'L31';
+    }
+    else if(md === '09-13'){
+      symbol = 'L32';
+    }
+    else if(md === '09-14'){
+      symbol = 'L33';
+    }
+    else if(md === '09-15'){
+      symbol = 'L34';
+    }
+    else if(md === '09-16'){
+      symbol = 'L35';
+    }
+    else if(md === '09-17'){
+      symbol = 'L36';
+    }
+    else if(md === '09-18'){
+      symbol = 'L37';
+    }
+    else if(md === '09-19'){
+      symbol = 'L38';
+    }
+    else if(md === '09-20'){
+      symbol = 'L39';
+    }
+    else if(md === '09-21'){
+      symbol = 'L40';
+    }
+    else if(md === '09-22'){
+      symbol = 'L41';
+    }
+    else if(md === '09-23'){
+      symbol = 'L42';
+    }
+    else if(md === '09-24'){
+      symbol = 'L43';
+    }
+    else if(md === '09-25'){
+      symbol = 'L44';
+    }
+    else if(md === '09-26'){
+      symbol = 'L45';
+    }
+    else if(md === '09-27'){
+      symbol = 'L46';
+    }
+    else if(md === '09-28'){
+      symbol = 'L47';
+    }
+    else if(md === '09-29'){
+      symbol = 'L48';
+    }
+    else if(md === '09-30'){
+      symbol = 'L49';
+    }
+    else if(md === '10-01'){
+      symbol = 'L50';
+    }
+    else if(md === '10-02'){
+      symbol = 'L51';
+    }
+    else if(md === '10-03'){
+      symbol = 'L52';
+    }
+    else if(md === '10-04'){
+      symbol = 'L53';
+    }
+    else if(md === '10-05'){
+      symbol = 'L54';
+    }
+    else if(md === '10-06'){
+      symbol = 'L55';
+    }
+    else if(md === '10-07'){
+      symbol = 'L56';
+    }
+    else if(md === '10-08'){
+      symbol = 'L57';
+    }
+    else if(md === '10-09'){
+      symbol = 'L58';
+    }
+    else if(md === '10-10'){
+      symbol = 'L59';
+    }
+    else if(md === '10-11'){
+      symbol = 'L60';
+    }
+    else if(md === '10-12'){
+      symbol = 'L61';
+    }
+    else if(md === '10-13'){
+      symbol = 'L62';
+    }
+    else if(md === '10-14'){
+      symbol = 'L63';
+    }
+    else if(md === '10-15'){
+      symbol = 'L64';
+    }
+    else if(md === '10-16'){
+      symbol = 'L65';
+    }
+    else if(md === '10-17'){
+      symbol = 'L66';
+    }
+    else if(md === '10-18'){
+      symbol = 'L67';
+    }
+    else if(md === '10-19'){
+      symbol = 'L68';
+    }
+    else if(md === '10-20'){
+      symbol = 'L69';
+    }
+    else if(md === '10-21'){
+      symbol = 'L70';
+    }
+    else if(md === '10-22'){
+      symbol = 'L71';
+    }
+    else if(md === '10-23'){
+      symbol = 'L72';
+    }
+    else if(md === '10-24'){
+      symbol = 'L73';
+    }
+    else if(md === '10-25'){
+      symbol = 'L74';
+    }
+    else if(md === '10-26'){
+      symbol = 'L75';
+    }
+    else if(md === '10-27'){
+      symbol = 'L76';
+    }
+    else if(md === '10-28'){
+      symbol = 'L77';
+    }
+    else if(md === '10-29'){
+      symbol = 'L78';
+    }
+    else if(md === '10-30'){
+      symbol = 'L79';
+    }
+    else if(md === '10-31'){
+      symbol = 'L80';
+    }
+    else if(md === '11-01'){
+      symbol = 'L81';
+    }
+
+    else if(md === '11-02'){
+      symbol = 'L82';
+    }
+    else if(md === '11-03'){
+      symbol = 'L83';
+    }
+    else if(md === '11-04'){
+      symbol = 'L84';
+    }
+    else if(md === '11-05'){
+      symbol = 'L85';
+    }
+    else if(md === '11-06'){
+      symbol = 'L86';
+    }
+    else if(md === '11-07'){
+      symbol = 'L87';
+    }
+    else if(md === '11-08'){
+      symbol = 'L88';
+    }
+    else if(md === '11-09'){
+      symbol = 'L89';
+    }
+    else if(md === '11-10'){
+      symbol = 'L90';
+    }
+    else if(md === '11-11'){
+      symbol = 'L91';
+    }
+    else if(md === '11-12'){
+      symbol = 'L92';
+    }
+    else if(md === '11-13'){
+      symbol = 'L93';
+    }
+    else if(md === '11-14'){
+      symbol = 'L94';
+    }
+    else if(md === '11-15'){
+      symbol = 'L95';
+    }
+    else if(md === '11-16'){
+      symbol = 'L96';
+    }
+    else if(md === '11-17'){
+      symbol = 'L97';
+    }
+    else if(md === '11-18'){
+      symbol = 'L98';
+    }
+    else if(md === '11-19'){
+      symbol = 'L99';
+    }
+    else if(md === '11-20'){
+      symbol = 'L100';
+    }
+    else if(md === '11-21'){
+      symbol = 'L101';
+    }
+    else if(md === '11-22'){
+      symbol = 'L102';
+    }
+    else if(md === '11-23'){
+      symbol = 'L103';
+    }
+    else if(md === '11-24'){
+      symbol = 'L104';
+    }
+    else if(md === '11-25'){
+      symbol = 'L105';
+    }
+    else if(md === '11-26'){
+      symbol = 'L106';
+    }
+    else if(md === '11-27'){
+      symbol = 'L107';
+    }
+    else if(md === '11-28'){
+      symbol = 'L108';
+    }
+    else if(md === '11-29'){
+      symbol = 'L109';
+    }
+    else if(md === '11-30'){
+      symbol = 'L110';
+    }
+    else if(md === '12-01'){
+      symbol = 'L111';
+    }
+    else if(md === '12-02'){
+      symbol = 'L112';
+    }
+    else if(md === '12-03'){
+      symbol = 'L113';
+    }
+    else if(md === '12-04'){
+      symbol = 'L114';
+    }
+    else if(md === '12-05'){
+      symbol = 'L115';
+    }
+    else if(md === '12-06'){
+      symbol = 'L116';
+    }
+    else if(md === '12-07'){
+      symbol = 'L117';
+    }
+    else if(md === '12-08'){
+      symbol = 'L118';
+    }
+    else if(md === '12-09'){
+      symbol = 'L119';
+    }
+    else if(md === '12-10'){
+      symbol = 'L120';
+    }
+    else if(md === '12-11'){
+      symbol = 'L121';
+    }
+    else if(md === '12-12'){
+      symbol = 'L122';
+    }
+    else if(md === '12-13'){
+      symbol = 'L123';
+    }
+    else if(md === '12-14'){
+      symbol = 'L124';
+    }
+    else if(md === '12-15'){
+      symbol = 'L125';
+    }
+    else if(md === '12-16'){
+      symbol = 'L126';
+    }
+    else if(md === '12-17'){
+      symbol = 'L127';
+    }
+    else if(md === '12-18'){
+      symbol = 'L128';
+    }
+
+        var iso = activeISO();
+        var href = '/periodic.html?el=' + encodeURIComponent(symbol);
+        if(iso){
+          href += '&ref=' + encodeURIComponent(iso);
+        }
+        link.href = href;
+  }
+
+  if(ref){
+    ref.addEventListener('change', updatePeriodicLink);
+    ref.addEventListener('input', updatePeriodicLink);
+  }
+  document.addEventListener('DOMContentLoaded', updatePeriodicLink);
+  window.addEventListener('load', function(){ setTimeout(updatePeriodicLink, 0); });
+})();
+</script>
+
+
+<!-- Modal zoom (mobile) -->
+<div id="anilloModal" class="anModal" aria-hidden="true">
+  <div class="anModalBackdrop"></div>
+  <div class="anModalCard" role="dialog" aria-modal="true" aria-label="Detalle del Anillo de Fuego">
+    <button class="anModalClose" type="button" aria-label="Cerrar">×</button>
+    <div class="anModalHead mono">
+      <div class="anModalLine1"></div>
+      <div class="anModalLine2"><span class="solar"></span> <span class="sep">·</span> <span class="dow"></span></div>
+    </div>
+    <div class="anModalFreq mono"></div>
+  </div>
+</div>
+
+
+<script>
+(function () {
+  function stripSpacesOnDateInput(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    function sanitize() {
+      const raw = (el.value || "");
+      const cleaned = raw.replace(/\s+/g, "");
+      if (cleaned !== raw) {
+        el.value = cleaned;
+
+        // Re-dispara eventos para actualizar cálculos ligados a input/change
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }
+
+    el.addEventListener("input", sanitize);
+    el.addEventListener("change", sanitize);
+    el.addEventListener("blur", sanitize);
+  }
+
+  // Fecha de referencia y fecha de nacimiento
+  stripSpacesOnDateInput("ref");
+  stripSpacesOnDateInput("dob");
+})();
+</script>
+
+</body></html>
