@@ -495,6 +495,62 @@ body.noScroll{overflow:hidden}
     @media (max-width: 599px){
       .splash{--brandShiftX:-4.8vw;}
     }
+
+/* === Grid HUD (georreferenciación) sobre la splash === */
+.splash{
+  /* ya es fixed en tu CSS, esto sólo refuerza el stacking context */
+  isolation: isolate;
+}
+
+/* La capa del grid */
+.splash::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+
+  /* Colores: azul LGC + acento */
+  --gridMajor: rgba(124,199,255,.18); /* #7cc7ff */
+  --gridMinor: rgba(255,209,102,.10); /* --accent */
+
+  /* Cuadrícula doble: una “mayor” y otra “menor” */
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--gridMajor) 0 1px,
+      transparent 1px 160px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--gridMajor) 0 1px,
+      transparent 1px 160px
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--gridMinor) 0 1px,
+      transparent 1px 40px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--gridMinor) 0 1px,
+      transparent 1px 40px
+    );
+
+  opacity: .16;
+  mix-blend-mode: overlay;
+  filter: blur(.25px);
+
+  /* “Curvatura” tipo Luna: el grid se desvanece hacia los bordes */
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 0%, #000 55%, transparent 100%);
+          mask-image: radial-gradient(circle at 50% 45%, #000 0%, #000 55%, transparent 100%);
+}
+
+/* Asegura que el contenido quede por encima del grid */
+.splash__inner{
+  position: relative;
+  z-index: 1;
+}
 </style>
 
 
