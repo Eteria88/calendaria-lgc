@@ -496,10 +496,10 @@ body.noScroll{overflow:hidden}
       .splash{--brandShiftX:-4.8vw;}
     }
 
-/* === HUD Marks (futurista, cian-plateado) sobre la splash === */
+/* === HUD Cartesian Axes (cruce X/Y para cardinalidades) === */
 .splash{ isolation:isolate; }
 
-/* Marcas tipo “crosshair” sutiles en zonas puntuales */
+/* Un cruce de ejes estilo HUD, con fade y ticks, sin “enmarcar” */
 .splash::before{
   content:"";
   position:absolute;
@@ -507,88 +507,85 @@ body.noScroll{overflow:hidden}
   pointer-events:none;
   z-index:0;
 
-  /* Paleta: cian + plateado (coherente con tu UI) */
+  /* Paleta: cian + plateado */
   --silver: rgba(230,241,255,.26);
   --cyan:   rgba(124,199,255,.24);
 
-  /* Tamaños */
-  --len: 54px;     /* largo de cada brazo */
-  --thick: 2px;    /* grosor */
-  --halo: 10px;    /* glow suave */
+  /* Punto de cruce (ajustable) */
+  --cx: 50%;
+  --cy: 46%;
 
+  /* Largo visible de los ejes (no toda la pantalla) */
+  --hx: 62vmin; /* horizontal total */
+  --vy: 62vmin; /* vertical total */
+
+  /* Grosor */
+  --thick: 2px;
+  --thin: 1px;
+
+  /* Ejes + ticks */
   background-image:
-    /* TOP-LEFT (4 brazos) */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
+    /* Horizontal principal (plateado) */
+    linear-gradient(to right, var(--silver), var(--silver)),
+    /* Vertical principal (cian) */
+    linear-gradient(to bottom, var(--cyan), var(--cyan)),
 
-    /* TOP-CENTER */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
-
-    /* TOP-RIGHT */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
-
-    /* BOTTOM-LEFT */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
-
-    /* BOTTOM-CENTER */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
-
-    /* BOTTOM-RIGHT */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver));
+    /* Ticks horizontales (pequeñas marcas) */
+    repeating-linear-gradient(to right,
+      transparent 0 22px,
+      rgba(230,241,255,.18) 22px 23px,
+      transparent 23px 44px
+    ),
+    /* Ticks verticales */
+    repeating-linear-gradient(to bottom,
+      transparent 0 22px,
+      rgba(124,199,255,.16) 22px 23px,
+      transparent 23px 44px
+    );
 
   background-repeat: no-repeat;
 
-  /* Posiciones: “rodean” el título sin cruzarlo */
+  /* Ubicamos los 4 layers centrados en el punto de cruce */
   background-position:
-    /* TL */ 10vmin 14vmin, 10vmin 14vmin, 10vmin 14vmin, 10vmin 14vmin,
-    /* TC */ 50%   12vmin,  50%   12vmin,  50%   12vmin,  50%   12vmin,
-    /* TR */ calc(100% - 12vmin) 14vmin, calc(100% - 12vmin) 14vmin, calc(100% - 12vmin) 14vmin, calc(100% - 12vmin) 14vmin,
-    /* BL */ 12vmin calc(100% - 16vmin), 12vmin calc(100% - 16vmin), 12vmin calc(100% - 16vmin), 12vmin calc(100% - 16vmin),
-    /* BC */ 50%   calc(100% - 10vmin), 50%   calc(100% - 10vmin), 50%   calc(100% - 10vmin), 50%   calc(100% - 10vmin),
-    /* BR */ calc(100% - 14vmin) calc(100% - 16vmin), calc(100% - 14vmin) calc(100% - 16vmin), calc(100% - 14vmin) calc(100% - 16vmin), calc(100% - 14vmin) calc(100% - 16vmin);
+    calc(var(--cx) - (var(--hx) / 2)) var(--cy),  /* horizontal */
+    var(--cx) calc(var(--cy) - (var(--vy) / 2)),  /* vertical */
+    calc(var(--cx) - (var(--hx) / 2)) var(--cy),  /* ticks horiz */
+    var(--cx) calc(var(--cy) - (var(--vy) / 2));  /* ticks vert */
 
-  /* Tamaños por capa: cada crosshair = 2 horizontales + 2 verticales */
   background-size:
-    /* TL */ var(--len) var(--thick), var(--len) var(--thick), var(--thick) var(--len), var(--thick) var(--len),
-    /* TC */ var(--len) var(--thick), var(--len) var(--thick), var(--thick) var(--len), var(--thick) var(--len),
-    /* TR */ var(--len) var(--thick), var(--len) var(--thick), var(--thick) var(--len), var(--thick) var(--len),
-    /* BL */ var(--len) var(--thick), var(--len) var(--thick), var(--thick) var(--len), var(--thick) var(--len),
-    /* BC */ var(--len) var(--thick), var(--len) var(--thick), var(--thick) var(--len), var(--thick) var(--len),
-    /* BR */ var(--len) var(--thick), var(--len) var(--thick), var(--thick) var(--len), var(--thick) var(--len);
+    var(--hx) var(--thick),  /* horizontal */
+    var(--thick) var(--vy),  /* vertical */
+    var(--hx) var(--thin),   /* ticks horiz */
+    var(--thin) var(--vy);   /* ticks vert */
 
-  /* Rotamos 90° algunas capas con truco: usamos transforms separadas sería ideal,
-     pero acá simplificamos: lo dejamos tipo “+” limpio, y el look lo da el blend + halo */
-  opacity: .55;
+  /* Look HUD */
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 var(--halo) rgba(124,199,255,.10));
+  opacity: .48;
+  filter: drop-shadow(0 0 10px rgba(124,199,255,.10));
+
+  /* Fade hacia los extremos (no “barra infinita”), dejando el cruce más fuerte */
+  -webkit-mask-image:
+    radial-gradient(circle at var(--cx) var(--cy),
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 38%,
+      rgba(255,255,255,0) 100%);
+          mask-image:
+    radial-gradient(circle at var(--cx) var(--cy),
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 38%,
+      rgba(255,255,255,0) 100%);
 }
 
-/* Nota: los dos primeros linears por crosshair sirven como horizontales,
-   los dos siguientes como verticales (se logran por background-size: ancho vs alto). */
-
-/* Contenido por encima */
 .splash__inner{ position:relative; z-index:1; }
 
-/* Mobile: un poco más chico */
+/* Mobile: ejes un poco más cortos */
 @media (max-width: 599px){
-  .splash::before{ --len: 44px; opacity: .48; }
+  .splash::before{
+    --hx: 54vmin;
+    --vy: 54vmin;
+    opacity: .44;
+  }
+}
 }
 </style>
 
