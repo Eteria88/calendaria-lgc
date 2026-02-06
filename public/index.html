@@ -697,6 +697,87 @@ body.noScroll{overflow:hidden}
 @media (max-width: 599px){
   .splash::before{ --L: 46px; --G: 14px; opacity: .52; }
 }
+
+/* === Celestial (Sol arriba + Tierra abajo) === */
+.splash::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+
+  /* controles rápidos */
+  --sunI: 0.18;     /* intensidad sol */
+  --earthI: 0.14;   /* intensidad líneas tierra */
+  --earthLimbI: 0.22;
+
+  background-image:
+    /* SOL: punto + halo (arriba, como tu captura) */
+    radial-gradient(circle at 72% 12%,
+      rgba(255,255,255, calc(var(--sunI) * 1.2)) 0 2.5px,
+      rgba(255,255,255,0) 12px),
+    radial-gradient(circle at 72% 12%,
+      rgba(124,199,255, var(--sunI)) 0,
+      rgba(124,199,255,0) 120px),
+
+    /* TIERRA: “limbo” (arco principal) abajo-izquierda */
+    radial-gradient(circle at -8% 112%,
+      rgba(230,241,255,0) 0 62vmin,
+      rgba(230,241,255, var(--earthLimbI)) 62.2vmin 62.6vmin,
+      rgba(230,241,255,0) 63vmin),
+    /* TIERRA: paralelos sutiles */
+    radial-gradient(circle at -8% 112%,
+      rgba(124,199,255,0) 0 55vmin,
+      rgba(124,199,255, var(--earthI)) 55.1vmin 55.35vmin,
+      rgba(124,199,255,0) 55.7vmin),
+    radial-gradient(circle at -8% 112%,
+      rgba(124,199,255,0) 0 48vmin,
+      rgba(124,199,255, calc(var(--earthI) * 0.9)) 48.1vmin 48.32vmin,
+      rgba(124,199,255,0) 48.7vmin),
+    radial-gradient(circle at -8% 112%,
+      rgba(124,199,255,0) 0 41vmin,
+      rgba(124,199,255, calc(var(--earthI) * 0.75)) 41.1vmin 41.28vmin,
+      rgba(124,199,255,0) 41.7vmin);
+
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  mix-blend-mode: screen;
+  opacity: 0.85;
+
+  /* limitar: sol arriba; tierra esquina inferior-izq */
+  -webkit-mask-image:
+    radial-gradient(circle at 72% 12%,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 30%,
+      rgba(255,255,255,0) 58%),
+    radial-gradient(circle at -8% 112%,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 58%,
+      rgba(255,255,255,0) 78%);
+          mask-image:
+    radial-gradient(circle at 72% 12%,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 30%,
+      rgba(255,255,255,0) 58%),
+    radial-gradient(circle at -8% 112%,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,1) 58%,
+      rgba(255,255,255,0) 78%);
+}
+
+/* orden de capas */
+.splash::after{ z-index:0; }
+.splash::before{ z-index:1; }
+.splash__inner{ z-index:2; }
+
+@media (max-width: 599px){
+  .splash::after{
+    --sunI: 0.16;
+    --earthI: 0.12;
+    --earthLimbI: 0.18;
+    opacity: 0.80;
+  }
+}
 </style>
 
 
