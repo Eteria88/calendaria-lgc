@@ -570,7 +570,7 @@ body.noScroll{overflow:hidden}
 /* contenido arriba */
 .splash__inner{ position:relative; z-index:1; }
 
-/* === HUD Floating Crosshairs (CSS-only, visible) === */
+/* === HUD Floating Crosshairs (limpio: solo 2 cruces, sin tapar la Tierra) === */
 .splash{ isolation:isolate; }
 
 .splash::before{
@@ -578,7 +578,7 @@ body.noScroll{overflow:hidden}
   position:absolute;
   inset:0;
   pointer-events:none;
-  z-index:0;
+  z-index:1; /* encima de la tierra (after), debajo del texto (inner) */
 
   /* colores */
   --silver: rgba(230,241,255,.30);
@@ -588,41 +588,16 @@ body.noScroll{overflow:hidden}
   --L: 54px;    /* largo brazo */
   --G: 16px;    /* gap centro */
   --T: 2px;     /* grosor */
-  --tick: 1px;
 
-  /* helper: para cada cruz usamos 4 segmentos (izq/der/arriba/abajo) */
+  /* 2 cruces: TOP-LEFT (x1,y1) y BOTTOM-RIGHT (x6,y6) */
   background-image:
-    /* TL */
+    /* TL (4 segmentos) */
     linear-gradient(var(--cyan), var(--cyan)),
     linear-gradient(var(--cyan), var(--cyan)),
     linear-gradient(var(--silver), var(--silver)),
     linear-gradient(var(--silver), var(--silver)),
 
-    /* TC */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
-
-    /* TR */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
-
-    /* BL */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
-
-    /* BC */
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--cyan), var(--cyan)),
-    linear-gradient(var(--silver), var(--silver)),
-    linear-gradient(var(--silver), var(--silver)),
-
-    /* BR */
+    /* BR (4 segmentos) */
     linear-gradient(var(--cyan), var(--cyan)),
     linear-gradient(var(--cyan), var(--cyan)),
     linear-gradient(var(--silver), var(--silver)),
@@ -630,48 +605,16 @@ body.noScroll{overflow:hidden}
 
   background-repeat: no-repeat;
 
-  /* posiciones (centros de cada cruz) */
-  --x1: 12vmin; --y1: 14vmin;                   /* TL */
-  --x2: 50%;   --y2: 12vmin;                    /* TC */
-  --x3: calc(100% - 12vmin); --y3: 14vmin;      /* TR */
-  --x4: 12vmin; --y4: calc(100% - 16vmin);      /* BL */
-  --x5: 50%;   --y5: calc(100% - 10vmin);       /* BC */
+  /* centros */
+  --x1: 12vmin; --y1: 14vmin; /* TL */
   --x6: calc(100% - 14vmin); --y6: calc(100% - 16vmin); /* BR */
 
-  /* Cada cruz: 4 capas
-     1) horiz izq  2) horiz der  3) vert arriba  4) vert abajo
-     Para el gap: ubicamos cada segmento a distancia G/2 del centro.
-  */
   background-position:
     /* TL */
     calc(var(--x1) - (var(--G)/2) - (var(--L)/2)) var(--y1),
     calc(var(--x1) + (var(--G)/2))                var(--y1),
     var(--x1) calc(var(--y1) - (var(--G)/2) - (var(--L)/2)),
     var(--x1) calc(var(--y1) + (var(--G)/2)),
-
-    /* TC */
-    calc(var(--x2) - (var(--G)/2) - (var(--L)/2)) var(--y2),
-    calc(var(--x2) + (var(--G)/2))                var(--y2),
-    var(--x2) calc(var(--y2) - (var(--G)/2) - (var(--L)/2)),
-    var(--x2) calc(var(--y2) + (var(--G)/2)),
-
-    /* TR */
-    calc(var(--x3) - (var(--G)/2) - (var(--L)/2)) var(--y3),
-    calc(var(--x3) + (var(--G)/2))                var(--y3),
-    var(--x3) calc(var(--y3) - (var(--G)/2) - (var(--L)/2)),
-    var(--x3) calc(var(--y3) + (var(--G)/2)),
-
-    /* BL */
-    calc(var(--x4) - (var(--G)/2) - (var(--L)/2)) var(--y4),
-    calc(var(--x4) + (var(--G)/2))                var(--y4),
-    var(--x4) calc(var(--y4) - (var(--G)/2) - (var(--L)/2)),
-    var(--x4) calc(var(--y4) + (var(--G)/2)),
-
-    /* BC */
-    calc(var(--x5) - (var(--G)/2) - (var(--L)/2)) var(--y5),
-    calc(var(--x5) + (var(--G)/2))                var(--y5),
-    var(--x5) calc(var(--y5) - (var(--G)/2) - (var(--L)/2)),
-    var(--x5) calc(var(--y5) + (var(--G)/2)),
 
     /* BR */
     calc(var(--x6) - (var(--G)/2) - (var(--L)/2)) var(--y6),
@@ -681,21 +624,18 @@ body.noScroll{overflow:hidden}
 
   background-size:
     /* TL */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
-    /* TC */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
-    /* TR */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
-    /* BL */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
-    /* BC */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2),
     /* BR */ calc(var(--L)/2) var(--T), calc(var(--L)/2) var(--T), var(--T) calc(var(--L)/2), var(--T) calc(var(--L)/2);
 
   mix-blend-mode: screen;
-  opacity: .60;
-  filter: drop-shadow(0 0 10px rgba(124,199,255,.10));
+  opacity: .48;
+  filter: drop-shadow(0 0 10px rgba(124,199,255,.08));
 }
 
-.splash__inner{ position:relative; z-index:1; }
+.splash__inner{ position:relative; z-index:2; }
 
 @media (max-width: 599px){
-  .splash::before{ --L: 46px; --G: 14px; opacity: .52; }
+  .splash::before{ --L: 46px; --G: 14px; opacity: .42; }
+}
 }
 
 /* === Celestial (Sol arriba + Tierra wireframe abajo-izq) === */
