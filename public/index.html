@@ -612,6 +612,55 @@ body.noScroll{overflow:hidden}
 .splash::after{ z-index:0; }
 .splash::before{ z-index:1; }
 .splash__inner{ z-index:2; }
+
+/* === CELESTIAL (Sol + Tierra) — override seguro === */
+.splash::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+
+  /* controles */
+  --sunI: 0.16;
+  --globeSize: 74vmin;
+
+  background-image:
+    /* SOL: punto + halo (bien esquina arriba-derecha) */
+    radial-gradient(circle at 95% 8%,
+      rgba(255,255,255, calc(var(--sunI) * 1.25)) 0 2.5px,
+      rgba(255,255,255,0) 14px),
+    radial-gradient(circle at 95% 8%,
+      rgba(124,199,255, var(--sunI)) 0,
+      rgba(124,199,255,0) 140px),
+
+    /* TIERRA: wireframe */
+    url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20600%20600%27%3E%0A%3Cg%20transform=%27rotate(-23.0%20300%20300)%27%20fill=%27none%27%20stroke=%27rgb(124,199,255)%27%20stroke-linecap=%27round%27%3E%0A%20%20%3Ccircle%20cx=%27300%27%20cy=%27300%27%20r=%27250%27%20stroke-opacity=%27.18%27%20stroke-width=%272%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%27140%27%20stroke-opacity=%27.10%27%20stroke-width=%271.15%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27250%27%20ry=%2790%27%20%20stroke-opacity=%27.09%27%20stroke-width=%271.05%27/%3E%0A%20%20%3Cellipse%20cx=%27300%27%20cy=%27300%27%20rx=%27140%27%20ry=%27250%27%20stroke-opacity=%27.09%27%20stroke-width=%271.05%27/%3E%0A%20%20%3Cg%20stroke-opacity=%27.09%27%20stroke-width=%271.0%27%3E%0A%20%20%20%20%3Cpath%20d=%27M100%20240%20L500%20360%27/%3E%3Cpath%20d=%27M100%20360%20L500%20240%27/%3E%0A%20%20%20%20%3Cpath%20d=%27M80%20300%20L520%20300%27/%3E%3Cpath%20d=%27M300%2080%20L300%20520%27/%3E%0A%20%20%3C/g%3E%0A%3C/g%3E%0A%3C/svg%3E");
+
+  background-repeat:no-repeat,no-repeat,no-repeat;
+  background-size:100% 100%,100% 100%,var(--globeSize) var(--globeSize);
+
+  /* Tierra saliendo desde esquina inferior izquierda (como tu línea amarilla) */
+  background-position:0 0,0 0,-36vmin calc(100% + 8vmin);
+
+  mix-blend-mode:screen;
+  opacity:.90;
+  filter:drop-shadow(0 0 12px rgba(124,199,255,.06));
+}
+
+@media (max-width: 599px){
+  .splash::after{
+    --sunI: 0.14;
+    --globeSize: 86vmin;
+    background-position:0 0,0 0,-40vmin calc(100% + 10vmin);
+    opacity:.86;
+  }
+}
+
+/* Layer order safeguard */
+.splash::after{ z-index:0; }
+.splash::before{ z-index:1; }
+.splash__inner{ position:relative; z-index:2; }
 </style>
 
 
