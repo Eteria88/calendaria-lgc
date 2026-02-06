@@ -396,9 +396,12 @@ body.noScroll{overflow:hidden}
     .char{position:absolute;left:0;top:0;will-change:transform,opacity;font-weight:600;
       background:linear-gradient(180deg,#dce8ff,#b4c7ff 45%,#8aa2ff 55%,#b9ccff);
       -webkit-background-clip:text;background-clip:text;color:transparent;
-      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15)transform:translate(-50%,-50%);}
+      text-shadow:0 0 12px rgba(180,200,255,.25), 0 0 40px rgba(120,150,255,.15);
+      transform:translate(-50%,-50%);
+    }
     .row-0 .char{font-size:clamp(56px,11vw,128px)}
     .row-1 .char{font-size:clamp(38px,9vw,96px);opacity:.95}
+    .enterWrap{display:flex;justify-content:center;transform:translateX(var(--brandShiftX));}
     .enter{margin-top:28px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#cfe1ff;border:1px solid rgba(156,178,200,.4);
       background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:12px 18px;border-radius:12px;cursor:pointer;transition:transform .1s ease,opacity .3s ease;border-color}
     .enter:active{transform:scale(.98)}
@@ -514,7 +517,7 @@ body.noScroll{overflow:hidden}
         </div>
         <div id="brandStage" class="brand__stage" aria-hidden="true"></div>
       </div>
-      <div><button id="enterBtn" class="enter" disabled>Entrar</button></div>
+      <div class="enterWrap"><button id="enterBtn" class="enter" disabled>Entrar</button></div>
     </div>
   </div>
 
