@@ -496,77 +496,73 @@ body.noScroll{overflow:hidden}
       .splash{--brandShiftX:-4.8vw;}
     }
 
-/* === Grid HUD (georreferenciación) sobre la splash === */
-.splash{
-  isolation: isolate; /* stacking context limpio */
-}
+/* === HUD Lines (georreferenciación estilo Foundation) sobre la splash === */
+.splash{ isolation:isolate; }
 
-/* Reveal: el grid se “arma” desde los bordes hacia el centro */
+/* Reveal: se arma desde los bordes hacia el centro */
 @keyframes hudEdgeToCenter{
-  0%   { --hudR: 62%; opacity: 0.56; }
-  70%  { --hudR: 18%; opacity: 0.54; }
-  100% { --hudR: 0%;  opacity: 0.50; }
+  0%   { --hudR: 70%; opacity: 0.00; }
+  18%  { --hudR: 70%; opacity: 0.42; }
+  100% { --hudR: 0%;  opacity: 0.48; }
 }
 
 .splash::before{
   content:"";
   position:absolute;
-  inset:-2px;
+  inset:0;
   pointer-events:none;
   z-index:0;
 
-  /* Un poco más visible */
-  --gridMajor: rgba(230,241,255,.42); /* blanco azulado */
-  --gridMinor: rgba(124,199,255,.28); /* #7cc7ff */
-  --hudR: 62%; /* radio inicial: centro oculto */
+  /* Pocas líneas grandes (sin cuadriculita) */
+  --line: rgba(230,241,255,.60);      /* blanco azulado */
+  --lineSoft: rgba(124,199,255,.34);  /* #7cc7ff */
 
   background-image:
-    /* líneas mayores */
-    repeating-linear-gradient(
-      to right,
-      var(--gridMajor) 0 1.35px,
-      transparent 1.35px 190px
+    /* horizontales grandes */
+    repeating-linear-gradient(to bottom,
+      transparent 0,
+      transparent 148px,
+      var(--line) 150px,
+      transparent 152px,
+      transparent 260px
     ),
-    repeating-linear-gradient(
-      to bottom,
-      var(--gridMajor) 0 1.35px,
-      transparent 1.35px 190px
+    /* verticales grandes */
+    repeating-linear-gradient(to right,
+      transparent 0,
+      transparent 218px,
+      var(--lineSoft) 220px,
+      transparent 222px,
+      transparent 360px
     ),
-    /* líneas menores */
-    repeating-linear-gradient(
-      to right,
-      var(--gridMinor) 0 1px,
-      transparent 1px 46px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      var(--gridMinor) 0 1px,
-      transparent 1px 46px
-    );
+    /* círculos/arcos */
+    url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201200%20800%22%3E%0A%20%20%3Cg%20fill=%22none%22%20stroke=%22white%22%20stroke-linecap=%22round%22%3E%0A%20%20%20%20%3Ccircle%20cx=%22420%22%20cy=%22380%22%20r=%22250%22%20stroke-width=%222%22%20stroke-opacity=%22.18%22/%3E%0A%20%20%20%20%3Ccircle%20cx=%22420%22%20cy=%22380%22%20r=%22360%22%20stroke-width=%221.5%22%20stroke-opacity=%22.10%22/%3E%0A%20%20%20%20%3Ccircle%20cx=%22420%22%20cy=%22380%22%20r=%22140%22%20stroke-width=%221.5%22%20stroke-opacity=%22.12%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M60%20380%20H780%22%20stroke-width=%222%22%20stroke-opacity=%22.14%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M420%2040%20V720%22%20stroke-width=%222%22%20stroke-opacity=%22.12%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M250%20210%20A240%20240%200%200%201%20590%20250%22%20stroke-width=%221.8%22%20stroke-opacity=%22.12%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M220%20520%20A310%20310%200%200%200%20660%20560%22%20stroke-width=%221.8%22%20stroke-opacity=%22.10%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M300%20120%20L540%20640%22%20stroke-width=%221.2%22%20stroke-opacity=%22.08%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M180%20640%20L700%20280%22%20stroke-width=%221.2%22%20stroke-opacity=%22.08%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M420%20380%20m-8%200%20h16%22%20stroke-width=%222%22%20stroke-opacity=%22.18%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M420%20380%20m0%20-8%20v16%22%20stroke-width=%222%22%20stroke-opacity=%22.18%22/%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E");
+
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: 100% 100%, 100% 100%, 1100px 740px;
+  background-position: 0 0, 0 0, 18% 48%;
 
   mix-blend-mode: soft-light;
-  filter: none;
 
-  /* El “armado” desde bordes: centro transparente al inicio */
-  -webkit-mask-image: radial-gradient(circle at 50% 45%,
+  /* 1) sector izquierda  2) reveal desde bordes → centro */
+  -webkit-mask-image:
+    linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 78%),
+    radial-gradient(circle at 50% 45%,
       transparent 0%,
       transparent var(--hudR),
-      rgba(255,255,255,1) calc(var(--hudR) + 6%),
+      rgba(255,255,255,1) calc(var(--hudR) + 8%),
       rgba(255,255,255,1) 100%);
-          mask-image: radial-gradient(circle at 50% 45%,
+          mask-image:
+    linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 78%),
+    radial-gradient(circle at 50% 45%,
       transparent 0%,
       transparent var(--hudR),
-      rgba(255,255,255,1) calc(var(--hudR) + 6%),
+      rgba(255,255,255,1) calc(var(--hudR) + 8%),
       rgba(255,255,255,1) 100%);
 
-  animation: hudEdgeToCenter 2.4s ease-out both;
+  animation: hudEdgeToCenter 1.8s ease-out both;
 }
 
-/* Asegura que el contenido quede por encima del grid */
-.splash__inner{
-  position: relative;
-  z-index: 1;
-}
+.splash__inner{ position:relative; z-index:1; }
 </style>
 
 
