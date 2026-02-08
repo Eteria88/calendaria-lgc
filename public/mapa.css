@@ -232,3 +232,21 @@ a[aria-disabled="true"]{
     max-height:46vh;
   }
 }
+
+
+/* --- Button color override (v8) --- */
+.btn-primary{
+  background: rgba(255,255,255,.16);
+  border-color: rgba(255,255,255,.18);
+}
+.btn-primary:hover{
+  background: rgba(255,255,255,.22);
+}
+.btn-primary:active{
+  background: rgba(255,255,255,.26);
+}
+.btn-primary:visited,
+.btn-secondary:visited,
+.btn:visited{
+  color: inherit;
+}
