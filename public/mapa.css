@@ -13,13 +13,6 @@
 .selected-country .name{font-weight:600}
 .selected-country .code{border:1px solid var(--line);background:#0f1620;color:var(--text);border-radius:10px;padding:4px 8px;font-size:12px;min-width:64px;text-align:center}
 .map-wrap{position:relative}
-#map{height:100vh;width:100%}
-.tooltip{position:absolute;pointer-events:none;background:rgba(15,22,32,.9);color:#e8ecf1;padding:6px 10px;border-radius:8px;font-size:12px;border:1px solid var(--line);transform:translate(-50%,-120%);display:none}
-.search-row{display:flex;gap:8px;align-items:center}
-#search,#search-code{flex:1}
-#search-code-badge,#search-code-name{border:1px solid var(--line);background:#0f1620;color:#e8ecf1;border-radius:10px;padding:6px 10px;font-size:12px;min-width:64px;text-align:center}
-
-
 /* Botones secundarios */
 .btn.btn-secondary{
   background:#0f1620;
@@ -53,7 +46,7 @@
 @media (max-width: 860px){
   .layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .panel{border-right:none;border-bottom:1px solid var(--line);max-height:48vh}
-  #map{height:52vh}
+  .mymaps-wrap{height:52vh}
   .country-list{max-height:160px}
 }
 
@@ -78,6 +71,34 @@
   body[data-view="map"] .panel{display:none}
   body[data-view="map"] .map-wrap{display:block}
   .map-wrap{height:calc(100vh - 56px)}
-  #map{height:100%}
+  .mymaps-wrap{height:100%}
   .panel{max-height:calc(100vh - 56px);overflow:auto}
+}
+
+
+/* --- Google My Maps embed --- */
+.mymaps-wrap{
+  position:relative;
+  width:100%;
+  height:100vh;
+}
+.mymaps-wrap iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+/* Actions row */
+.actions-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+/* When join-map is disabled */
+a[aria-disabled="true"]{
+  opacity:.55;
+  pointer-events:none;
 }

@@ -5,79 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calendaria · Mapa y códigos</title>
 
-  <!-- Leaflet & TopoJSON -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="https://unpkg.com/topojson-client@3"></script>
-
   <link rel="stylesheet" href="mapa.css" />
-  <style>#n3-label{display:none}</style>
   <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#0b0d10">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Calendaria">
-<link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+  <meta name="theme-color" content="#0b0d10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Calendaria">
+  <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
 </head>
 <body data-view="list">
   <main class="layout">
-  <div class="mobile-toggle" role="tablist" aria-label="Vista">
+    <div class="mobile-toggle" role="tablist" aria-label="Vista">
       <button id="view-list" class="toggle-btn is-active" type="button" aria-pressed="true">Lista</button>
       <button id="view-map" class="toggle-btn" type="button" aria-pressed="false">Mapa</button>
     </div>
+
     <aside class="panel">
       <h2>Mapa y códigos (UIT)</h2>
 
-      
       <a class="home-link" href="/">← Volver al inicio</a>
-<div class="search-row">
-        <input id="search" type="text" placeholder="Buscar país por nombre…" />
+
+      <div class="actions-row" style="margin-top:10px;">
+        <a class="btn btn-secondary" id="open-mymaps" href="https://www.google.com/maps/d/viewer?mid=1hIDt87lZaqTVmtFrbzC2niRcfdx8aLA" target="_blank" rel="noopener">Abrir mapa en Google</a>
+        <!-- Cuando tengas el Form de la Red, pegás el link en href -->
+        <a class="btn btn-secondary" id="join-map" href="#" target="_blank" rel="noopener" aria-disabled="true">Sumarme al mapa</a>
+      </div>
+      <div class="muted" style="margin-top:8px;">
+        * Para “sumarte”, la Red suele usar un formulario. Cuando tengas el link, lo activamos.
+      </div>
+
+      <div class="search-row" style="margin-top:12px;">
+        <input id="search" type="text" placeholder="Buscar país por nombre…" autocomplete="off" />
         <div id="search-code-badge">—</div>
       </div>
 
       <div class="search-row" style="margin-top:10px;">
-        <input id="search-code" type="text" placeholder="Buscar por código: +57, 54, +1…" />
+        <input id="search-code" type="text" placeholder="Buscar por código: +57, 54, +1…" autocomplete="off" />
         <div id="search-code-name">—</div>
       </div>
 
       <ul id="country-list" class="country-list"></ul>
 
-      <div class="selected-country" id="selected-country">
+      <div class="selected-country" id="selected-country" aria-live="polite">
         <div class="row">
           <span class="name">—</span>
           <span class="code" id="selected-code">—</span>
         </div>
-        <div class="row muted" id="selected-hint" style="margin-top:6px;">Toca un país en el mapa para verlo aquí.</div>
+        <div class="row muted" id="selected-hint" style="margin-top:6px;">Toca un país de la lista para verlo aquí.</div>
       </div>
     </aside>
 
-    <section class="map-wrap">
-      <div id="map"></div>
-      <div id="tooltip" class="tooltip"></div>
+    <section class="map-wrap" aria-label="Mapa de la Red (Google My Maps)">
+      <div class="mymaps-wrap">
+        <iframe
+          id="mymaps-iframe"
+          src="https://www.google.com/maps/d/embed?mid=1hIDt87lZaqTVmtFrbzC2niRcfdx8aLA&ehbc=2E312F"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen>
+        </iframe>
+      </div>
     </section>
   </main>
 
-  <!-- JS de Mapa (usa dataset local o remoto) -->
   <script>
-    // Si querés que otro admin lo actualice sin redeploy, poné acá una URL JSON pública.
-    // Ejemplos: "countries_embed.json" (local), o una URL externa.
+    // Dataset de países + códigos:
+    // - "countries_embed.json" (local) te permite actualizar sin tocar el JS (solo editar JSON).
+    // - También podés poner una URL pública externa si la comunidad la mantiene.
     window.MAPA_DATA_URL = window.MAPA_DATA_URL || "countries_embed.json";
   </script>
   <script src="mapa.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(err) {
-      console.log('Service worker registration failed:', err);
-    });
-  });
-}
-</script>
 
-<script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        console.log('Service worker registration failed:', err);
+      });
+    });
+  }
+  </script>
+
+  <script>
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
 
 </body>
 </html>
