@@ -107,12 +107,11 @@
 
     const nameEl = document.querySelector("#selected-country .name");
     const codeEl = document.getElementById("selected-code");
-    const hintEl = document.getElementById("selected-hint");
-
-    if (nameEl) nameEl.textContent = name;
+if (nameEl) nameEl.textContent = name;
     if (codeEl) codeEl.textContent = phone || "—";
-    if (hintEl) hintEl.style.display = "none";
 
+    const card = document.getElementById("selected-country");
+    if (card) card.classList.remove("is-hidden");
     if (badgeEl) badgeEl.textContent = phone || "—";
     if (codeNameBadge) codeNameBadge.textContent = name || "—";
 

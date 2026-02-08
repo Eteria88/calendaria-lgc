@@ -21,39 +21,56 @@
     </div>
 
     <aside class="panel">
-      <h2>Mapa y códigos (UIT)</h2>
-
-      <a class="home-link" href="/">← Volver al inicio</a>
-
-      <div class="actions-row" style="margin-top:10px;">
-        <a class="btn btn-secondary" id="open-mymaps" href="https://www.google.com/maps/d/viewer?mid=1hIDt87lZaqTVmtFrbzC2niRcfdx8aLA" target="_blank" rel="noopener">Abrir mapa en Google</a>
-        <!-- Cuando tengas el Form de la Red, pegás el link en href -->
-        <a class="btn btn-secondary" id="join-map" href="#" target="_blank" rel="noopener" aria-disabled="true">Sumarme al mapa</a>
-      </div>
-      <div class="muted" style="margin-top:8px;">
-        * Para “sumarte”, la Red suele usar un formulario. Cuando tengas el link, lo activamos.
+      <div class="panel-head">
+        <h2>Mapa y códigos (UIT)</h2>
+        <a class="home-link" href="/">← Volver</a>
       </div>
 
-      <div class="search-row" style="margin-top:12px;">
-        <input id="search" type="text" placeholder="Buscar país por nombre…" autocomplete="off" />
-        <div id="search-code-badge">—</div>
+      <div class="card">
+  <div class="actions-row">
+    <a class="btn btn-primary" id="open-mymaps" href="https://www.google.com/maps/d/viewer?mid=1hIDt87lZaqTVmtFrbzC2niRcfdx8aLA" target="_blank" rel="noopener">Abrir mapa en Google</a>
+    <!-- Cuando tengas el Form de la Red, pegás el link en href -->
+    <a class="btn btn-secondary" id="join-map" href="#" target="_blank" rel="noopener" aria-disabled="true">Sumarme al mapa</a>
+  </div>
+  <div class="helper">
+    “Sumarme” se activa cuando tengamos el link del formulario de la Red.
+  </div>
+</div>
+
+      <div class="card">
+  <div class="section-title">Buscar</div>
+
+  <div class="field">
+    <label for="search">País</label>
+    <div class="field-row">
+      <input id="search" type="text" placeholder="Escribe un país…" autocomplete="off" />
+      <div id="search-code-badge" class="pill">—</div>
+    </div>
+  </div>
+
+  <div class="field" style="margin-top:10px;">
+    <label for="search-code">Código</label>
+    <div class="field-row">
+      <input id="search-code" type="text" placeholder="+57, 54, +1…" autocomplete="off" />
+      <div id="search-code-name" class="pill">—</div>
+    </div>
+  </div>
+</div>
       </div>
 
-      <div class="search-row" style="margin-top:10px;">
-        <input id="search-code" type="text" placeholder="Buscar por código: +57, 54, +1…" autocomplete="off" />
-        <div id="search-code-name">—</div>
+      <div class="card list-card">
+        <div class="section-title">Países</div>
+        <ul id="country-list" class="country-list"></ul>
       </div>
 
-      <ul id="country-list" class="country-list"></ul>
-
-      <div class="selected-country" id="selected-country" aria-live="polite">
-        <div class="row">
-          <span class="name">—</span>
-          <span class="code" id="selected-code">—</span>
-        </div>
-        <div class="row muted" id="selected-hint" style="margin-top:6px;">Toca un país de la lista para verlo aquí.</div>
-      </div>
-    </aside>
+      <div class="card selected-country is-hidden" id="selected-country" aria-live="polite">
+    <div class="section-title">Selección</div>
+    <div class="row">
+      <span class="name">—</span>
+      <span class="code" id="selected-code">—</span>
+    </div>
+  </div>
+</aside>
 
     <section class="map-wrap" aria-label="Mapa de la Red (Google My Maps)">
       <div class="mymaps-wrap">
