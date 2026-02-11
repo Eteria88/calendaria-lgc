@@ -5,7 +5,7 @@
     dbg.textContent = msg;
     dbg.classList.toggle('ok', !!ok);
     dbg.classList.toggle('err', !ok);
-  } }
+  }
   try{
     status('estado: JS cargado', true);
     function $(s){return document.querySelector(s);} 
