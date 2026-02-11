@@ -1,11 +1,6 @@
 (function(){
   var dbg=document.getElementById('dbg');
-  function status(msg, ok){
-    if(!dbg) return;
-    dbg.textContent = msg;
-    dbg.classList.toggle('ok', !!ok);
-    dbg.classList.toggle('err', !ok);
-  }
+  function status(msg, ok){ if(dbg){ dbg.textContent=msg; dbg.style.color = ok ? '#9cffd5' : '#ff9aa2'; } }
   try{
     status('estado: JS cargado', true);
     function $(s){return document.querySelector(s);} 
@@ -98,16 +93,6 @@ function fmtDate(d){
       if(m<10) return jdnJ(y,m,d);
       return (d>=15) ? jdnG(y,m,d) : jdnJ(y,m,d);
     }
-
-    function dowNameFromYMD(y,m,d){
-      // Día de la semana coherente con el corte Juliano/Gregoriano (vía JDN).
-      // 0=Domingo ... 6=Sábado
-      var j = jdnCut(y,m,d);
-      var idx = (j + 1) % 7;
-      var names = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-      return names[idx] || '';
-    }
-
 
     function apIdx(y){return Math.floor((y-1)/4)+1;}
     function plane(card){
@@ -242,16 +227,6 @@ function fmtDate(d){
 
       var ref = dt(Rf.y, Rf.m, Rf.d);
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
-
-      // Mostrar día de la semana al frente de los inputs (Fecha de nacimiento / Fecha de referencia)
-      try{
-        var refDowEl = document.getElementById('refDow');
-        if(refDowEl) refDowEl.textContent = dowNameFromYMD(Rf.y, Rf.m, Rf.d) || '—';
-        var dobDowEl = document.getElementById('dobDow');
-        if(dobDowEl){
-          dobDowEl.textContent = (Db ? (dowNameFromYMD(Db.y, Db.m, Db.d) || '—') : '—');
-        }
-      }catch(e){}
 
       
       // Anillo de Fuego: días lógicos 353–365
@@ -733,6 +708,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#ylen'); if(el) el.textContent=yl;
       el=$('#freqYearPos'); if(el) el.textContent='+'+doy;
       el=$('#freqYearNeg'); if(el) el.textContent='−'+(yl-doy);
+      el=$('#doyNeg'); if(el){ var dNeg = new Date(dt(y,1,1).getTime() + (yl-doy-1)*ms); el.textContent = fmtDate(dNeg); }
       el=$('#annYear'); if(el) el.textContent=(doy-(yl-doy));
       el=$('#yearProgressInner'); if(el) el.style.width=Math.round(100*doy/yl)+'%';
 
@@ -744,6 +720,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#apStart'); if(el) el.textContent=fmtDate(dt(aStartY,1,1));
       el=$('#freqAppPos'); if(el) el.textContent='+'+aPos;
       el=$('#freqAppNeg'); if(el) el.textContent='−'+aNeg;
+      el=$('#apNegDate'); if(el){ var aNegDate = new Date(dt(aStartY,1,1).getTime() + (aNeg-1)*ms); el.textContent = fmtDate(aNegDate); }
       el=$('#annApp'); if(el) el.textContent=(aPos-aNeg);
       el=$('#appProgressInner'); if(el) el.style.width=Math.round(100*aPos/1461)+'%';
       var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
@@ -800,7 +777,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       }
       buildCalog(ref, futureYears);
       init=true;
-      status((dowNameFromYMD(Rf.y, Rf.m, Rf.d) || '—') + ' ' + pad(Rf.d) + '/' + pad(Rf.m) + '/' + String(Rf.y).padStart(4,'0'), true);
+      status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
     }
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
     
