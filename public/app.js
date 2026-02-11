@@ -1,6 +1,12 @@
 (function(){
   var dbg=document.getElementById('dbg');
-  function status(msg, ok){ if(dbg){ dbg.textContent=msg; dbg.style.color = ok ? '#9cffd5' : '#ff9aa2'; } }
+  function status(msg, ok){
+    if(!dbg) return;
+    dbg.textContent = msg;
+    dbg.classList.toggle('ok', !!ok);
+    dbg.classList.toggle('err', !ok);
+  }
+}
   try{
     status('estado: JS cargado', true);
     function $(s){return document.querySelector(s);} 
@@ -17,8 +23,18 @@ function fmtDate(d){
       var dd = String(d.getUTCDate()).padStart(2,'0');
       var mm = String(d.getUTCMonth()+1).padStart(2,'0');
       var yyyy = d.getUTCFullYear();
-      return dd+'-'+mm+'-'+yyyy;
+      return dd+'/'+mm+'/'+yyyy;
     }
+
+    function dowNameFromYMD(y,m,d){
+      // Día de la semana coherente con el corte Juliano/Gregoriano (vía JDN).
+      // 0=Domingo ... 6=Sábado
+      var j = jdnCut(y,m,d);
+      var idx = (j + 1) % 7;
+      var names = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+      return names[idx] || '';
+    }
+
     function isL(y){return (y%4===0)&&((y%100)!==0||y%400===0);}
     function yLen(y){return isL(y)?366:365;}
     function dOY(d){var y=d.getUTCFullYear();return Math.floor((d-dt(y,1,1))/ms)+1;}
@@ -227,6 +243,10 @@ function fmtDate(d){
 
       var ref = dt(Rf.y, Rf.m, Rf.d);
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
+
+      // Días de la semana (al frente de los campos)
+      el=$('#refDow'); if(el) el.textContent = dowNameFromYMD(Rf.y, Rf.m, Rf.d) || '—';
+      el=$('#dobDow'); if(el) el.textContent = (Db ? (dowNameFromYMD(Db.y, Db.m, Db.d) || '—') : '—');
 
       
       // Anillo de Fuego: días lógicos 353–365
@@ -707,8 +727,16 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#doy'); if(el) el.textContent=fmtDate(ref);
       el=$('#ylen'); if(el) el.textContent=yl;
       el=$('#freqYearPos'); if(el) el.textContent='+'+doy;
-      el=$('#freqYearNeg'); if(el) el.textContent='−'+(yl-doy);
-      el=$('#doyNeg'); if(el){ var dNeg = new Date(dt(y,1,1).getTime() + (yl-doy-1)*ms); el.textContent = fmtDate(dNeg); }
+      var negYear=(yl-doy);
+      el=$('#freqYearNeg'); if(el) el.textContent=(negYear===0?'0':'−'+negYear);
+      el=$('#doyNeg'); if(el){
+        if(negYear===0){
+          el.textContent = fmtDate(ref);
+        } else {
+          var dNeg = new Date(dt(y,1,1).getTime() + (negYear-1)*ms);
+          el.textContent = fmtDate(dNeg);
+        }
+      }
       el=$('#annYear'); if(el) el.textContent=(doy-(yl-doy));
       el=$('#yearProgressInner'); if(el) el.style.width=Math.round(100*doy/yl)+'%';
 
@@ -719,8 +747,16 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#apIndex'); if(el) el.textContent=apIndexVal;
       el=$('#apStart'); if(el) el.textContent=fmtDate(dt(aStartY,1,1));
       el=$('#freqAppPos'); if(el) el.textContent='+'+aPos;
-      el=$('#freqAppNeg'); if(el) el.textContent='−'+aNeg;
-      el=$('#apNegDate'); if(el){ var aNegDate = new Date(dt(aStartY,1,1).getTime() + (aNeg-1)*ms); el.textContent = fmtDate(aNegDate); }
+      var negApp=aNeg;
+      el=$('#freqAppNeg'); if(el) el.textContent=(negApp===0?'0':'−'+negApp);
+      el=$('#apNegDate'); if(el){
+        if(negApp===0){
+          el.textContent = fmtDate(ref);
+        } else {
+          var aNegDate = new Date(dt(aStartY,1,1).getTime() + (negApp-1)*ms);
+          el.textContent = fmtDate(aNegDate);
+        }
+      }
       el=$('#annApp'); if(el) el.textContent=(aPos-aNeg);
       el=$('#appProgressInner'); if(el) el.style.width=Math.round(100*aPos/1461)+'%';
       var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
@@ -777,8 +813,8 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       }
       buildCalog(ref, futureYears);
       init=true;
-      status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
-    }
+      status((dowNameFromYMD(Rf.y, Rf.m, Rf.d) || '—') + ' ' + pad(Rf.d) + '/' + pad(Rf.m) + '/' + String(Rf.y).padStart(4,'0'), true);
+}
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
     
 document.addEventListener('DOMContentLoaded', function(){
