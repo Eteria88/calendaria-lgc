@@ -27,6 +27,10 @@ body{margin:0;background:#0b0d10;color:#e6f1ff;font-family:system-ui,-apple-syst
 .input{background:rgba(255,255,255,.05);border:1px solid #2a3642;border-radius:8px;color:#e6f1ff;padding:6px 8px;min-height:42px;min-width:0;max-width:100%;}
 .input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
 .field{display:flex;flex-direction:column;min-width:0}
+
+.labelRow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.dowBadge{border:1px solid var(--ol);background:rgba(255,255,255,.04);border-radius:999px;padding:3px 10px;font-size:12px;white-space:nowrap}
+
 .btn{background:rgba(124,199,255,.15);border:1px solid #2a3642;border-radius:999px;color:#e6f1ff;padding:6px 12px;cursor:pointer;min-height:42px}
 .btn:hover{background:rgba(124,199,255,.25)}
 .status{margin:8px 0;color:#9cffd5;font-size:12px}
@@ -117,12 +121,12 @@ input[type=date]{min-width:0;}</style>
 <div class="small" style="margin-bottom:8px;opacity:.9">Rango A</div>
 <div class="input-grid">
 <div class="field" style="grid-column:span 6">
-<label class="small">Inicio</label>
+<div class="labelRow"><label class="small">Inicio</label><span class="dowBadge"><b id="startADow">—</b></span></div>
 <input autocapitalize="none" autocomplete="off" class="input date-input" id="startA" max="9999-12-31" min="0001-01-01" spellcheck="false" type="date"/>
 <button class="btn" id="btnStartTodayA" style="margin-top:8px" type="button">Hoy</button>
 </div>
 <div class="field" style="grid-column:span 6">
-<label class="small">Fin</label>
+<div class="labelRow"><label class="small">Fin</label><span class="dowBadge"><b id="endADow">—</b></span></div>
 <input autocapitalize="none" autocomplete="off" class="input date-input" id="endA" max="9999-12-31" min="0001-01-01" spellcheck="false" type="date"/>
 <button class="btn" id="btnEndTodayA" style="margin-top:8px" type="button">Hoy</button>
 </div>
@@ -145,12 +149,12 @@ input[type=date]{min-width:0;}</style>
 <div class="small" style="margin-bottom:8px;opacity:.9">Rango B</div>
 <div class="input-grid">
 <div class="field" style="grid-column:span 6">
-<label class="small">Inicio</label>
+<div class="labelRow"><label class="small">Inicio</label><span class="dowBadge"><b id="startBDow">—</b></span></div>
 <input autocapitalize="none" autocomplete="off" class="input date-input" id="startB" max="9999-12-31" min="0001-01-01" spellcheck="false" type="date"/>
 <button class="btn" id="btnStartTodayB" style="margin-top:8px" type="button">Hoy</button>
 </div>
 <div class="field" style="grid-column:span 6">
-<label class="small">Fin</label>
+<div class="labelRow"><label class="small">Fin</label><span class="dowBadge"><b id="endBDow">—</b></span></div>
 <input autocapitalize="none" autocomplete="off" class="input date-input" id="endB" max="9999-12-31" min="0001-01-01" spellcheck="false" type="date"/>
 <button class="btn" id="btnEndTodayB" style="margin-top:8px" type="button">Hoy</button>
 </div>
@@ -185,11 +189,11 @@ input[type=date]{min-width:0;}</style>
 <div class="small" style="margin-bottom:8px;opacity:1;color:rgba(255,255,255,.92)">Bandas etarias</div>
 <div class="input-grid">
 <div class="field" style="grid-column:span 6">
-<label class="small">Fecha de nacimiento</label>
+<div class="labelRow"><label class="small">Fecha de nacimiento</label><span class="dowBadge"><b id="birthDow">—</b></span></div>
 <input autocapitalize="none" autocomplete="off" class="input date-input" id="birth" max="9999-12-31" min="0001-01-01" spellcheck="false" type="date"/>
 </div>
 <div class="field" style="grid-column:span 6">
-<label class="small">Fecha de referencia</label>
+<div class="labelRow"><label class="small">Fecha de referencia</label><span class="dowBadge"><b id="refDow">—</b></span></div>
 <input autocapitalize="none" autocomplete="off" class="input date-input" id="ref" max="9999-12-31" min="0001-01-01" spellcheck="false" type="date"/>
 <button class="btn" id="btnRefToday" style="margin-top:8px" type="button">Hoy</button>
 </div>
