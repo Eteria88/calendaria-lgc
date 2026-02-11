@@ -94,6 +94,16 @@ function fmtDate(d){
       return (d>=15) ? jdnG(y,m,d) : jdnJ(y,m,d);
     }
 
+    function dowNameFromYMD(y,m,d){
+      // Día de la semana coherente con el corte Juliano/Gregoriano (vía JDN).
+      // 0=Domingo ... 6=Sábado
+      var j = jdnCut(y,m,d);
+      var idx = (j + 1) % 7;
+      var names = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+      return names[idx] || '';
+    }
+
+
     function apIdx(y){return Math.floor((y-1)/4)+1;}
     function plane(card){
       var ks=['NE','NO','SE','SO']; for(var i=0;i<ks.length;i++){var el=$('#cell'+ks[i]); if(!el) continue; if(ks[i]===card) el.classList.add('active'); else el.classList.remove('active');}
@@ -227,22 +237,16 @@ function fmtDate(d){
 
       var ref = dt(Rf.y, Rf.m, Rf.d);
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
-      // Día de la semana (según JDN con corte Juliano/Gregoriano de la app)
-      (function(){
-        var names = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']; // JDN%7: 0=Lunes ... 6=Domingo
-        function weekFromParts(p){
-          if(!p) return '—';
-          var j = jdnCut(p.y, p.m, p.d);
-          var idx = ((j % 7) + 7) % 7;
-          return names[idx] || '—';
+
+      // Mostrar día de la semana al frente de los inputs (Fecha de nacimiento / Fecha de referencia)
+      try{
+        var refDowEl = document.getElementById('refDow');
+        if(refDowEl) refDowEl.textContent = dowNameFromYMD(Rf.y, Rf.m, Rf.d) || '—';
+        var dobDowEl = document.getElementById('dobDow');
+        if(dobDowEl){
+          dobDowEl.textContent = (Db ? (dowNameFromYMD(Db.y, Db.m, Db.d) || '—') : '—');
         }
-        var refW = document.getElementById('refWeekday');
-        if(refW) refW.textContent = weekFromParts(Rf);
-
-        var dobW = document.getElementById('dobWeekday');
-        if(dobW) dobW.textContent = weekFromParts(Db);
-      })();
-
+      }catch(e){}
 
       
       // Anillo de Fuego: días lógicos 353–365

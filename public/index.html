@@ -56,6 +56,13 @@ th:first-child,td:first-child{text-align:left}
 .section-title{margin:6px 0 8px 0;color:#9fb3c8;font-size:14px;font-weight:700}
 .input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
 .field{display:flex;flex-direction:column}
+
+.fieldHead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dowBadge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);
+  border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.4px;
+  background:rgba(255,255,255,.03);white-space:nowrap}
+.dowBadge b{color:var(--text);font-weight:700}
+
 .input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap)}
 .btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
 .btn:hover{background:rgba(124,199,255,.25)}
@@ -959,9 +966,8 @@ body.noScroll{overflow:hidden}
 <div class="card">
     <div class="input-grid">
       <div class="field" style="grid-column:span 6">
-        <label class="small" for="dob">Fecha de nacimiento</label>
+        <div class="fieldHead"><label class="small" for="dob">Fecha de nacimiento</label><span class="dowBadge" id="dobDowBadge">Día: <b id="dobDow">—</b></span></div>
         <input class="input" type="date" id="dob" min="0001-01-01" max="9999-12-31">
-        <div class="small" style="margin-top:6px">Día: <span class="mono" id="dobWeekday">—</span></div>
         <div class="small">Ingresa la fecha de nacimiento para calcular los días de vida</div>
 
         <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
@@ -977,9 +983,8 @@ body.noScroll{overflow:hidden}
 
       </div>
       <div class="field" style="grid-column:span 6">
-        <label class="small" for="ref">Fecha de referencia</label>
+        <div class="fieldHead"><label class="small" for="ref">Fecha de referencia</label><span class="dowBadge" id="refDowBadge">Día: <b id="refDow">—</b></span></div>
         <input class="input" type="date" id="ref" min="0001-01-01" max="9999-12-31">
-        <div class="small" style="margin-top:6px">Día: <span class="mono" id="refWeekday">—</span></div>
         <div class="small">Ingresa la fecha de referencia para actualizar automáticamente las métricas y visualizaciones del sistema</div>
 
         <div class="field" style="margin-top:8px">
