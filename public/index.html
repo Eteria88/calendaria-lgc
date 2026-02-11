@@ -13,6 +13,13 @@ header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(1
 .sun{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);box-shadow:0 0 18px #ffb347;display:inline-block;margin-right:8px}
 .small{font-size:12px;color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.mono.big{font-size:clamp(26px,7vw,40px)}
 .badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.6px;text-transform:uppercase}
+    .fieldHead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .dowBadge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.03)}
+    .dowBadge b{color:var(--text);font-weight:700}
+    .status{margin:8px 0 12px 0;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--ol);border-radius:999px;background:rgba(255,255,255,.03);color:var(--muted);font-size:12px;letter-spacing:.02em}
+    .status.ok{color:#d7e6ff;border-color:#6f8aa6;background:rgba(124,199,255,.10)}
+    .status.err{color:#ff9aa2;border-color:rgba(255,154,162,.5);background:rgba(255,154,162,.08)}
+
 .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--ol);border-radius:16px;padding:14px}
 .hero{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin:14px 0}
 .tile{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;border:1px solid var(--ol);border-radius:16px;padding:14px}
@@ -56,13 +63,6 @@ th:first-child,td:first-child{text-align:left}
 .section-title{margin:6px 0 8px 0;color:#9fb3c8;font-size:14px;font-weight:700}
 .input-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
 .field{display:flex;flex-direction:column}
-
-.fieldHead{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.dowBadge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);
-  border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.4px;
-  background:rgba(255,255,255,.03);white-space:nowrap}
-.dowBadge b{color:var(--text);font-weight:700}
-
 .input{background:rgba(255,255,255,.05);border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:6px 8px;min-height:var(--tap)}
 .btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
 .btn:hover{background:rgba(124,199,255,.25)}
@@ -85,10 +85,6 @@ th:first-child,td:first-child{text-align:left}
 .table-wrap::-webkit-scrollbar-track, .anchors-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:999px}
 .table-wrap::-webkit-scrollbar-thumb, .anchors-scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#63a8ff,#7cc7ff);border-radius:999px;border:2px solid rgba(11,13,16,.85)}
 .table-wrap::-webkit-scrollbar-thumb:hover, .anchors-scroll::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#7cc7ff,#63a8ff)}
-
-.status{margin:8px 0 12px 0;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--ol);border-radius:999px;background:rgba(255,255,255,.03);color:var(--muted);font-size:12px;letter-spacing:.02em}
-.status.ok{color:#d7e6ff;border-color:#6f8aa6;background:rgba(124,199,255,.10)}
-.status.err{color:#ff9aa2;border-color:rgba(255,154,162,.5);background:rgba(255,154,162,.08)}
 
 .layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
 .sidenav{position:sticky;top:58px;height:calc(100dvh - 70px);border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
@@ -1042,6 +1038,7 @@ body.noScroll{overflow:hidden}
       <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Fecha</span><span class="mono" style="font-size:11px"><span id="doy">—</span></span></div>
       <div class="progress"><div class="progressInner" id="yearProgressInner" style="width:0%"></div></div>
       <div class="chips"><span class="chip mono" id="freqYearPos">+—</span><span class="chip mono" id="freqYearNeg">−—</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Fecha (−)</span><span class="mono" style="font-size:11px"><span id="doyNeg">—</span></span></div>
       <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación anual</span><span class="mono" id="annYear">—</span></div>
     </div>
     <div class="mcard">
@@ -1049,6 +1046,7 @@ body.noScroll{overflow:hidden}
       <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Aparato Nº <span class="mono" id="apIndex">—</span></span><span class="small">inicio: <span class="mono" id="apStart">—</span></span></div>
       <div class="progress"><div class="progressInner" id="appProgressInner" style="width:0%"></div></div>
       <div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Fecha (−)</span><span class="mono" style="font-size:11px"><span id="apNegDate">—</span></span></div>
       <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación del aparato</span><span class="mono" id="annApp">—</span></div>
     </div>
   </section>

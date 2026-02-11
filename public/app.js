@@ -22,7 +22,7 @@ function fmtDate(d){
       var dd = String(d.getUTCDate()).padStart(2,'0');
       var mm = String(d.getUTCMonth()+1).padStart(2,'0');
       var yyyy = d.getUTCFullYear();
-      return dd+'-'+mm+'-'+yyyy;
+      return dd+'/'+mm+'/'+yyyy;
     }
     function isL(y){return (y%4===0)&&((y%100)!==0||y%400===0);}
     function yLen(y){return isL(y)?366:365;}
@@ -732,7 +732,9 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#doy'); if(el) el.textContent=fmtDate(ref);
       el=$('#ylen'); if(el) el.textContent=yl;
       el=$('#freqYearPos'); if(el) el.textContent='+'+doy;
-      el=$('#freqYearNeg'); if(el) el.textContent='−'+(yl-doy);
+      var negYear = (yl-doy);
+      el=$('#freqYearNeg'); if(el) el.textContent = (negYear===0 ? '0' : ('−'+negYear));
+      el=$('#doyNeg'); if(el){ el.textContent = (negYear===0 ? fmtDate(ref) : fmtDate(addDays(dt(y,1,1), negYear-1))); }
       el=$('#annYear'); if(el) el.textContent=(doy-(yl-doy));
       el=$('#yearProgressInner'); if(el) el.style.width=Math.round(100*doy/yl)+'%';
 
@@ -743,7 +745,8 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#apIndex'); if(el) el.textContent=apIndexVal;
       el=$('#apStart'); if(el) el.textContent=fmtDate(dt(aStartY,1,1));
       el=$('#freqAppPos'); if(el) el.textContent='+'+aPos;
-      el=$('#freqAppNeg'); if(el) el.textContent='−'+aNeg;
+      el=$('#freqAppNeg'); if(el) el.textContent = (aNeg===0 ? '0' : ('−'+aNeg));
+      el=$('#apNegDate'); if(el){ el.textContent = (aNeg===0 ? fmtDate(ref) : fmtDate(addDays(dt(aStartY,1,1), aNeg-1))); }
       el=$('#annApp'); if(el) el.textContent=(aPos-aNeg);
       el=$('#appProgressInner'); if(el) el.style.width=Math.round(100*aPos/1461)+'%';
       var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
