@@ -227,6 +227,22 @@ function fmtDate(d){
 
       var ref = dt(Rf.y, Rf.m, Rf.d);
       var dob = (Db?dt(Db.y, Db.m, Db.d):null);
+      // Día de la semana (según JDN con corte Juliano/Gregoriano de la app)
+      (function(){
+        var names = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']; // JDN%7: 0=Lunes ... 6=Domingo
+        function weekFromParts(p){
+          if(!p) return '—';
+          var j = jdnCut(p.y, p.m, p.d);
+          var idx = ((j % 7) + 7) % 7;
+          return names[idx] || '—';
+        }
+        var refW = document.getElementById('refWeekday');
+        if(refW) refW.textContent = weekFromParts(Rf);
+
+        var dobW = document.getElementById('dobWeekday');
+        if(dobW) dobW.textContent = weekFromParts(Db);
+      })();
+
 
       
       // Anillo de Fuego: días lógicos 353–365
