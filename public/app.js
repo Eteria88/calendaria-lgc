@@ -1,6 +1,11 @@
 (function(){
   var dbg=document.getElementById('dbg');
-  function status(msg, ok){ if(dbg){ dbg.textContent=msg; dbg.style.color = ok ? '#9cffd5' : '#ff9aa2'; } }
+  function status(msg, ok){
+    if(!dbg) return;
+    dbg.textContent = msg;
+    dbg.classList.toggle('ok', !!ok);
+    dbg.classList.toggle('err', !ok);
+  } }
   try{
     status('estado: JS cargado', true);
     function $(s){return document.querySelector(s);} 
@@ -795,7 +800,7 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       }
       buildCalog(ref, futureYears);
       init=true;
-      status('ok: '+(String(Rf.y).padStart(4,'0')+'-'+pad(Rf.m)+'-'+pad(Rf.d)), true);
+      status((dowNameFromYMD(Rf.y, Rf.m, Rf.d) || '—') + ' ' + pad(Rf.d) + '/' + pad(Rf.m) + '/' + String(Rf.y).padStart(4,'0'), true);
     }
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
     
