@@ -527,6 +527,21 @@ if(grid){
       })();;
 var tzRaw = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'UTC';
       var tzPretty = String(tzRaw).replace(/_/g,' ');
+      // Normalizar algunos timezones legacy (ej: 'America/Buenos_Aires') a formato región/país/ciudad
+      tzPretty = tzPretty
+        .replace(/^America\/Buenos Aires$/, 'America/Argentina/Buenos Aires')
+        .replace(/^America\/Cordoba$/, 'America/Argentina/Cordoba')
+        .replace(/^America\/Rosario$/, 'America/Argentina/Rosario')
+        .replace(/^America\/Mendoza$/, 'America/Argentina/Mendoza')
+        .replace(/^America\/Jujuy$/, 'America/Argentina/Jujuy')
+        .replace(/^America\/Catamarca$/, 'America/Argentina/Catamarca')
+        .replace(/^America\/La Rioja$/, 'America/Argentina/La Rioja')
+        .replace(/^America\/Rio Gallegos$/, 'America/Argentina/Rio Gallegos')
+        .replace(/^America\/Salta$/, 'America/Argentina/Salta')
+        .replace(/^America\/San Juan$/, 'America/Argentina/San Juan')
+        .replace(/^America\/San Luis$/, 'America/Argentina/San Luis')
+        .replace(/^America\/Tucuman$/, 'America/Argentina/Tucuman')
+        .replace(/^America\/Ushuaia$/, 'America/Argentina/Ushuaia');
       var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent = tzPretty;
       var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.d).padStart(2,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.y).padStart(4,'0')) : '0');
 
