@@ -525,9 +525,9 @@ if(grid){
           }
         }
       })();;
-var tz = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'local';
-      var nowLbl = now.toLocaleDateString();
-      var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent='Ahora: '+nowLbl+' · '+tz;
+var tzRaw = (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || 'UTC';
+      var tzPretty = String(tzRaw).replace(/_/g,' ');
+      var nowTZ = $('#nowTZ'); if(nowTZ) nowTZ.textContent = tzPretty;
       var refLabel=$('#refLabel'); if(refLabel) refLabel.textContent=(Rf? (String(Rf.d).padStart(2,'0')+'-'+String(Rf.m).padStart(2,'0')+'-'+String(Rf.y).padStart(4,'0')) : '0');
 
       var doyVal=dOY(ref);
