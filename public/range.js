@@ -59,6 +59,14 @@
     }
     function jdnMixed(Y,M,D){ return isGreg(Y,M,D) ? jdnG(Y,M,D) : jdnJ(Y,M,D); }
 
+    // --- Día de la semana (0=Lunes ... 6=Domingo) ---
+    var WEEKDAYS_ES = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+    function weekdayNameFromYMD(P){
+      if(!P) return '—';
+      var j = jdnMixed(P.y,P.m,P.d);
+      return WEEKDAYS_ES[(j % 7 + 7) % 7] || '—';
+    }
+
     
     // Inverso de JDN -> fecha (para mostrar cronogramas)
     var JDN_GREG_START = jdnG(1582,10,15); // 1582-10-15
@@ -299,6 +307,19 @@ function renderBandSchedule(){
 
 
     function render(){
+      // Días de la semana (badges)
+      function setDow(inputId, outId){
+        var el = $(inputId);
+        var P = el ? flex(el.value) : null;
+        setText(outId, P ? weekdayNameFromYMD(P) : '—');
+      }
+      setDow('startA','startADow');
+      setDow('endA','endADow');
+      setDow('startB','startBDow');
+      setDow('endB','endBDow');
+      setDow('birth','birthDow');
+      setDow('ref','refDow');
+
       var exA = calcRangeAuto('startA','endA');
       var exB = calcRangeAuto('startB','endB');
       // Salidas por rango

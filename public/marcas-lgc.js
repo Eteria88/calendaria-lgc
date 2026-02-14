@@ -1,6 +1,9 @@
 (function(){
   function $(id){ return document.getElementById(id); }
   var ms = 86400000;
+  var DOW = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  function weekdayFromJDN(j){ return DOW[((j%7)+7)%7]; }
+
 
   function pad(n){ n=String(n); return n.length<2 ? ('0'+n) : n; }
 
@@ -202,9 +205,12 @@
     var refJDN = jdnCut(p.y,p.m,p.d);
     updateAnchors(refJDN);
 
+    var dowEl=$('refDow');
+    if(dowEl){ dowEl.textContent = weekdayFromJDN(refJDN); }
+
     var lbl=$('refLabel');
     if(lbl){
-      lbl.textContent = pad(p.d)+'-'+pad(p.m)+'-'+String(p.y).padStart(4,'0');
+      lbl.textContent = weekdayFromJDN(refJDN)+' '+pad(p.d)+'/'+pad(p.m)+'/'+String(p.y).padStart(4,'0');
     }
     // Mantiene sincronizado el campo móvil visible (dd/mm/aaaa)
     var refM=$('refMobile');
