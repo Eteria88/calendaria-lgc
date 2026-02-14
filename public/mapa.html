@@ -5,79 +5,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calendaria · Mapa y códigos</title>
 
-  <!-- Leaflet & TopoJSON -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="https://unpkg.com/topojson-client@3"></script>
-
   <link rel="stylesheet" href="mapa.css" />
-  <style>#n3-label{display:none}</style>
   <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#0b0d10">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Calendaria">
-<link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+  <meta name="theme-color" content="#0b0d10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Calendaria">
+  <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
 </head>
 <body data-view="list">
   <main class="layout">
-  <div class="mobile-toggle" role="tablist" aria-label="Vista">
+    <div class="mobile-toggle" role="tablist" aria-label="Vista">
       <button id="view-list" class="toggle-btn is-active" type="button" aria-pressed="true">Lista</button>
       <button id="view-map" class="toggle-btn" type="button" aria-pressed="false">Mapa</button>
     </div>
+
     <aside class="panel">
-      <h2>Mapa y códigos (UIT)</h2>
-
-      
-      <a class="home-link" href="/">← Volver al inicio</a>
-<div class="search-row">
-        <input id="search" type="text" placeholder="Buscar país por nombre…" />
-        <div id="search-code-badge">—</div>
+      <div class="panel-head">
+        <h2>Mapa y códigos (UIT)</h2>
+        <a class="home-link" href="/">← Volver</a>
       </div>
 
-      <div class="search-row" style="margin-top:10px;">
-        <input id="search-code" type="text" placeholder="Buscar por código: +57, 54, +1…" />
-        <div id="search-code-name">—</div>
-      </div>
-
-      <ul id="country-list" class="country-list"></ul>
-
-      <div class="selected-country" id="selected-country">
-        <div class="row">
-          <span class="name">—</span>
-          <span class="code" id="selected-code">—</span>
+      <div class="card">
+  <div class="actions-row">
+          <a class="btn btn-primary" id="join-map" href="https://forms.gle/ZdAUgtPgwC4pURFUA" target="_blank" rel="noopener">Sumarme al mapa</a>
+          <a class="btn btn-secondary" id="open-mymaps" href="https://www.google.com/maps/d/viewer?mid=1fyccg6vm9zw_SpEJ6B6cbUfTvyb0qRY" target="_blank" rel="noopener">Abrir mapa en Google</a>
         </div>
-        <div class="row muted" id="selected-hint" style="margin-top:6px;">Toca un país en el mapa para verlo aquí.</div>
-      </div>
-    </aside>
+<div class="panel-note" role="note">
+  Si querés <strong>modificar</strong> o <strong>borrar</strong> algún registro, escribí a
+  <a class="panel-note__mail" href="mailto:maparedlgc@gmail.com">maparedlgc@gmail.com</a>
+</div>
+</div>
 
-    <section class="map-wrap">
-      <div id="map"></div>
-      <div id="tooltip" class="tooltip"></div>
+      <div class="card">
+  <div class="section-title">Buscar</div>
+
+  <div class="field">
+    <label for="search">País</label>
+    <div class="field-row">
+      <input id="search" type="text" placeholder="Escribe un país…" autocomplete="off" />
+      <div id="search-code-badge" class="pill">—</div>
+    </div>
+  </div>
+
+  <div class="field" style="margin-top:10px;">
+    <label for="search-code">Código</label>
+    <div class="field-row">
+      <input id="search-code" type="text" placeholder="+57, 54, +1…" autocomplete="off" />
+      <div id="search-code-name" class="pill">—</div>
+    </div>
+  </div>
+</div>
+      </div>
+
+      <div class="card list-card">
+        <div class="section-title">Países</div>
+        <ul id="country-list" class="country-list"></ul>
+      </div>
+
+      <div class="card selected-country is-hidden" id="selected-country" aria-live="polite">
+    <div class="section-title">Selección</div>
+    <div class="row">
+      <span class="name">—</span>
+      <span class="code" id="selected-code">—</span>
+    </div>
+  </div>
+</aside>
+
+    <section class="map-wrap" aria-label="Mapa de la Red (Google My Maps)">
+      <div class="mymaps-wrap">
+        <iframe
+          id="mymaps-iframe"
+          src="https://www.google.com/maps/d/embed?mid=1fyccg6vm9zw_SpEJ6B6cbUfTvyb0qRY&ehbc=2E312F"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen>
+        </iframe>
+      </div>
     </section>
   </main>
 
-  <!-- JS de Mapa (usa dataset local o remoto) -->
   <script>
-    // Si querés que otro admin lo actualice sin redeploy, poné acá una URL JSON pública.
-    // Ejemplos: "countries_embed.json" (local), o una URL externa.
+    // Dataset de países + códigos:
+    // - "countries_embed.json" (local) te permite actualizar sin tocar el JS (solo editar JSON).
+    // - También podés poner una URL pública externa si la comunidad la mantiene.
     window.MAPA_DATA_URL = window.MAPA_DATA_URL || "countries_embed.json";
   </script>
   <script src="mapa.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(err) {
-      console.log('Service worker registration failed:', err);
-    });
-  });
-}
-</script>
 
-<script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        console.log('Service worker registration failed:', err);
+      });
+    });
+  }
+  </script>
+
+  <script>
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
 
 </body>
 </html>
