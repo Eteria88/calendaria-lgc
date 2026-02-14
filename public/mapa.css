@@ -250,3 +250,24 @@ a[aria-disabled="true"]{
 .btn:visited{
   color: inherit;
 }
+
+
+/* --- Panel notice (Mapared LGC) --- */
+.panel-note{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  font-size:12px;
+  line-height:1.35;
+  color:rgba(232,236,241,.78);
+}
+.panel-note strong{ color:rgba(232,236,241,.92); font-weight:700; }
+.panel-note__mail{
+  color:var(--accent);
+  text-decoration:none;
+  font-weight:700;
+  white-space:nowrap;
+}
+.panel-note__mail:hover{ text-decoration:underline; }
