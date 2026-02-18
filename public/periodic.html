@@ -111,6 +111,16 @@ header{
   .imgOnly{ display:block; }
 }
 
+/* Tablets/móviles (touch): aunque sean anchos, muchos Android no embeben PDF */
+@media (hover:none) and (pointer:coarse){
+  .pdfOnly{ display:none; }
+  .imgOnly{ display:block; }
+  .periodicScroll{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+}
+
 .periodicImg{
   display:block;
   width:1200px;   /* mantiene scroll horizontal como el PDF en mobile */
