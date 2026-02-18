@@ -101,6 +101,23 @@ header{
   }
 }
 
+
+/* PDF en desktop, imagen en mobile (Android-friendly) */
+.pdfOnly{ display:block; }
+.imgOnly{ display:none; }
+
+@media (max-width:839px){
+  .pdfOnly{ display:none; }
+  .imgOnly{ display:block; }
+}
+
+.periodicImg{
+  display:block;
+  width:1200px;   /* mantiene scroll horizontal como el PDF en mobile */
+  max-width:none;
+  height:auto;
+}
+
 .header-card{
   display:flex;
   align-items:flex-start;
@@ -176,14 +193,33 @@ header{
     <section class="card">
       <div class="periodicContainer">
         <div class="periodicScroll">
-          <object data="./TablaPeriodica352elementos.pdf#view=FitH"
-                  type="application/pdf"
-                  class="periodicPdf">
-            <p class="small" style="padding:12px">
-              Tu navegador no puede mostrar el PDF embebido. Puedes descargar la tabla periódica desde
-              <a href="./TablaPeriodica352elementos.pdf">este enlace</a>.
+          <div class="pdfOnly">
+            <object data="./TablaPeriodica352elementos.pdf#view=FitH"
+                    type="application/pdf"
+                    class="periodicPdf">
+              <p class="small" style="padding:12px">
+                Tu navegador no puede mostrar el PDF embebido. Puedes descargar la tabla periódica desde
+                <a href="./TablaPeriodica352elementos.pdf">este enlace</a>.
+              </p>
+            </object>
+          </div>
+
+          <div class="imgOnly">
+            <picture>
+              <source type="image/webp"
+                      srcset="./TablaPeriodica352elementos_2400.webp 2400w,
+                              ./TablaPeriodica352elementos_3200.webp 3200w,
+                              ./TablaPeriodica352elementos_4800.webp 4800w"
+                      sizes="1200px">
+              <img class="periodicImg"
+                   src="./TablaPeriodica352elementos.png"
+                   alt="Tabla periódica de elementos (LGC)">
+            </picture>
+
+            <p class="small" style="padding:12px 12px 0">
+              Si querés abrirlo en PDF: <a href="./TablaPeriodica352elementos.pdf">descargar</a>
             </p>
-          </object>
+          </div>
         </div>
       </div>
     </section>
