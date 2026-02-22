@@ -35,6 +35,8 @@
     .pill{display:inline-flex; align-items:center; gap:8px; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:8px 10px; color:var(--muted); font-size:12px}
 
     .btn{display:inline-flex; align-items:center; justify-content:center; min-height:var(--tap);
+    .icon{width:16px;height:16px;flex:0 0 16px;opacity:.9}
+
       padding:8px 12px; border-radius:12px; border:1px solid var(--ol);
       background:var(--chip2); color:var(--text); text-decoration:none; font-size:13px; gap:8px;
       white-space:nowrap;
@@ -111,7 +113,7 @@
 <input autocomplete="off" id="q" placeholder="Buscar emisiones… (ej: mente, #respiración, 80, 2022, vuelta 23)" type="search"/>
 <span class="pill" id="count">—</span>
 </div>
-<button aria-label="Abrir accesos" class="btn accessToggle" id="accessToggle" type="button">📌 Accesos</button></div>
+<button aria-label="Abrir accesos" class="btn accessToggle" id="accessToggle" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-4 4v5l-2-2-2 2v-5L4 8l4-4 4 4 2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Accesos</span></button></div>
 <div class="note" style="margin-top:8px">Este buscador filtra <b>solo emisiones</b>.</div>
 <div class="err" id="err" style="display:none"></div>
 <div class="grid" id="grid"></div>
@@ -121,7 +123,7 @@
 <div class="asideTitle">
 <div style="font-weight:650; letter-spacing:.2px">Accesos</div>
 <span class="pill">fijos</span>
-<button aria-label="Cerrar accesos" class="btn closeAside" id="closeAside" type="button">✕</button></div>
+<button aria-label="Cerrar accesos" class="btn closeAside" id="closeAside" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
 <div class="card" id="compendio">
 <div class="head">
 <div class="hleft" style="min-width:unset">
@@ -129,7 +131,7 @@
 <div class="sub" style="margin-top:6px">Un solo archivo para buscar con Ctrl+F / Buscar en PDF.</div>
 </div>
 <div class="actions">
-<a class="btn ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" rel="noopener noreferrer" target="_blank">📄 Abrir y descargar (PDF)</a>
+<a class="btn ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" rel="noopener noreferrer" target="_blank"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Abrir y descargar (PDF)</span></a>
 </div>
 </div>
 <div class="note">Peso aprox. 100 MB — puede tardar en datos móviles.</div>
@@ -141,8 +143,8 @@
 <div class="sub" style="margin-top:6px">Acceso a documentos y materiales de eventos.<br/><span style="color:var(--muted)">Se irán sumando nuevos eventos aquí.</span></div>
 </div>
 <div class="actions">
-<a aria-label="Abrir Evento 71 (PDF)" class="btn warn" href="/eventos/evento-071.pdf" rel="noopener noreferrer" target="_blank">📌 Evento 71</a>
-<a aria-label="Abrir Evento 72 (PDF)" class="btn warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank">📌 Evento 72</a>
+<a aria-label="Abrir Evento 71 (PDF)" class="btn warn" href="/eventos/evento-071.pdf" rel="noopener noreferrer" target="_blank"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-4 4v5l-2-2-2 2v-5L4 8l4-4 4 4 2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Evento 71</span></a>
+<a aria-label="Abrir Evento 72 (PDF)" class="btn warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-4 4v5l-2-2-2 2v-5L4 8l4-4 4 4 2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Evento 72</span></a>
 </div>
 </div>
 <div class="note">Cada PDF pesa aprox. 5–10 MB.</div>
