@@ -14,32 +14,6 @@
     return 'https://www.youtube.com/results?search_query=' + encodeURIComponent('Alejandra Casado en red ' + n);
   }
 
-
-  // Inline SVG icons (monocromo, consistente en todos los dispositivos)
-  var ICONS = {
-    calendar: '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>',
-    gear: '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path><path d="M19.4 15a7.9 7.9 0 0 0 .1-1l2-1.2-2-3.4-2.3.5a7.8 7.8 0 0 0-1.7-1L15.2 4H8.8L8.5 6.9a7.8 7.8 0 0 0-1.7 1L4.5 7.4 2.5 10.8 4.5 12a7.9 7.9 0 0 0 .1 1l-2 1.2 2 3.4 2.3-.5a7.8 7.8 0 0 0 1.7 1l.3 2.9h6.4l.3-2.9a7.8 7.8 0 0 0 1.7-1l2.3.5 2-3.4-2-1.2z"></path></svg>',
-    compass: '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M14.8 9.2l-1.4 5.6-5.6 1.4 1.4-5.6 5.6-1.4z"></path></svg>',
-    note: '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8M8 17h8M8 9h4"></path></svg>'
-  };
-  function icon(name){ return ICONS[name] || ''; }
-
-  function ensureIconStyles(){
-    if(document.getElementById('ico-style')) return;
-    var st = document.createElement('style');
-    st.id = 'ico-style';
-    st.textContent = [
-      '.pill.has-ico{display:inline-flex;align-items:center;gap:6px;}',
-      '.pill.has-ico>span{line-height:1;}',
-      '.pill.has-ico .ico{width:14px;height:14px;flex:0 0 14px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;opacity:.85;}',
-      '.btn.has-ico{display:inline-flex;align-items:center;gap:8px;}',
-      '.btn.has-ico .ico{width:14px;height:14px;flex:0 0 14px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;opacity:.9;}'
-    ].join('');
-    document.head.appendChild(st);
-  }
-
-
-
   var state = { data:null, items:[], view:[] };
 
   function loadData(){
@@ -59,7 +33,6 @@
   }
 
   function boot(){
-    ensureIconStyles();
     state.items = (state.data.items || []).map(function(it){
       return {
         n: it.n,
@@ -116,7 +89,7 @@
   }
 
   function render(list){
-    $('count').textContent = list.length + ' / ' + state.items.length;
+    $('count').innerHTML = '<strong>' + list.length + '</strong><span class="dim"> / ' + state.items.length + '</span>';
     var grid = $('grid');
     grid.innerHTML = '';
     if(!list.length){
@@ -128,9 +101,9 @@
       var tr = it.transcripcion_url || '';
 
       var meta = [];
-      if(it.date_raw) meta.push('<span class="pill has-ico">' + icon('calendar') + '<span>' + esc(it.date_raw) + '</span></span>');
-      if(it.metrics) meta.push('<span class="pill has-ico">' + icon('gear') + '<span>' + esc(it.metrics) + '</span></span>');
-      if(it.vuelta) meta.push('<span class="pill has-ico">' + icon('compass') + '<span>' + esc(it.vuelta) + '</span></span>');
+      if(it.date_raw) meta.push('<span class="pill">📅 ' + esc(it.date_raw) + '</span>');
+      if(it.metrics) meta.push('<span class="pill">⚙️ ' + esc(it.metrics) + '</span>');
+      if(it.vuelta) meta.push('<span class="pill">🧭 ' + esc(it.vuelta) + '</span>');
       meta.push('<span class="pill">#' + it.n + '</span>');
 
       var tags = (it.tags||[]).map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
@@ -139,9 +112,9 @@
       actions.push('<a class="btn ok" href="' + esc(yt) + '" target="_blank" rel="noopener">▶︎ YouTube</a>');
 
       if(tr){
-        actions.push('<a class="btn has-ico" href="' + esc(tr) + '" target="_blank" rel="noopener">' + icon('note') + '<span>Transcripción</span></a>');
+        actions.push('<a class="btn" href="' + esc(tr) + '" target="_blank" rel="noopener">📝 Transcripción</a>');
       }else{
-        actions.push('<a class="btn disabled has-ico" href="#" aria-disabled="true">' + icon('note') + '<span>Transcripción (no disponible)</span></a>');
+        actions.push('<a class="btn disabled" href="#" aria-disabled="true">📝 Transcripción (no disponible)</a>');
       }
 
       // ✅ PDF removido (no se renderiza botón)

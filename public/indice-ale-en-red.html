@@ -111,7 +111,29 @@
       .actions .btn{flex:1}
       .hleft{min-width:unset}
     }
-  </style>
+  
+/* Accesos compacto (Stripe/Linear) */
+.accessList{ display:flex; flex-direction:column; gap:10px; }
+.accessItem{ display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.02);
+}
+.aLeft{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+.aTitle{ font-weight:650; letter-spacing:.2px; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.aMeta{ font-size:12px; color:var(--muted); }
+.aRight{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.btn.mini{ padding:8px 10px; border-radius:12px; font-size:12px; }
+.aBtns .btn.mini{ width:38px; justify-content:center; padding:8px 0; }
+.asideFoot{ margin-top:2px; font-size:12px; color:var(--muted); padding:2px 2px 0; }
+
+/* Contador como estado */
+#count strong{ font-weight:750; }
+#count .dim{ opacity:.55; font-weight:550; }
+
+/* Mantener contador alineado */
+.searchRow{ align-items:center; }
+#count{ white-space:nowrap; }
+
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -146,33 +168,40 @@
 <aside aria-label="Accesos" class="aside" id="asidePanel">
 <div class="asideTitle">
 <div style="font-weight:650; letter-spacing:.2px">Accesos</div>
-<button aria-label="Cerrar accesos" class="btn closeAside" id="closeAside" type="button">✕</button></div>
-<div class="card" id="compendio">
-<div class="head">
-<div class="hleft" style="min-width:unset">
-<div style="font-weight:600; font-size:14px; letter-spacing:.2px">Compendio de Transcripciones de las emisiones AC EN RED (PDF)</div>
-<div class="sub" style="margin-top:6px">Un solo archivo para buscar con Ctrl+F / Buscar en PDF.</div>
+
+<div class="accessList">
+  <div class="accessItem">
+    <div class="aLeft">
+      <div class="aTitle">Compendio (PDF)</div>
+      <div class="aMeta">100&nbsp;MB</div>
+    </div>
+    <div class="aRight">
+      <a class="btn mini ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" rel="noopener noreferrer" target="_blank">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Abrir</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="accessItem">
+    <div class="aLeft">
+      <div class="aTitle">Eventos (PDF)</div>
+      <div class="aMeta">71 · 72</div>
+    </div>
+    <div class="aRight aBtns">
+      <a class="btn mini warn" href="/eventos/evento-071.pdf" rel="noopener noreferrer" target="_blank"><span>71</span></a>
+      <a class="btn mini warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank"><span>72</span></a>
+    </div>
+  </div>
+
+  <div class="asideFoot">Tip: buscá con Ctrl+F en el visor PDF.</div>
 </div>
-<div class="actions">
-<a class="btn ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" rel="noopener noreferrer" target="_blank"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M14 2H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><span>Abrir y descargar (PDF)</span></a>
-</div>
-</div>
-<div class="note">Peso aprox. 100 MB — puede tardar en datos móviles.</div>
-</div>
-<div class="card" id="eventos">
-<div class="head">
-<div class="hleft" style="min-width:unset">
-<div style="font-weight:600; font-size:14px; letter-spacing:.2px">Eventos (PDF)</div>
-<div class="sub" style="margin-top:6px">Acceso a documentos y materiales de eventos.<br/><span style="color:var(--muted)">Se irán sumando nuevos eventos aquí.</span></div>
-</div>
-<div class="actions">
-<a aria-label="Abrir Evento 71 (PDF)" class="btn warn" href="/eventos/evento-071.pdf" rel="noopener noreferrer" target="_blank"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-4.6 7-11a7 7 0 10-14 0c0 6.4 7 11 7 11z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/></svg></span><span>Evento 71</span></a>
-<a aria-label="Abrir Evento 72 (PDF)" class="btn warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-4.6 7-11a7 7 0 10-14 0c0 6.4 7 11 7 11z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/></svg></span><span>Evento 72</span></a>
-</div>
-</div>
-<div class="note">Cada PDF pesa aprox. 5–10 MB.</div>
-</div>
-<div class="note" style="margin-top:10px">Tip: si querés buscar una frase exacta, usá la búsqueda del visor PDF.</div>
+
 </aside>
 </div>
 </div>
