@@ -40,7 +40,7 @@
     .aside{position:sticky; top:14px}
     .accessToggle{display:none}
     .closeAside{display:none; min-width:44px}
-    .drawerBackdrop{display:none}
+    .drawerBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(6px); opacity:0; pointer-events:none; transition: opacity .22s ease; z-index:40}
     .barTop{display:none; justify-content:flex-end; margin:2px 0 8px}
 
     .bar{display:flex; gap:10px; align-items:center; width:100%}
@@ -55,6 +55,9 @@
       white-space:nowrap;
     }
     .btn:hover{filter:brightness(1.05)}
+    .pill:hover{border-color:rgba(0,255,255,.25)}
+    .tag:hover{border-color:rgba(0,255,255,.25)}
+
     .btn:active{transform:translateY(1px)}
     .btn.disabled{opacity:.45; pointer-events:none}
     .btn.ok{border-color:rgba(123,227,161,.35)}
@@ -92,10 +95,10 @@
       .barTop{display:flex}
       .accessToggle{display:inline-flex}
       .drawerBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:40}
-      body.asideOpen .drawerBackdrop{display:block}
+      body.asideOpen .drawerBackdrop{opacity:1; pointer-events:auto}
       .aside{position:fixed; top:0; right:0; height:100dvh; width:min(360px, 92vw);
-        background:var(--bg); border-left:1px solid var(--ol); padding:14px; overflow:auto;
-        transform:translateX(110%); transition:transform .2s ease; z-index:50}
+        background:var(--bg); border-left:1px solid var(--ol); box-shadow:-12px 0 30px rgba(0,0,0,.35); padding:14px; overflow:auto;
+        transform:translateX(110%); transition:transform .24s ease; will-change:transform; z-index:50}
       body.asideOpen .aside{transform:translateX(0)}
       body.asideOpen{overflow:hidden}
       .closeAside{display:inline-flex}

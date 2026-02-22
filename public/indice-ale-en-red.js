@@ -110,6 +110,14 @@
         it.metrics,
         it.vuelta,
         (it.tags||[]).join(' ')
+      '.meta .pill.meta-pill{height:28px;padding:0 10px;}',
+      '.meta .pill.meta-pill{line-height:1;}',
+      '.meta .pill.meta-pill.metrics{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}',
+      '@media (max-width:520px){.meta .pill.meta-pill.metrics{max-width:140px;}}',
+      '.tags{display:flex;flex-wrap:wrap;gap:8px;}',
+      '.tag-toggle{background:transparent;border:1px solid currentColor;border-radius:999px;padding:6px 10px;font-size:12px;color:inherit;opacity:.8;cursor:pointer;}',
+      '.tag-toggle:hover{opacity:1;}',
+      '.tag-toggle:active{transform:translateY(1px);}',
       ].join(' ');
       return norm(hay).indexOf(nq) !== -1;
     });
@@ -128,12 +136,18 @@
       var tr = it.transcripcion_url || '';
 
       var meta = [];
-      if(it.date_raw) meta.push('<span class="pill has-ico">' + icon('calendar') + '<span>' + esc(it.date_raw) + '</span></span>');
-      if(it.metrics) meta.push('<span class="pill has-ico">' + icon('gear') + '<span>' + esc(it.metrics) + '</span></span>');
-      if(it.vuelta) meta.push('<span class="pill has-ico">' + icon('compass') + '<span>' + esc(it.vuelta) + '</span></span>');
-      meta.push('<span class="pill">#' + it.n + '</span>');
+      if(it.date_raw) meta.push('<span class="pill has-ico meta-pill">' + icon('calendar') + '<span>' + esc(it.date_raw) + '</span></span>');
+      if(it.metrics) meta.push('<span class="pill has-ico meta-pill metrics">' + icon('gear') + '<span>' + esc(it.metrics) + '</span></span>');
+      if(it.vuelta) meta.push('<span class="pill has-ico meta-pill">' + icon('compass') + '<span>' + esc(it.vuelta) + '</span></span>');
+      meta.push('<span class="pill meta-pill">#' + it.n + '</span>');
 
-      var tags = (it.tags||[]).map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+      var allTags = (it.tags||[]);
+      var expanded = !!state.expandedTags[it.n];
+      var shown = expanded ? allTags : allTags.slice(0,12);
+      var tags = shown.map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+      if(allTags.length>12){
+        tags += '<button class="tag-toggle" data-n="'+ it.n +'" type="button">' + (expanded ? 'Ver menos' : 'Ver todos') + '</button>';
+      }
 
       var actions = [];
       actions.push('<a class="btn ok" href="' + esc(yt) + '" target="_blank" rel="noopener">▶︎ YouTube</a>');
@@ -160,6 +174,18 @@
       grid.appendChild(card);
     });
   }
+
+  
+  // Toggle hashtags per emisión
+  document.addEventListener('click', function(ev){
+    var btn = ev.target.closest && ev.target.closest('.tag-toggle');
+    if(!btn) return;
+    var n = btn.getAttribute('data-n');
+    if(!n) return;
+    if(state.expandedTags[n]){ delete state.expandedTags[n]; } else { state.expandedTags[n] = true; }
+    // Re-render current filtered list to update only tags (simple + fiable)
+    render(filter(state.items, state.q));
+  });
 
   loadData();
 })();
