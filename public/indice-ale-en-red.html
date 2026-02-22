@@ -32,15 +32,31 @@
     .search{flex:1; display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--ol); border-radius:var(--radius); padding:10px 12px}
     .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:14px}
 
-    /* Mobile polish: counter + access button */
+    /* Mobile polish: counter + access button (icon button inside the search) */
     .search{position:relative}
     #count{white-space:nowrap}
-    .search input{padding-right:86px}
-    #count{position:absolute; right:10px; top:50%; transform:translateY(-50%);}
+    /* leave space for counter + icon button */
+    .search input{padding-right:124px}
+    /* counter sits just left of the icon button */
+    #count{position:absolute; right:58px; top:50%; transform:translateY(-50%);}
+
+    .iconBtn{
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      width:44px; height:44px; border-radius:12px;
+      border:1px solid var(--ol); background:var(--chip2);
+      display:inline-flex; align-items:center; justify-content:center;
+      color:var(--text); cursor:pointer;
+    }
+    .iconBtn:hover{filter:brightness(1.06)}
+    .iconBtn:active{transform:translateY(calc(-50% + 1px))}
+    .iconBtn .icon{width:18px;height:18px;opacity:.9}
+
     @media (max-width: 640px){
       .bar{flex-direction:column; align-items:stretch}
       #count{font-size:11px; padding:7px 9px}
-      .accessToggle{align-self:flex-end}
+      .search input{padding-right:120px}
+      #count{right:56px}
+      .iconBtn{width:42px;height:42px}
     }
 
     .pill{display:inline-flex; align-items:center; gap:8px; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:8px 10px; color:var(--muted); font-size:12px}
@@ -123,8 +139,11 @@
 <span class="small">🔎</span>
 <input autocomplete="off" id="q" placeholder="Buscar emisiones… (ej: mente, #respiración, 80, 2022, vuelta 23)" type="search"/>
 <span class="pill" id="count">—</span>
+<button aria-label="Accesos" class="iconBtn" id="accessToggle" type="button" title="Accesos">
+<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-4 4v5l-2-2-2 2v-5L4 8l4-4 4 4 2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
 </div>
-<button aria-label="Abrir accesos" class="btn accessToggle" id="accessToggle" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-4 4v5l-2-2-2 2v-5L4 8l4-4 4 4 2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Accesos</span></button></div>
+</div>
 <div class="note" style="margin-top:8px">Este buscador filtra <b>solo emisiones</b>.</div>
 <div class="err" id="err" style="display:none"></div>
 <div class="grid" id="grid"></div>
