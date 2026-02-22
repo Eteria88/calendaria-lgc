@@ -40,7 +40,7 @@
     .aside{position:sticky; top:14px}
     .accessToggle{display:none}
     .closeAside{display:none; min-width:44px}
-    .drawerBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(6px); opacity:0; pointer-events:none; transition: opacity .22s ease; z-index:40}
+    .drawerBackdrop{display:none}
     .barTop{display:none; justify-content:flex-end; margin:2px 0 8px}
 
     .bar{display:flex; gap:10px; align-items:center; width:100%}
@@ -48,6 +48,28 @@
     .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:14px}
 
     .pill{display:inline-flex; align-items:center; gap:8px; white-space:nowrap; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:8px 10px; color:var(--muted); font-size:12px}
+/* Pills de metadata (uniformes) */
+.meta .pill{height:32px; padding:0 12px; border-radius:999px; display:inline-flex; align-items:center; gap:8px}
+.meta .pill.has-ico .ico{margin-top:-1px}
+.meta .pill.metrics{white-space:nowrap}
+.meta .pill.metrics span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px}
+@media (max-width:540px){
+  .meta .pill.metrics span{max-width:120px}
+}
+
+/* Tags preview */
+.tag.extra{display:none}
+.tagToggle{display:inline-flex; align-items:center; justify-content:center; height:28px; padding:0 10px;
+  border-radius:999px; border:1px solid var(--ol); background:transparent; color:var(--muted);
+  font-size:12px; cursor:pointer; user-select:none}
+.tagToggle:hover{border-color:rgba(123,227,161,.35); color:var(--text)}
+.tagToggle:active{transform:translateY(1px)}
+
+/* Micro-interacciones sutiles */
+.card:hover{border-color:rgba(123,227,161,.16)}
+.tag:hover{border-color:rgba(123,227,161,.18); color:var(--text)}
+.meta .pill:hover{border-color:rgba(123,227,161,.16); color:var(--text)}
+
 
     .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:var(--tap);
       padding:8px 12px; border-radius:12px; border:1px solid var(--ol);
@@ -55,9 +77,6 @@
       white-space:nowrap;
     }
     .btn:hover{filter:brightness(1.05)}
-    .pill:hover{border-color:rgba(0,255,255,.25)}
-    .tag:hover{border-color:rgba(0,255,255,.25)}
-
     .btn:active{transform:translateY(1px)}
     .btn.disabled{opacity:.45; pointer-events:none}
     .btn.ok{border-color:rgba(123,227,161,.35)}
@@ -94,11 +113,11 @@
       /* drawer */
       .barTop{display:flex}
       .accessToggle{display:inline-flex}
-      .drawerBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:40}
-      body.asideOpen .drawerBackdrop{opacity:1; pointer-events:auto}
+      .drawerBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(6px); z-index:40}
+      body.asideOpen .drawerBackdrop{display:block}
       .aside{position:fixed; top:0; right:0; height:100dvh; width:min(360px, 92vw);
-        background:var(--bg); border-left:1px solid var(--ol); box-shadow:-12px 0 30px rgba(0,0,0,.35); padding:14px; overflow:auto;
-        transform:translateX(110%); transition:transform .24s ease; will-change:transform; z-index:50}
+        background:var(--bg); border-left:1px solid var(--ol); padding:14px; overflow:auto;
+        transform:translateX(110%); transition:transform .24s ease; z-index:50}
       body.asideOpen .aside{transform:translateX(0)}
       body.asideOpen{overflow:hidden}
       .closeAside{display:inline-flex}
