@@ -40,7 +40,7 @@
 
 
 
-  var state = { data:null, items:[], view:[] , pageSize:30, visibleCount:30, lastQuery:''};
+  var state = { data:null, items:[], view:[], pageSize:30, page:1 };
 
   function loadData(){
     // 1) Try fetch (normal hosting)
@@ -80,19 +80,19 @@
     // init UI
     var qEl = $('q');
     qEl.value = parseQuery();
-    state.lastQuery = qEl.value || '';
-    state.visibleCount = state.pageSize;
 
-    qEl.addEventListener('input', function(){
-      var v = qEl.value || '';
-      if(v !== state.lastQuery){ state.visibleCount = state.pageSize; state.lastQuery = v; }
-      render(filter(v));
-    });
-    qEl.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ qEl.value=''; state.visibleCount = state.pageSize; state.lastQuery=''; render(filter('')); } });
+    qEl.addEventListener('input', function(){ state.page=1; render(filter(qEl.value), qEl.value); });
+    qEl.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ qEl.value=''; state.page=1; render(filter(''), ''); } });
+    var loadMoreBtn = $('loadMore');
+    if(loadMoreBtn){
+      loadMoreBtn.addEventListener('click', function(){
+        state.page += 1;
+        render(filter(qEl.value), qEl.value);
+      });
+    }
 
-    render(filter(qEl.value));
-      qEl.dispatchEvent(new Event('input', { bubbles:true }));
-    });
+
+    state.page=1; render(filter(qEl.value), qEl.value);
 
     // Toggle de hashtags (delegación)
     var grid = $('grid');
@@ -136,31 +136,29 @@
     });
   }
 
-  function render(list){
-    var qNow = state.lastQuery || '';
-    var hasQuery = !!norm(qNow);
+  function render(list, query){
     $('count').innerHTML = '<strong>' + list.length + '</strong><span class="dim"> / ' + state.items.length + '</span>';
-    // paginación: solo cuando no hay búsqueda
-    var viewList = list;
-    var pager = $('pager');
-    var moreBtn = $('loadMore');
-    if(!hasQuery){
-      viewList = list.slice(0, state.visibleCount);
-      if(pager){ pager.style.display = (state.visibleCount < list.length) ? 'block' : 'none'; }
-      if(moreBtn){
-        moreBtn.onclick = function(){ state.visibleCount += state.pageSize; render(list); };
-      }
-    }else{
-      if(pager){ pager.style.display = 'none'; }
-    }
-
     var grid = $('grid');
     grid.innerHTML = '';
-    if(!viewList.length){
+    query = (query||'').trim();
+    var pager = $('pager');
+    var loadMore = $('loadMore');
+    var showList = list;
+    if(!query){
+      showList = list.slice(0, state.page * state.pageSize);
+      if(pager && loadMore){
+        var more = list.length - showList.length;
+        pager.style.display = more > 0 ? 'block' : 'none';
+        if(more > 0){ loadMore.textContent = 'Cargar más (' + Math.min(state.pageSize, more) + ')'; }
+      }
+    } else {
+      if(pager) pager.style.display = 'none';
+    }
+    if(!list.length){
       grid.innerHTML = '<div class="card"><div class="small">Sin resultados. Probá otra palabra o un #tag.</div></div>';
       return;
     }
-    viewList.forEach(function(it){
+    showList.forEach(function(it){
       var yt = it.youtube_url || youtubeFallback(it.n);
       var tr = it.transcripcion_url || '';
 

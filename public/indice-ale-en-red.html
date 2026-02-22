@@ -137,7 +137,7 @@
 /* Accesos compacto (Stripe/Linear) */
 .accessList{ display:flex; flex-direction:column; gap:10px; }
 .accessItem{ display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:12px; border:1px solid var(--ol); border-radius:14px; background:rgba(255,255,255,.02);
+  padding:12px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.02);
 }
 .aLeft{ display:flex; flex-direction:column; gap:4px; min-width:0; }
 .aTitle{ font-weight:650; letter-spacing:.2px; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -154,11 +154,6 @@
 /* Mantener contador alineado */
 .searchRow{ align-items:center; }
 #count{ white-space:nowrap; }
-
-
-/* Paginación / Cargar más */
-.pager .btn{min-height:40px; padding:8px 14px; border-radius:12px}
-
 
 </style>
 </head>
@@ -190,8 +185,8 @@
 <div class="note" style="margin-top:8px">Filtra solo emisiones.</div>
 <div class="err" id="err" style="display:none"></div>
 <div class="grid" id="grid"></div>
-<div class="pager" id="pager" style="display:none; margin-top:12px; text-align:center;">
-<button class="btn" id="loadMore" type="button">Cargar más</button>
+<div class="pager" id="pager" style="display:none; text-align:center; margin:14px 0 4px;">
+  <button class="btn" id="loadMore" type="button">Cargar más</button>
 </div>
 </div>
 <!-- ASIDE: accesos fijos -->
@@ -228,10 +223,6 @@
       <a class="btn mini warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank"><span>72</span></a>
     </div>
   </div>
-
-
-  
-
 
   <div class="asideFoot">Tip: buscá con Ctrl+F en el visor PDF.</div>
 </div>
