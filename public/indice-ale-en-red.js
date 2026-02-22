@@ -91,21 +91,6 @@
     qEl.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ qEl.value=''; state.visibleCount = state.pageSize; state.lastQuery=''; render(filter('')); } });
 
     render(filter(qEl.value));
-
-    // Rutas (botones en Accesos)
-    document.addEventListener('click', function(ev){
-      var b = ev.target;
-      if(!b) return;
-      // si el click viene de un <span> dentro del button
-      if(b.closest) b = b.closest('button[data-route]') || b;
-      if(!(b && b.getAttribute && b.getAttribute('data-route'))) return;
-      var rq = b.getAttribute('data-route') || '';
-      if(!rq) return;
-      qEl.value = rq;
-      state.visibleCount = state.pageSize;
-      state.lastQuery = rq;
-      // cerrar drawer si está abierto
-      document.body.classList.remove('asideOpen');
       qEl.dispatchEvent(new Event('input', { bubbles:true }));
     });
 
