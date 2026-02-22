@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Índice / Buscador · Alejandra Casado EN RED</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Índice / Buscador · Alejandra Casado EN RED</title>
+<style>
     :root{
       --bg:#0b0d10; --panel:#101720; --text:#e6f1ff; --muted:#9fb3c8; --ol:#223040;
       --chip:#16202c; --chip2:#0e141c; --ok:#7be3a1; --warn:#f1c56b;
@@ -23,6 +24,9 @@
     .layout{display:grid; grid-template-columns: 1fr 340px; gap:14px; margin-top:12px; align-items:start}
     .main{min-width:0}
     .aside{position:sticky; top:14px}
+    .accessToggle{display:none}
+    .closeAside{display:none; min-width:44px}
+    .drawerBackdrop{display:none}
 
     .bar{display:flex; gap:10px; align-items:center; width:100%}
     .search{flex:1; display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--ol); border-radius:var(--radius); padding:10px 12px}
@@ -66,6 +70,18 @@
 
     @media (max-width: 980px){
       .layout{grid-template-columns: 1fr}
+      /* drawer */
+      .accessToggle{display:inline-flex}
+      .drawerBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:40}
+      body.asideOpen .drawerBackdrop{display:block}
+      .aside{position:fixed; top:0; right:0; height:100dvh; width:min(360px, 92vw);
+        background:var(--bg); border-left:1px solid var(--ol); padding:14px; overflow:auto;
+        transform:translateX(110%); transition:transform .2s ease; z-index:50}
+      body.asideOpen .aside{transform:translateX(0)}
+      body.asideOpen{overflow:hidden}
+      .closeAside{display:inline-flex}
+      .btn{white-space:nowrap}
+    }
       .aside{position:static}
       .btn{white-space:normal}
     }
@@ -80,79 +96,83 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <div class="title">
-        <h1>Índice / Buscador · Alejandra Casado EN RED</h1>
-        <div class="sub">Buscador por palabra, #tag, número, fecha o “vuelta”.<br/>Los links apuntan a la <b>emisión (YouTube)</b> y a la <b>Transcripción (Telegram)</b> cuando está disponible.</div>
-      </div>
-      <a class="btn" href="./index.html">← Volver</a>
-    </div>
-
-    <div class="layout">
-      <!-- MAIN: buscador + resultados -->
-      <div class="main">
-        <div class="bar">
-          <div class="search">
-            <span class="small">🔎</span>
-            <input id="q" type="search" placeholder="Buscar emisiones… (ej: mente, #respiración, 80, 2022, vuelta 23)" autocomplete="off" />
-            <span id="count" class="pill">—</span>
-          </div>
-        </div>
-
-        <div class="note" style="margin-top:8px">Este buscador filtra <b>solo emisiones</b>.</div>
-
-        <div id="err" class="err" style="display:none"></div>
-        <div id="grid" class="grid"></div>
-      </div>
-
-      <!-- ASIDE: accesos fijos -->
-      <aside class="aside" aria-label="Accesos">
-        <div class="asideTitle">
-          <div style="font-weight:650; letter-spacing:.2px">Accesos</div>
-          <span class="pill">fijos</span>
-        </div>
-
-        <div class="card" id="compendio">
-          <div class="head">
-            <div class="hleft" style="min-width:unset">
-              <div style="font-weight:600; font-size:14px; letter-spacing:.2px">Compendio de Transcripciones (PDF)</div>
-              <div class="sub" style="margin-top:6px">Un solo archivo para buscar con Ctrl+F / Buscar en PDF.</div>
-            </div>
-            <div class="actions">
-              <a class="btn ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" target="_blank" rel="noopener noreferrer">📄 Abrir y descargar (PDF)</a>
-            </div>
-          </div>
-          <div class="note">Peso aprox. 100&nbsp;MB — puede tardar en datos móviles.</div>
-        </div>
-
-        <div class="card" id="eventos">
-          <div class="head">
-            <div class="hleft" style="min-width:unset">
-              <div style="font-weight:600; font-size:14px; letter-spacing:.2px">Eventos (PDF)</div>
-              <div class="sub" style="margin-top:6px">Acceso a documentos y materiales de eventos.<br/><span style="color:var(--muted)">Se irán sumando nuevos eventos aquí.</span></div>
-            </div>
-            <div class="actions">
-              <a class="btn warn" href="/eventos/evento-071.pdf" target="_blank" rel="noopener noreferrer" aria-label="Abrir Evento 71 (PDF)">📌 Evento 71</a>
-              <a class="btn warn" href="/eventos/evento-072.pdf" target="_blank" rel="noopener noreferrer" aria-label="Abrir Evento 72 (PDF)">📌 Evento 72</a>
-            </div>
-          </div>
-          <div class="note">Cada PDF pesa aprox. 5–10&nbsp;MB.</div>
-        </div>
-
-        <div class="note" style="margin-top:10px">Tip: si querés buscar una frase exacta, usá la búsqueda del visor PDF.</div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- Fallback: datos embebidos (sirve incluso en GitHub preview / file://) -->
-  <script src="./data/ale_en_red_index.js"></script>
-  <script src="./indice-ale-en-red.js"></script>
-
-  <script>
+<div class="wrap">
+<div class="top">
+<div class="title">
+<h1>Índice / Buscador · Alejandra Casado EN RED</h1>
+<div class="sub">Buscador por palabra, #tag, número, fecha o “vuelta”.<br/>Los links apuntan a la <b>emisión (YouTube)</b> y a la <b>Transcripción (Telegram)</b> cuando está disponible.</div>
+</div>
+<a class="btn" href="./index.html">← Volver</a>
+</div>
+<div class="layout">
+<!-- MAIN: buscador + resultados -->
+<div class="main">
+<div class="bar">
+<div class="search">
+<span class="small">🔎</span>
+<input autocomplete="off" id="q" placeholder="Buscar emisiones… (ej: mente, #respiración, 80, 2022, vuelta 23)" type="search"/>
+<span class="pill" id="count">—</span>
+</div>
+<button aria-label="Abrir accesos" class="btn accessToggle" id="accessToggle" type="button">📌 Accesos</button></div>
+<div class="note" style="margin-top:8px">Este buscador filtra <b>solo emisiones</b>.</div>
+<div class="err" id="err" style="display:none"></div>
+<div class="grid" id="grid"></div>
+</div>
+<!-- ASIDE: accesos fijos -->
+<aside aria-label="Accesos" class="aside" id="asidePanel">
+<div class="asideTitle">
+<div style="font-weight:650; letter-spacing:.2px">Accesos</div>
+<span class="pill">fijos</span>
+<button aria-label="Cerrar accesos" class="btn closeAside" id="closeAside" type="button">✕</button></div>
+<div class="card" id="compendio">
+<div class="head">
+<div class="hleft" style="min-width:unset">
+<div style="font-weight:600; font-size:14px; letter-spacing:.2px">Compendio de Transcripciones (PDF)</div>
+<div class="sub" style="margin-top:6px">Un solo archivo para buscar con Ctrl+F / Buscar en PDF.</div>
+</div>
+<div class="actions">
+<a class="btn ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" rel="noopener noreferrer" target="_blank">📄 Abrir y descargar (PDF)</a>
+</div>
+</div>
+<div class="note">Peso aprox. 100 MB — puede tardar en datos móviles.</div>
+</div>
+<div class="card" id="eventos">
+<div class="head">
+<div class="hleft" style="min-width:unset">
+<div style="font-weight:600; font-size:14px; letter-spacing:.2px">Eventos (PDF)</div>
+<div class="sub" style="margin-top:6px">Acceso a documentos y materiales de eventos.<br/><span style="color:var(--muted)">Se irán sumando nuevos eventos aquí.</span></div>
+</div>
+<div class="actions">
+<a aria-label="Abrir Evento 71 (PDF)" class="btn warn" href="/eventos/evento-071.pdf" rel="noopener noreferrer" target="_blank">📌 Evento 71</a>
+<a aria-label="Abrir Evento 72 (PDF)" class="btn warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank">📌 Evento 72</a>
+</div>
+</div>
+<div class="note">Cada PDF pesa aprox. 5–10 MB.</div>
+</div>
+<div class="note" style="margin-top:10px">Tip: si querés buscar una frase exacta, usá la búsqueda del visor PDF.</div>
+</aside>
+</div>
+</div>
+<!-- Fallback: datos embebidos (sirve incluso en GitHub preview / file://) -->
+<div aria-hidden="true" class="drawerBackdrop" id="drawerBackdrop"></div><script src="./data/ale_en_red_index.js"></script>
+<script src="./indice-ale-en-red.js"></script>
+<script>
     window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
   </script>
-  <script defer src="/_vercel/speed-insights/script.js"></script>
+<script defer="" src="/_vercel/speed-insights/script.js">
 
+    // Drawer (Accesos) en mobile
+    (function(){
+      const btn = document.getElementById('accessToggle');
+      const close = document.getElementById('closeAside');
+      const backdrop = document.getElementById('drawerBackdrop');
+      function open(){ document.body.classList.add('asideOpen'); }
+      function closeIt(){ document.body.classList.remove('asideOpen'); }
+      if(btn) btn.addEventListener('click', open);
+      if(close) close.addEventListener('click', closeIt);
+      if(backdrop) backdrop.addEventListener('click', closeIt);
+      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeIt(); });
+    })();
+</script>
 </body>
 </html>
