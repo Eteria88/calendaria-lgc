@@ -40,7 +40,7 @@
 
 
 
-  var state = { data:null, items:[], view:[] };
+  var state = { data:null, items:[], view:[] , pageSize:30, visibleCount:30, lastQuery:''};
 
   function loadData(){
     // 1) Try fetch (normal hosting)
@@ -80,11 +80,34 @@
     // init UI
     var qEl = $('q');
     qEl.value = parseQuery();
+    state.lastQuery = qEl.value || '';
+    state.visibleCount = state.pageSize;
 
-    qEl.addEventListener('input', function(){ render(filter(qEl.value)); });
-    qEl.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ qEl.value=''; render(filter('')); } });
+    qEl.addEventListener('input', function(){
+      var v = qEl.value || '';
+      if(v !== state.lastQuery){ state.visibleCount = state.pageSize; state.lastQuery = v; }
+      render(filter(v));
+    });
+    qEl.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ qEl.value=''; state.visibleCount = state.pageSize; state.lastQuery=''; render(filter('')); } });
 
     render(filter(qEl.value));
+
+    // Rutas (botones en Accesos)
+    document.addEventListener('click', function(ev){
+      var b = ev.target;
+      if(!b) return;
+      // si el click viene de un <span> dentro del button
+      if(b.closest) b = b.closest('button[data-route]') || b;
+      if(!(b && b.getAttribute && b.getAttribute('data-route'))) return;
+      var rq = b.getAttribute('data-route') || '';
+      if(!rq) return;
+      qEl.value = rq;
+      state.visibleCount = state.pageSize;
+      state.lastQuery = rq;
+      // cerrar drawer si está abierto
+      document.body.classList.remove('asideOpen');
+      qEl.dispatchEvent(new Event('input', { bubbles:true }));
+    });
 
     // Toggle de hashtags (delegación)
     var grid = $('grid');
@@ -129,14 +152,30 @@
   }
 
   function render(list){
+    var qNow = state.lastQuery || '';
+    var hasQuery = !!norm(qNow);
     $('count').innerHTML = '<strong>' + list.length + '</strong><span class="dim"> / ' + state.items.length + '</span>';
+    // paginación: solo cuando no hay búsqueda
+    var viewList = list;
+    var pager = $('pager');
+    var moreBtn = $('loadMore');
+    if(!hasQuery){
+      viewList = list.slice(0, state.visibleCount);
+      if(pager){ pager.style.display = (state.visibleCount < list.length) ? 'block' : 'none'; }
+      if(moreBtn){
+        moreBtn.onclick = function(){ state.visibleCount += state.pageSize; render(list); };
+      }
+    }else{
+      if(pager){ pager.style.display = 'none'; }
+    }
+
     var grid = $('grid');
     grid.innerHTML = '';
-    if(!list.length){
+    if(!viewList.length){
       grid.innerHTML = '<div class="card"><div class="small">Sin resultados. Probá otra palabra o un #tag.</div></div>';
       return;
     }
-    list.forEach(function(it){
+    viewList.forEach(function(it){
       var yt = it.youtube_url || youtubeFallback(it.n);
       var tr = it.transcripcion_url || '';
 

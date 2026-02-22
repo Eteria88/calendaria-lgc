@@ -137,7 +137,7 @@
 /* Accesos compacto (Stripe/Linear) */
 .accessList{ display:flex; flex-direction:column; gap:10px; }
 .accessItem{ display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:12px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.02);
+  padding:12px; border:1px solid var(--ol); border-radius:14px; background:rgba(255,255,255,.02);
 }
 .aLeft{ display:flex; flex-direction:column; gap:4px; min-width:0; }
 .aTitle{ font-weight:650; letter-spacing:.2px; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -154,6 +154,14 @@
 /* Mantener contador alineado */
 .searchRow{ align-items:center; }
 #count{ white-space:nowrap; }
+
+
+/* Paginación / Cargar más */
+.pager .btn{min-height:40px; padding:8px 14px; border-radius:12px}
+
+/* Rutas (botones compactos) */
+.routes{flex-wrap:wrap; justify-content:flex-end}
+.routes .btn.mini{padding:8px 10px; border-radius:12px; font-size:12px}
 
 </style>
 </head>
@@ -185,6 +193,9 @@
 <div class="note" style="margin-top:8px">Filtra solo emisiones.</div>
 <div class="err" id="err" style="display:none"></div>
 <div class="grid" id="grid"></div>
+<div class="pager" id="pager" style="display:none; margin-top:12px; text-align:center;">
+<button class="btn" id="loadMore" type="button">Cargar más</button>
+</div>
 </div>
 <!-- ASIDE: accesos fijos -->
 <aside aria-label="Accesos" class="aside" id="asidePanel">
@@ -218,6 +229,20 @@
     <div class="aRight aBtns">
       <a class="btn mini warn" href="/eventos/evento-071.pdf" rel="noopener noreferrer" target="_blank"><span>71</span></a>
       <a class="btn mini warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank"><span>72</span></a>
+    </div>
+  </div>
+
+
+  <div class="accessItem">
+    <div class="aLeft">
+      <div class="aTitle">Rutas</div>
+      <div class="aMeta">Exploración por tema</div>
+    </div>
+    <div class="aRight aBtns routes" aria-label="Rutas">
+      <button class="btn mini" type="button" data-route="#CampoUnificado">Campo</button>
+      <button class="btn mini" type="button" data-route="#CaosYControl">Caos</button>
+      <button class="btn mini" type="button" data-route="#CodigoSolar">Código</button>
+      <button class="btn mini" type="button" data-route="#MemoriaColectiva">Memoria</button>
     </div>
   </div>
 
