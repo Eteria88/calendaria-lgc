@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Índice / Buscador · Alejandra Casado EN RED</title>
+<title>Centro de búsqueda de la Instrucción</title>
 <style>
     :root{
       --bg:#0b0d10; --panel:#101720; --text:#e6f1ff; --muted:#9fb3c8; --ol:#223040;
@@ -27,43 +27,15 @@
     .accessToggle{display:none}
     .closeAside{display:none; min-width:44px}
     .drawerBackdrop{display:none}
+    .barTop{display:none; justify-content:flex-end; margin:2px 0 8px}
 
     .bar{display:flex; gap:10px; align-items:center; width:100%}
     .search{flex:1; display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--ol); border-radius:var(--radius); padding:10px 12px}
     .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:14px}
 
-    /* Mobile polish: counter + access button (icon button inside the search) */
-    .search{position:relative}
-    #count{white-space:nowrap}
-    /* leave space for counter + icon button */
-    .search input{padding-right:124px}
-    /* counter sits just left of the icon button */
-    #count{position:absolute; right:58px; top:50%; transform:translateY(-50%);}
+    .pill{display:inline-flex; align-items:center; gap:8px; white-space:nowrap; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:8px 10px; color:var(--muted); font-size:12px}
 
-    .iconBtn{
-      position:absolute; right:10px; top:50%; transform:translateY(-50%);
-      width:44px; height:44px; border-radius:12px;
-      border:1px solid var(--ol); background:var(--chip2);
-      display:inline-flex; align-items:center; justify-content:center;
-      color:var(--text); cursor:pointer;
-    }
-    .iconBtn:hover{filter:brightness(1.06)}
-    .iconBtn:active{transform:translateY(calc(-50% + 1px))}
-    .iconBtn .icon{width:18px;height:18px;opacity:.9}
-
-    @media (max-width: 640px){
-      .bar{flex-direction:column; align-items:stretch}
-      #count{font-size:11px; padding:7px 9px}
-      .search input{padding-right:120px}
-      #count{right:56px}
-      .iconBtn{width:42px;height:42px}
-    }
-
-    .pill{display:inline-flex; align-items:center; gap:8px; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:8px 10px; color:var(--muted); font-size:12px}
-
-    .btn{display:inline-flex; align-items:center; justify-content:center; min-height:var(--tap);
-    .icon{width:16px;height:16px;flex:0 0 16px;opacity:.9}
-
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:var(--tap);
       padding:8px 12px; border-radius:12px; border:1px solid var(--ol);
       background:var(--chip2); color:var(--text); text-decoration:none; font-size:13px; gap:8px;
       white-space:nowrap;
@@ -88,6 +60,9 @@
     .note{margin-top:10px; color:var(--muted); font-size:12px; line-height:1.4}
     .err{margin-top:12px; padding:12px; border:1px solid rgba(241,197,107,.35); background:rgba(241,197,107,.06); border-radius:14px; color:var(--muted); font-size:13px}
     .small{font-size:12px; color:var(--muted)}
+    .ico{display:inline-flex; width:14px; height:14px; color:var(--muted)}
+    .ico svg{width:14px; height:14px; display:block}
+
 
     /* aside blocks */
     .asideTitle{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
@@ -101,6 +76,7 @@
     @media (max-width: 980px){
       .layout{grid-template-columns: 1fr}
       /* drawer */
+      .barTop{display:flex}
       .accessToggle{display:inline-flex}
       .drawerBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:40}
       body.asideOpen .drawerBackdrop{display:block}
@@ -126,22 +102,20 @@
 <div class="wrap">
 <div class="top">
 <div class="title">
-<h1>Índice / Buscador · Alejandra Casado EN RED</h1>
-<div class="sub">Buscador por palabra, #tag, número, fecha o “vuelta”.<br/>Los links apuntan a la <b>emisión (YouTube)</b> y a la <b>Transcripción (Telegram)</b> cuando está disponible.</div>
+<h1>Centro de búsqueda de la Instrucción</h1>
+<div class="sub">Buscador de <b>emisiones</b> por palabra, #tag, número, fecha o “vuelta”.<br/>Accesos: <b>Compendio de Transcripciones (PDF)</b> y <b>Eventos (PDF)</b>.</div>
 </div>
 <a class="btn" href="./index.html">← Volver</a>
 </div>
 <div class="layout">
 <!-- MAIN: buscador + resultados -->
 <div class="main">
+<div class="barTop"><button aria-label="Abrir accesos" class="btn accessToggle" id="accessToggle" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-4.6 7-11a7 7 0 10-14 0c0 6.4 7 11 7 11z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/></svg></span><span>Accesos</span></button></div>
 <div class="bar">
 <div class="search">
-<span class="small">🔎</span>
+<span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
 <input autocomplete="off" id="q" placeholder="Buscar emisiones… (ej: mente, #respiración, 80, 2022, vuelta 23)" type="search"/>
 <span class="pill" id="count">—</span>
-<button aria-label="Accesos" class="iconBtn" id="accessToggle" type="button" title="Accesos">
-<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-4 4v5l-2-2-2 2v-5L4 8l4-4 4 4 2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
 </div>
 </div>
 <div class="note" style="margin-top:8px">Este buscador filtra <b>solo emisiones</b>.</div>
@@ -153,7 +127,7 @@
 <div class="asideTitle">
 <div style="font-weight:650; letter-spacing:.2px">Accesos</div>
 <span class="pill">fijos</span>
-<button aria-label="Cerrar accesos" class="btn closeAside" id="closeAside" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+<button aria-label="Cerrar accesos" class="btn closeAside" id="closeAside" type="button">✕</button></div>
 <div class="card" id="compendio">
 <div class="head">
 <div class="hleft" style="min-width:unset">
@@ -161,7 +135,7 @@
 <div class="sub" style="margin-top:6px">Un solo archivo para buscar con Ctrl+F / Buscar en PDF.</div>
 </div>
 <div class="actions">
-<a class="btn ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" rel="noopener noreferrer" target="_blank"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Abrir y descargar (PDF)</span></a>
+<a class="btn ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" rel="noopener noreferrer" target="_blank">📄 Abrir y descargar (PDF)</a>
 </div>
 </div>
 <div class="note">Peso aprox. 100 MB — puede tardar en datos móviles.</div>
@@ -173,8 +147,8 @@
 <div class="sub" style="margin-top:6px">Acceso a documentos y materiales de eventos.<br/><span style="color:var(--muted)">Se irán sumando nuevos eventos aquí.</span></div>
 </div>
 <div class="actions">
-<a aria-label="Abrir Evento 71 (PDF)" class="btn warn" href="/eventos/evento-071.pdf" rel="noopener noreferrer" target="_blank"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-4 4v5l-2-2-2 2v-5L4 8l4-4 4 4 2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Evento 71</span></a>
-<a aria-label="Abrir Evento 72 (PDF)" class="btn warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-4 4v5l-2-2-2 2v-5L4 8l4-4 4 4 2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Evento 72</span></a>
+<a aria-label="Abrir Evento 71 (PDF)" class="btn warn" href="/eventos/evento-071.pdf" rel="noopener noreferrer" target="_blank">📌 Evento 71</a>
+<a aria-label="Abrir Evento 72 (PDF)" class="btn warn" href="/eventos/evento-072.pdf" rel="noopener noreferrer" target="_blank">📌 Evento 72</a>
 </div>
 </div>
 <div class="note">Cada PDF pesa aprox. 5–10 MB.</div>
