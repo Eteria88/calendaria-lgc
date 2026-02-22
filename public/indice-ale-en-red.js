@@ -184,7 +184,7 @@ if(allTags.length){
       actions.push('<a class="btn ok" href="' + esc(yt) + '" target="_blank" rel="noopener">▶︎ YouTube</a>');
 
       if(tr){
-        actions.push('<a class="btn has-ico" href="' + esc(tr) + '" target="_blank" rel="noopener">' + icon('note') + '<span>Transcripción</span></a>');
+        actions.push('<a class="btn ok has-ico" href="' + esc(tr) + '" target="_blank" rel="noopener">' + icon('note') + '<span>Transcripción</span></a>');
       }else{
         actions.push('<a class="btn disabled has-ico" href="#" aria-disabled="true">' + icon('note') + '<span>Transcripción (no disponible)</span></a>');
       }
