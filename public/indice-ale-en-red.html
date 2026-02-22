@@ -160,6 +160,17 @@
 .searchRow{ align-items:center; }
 #count{ white-space:nowrap; }
 
+
+/* --- Mobile polish: keep #id on same line as title --- */
+.titleRow{display:flex;align-items:center;gap:10px;min-width:0;}
+.titleRow .titleLink{flex:1;min-width:0;text-decoration:none;}
+.titleRow .cardTitle{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.idBadge{flex:0 0 auto;white-space:nowrap;}
+@media (max-width: 480px){
+  .titleRow{gap:8px;}
+  .idBadge{padding:5px 9px;font-size:12px;}
+}
+
 </style>
 </head>
 <body>

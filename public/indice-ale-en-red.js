@@ -166,7 +166,6 @@
       if(it.date_raw) meta.push('<span class="pill meta-pill has-ico">' + icon('calendar') + '<span>' + esc(it.date_raw) + '</span></span>');
       if(it.metrics) meta.push('<span class="pill meta-pill metrics has-ico">' + icon('gear') + '<span>' + esc(it.metrics) + '</span></span>');
       if(it.vuelta) meta.push('<span class="pill meta-pill has-ico">' + icon('compass') + '<span>' + esc(it.vuelta) + '</span></span>');
-      meta.push('<span class="pill meta-pill">#' + it.n + '</span>');
 
       var allTags = (it.tags||[]);
 var LIMIT = 12;
@@ -197,7 +196,10 @@ if(allTags.length){
       card.innerHTML =
         '<div class="head">' +
           '<div class="hleft">' +
-            '<div><a href="' + esc(yt) + '" target="_blank" rel="noopener"><b>' + esc(it.title_display || it.title) + '</b></a></div>' +
+            '<div class="titleRow">' +
+              '<a class="titleLink" href="' + esc(yt) + '" target="_blank" rel="noopener"><b class="cardTitle">' + esc(it.title_display || it.title) + '</b></a>' +
+              '<span class="pill meta-pill idBadge">#' + it.n + '</span>' +
+            '</div>' +
             '<div class="meta">' + meta.join('') + '</div>' +
           '</div>' +
           '<div class="actions">' + actions.join('') + '</div>' +
