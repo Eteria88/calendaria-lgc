@@ -17,7 +17,7 @@
     .wrap{max-width:1120px; margin:0 auto; padding:18px 14px 40px}
     .top{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
     .title{display:flex; flex-direction:column; gap:4px}
-    h1{margin:0; font-size:18px; letter-spacing:.2px}
+    h1{margin:0; font-size:22px; letter-spacing:.2px; line-height:1.15}
     .sub{color:var(--muted); font-size:12px; line-height:1.35}
 
     /* layout */
@@ -90,6 +90,8 @@
     }
 
     @media (max-width:540px){
+      h1{font-size:20px}
+
       .wrap{padding:14px 12px 32px}
       .search{padding:10px}
       .actions{width:100%}
@@ -126,7 +128,6 @@
 <aside aria-label="Accesos" class="aside" id="asidePanel">
 <div class="asideTitle">
 <div style="font-weight:650; letter-spacing:.2px">Accesos</div>
-<span class="pill">fijos</span>
 <button aria-label="Cerrar accesos" class="btn closeAside" id="closeAside" type="button">✕</button></div>
 <div class="card" id="compendio">
 <div class="head">
