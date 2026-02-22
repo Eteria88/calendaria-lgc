@@ -12,24 +12,35 @@
     }
     *{box-sizing:border-box}
     body{margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg); color:var(--text)}
-    .wrap{max-width:980px; margin:0 auto; padding:18px 14px 40px}
+
+    .wrap{max-width:1120px; margin:0 auto; padding:18px 14px 40px}
     .top{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
     .title{display:flex; flex-direction:column; gap:4px}
     h1{margin:0; font-size:18px; letter-spacing:.2px}
     .sub{color:var(--muted); font-size:12px; line-height:1.35}
-    .bar{display:flex; gap:10px; align-items:center; width:100%; margin-top:12px}
+
+    /* layout */
+    .layout{display:grid; grid-template-columns: 1fr 340px; gap:14px; margin-top:12px; align-items:start}
+    .main{min-width:0}
+    .aside{position:sticky; top:14px}
+
+    .bar{display:flex; gap:10px; align-items:center; width:100%}
     .search{flex:1; display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--ol); border-radius:var(--radius); padding:10px 12px}
     .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:14px}
+
     .pill{display:inline-flex; align-items:center; gap:8px; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:8px 10px; color:var(--muted); font-size:12px}
+
     .btn{display:inline-flex; align-items:center; justify-content:center; min-height:var(--tap);
       padding:8px 12px; border-radius:12px; border:1px solid var(--ol);
       background:var(--chip2); color:var(--text); text-decoration:none; font-size:13px; gap:8px;
+      white-space:nowrap;
     }
     .btn:hover{filter:brightness(1.05)}
     .btn:active{transform:translateY(1px)}
     .btn.disabled{opacity:.45; pointer-events:none}
     .btn.ok{border-color:rgba(123,227,161,.35)}
     .btn.warn{border-color:rgba(241,197,107,.35)}
+
     .grid{margin-top:14px; display:flex; flex-direction:column; gap:10px}
     .card{background:var(--panel); border:1px solid var(--ol); border-radius:16px; padding:12px}
     .head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap}
@@ -41,13 +52,27 @@
     .tags{margin-top:10px; display:flex; flex-wrap:wrap; gap:6px}
     .tag{display:inline-flex; background:var(--chip); border:1px solid var(--ol); border-radius:999px; padding:6px 9px; font-size:12px; color:var(--muted)}
     .actions{display:flex; gap:8px; flex-wrap:wrap}
-    .note{margin-top:12px; color:var(--muted); font-size:12px}
+    .note{margin-top:10px; color:var(--muted); font-size:12px; line-height:1.4}
     .err{margin-top:12px; padding:12px; border:1px solid rgba(241,197,107,.35); background:rgba(241,197,107,.06); border-radius:14px; color:var(--muted); font-size:13px}
     .small{font-size:12px; color:var(--muted)}
+
+    /* aside blocks */
+    .asideTitle{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
+    .asideTitle .pill{background:transparent}
+    .aside .card{padding:12px}
+    .aside .card + .card{margin-top:10px}
+    .aside .actions{width:100%}
+    .aside .actions .btn{flex:1}
+
+    @media (max-width: 980px){
+      .layout{grid-template-columns: 1fr}
+      .aside{position:static}
+      .btn{white-space:normal}
+    }
+
     @media (max-width:540px){
       .wrap{padding:14px 12px 32px}
       .search{padding:10px}
-      .btn{width:100%}
       .actions{width:100%}
       .actions .btn{flex:1}
       .hleft{min-width:unset}
@@ -64,59 +89,70 @@
       <a class="btn" href="./index.html">← Volver</a>
     </div>
 
-    <div class="bar">
-      <div class="search">
-        <span class="small">🔎</span>
-        <input id="q" type="search" placeholder="Buscar… (ej: mente, #respiración, 80, 2022, vuelta 23)" autocomplete="off" />
-        <span id="count" class="pill">—</span>
-      </div>
-    </div>
-
-
-    <div class="card" id="compendio" style="margin-top:14px">
-      <div class="head">
-        <div class="hleft">
-          <div style="font-weight:600; font-size:14px; letter-spacing:.2px">Compendio de Transcripciones (PDF)</div>
-          <div class="sub" style="margin-top:6px">
-            Un solo archivo para buscar con Ctrl+F / Buscar en PDF.
-            <span style="color:var(--muted)"><br/>Peso aprox. 100 MB — puede tardar en datos móviles.</span>
+    <div class="layout">
+      <!-- MAIN: buscador + resultados -->
+      <div class="main">
+        <div class="bar">
+          <div class="search">
+            <span class="small">🔎</span>
+            <input id="q" type="search" placeholder="Buscar emisiones… (ej: mente, #respiración, 80, 2022, vuelta 23)" autocomplete="off" />
+            <span id="count" class="pill">—</span>
           </div>
         </div>
-        <div class="actions">
-          <a class="btn warn" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" target="_blank" rel="noopener noreferrer" aria-label="Abrir y descargar Compendio (PDF)">📄 Abrir y descargar (PDF)</a>
-        </div>
-      </div>
-    </div>
 
-    <div class="card" id="eventos" style="margin-top:12px">
-      <div class="head">
-        <div class="hleft">
-          <div style="font-weight:600; font-size:14px; letter-spacing:.2px">Eventos (PDF)</div>
-          <div class="sub" style="margin-top:6px">
-            Acceso a documentos y materiales de eventos.
-            <span style="color:var(--muted)"><br/>Se irán sumando nuevos eventos aquí.</span>
+        <div class="note" style="margin-top:8px">Este buscador filtra <b>solo emisiones</b>.</div>
+
+        <div id="err" class="err" style="display:none"></div>
+        <div id="grid" class="grid"></div>
+      </div>
+
+      <!-- ASIDE: accesos fijos -->
+      <aside class="aside" aria-label="Accesos">
+        <div class="asideTitle">
+          <div style="font-weight:650; letter-spacing:.2px">Accesos</div>
+          <span class="pill">fijos</span>
+        </div>
+
+        <div class="card" id="compendio">
+          <div class="head">
+            <div class="hleft" style="min-width:unset">
+              <div style="font-weight:600; font-size:14px; letter-spacing:.2px">Compendio de Transcripciones (PDF)</div>
+              <div class="sub" style="margin-top:6px">Un solo archivo para buscar con Ctrl+F / Buscar en PDF.</div>
+            </div>
+            <div class="actions">
+              <a class="btn ok" href="https://drive.google.com/file/d/1WAIULaOi7gW4dEJ3recnPDMbbzRjZ_1o/view?usp=sharing" target="_blank" rel="noopener noreferrer">📄 Abrir y descargar (PDF)</a>
+            </div>
           </div>
+          <div class="note">Peso aprox. 100&nbsp;MB — puede tardar en datos móviles.</div>
         </div>
-        <div class="actions">
-          <a class="btn warn" href="/eventos/evento-071.pdf" target="_blank" rel="noopener noreferrer" aria-label="Abrir Evento 71 (PDF)">📌 Evento 71</a>
-          <a class="btn warn" href="/eventos/evento-072.pdf" target="_blank" rel="noopener noreferrer" aria-label="Abrir Evento 72 (PDF)">📌 Evento 72</a>
-        </div>
-      </div>
-      <div class="note">Cada PDF pesa aprox. 5–10 MB.</div>
-    </div>
 
-    <div id="err" class="err" style="display:none"></div>
-    <div id="grid" class="grid"></div>
+        <div class="card" id="eventos">
+          <div class="head">
+            <div class="hleft" style="min-width:unset">
+              <div style="font-weight:600; font-size:14px; letter-spacing:.2px">Eventos (PDF)</div>
+              <div class="sub" style="margin-top:6px">Acceso a documentos y materiales de eventos.<br/><span style="color:var(--muted)">Se irán sumando nuevos eventos aquí.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn warn" href="/eventos/evento-071.pdf" target="_blank" rel="noopener noreferrer" aria-label="Abrir Evento 71 (PDF)">📌 Evento 71</a>
+              <a class="btn warn" href="/eventos/evento-072.pdf" target="_blank" rel="noopener noreferrer" aria-label="Abrir Evento 72 (PDF)">📌 Evento 72</a>
+            </div>
+          </div>
+          <div class="note">Cada PDF pesa aprox. 5–10&nbsp;MB.</div>
+        </div>
+
+        <div class="note" style="margin-top:10px">Tip: si querés buscar una frase exacta, usá la búsqueda del visor PDF.</div>
+      </aside>
+    </div>
   </div>
 
   <!-- Fallback: datos embebidos (sirve incluso en GitHub preview / file://) -->
   <script src="./data/ale_en_red_index.js"></script>
   <script src="./indice-ale-en-red.js"></script>
 
-<script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
+  <script>
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
 
 </body>
 </html>
