@@ -24,6 +24,21 @@
   };
   function icon(name){ return ICONS[name] || ''; }
 
+  function ensureIconStyles(){
+    if(document.getElementById('ico-style')) return;
+    var st = document.createElement('style');
+    st.id = 'ico-style';
+    st.textContent = [
+      '.pill.has-ico{display:inline-flex;align-items:center;gap:6px;}',
+      '.pill.has-ico>span{line-height:1;}',
+      '.pill.has-ico .ico{width:14px;height:14px;flex:0 0 14px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;opacity:.85;}',
+      '.btn.has-ico{display:inline-flex;align-items:center;gap:8px;}',
+      '.btn.has-ico .ico{width:14px;height:14px;flex:0 0 14px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;opacity:.9;}'
+    ].join('');
+    document.head.appendChild(st);
+  }
+
+
 
   var state = { data:null, items:[], view:[] };
 
@@ -44,6 +59,7 @@
   }
 
   function boot(){
+    ensureIconStyles();
     state.items = (state.data.items || []).map(function(it){
       return {
         n: it.n,
@@ -112,9 +128,9 @@
       var tr = it.transcripcion_url || '';
 
       var meta = [];
-      if(it.date_raw) meta.push('<span class="pill">' + icon('calendar') + '<span>' + esc(it.date_raw) + '</span></span>');
-      if(it.metrics) meta.push('<span class="pill">' + icon('gear') + '<span>' + esc(it.metrics) + '</span></span>');
-      if(it.vuelta) meta.push('<span class="pill">' + icon('compass') + '<span>' + esc(it.vuelta) + '</span></span>');
+      if(it.date_raw) meta.push('<span class="pill has-ico">' + icon('calendar') + '<span>' + esc(it.date_raw) + '</span></span>');
+      if(it.metrics) meta.push('<span class="pill has-ico">' + icon('gear') + '<span>' + esc(it.metrics) + '</span></span>');
+      if(it.vuelta) meta.push('<span class="pill has-ico">' + icon('compass') + '<span>' + esc(it.vuelta) + '</span></span>');
       meta.push('<span class="pill">#' + it.n + '</span>');
 
       var tags = (it.tags||[]).map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
@@ -123,9 +139,9 @@
       actions.push('<a class="btn ok" href="' + esc(yt) + '" target="_blank" rel="noopener">▶︎ YouTube</a>');
 
       if(tr){
-        actions.push('<a class="btn" href="' + esc(tr) + '" target="_blank" rel="noopener">' + icon('note') + '<span>Transcripción</span></a>');
+        actions.push('<a class="btn has-ico" href="' + esc(tr) + '" target="_blank" rel="noopener">' + icon('note') + '<span>Transcripción</span></a>');
       }else{
-        actions.push('<a class="btn disabled" href="#" aria-disabled="true">' + icon('note') + '<span>Transcripción (no disponible)</span></a>');
+        actions.push('<a class="btn disabled has-ico" href="#" aria-disabled="true">' + icon('note') + '<span>Transcripción (no disponible)</span></a>');
       }
 
       // ✅ PDF removido (no se renderiza botón)
