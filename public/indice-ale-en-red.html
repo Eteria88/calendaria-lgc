@@ -42,6 +42,7 @@
     .closeAside{display:none; min-width:44px}
     .drawerBackdrop{display:none}
     .barTop{display:none; justify-content:flex-end; margin:2px 0 8px}
+      .backMobile{display:none}
 
     .bar{display:flex; gap:10px; align-items:center; width:100%}
     .search{flex:1; display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--ol); border-radius:var(--radius); padding:10px 12px}
@@ -111,7 +112,11 @@
     @media (max-width: 780px){
       .layout{grid-template-columns: 1fr}
       /* drawer */
-      .barTop{display:flex}
+      .barTop{display:flex; justify-content:space-between; align-items:center}
+      .backDesktop{display:none}
+      .backMobile{display:inline-flex}
+      .barTop .btn{padding:7px 10px; min-height:40px; border-radius:12px}
+      .barTop .accessToggle{max-width:46vw}
       .accessToggle{display:inline-flex}
       .drawerBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(6px); z-index:40}
       body.asideOpen .drawerBackdrop{display:block}
@@ -168,12 +173,12 @@
   <div class="sub">Buscador de <b>emisiones</b> por palabra, #tag, número, fecha o “vuelta”.<br/>Accesos: <b>Compendio de Transcripciones de las emisiones AC EN RED (PDF)</b> y <b>Eventos (PDF)</b>.<br/>Fuente original en YouTube: <b>“Alejandra Casado EN RED”</b>.</div>
 </details>
 </div>
-<a class="btn" href="./index.html">← Volver</a>
+<a class="btn backDesktop" href="./index.html">← Volver</a>
 </div>
 <div class="layout">
 <!-- MAIN: buscador + resultados -->
 <div class="main">
-<div class="barTop"><button aria-label="Abrir accesos" class="btn accessToggle" id="accessToggle" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-4.6 7-11a7 7 0 10-14 0c0 6.4 7 11 7 11z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/></svg></span><span>Accesos</span></button></div>
+<div class="barTop"><a class="btn backMobile" href="./index.html">← Volver</a><button aria-label="Abrir accesos" class="btn accessToggle" id="accessToggle" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-4.6 7-11a7 7 0 10-14 0c0 6.4 7 11 7 11z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/></svg></span><span>Accesos</span></button></div>
 <div class="bar">
 <div class="search">
 <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
