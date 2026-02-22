@@ -65,7 +65,7 @@
         n: it.n,
         raw_title: it.title || '',
         // ✅ Formato pedido (sin paréntesis)
-        title_display: 'Alejandra Casado EN RED ' + it.n,
+        title_display: 'EN RED ' + it.n,
         title: it.title || ('Alejandra Casado en Red ' + it.n),
         date_raw: it.date_raw || '',
         date: it.date || '',
@@ -166,7 +166,8 @@
       if(it.date_raw) meta.push('<span class="pill meta-pill has-ico">' + icon('calendar') + '<span>' + esc(it.date_raw) + '</span></span>');
       if(it.metrics) meta.push('<span class="pill meta-pill metrics has-ico">' + icon('gear') + '<span>' + esc(it.metrics) + '</span></span>');
       if(it.vuelta) meta.push('<span class="pill meta-pill has-ico">' + icon('compass') + '<span>' + esc(it.vuelta) + '</span></span>');
-      
+      meta.push('<span class="pill meta-pill">#' + it.n + '</span>');
+
       var allTags = (it.tags||[]);
 var LIMIT = 12;
 var tags = '';
@@ -184,7 +185,7 @@ if(allTags.length){
       actions.push('<a class="btn ok" href="' + esc(yt) + '" target="_blank" rel="noopener">▶︎ YouTube</a>');
 
       if(tr){
-        actions.push('<a class="btn ok has-ico" href="' + esc(tr) + '" target="_blank" rel="noopener">' + icon('note') + '<span>Transcripción</span></a>');
+        actions.push('<a class="btn has-ico" href="' + esc(tr) + '" target="_blank" rel="noopener">' + icon('note') + '<span>Transcripción</span></a>');
       }else{
         actions.push('<a class="btn disabled has-ico" href="#" aria-disabled="true">' + icon('note') + '<span>Transcripción (no disponible)</span></a>');
       }
@@ -196,7 +197,7 @@ if(allTags.length){
       card.innerHTML =
         '<div class="head">' +
           '<div class="hleft">' +
-            '<div><a href="' + esc(yt) + '" target="_blank" rel="noopener"><b>' + esc(it.title_display || it.title) + '</b></a><span class="eid">#' + it.n + '</span></div>' +
+            '<div><a href="' + esc(yt) + '" target="_blank" rel="noopener"><b>' + esc(it.title_display || it.title) + '</b></a></div>' +
             '<div class="meta">' + meta.join('') + '</div>' +
           '</div>' +
           '<div class="actions">' + actions.join('') + '</div>' +
