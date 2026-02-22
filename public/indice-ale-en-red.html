@@ -20,6 +20,20 @@
     h1{margin:0; font-size:22px; letter-spacing:.2px; line-height:1.15}
     .sub{color:var(--muted); font-size:12px; line-height:1.35}
 
+    .meta{color:var(--muted); font-size:12px; letter-spacing:.16em; text-transform:uppercase; opacity:.9}
+    .help{margin-top:6px}
+    .help summary{cursor:pointer; color:var(--muted); font-size:12px; user-select:none}
+    .help summary::-webkit-details-marker{display:none}
+    .help[open] summary{color:var(--text)}
+    .help .sub{margin-top:6px}
+
+    .clearBtn{display:none; border:1px solid var(--ol); background:var(--chip2); color:var(--muted); font-size:12px;
+      padding:6px 10px; border-radius:999px; cursor:pointer; white-space:nowrap}
+    .clearBtn:hover{color:var(--text); border-color:rgba(123,227,161,.35)}
+    .clearBtn:active{transform:translateY(1px)}
+    .clearBtn.show{display:inline-flex; align-items:center; justify-content:center}
+
+
     /* layout */
     .layout{display:grid; grid-template-columns: 1fr 340px; gap:14px; margin-top:12px; align-items:start}
     .main{min-width:0}
@@ -104,7 +118,11 @@
 <div class="top">
 <div class="title">
 <h1>Centro de búsqueda de la Instrucción</h1>
-<div class="sub">Buscador de <b>emisiones</b> por palabra, #tag, número, fecha o “vuelta”.<br/>Accesos: <b>Compendio de Transcripciones de las emisiones AC EN RED (PDF)</b> y <b>Eventos (PDF)</b>.</div>
+<div class="meta">Emisiones · Transcripciones · Eventos</div>
+<details class="help">
+  <summary>¿Cómo buscar?</summary>
+  <div class="sub">Buscador de <b>emisiones</b> por palabra, #tag, número, fecha o “vuelta”.<br/>Accesos: <b>Compendio de Transcripciones de las emisiones AC EN RED (PDF)</b> y <b>Eventos (PDF)</b>.</div>
+</details>
 </div>
 <a class="btn" href="./index.html">← Volver</a>
 </div>
@@ -115,11 +133,12 @@
 <div class="bar">
 <div class="search">
 <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-<input autocomplete="off" id="q" placeholder="Buscar emisiones… (ej: mente, #respiración, 80, 2022, vuelta 23)" type="search"/>
+<input autocomplete="off" id="q" placeholder="Buscar en emisiones…" type="search"/>
+<button class="clearBtn" id="clearBtn" type="button" aria-label="Limpiar búsqueda" title="Limpiar">Limpiar</button>
 <span class="pill" id="count">—</span>
 </div>
 </div>
-<div class="note" style="margin-top:8px">Este buscador filtra <b>solo emisiones</b>.</div>
+<div class="note" style="margin-top:8px">Filtra solo emisiones.</div>
 <div class="err" id="err" style="display:none"></div>
 <div class="grid" id="grid"></div>
 </div>
@@ -165,6 +184,27 @@
   </script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 
+
+<script>
+  // Botón Limpiar (solo cuando hay texto)
+  (function(){
+    const q = document.getElementById('q');
+    const clear = document.getElementById('clearBtn');
+    if(!q || !clear) return;
+    function sync(){
+      clear.classList.toggle('show', !!q.value);
+    }
+    sync();
+    q.addEventListener('input', sync);
+    clear.addEventListener('click', function(){
+      q.value = '';
+      sync();
+      q.focus();
+      // disparar cualquier filtro existente
+      q.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  })();
+</script>
 <script>
     // Drawer (Accesos) en mobile
     (function(){
