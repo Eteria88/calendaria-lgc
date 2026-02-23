@@ -6,12 +6,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const body = req.body || {};
-const plan_id = body.plan_id || process.env.PAYPAL_PLAN_ID;
+  try {
+    const body = req.body || {};
+    const plan_id = body.plan_id || process.env.PAYPAL_PLAN_ID;
 
-if (!plan_id) {
-  return res.status(400).json({ error: "Missing plan_id (and PAYPAL_PLAN_ID not set)" });
-
+    if (!plan_id) {
+      return res
+        .status(400)
+        .json({ error: "Missing plan_id (and PAYPAL_PLAN_ID not set)" });
     }
 
     const { access_token, base } = await getAccessToken();
@@ -36,7 +38,9 @@ if (!plan_id) {
     const data = await r.json();
 
     if (!r.ok) {
-      return res.status(r.status).json({ error: "PayPal error", details: data });
+      return res
+        .status(r.status)
+        .json({ error: "PayPal error", details: data });
     }
 
     const approve_url = (data.links || []).find((l) => l.rel === "approve")?.href;
