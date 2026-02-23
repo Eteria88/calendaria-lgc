@@ -6,10 +6,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  try {
-    const { plan_id } = req.body || {};
-    if (!plan_id) {
-      return res.status(400).json({ error: "Missing plan_id" });
+  const body = req.body || {};
+const plan_id = body.plan_id || process.env.PAYPAL_PLAN_ID;
+
+if (!plan_id) {
+  return res.status(400).json({ error: "Missing plan_id (and PAYPAL_PLAN_ID not set)" });
+
     }
 
     const { access_token, base } = await getAccessToken();
