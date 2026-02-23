@@ -84,6 +84,30 @@
     .topActions a{min-height:36px}
     .note{margin-top:10px}
 
+    /* Toggle Una sola vez / Mensual */
+    .mode{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      min-height:38px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--ol);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .pill:hover{background:rgba(255,255,255,.07)}
+    .pill.active{
+      background:rgba(124,199,255,.22);
+      box-shadow:0 0 0 1px rgba(124,199,255,.12) inset;
+    }
+
     .sectionTitle{
       margin:0 0 10px 0;
       font-size:18px;
@@ -143,10 +167,21 @@
       <div class="muted sectionLabel">Formas de apoyar</div>
 
 
+      <div class="mode">
+        <button class="pill active" type="button" id="modeOnce">Una sola vez</button>
+        <button class="pill" type="button" id="modeMonthly">Mensual</button>
+      </div>
+
       <div class="grid">
         <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago</a>
-        <a class="btn" id="ppBtn" href="#" target="_blank" rel="noopener">PayPal</a>
+        <button class="btn" id="ppAction" type="button">PayPal</button>
       </div>
+
+      <div class="muted note" id="paypalHint" style="margin-top:10px">
+        En modo <b>Mensual</b> vas a PayPal para aprobar la suscripción y podés cancelarla cuando quieras.
+      </div>
+
+      <div class="muted note" id="paypalStatus" style="display:none;margin-top:10px"></div>
 
       <div class="muted" style="margin-top:12px">Contacto del proyecto (comentarios, sugerencias, info):</div>
       <div class="row">
@@ -296,7 +331,14 @@
     const PAYPAL_URL = "https://www.paypal.me/decodificacionbio"; // ej: https://paypal.me/...
 
     const mpBtn = document.getElementById('mpBtn');
-    const ppBtn = document.getElementById('ppBtn');
+    const ppAction = document.getElementById('ppAction');
+    const modeOnce = document.getElementById('modeOnce');
+    const modeMonthly = document.getElementById('modeMonthly');
+    const paypalHint = document.getElementById('paypalHint');
+    const paypalStatus = document.getElementById('paypalStatus');
+
+    let supportMode = "once"; // "once" | "monthly"
+
     function setBtn(btn, url){
       if(url && url.trim()){
         url = url.trim();
@@ -313,7 +355,73 @@
       }
     }
     setBtn(mpBtn, MP_URL);
-    setBtn(ppBtn, PAYPAL_URL);
+
+    function setActiveMode(next){
+      supportMode = next;
+      const isMonthly = supportMode === "monthly";
+      modeOnce.classList.toggle("active", !isMonthly);
+      modeMonthly.classList.toggle("active", isMonthly);
+
+      // Botón PayPal cambia de comportamiento
+      ppAction.textContent = isMonthly ? "PayPal (Mensual)" : "PayPal";
+      paypalHint.style.display = isMonthly ? "block" : "none";
+    }
+
+    modeOnce.addEventListener("click", () => setActiveMode("once"));
+    modeMonthly.addEventListener("click", () => setActiveMode("monthly"));
+
+    // Estado al volver de PayPal
+    (function syncStatusFromQuery(){
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get("paypal");
+      if (p === "success") {
+        paypalStatus.style.display = "block";
+        paypalStatus.textContent = "✅ Suscripción iniciada. ¡Gracias por apoyar el proyecto!";
+      } else if (p === "cancel") {
+        paypalStatus.style.display = "block";
+        paypalStatus.textContent = "Cancelaste el proceso de suscripción.";
+      }
+    })();
+
+    // Acción PayPal (una sola vez vs mensual)
+    ppAction.addEventListener("click", async () => {
+      if (supportMode === "once") {
+        const url = (PAYPAL_URL || "").trim();
+        if (!url) {
+          alert("Link sin configurar. Editá public/apoyar.html y pegá tu URL de PayPal.");
+          return;
+        }
+        const finalUrl = /^https?:\/\//i.test(url) ? url : ("https://" + url);
+        window.open(finalUrl, "_blank", "noopener");
+        return;
+      }
+
+      // Mensual: crea suscripción en backend y redirige a PayPal
+      ppAction.disabled = true;
+      ppAction.textContent = "Conectando con PayPal…";
+      try{
+        const res = await fetch("/api/paypal/create-subscription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        });
+        const data = await res.json();
+        if (!data || !data.ok || !data.approve_url) {
+          alert("No se pudo iniciar la suscripción. Intentalo de nuevo.");
+          ppAction.disabled = false;
+          ppAction.textContent = "PayPal (Mensual)";
+          return;
+        }
+        window.location.href = data.approve_url;
+      }catch(e){
+        alert("Error de red. Intentalo de nuevo.");
+        ppAction.disabled = false;
+        ppAction.textContent = "PayPal (Mensual)";
+      }
+    });
+
+    // init
+    setActiveMode("once");
     async function copyText(txt){
       try{
         await navigator.clipboard.writeText(txt);
