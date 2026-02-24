@@ -91,14 +91,7 @@
       margin-top:12px;
       flex-wrap:wrap;
     }
-    .supportTitle{
-      margin:14px 0 6px;
-      font-size:18px;
-      letter-spacing:-0.2px;
-      color:var(--text);
-      opacity:1;
-    }
-    .supportSubtitle{
+        .supportSubtitle{
       margin:0 0 10px;
       color:var(--muted);
       font-size:14px;
@@ -123,8 +116,7 @@
       justify-content:center;
     }
     .pillTop{font-size:13px; font-weight:800; letter-spacing:-0.1px}
-    .pillSub{font-size:11px; font-weight:700; opacity:.75; line-height:1.2}
-    .pill{
+        .pill{
       min-height:38px;
       padding:10px 14px;
       border-radius:999px;
@@ -252,6 +244,15 @@
       flex-wrap:wrap;
       align-items:center;
     }
+
+    .aboutHeading{
+      color: var(--text);
+      margin-top: 14px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      letter-spacing: -0.1px;
+      opacity: 0.95;
+    }
 </style>
 </head>
 <body>
@@ -275,7 +276,7 @@
         <p>El foco está en una participación consciente y ordenada, integrando la experiencia individual con una red de observación e interpretación compartida.</p>
         <p>Tu donación contribuye a sostener la aplicación, su desarrollo y su actualización constante a lo largo de las <b>23 vueltas</b> que componen cada año solar en Calendaria. También permite mejorar la estabilidad del sistema y ampliar sus capacidades de forma progresiva.</p>
 
-        <p><b>¿Qué hace posible tu aporte?</b></p>
+        <p class="aboutHeading"><b>¿Qué hace posible tu aporte?</b></p>
         <ul>
           <li><b>Infraestructura y operación:</b> dominio, hosting, despliegues y disponibilidad.</li>
           <li><b>Mantenimiento y evolución:</b> correcciones, refactorización, mejoras de rendimiento y compatibilidad entre dispositivos/navegadores.</li>
@@ -286,19 +287,16 @@
 
         <p>Si te aporta valor y querés apoyar su continuidad y crecimiento, podés hacerlo por cualquiera de estos medios:</p>
       </div>
-      <h2 class="supportTitle">¿Qué hace posible tu aporte?</h2>
-      <div class="divider"></div>
+            <div class="divider"></div>
       <div class="muted sectionLabel">Elegí tu forma de apoyo</div>
 
 
       <div class="mode">
         <button class="pill active" type="button" id="modeOnce">
           <span class="pillTop">Aporte único</span>
-          <span class="pillSub">una sola vez</span>
         </button>
         <button class="pill" type="button" id="modeMonthly">
-          <span class="pillTop">Aporte recurrente</span>
-          <span class="pillSub">cancelable cuando quieras</span>
+          <span class="pillTop">Aporte mensual</span>
         </button>
       </div>
 
@@ -318,10 +316,6 @@
           </button>
         </div>
 
-        <div class="muted note monthlyMicro">
-          Se debita cada mes · Cancelable cuando quieras
-        </div>
-
 
         <div class="muted note" style="margin-top:10px">
           El monto se debita <b>cada mes</b>. Podés cancelar la suscripción cuando quieras desde tu cuenta PayPal.
@@ -330,7 +324,7 @@
 
       <div class="grid">
         <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago <span class="tag">ARS</span></a>
-        <button class="btn" id="ppAction" type="button">PayPal <span class="tag">USD · INT</span></button>
+        <button class="btn" id="ppAction" type="button">PayPal</button>
       </div>
 
 <div class="muted note" id="paypalStatus" style="display:none;margin-top:10px"></div>
@@ -535,7 +529,7 @@
       mpBtn.style.display = isMonthly ? "none" : "";
 
       // Texto PayPal
-      ppAction.innerHTML = (isMonthly ? "PayPal (Mensual)" : "PayPal") + ' <span class="tag">USD · INT</span>';
+      ppAction.textContent = isMonthly ? "PayPal (Mensual)" : "PayPal";
     }
 
     modeOnce.addEventListener("click", () => setActiveMode("once"));
@@ -567,14 +561,14 @@
         if (!data || !data.ok || !data.approve_url) {
           alert("No se pudo iniciar la suscripción. Intentalo de nuevo.");
           ppAction.disabled = false;
-          ppAction.innerHTML = "PayPal (Mensual) <span class=\"tag\">USD · INT</span>";
+          ppAction.textContent = "PayPal (Mensual)";
           return;
         }
         window.location.href = data.approve_url;
       }catch(e){
         alert("Error de red. Intentalo de nuevo.");
         ppAction.disabled = false;
-        ppAction.innerHTML = "PayPal (Mensual) <span class=\"tag\">USD · INT</span>";
+        ppAction.textContent = "PayPal (Mensual)";
       }
     }
 
