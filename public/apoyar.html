@@ -126,21 +126,6 @@
     .pill.amt{
       font-weight:800;
     }
-    /* input para "otro monto" */
-    #otherAmt{
-      flex:1;
-      min-width:120px;
-      height:42px;
-      padding:0 12px;
-      border-radius:10px;
-      border:1px solid var(--ol);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      outline:none;
-    }
-    #otherAmt:focus{
-      box-shadow:0 0 0 3px rgba(124,199,255,.16);
-    }
     .about{
       font-size:15px;
       line-height:1.6;
@@ -204,12 +189,6 @@
           <button class="pill amt active" type="button" data-amt="7">USD 7</button>
           <button class="pill amt" type="button" data-amt="11">USD 11</button>
           <button class="pill amt" type="button" data-amt="33">USD 33</button>
-        </div>
-
-        <div class="monthlyRow" style="margin-top:10px">
-          <label class="muted" for="otherAmt" style="min-width:130px">Otro monto (USD)</label>
-          <input id="otherAmt" inputmode="decimal" placeholder="Ej: 15" />
-          <button class="btn" id="otherAmtBtn" type="button">Usar</button>
         </div>
 
         <div class="muted note" style="margin-top:10px">
@@ -381,8 +360,6 @@
     // --- Modo y monto mensual ---
     const monthlyBox = document.getElementById("monthlyBox");
     const amtBtns = Array.from(document.querySelectorAll(".pill.amt"));
-    const otherAmt = document.getElementById("otherAmt");
-    const otherAmtBtn = document.getElementById("otherAmtBtn");
 
     let supportMode = "once"; // "once" | "monthly"
     let selectedMonthlyAmount = 7; // default
@@ -407,7 +384,6 @@
     function selectAmount(n){
       selectedMonthlyAmount = n;
       amtBtns.forEach(b => b.classList.toggle("active", Number(b.dataset.amt) === n));
-      otherAmt.value = "";
     }
 
     function setActiveMode(next){
@@ -477,19 +453,6 @@
           setActiveMode("monthly");
         }
       });
-    });
-
-    // "Otro monto" (por ahora solo guarda el valor; lo implementamos luego)
-    otherAmtBtn.addEventListener("click", () => {
-      const raw = (otherAmt.value || "").trim().replace(",", ".");
-      const n = Number(raw);
-      if (!Number.isFinite(n) || n <= 0) {
-        alert("Ingresá un monto válido (ej: 15)");
-        return;
-      }
-      amtBtns.forEach(b => b.classList.remove("active"));
-      selectedMonthlyAmount = Number(n.toFixed(2));
-      alert("Listo. Ahora tocá PayPal (Mensual).");
     });
 
     // Acción PayPal principal
