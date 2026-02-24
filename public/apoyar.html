@@ -213,29 +213,6 @@
       white-space:nowrap;
     }
 
-    /* Watermark Día Solar */
-    .card{ position:relative; }
-    .solarWatermark{
-      position:absolute;
-      top:14px;
-      right:14px;
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      opacity:.16;
-      pointer-events:none;
-      user-select:none;
-      display:flex;
-      gap:6px;
-      align-items:center;
-    }
-    .solarDot{
-      width:8px;height:8px;border-radius:50%;
-      background:rgba(124,199,255,.9);
-      box-shadow:0 0 18px rgba(124,199,255,.45);
-    }
-
     /* CTA comunidad */
     .ctaRow{
       margin-top:12px;
@@ -246,12 +223,12 @@
     }
 
     .aboutHeading{
-      color: var(--text);
-      margin-top: 14px;
-      margin-bottom: 8px;
-      font-size: 14px;
-      letter-spacing: -0.1px;
-      opacity: 0.95;
+      margin:0 0 10px 0;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
     }
 </style>
 </head>
@@ -268,7 +245,6 @@
 
   <div class="wrap">
     <div class="card">
-      <div class="solarWatermark"><span class="solarDot"></span>Día Solar</div>
 
       <h2 class="sectionTitle">Sobre el proyecto</h2>
       <div class="muted about">
