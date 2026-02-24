@@ -115,6 +115,32 @@
       letter-spacing:.2px;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
+
+    /* Selector mensual */
+    .monthlyRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .pill.amt{
+      font-weight:800;
+    }
+    /* input para "otro monto" */
+    #otherAmt{
+      flex:1;
+      min-width:120px;
+      height:42px;
+      padding:0 12px;
+      border-radius:10px;
+      border:1px solid var(--ol);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      outline:none;
+    }
+    #otherAmt:focus{
+      box-shadow:0 0 0 3px rgba(124,199,255,.16);
+    }
     .about{
       font-size:15px;
       line-height:1.6;
@@ -172,16 +198,32 @@
         <button class="pill" type="button" id="modeMonthly">Mensual</button>
       </div>
 
+      <!-- Selector de monto mensual -->
+      <div class="monthly" id="monthlyBox" style="display:none">
+        <div class="monthlyRow">
+          <button class="pill amt active" type="button" data-amt="7">USD 7</button>
+          <button class="pill amt" type="button" data-amt="11">USD 11</button>
+          <button class="pill amt" type="button" data-amt="33">USD 33</button>
+        </div>
+
+        <div class="monthlyRow" style="margin-top:10px">
+          <label class="muted" for="otherAmt" style="min-width:130px">Otro monto (USD)</label>
+          <input id="otherAmt" inputmode="decimal" placeholder="Ej: 15" />
+          <button class="btn" id="otherAmtBtn" type="button">Usar</button>
+        </div>
+
+        <div class="muted note" style="margin-top:10px">
+          El monto se debita <b>cada mes</b>. Podés cancelar la suscripción cuando quieras desde tu cuenta PayPal.
+        </div>
+      </div>
+
       <div class="grid">
         <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago</a>
         <button class="btn" id="ppAction" type="button">PayPal</button>
       </div>
 
-      <div class="muted note" id="paypalHint" style="margin-top:10px">
-        En modo <b>Mensual</b> vas a PayPal para aprobar la suscripción y podés cancelarla cuando quieras.
-      </div>
-
       <div class="muted note" id="paypalStatus" style="display:none;margin-top:10px"></div>
+
 
       <div class="muted" style="margin-top:12px">Contacto del proyecto (comentarios, sugerencias, info):</div>
       <div class="row">
@@ -334,7 +376,6 @@
     const ppAction = document.getElementById('ppAction');
     const modeOnce = document.getElementById('modeOnce');
     const modeMonthly = document.getElementById('modeMonthly');
-    const paypalHint = document.getElementById('paypalHint');
     const paypalStatus = document.getElementById('paypalStatus');
 
     let supportMode = "once"; // "once" | "monthly"
@@ -356,15 +397,47 @@
     }
     setBtn(mpBtn, MP_URL);
 
+    
+    // --- Modo y monto mensual ---
+    const monthlyBox = document.getElementById("monthlyBox");
+    const amtBtns = Array.from(document.querySelectorAll(".pill.amt"));
+    const otherAmt = document.getElementById("otherAmt");
+    const otherAmtBtn = document.getElementById("otherAmtBtn");
+
+    let selectedMonthlyAmount = 7; // default
+
+    function selectAmount(n){
+      selectedMonthlyAmount = n;
+      amtBtns.forEach(b => b.classList.toggle("active", Number(b.dataset.amt) === n));
+      otherAmt.value = "";
+    }
+
+    amtBtns.forEach((btn) => {
+      btn.addEventListener("click", () => selectAmount(Number(btn.dataset.amt)));
+    });
+
+    otherAmtBtn.addEventListener("click", () => {
+      const raw = (otherAmt.value || "").trim().replace(",", ".");
+      const n = Number(raw);
+      if (!Number.isFinite(n) || n <= 0) {
+        alert("Ingresá un monto válido (ej: 15)");
+        return;
+      }
+      // Limpiamos la selección visual de 7/11/33 cuando usa otro monto
+      amtBtns.forEach(b => b.classList.remove("active"));
+      selectedMonthlyAmount = Number(n.toFixed(2));
+    });
+
     function setActiveMode(next){
       supportMode = next;
       const isMonthly = supportMode === "monthly";
       modeOnce.classList.toggle("active", !isMonthly);
       modeMonthly.classList.toggle("active", isMonthly);
 
+      monthlyBox.style.display = isMonthly ? "block" : "none";
+
       // Botón PayPal cambia de comportamiento
       ppAction.textContent = isMonthly ? "PayPal (Mensual)" : "PayPal";
-      paypalHint.style.display = isMonthly ? "block" : "none";
     }
 
     modeOnce.addEventListener("click", () => setActiveMode("once"));
@@ -388,7 +461,7 @@
       if (supportMode === "once") {
         const url = (PAYPAL_URL || "").trim();
         if (!url) {
-          alert("Link sin configurar. Editá public/apoyar.html y pegá tu URL de PayPal.");
+          alert("Link sin configurar. Editá apoyar.html y pegá tu URL de PayPal.");
           return;
         }
         const finalUrl = /^https?:\/\//i.test(url) ? url : ("https://" + url);
@@ -400,10 +473,11 @@
       ppAction.disabled = true;
       ppAction.textContent = "Conectando con PayPal…";
       try{
+        const payload = { amount: selectedMonthlyAmount };
         const res = await fetch("/api/paypal/create-subscription", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}),
+          body: JSON.stringify(payload),
         });
         const data = await res.json();
         if (!data || !data.ok || !data.approve_url) {
@@ -420,7 +494,9 @@
       }
     });
 
+
     // init
+    selectAmount(7);
     setActiveMode("once");
     async function copyText(txt){
       try{
