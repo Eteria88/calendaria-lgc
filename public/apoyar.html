@@ -368,43 +368,41 @@
       </details>
     </div>
 <script>
-    // Pegá tus links reales acá:
-    const MP_URL = "https://link.mercadopago.com.ar/joanandrey";     // ej: https://link.mercadopago.com/...
-    const PAYPAL_URL = "https://www.paypal.me/decodificacionbio"; // ej: https://paypal.me/...
+    // Links (una sola vez)
+    const MP_URL = "https://link.mercadopago.com.ar/joanandrey";
+    const PAYPAL_URL = "https://paypal.me/calendarialgc";
 
-    const mpBtn = document.getElementById('mpBtn');
-    const ppAction = document.getElementById('ppAction');
-    const modeOnce = document.getElementById('modeOnce');
-    const modeMonthly = document.getElementById('modeMonthly');
-    const paypalStatus = document.getElementById('paypalStatus');
+    const mpBtn = document.getElementById("mpBtn");
+    const ppAction = document.getElementById("ppAction");
+    const modeOnce = document.getElementById("modeOnce");
+    const modeMonthly = document.getElementById("modeMonthly");
+    const paypalStatus = document.getElementById("paypalStatus");
 
-    let supportMode = "once"; // "once" | "monthly"
-
-    function setBtn(btn, url){
-      if(url && url.trim()){
-        url = url.trim();
-        // Si falta esquema (http/https), se asume https
-        if(!/^https?:\/\//i.test(url)) url = "https://" + url;
-        btn.href = url;
-      }else{
-        btn.href = "#";
-        btn.style.opacity = ".55";
-        btn.addEventListener('click', (e)=>{
-          e.preventDefault();
-          alert("Link sin configurar. Editá public/apoyar.html y pegá tu URL.");
-        });
-      }
-    }
-    setBtn(mpBtn, MP_URL);
-
-    
     // --- Modo y monto mensual ---
     const monthlyBox = document.getElementById("monthlyBox");
     const amtBtns = Array.from(document.querySelectorAll(".pill.amt"));
     const otherAmt = document.getElementById("otherAmt");
     const otherAmtBtn = document.getElementById("otherAmtBtn");
 
+    let supportMode = "once"; // "once" | "monthly"
     let selectedMonthlyAmount = 7; // default
+
+    function setBtn(btn, url){
+      if(url && url.trim()){
+        url = url.trim();
+        if(!/^https?:\/\//i.test(url)) url = "https://" + url;
+        btn.href = url;
+      }else{
+        btn.href = "#";
+        btn.style.opacity = ".55";
+        btn.addEventListener("click", (e)=>{
+          e.preventDefault();
+          alert("Link sin configurar. Editá apoyar.html y pegá tu URL.");
+        });
+      }
+    }
+
+    setBtn(mpBtn, MP_URL);
 
     function selectAmount(n){
       selectedMonthlyAmount = n;
@@ -412,43 +410,12 @@
       otherAmt.value = "";
     }
 
-    amtBtns.forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const n = Number(btn.dataset.amt);
-        // Feedback visual
-        selectAmount(n);
-
-        // Si estamos en modo mensual, 1 click = ir a PayPal
-        if (supportMode === "monthly") {
-          await startMonthlySubscription(n);
-        } else {
-          // Si están en "Una sola vez" y tocan un monto mensual, cambiamos a Mensual (no redirigimos todavía)
-          setActiveMode("monthly");
-        }
-      });
-    });
-
-    otherAmtBtn.addEventListener("click", () => {
-      const raw = (otherAmt.value || "").trim().replace(",", ".");
-      const n = Number(raw);
-      if (!Number.isFinite(n) || n <= 0) {
-        alert("Ingresá un monto válido (ej: 15)");
-        return;
-      }
-      // Limpiamos la selección visual de 7/11/33 cuando usa otro monto
-      amtBtns.forEach(b => b.classList.remove("active"));
-      selectedMonthlyAmount = Number(n.toFixed(2));
-    });
-
     function setActiveMode(next){
       supportMode = next;
       const isMonthly = supportMode === "monthly";
       modeOnce.classList.toggle("active", !isMonthly);
       modeMonthly.classList.toggle("active", isMonthly);
-
       monthlyBox.style.display = isMonthly ? "block" : "none";
-
-      // Botón PayPal cambia de comportamiento
       ppAction.textContent = isMonthly ? "PayPal (Mensual)" : "PayPal";
     }
 
@@ -468,48 +435,14 @@
       }
     })();
 
-
     async function startMonthlySubscription(amount){
-      // Mensual
-      await startMonthlySubscription(selectedMonthlyAmount);
-    });
-        const data = await res.json();
-        if (!data || !data.ok || !data.approve_url) {
-          alert("No se pudo iniciar la suscripción. Intentalo de nuevo.");
-          ppAction.disabled = false;
-          ppAction.textContent = "PayPal (Mensual)";
-          return;
-        }
-        window.location.href = data.approve_url;
-      }catch(e){
-        alert("Error de red. Intentalo de nuevo.");
-        ppAction.disabled = false;
-        ppAction.textContent = "PayPal (Mensual)";
-      }
-    }
-
-    // Acción PayPal (una sola vez vs mensual)
-    ppAction.addEventListener("click", async () => {
-      if (supportMode === "once") {
-        const url = (PAYPAL_URL || "").trim();
-        if (!url) {
-          alert("Link sin configurar. Editá apoyar.html y pegá tu URL de PayPal.");
-          return;
-        }
-        const finalUrl = /^https?:\/\//i.test(url) ? url : ("https://" + url);
-        window.open(finalUrl, "_blank", "noopener");
-        return;
-      }
-
-      // Mensual: crea suscripción en backend y redirige a PayPal
       ppAction.disabled = true;
       ppAction.textContent = "Conectando con PayPal…";
       try{
-        const payload = { amount: selectedMonthlyAmount };
         const res = await fetch("/api/paypal/create-subscription", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({ amount }),
         });
         const data = await res.json();
         if (!data || !data.ok || !data.approve_url) {
@@ -524,12 +457,57 @@
         ppAction.disabled = false;
         ppAction.textContent = "PayPal (Mensual)";
       }
+    }
+
+    // 1 click en USD 7 / 11 / 33 cuando estás en Mensual
+    amtBtns.forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const n = Number(btn.dataset.amt);
+        selectAmount(n);
+
+        if (supportMode === "monthly") {
+          await startMonthlySubscription(n);
+        } else {
+          // si tocás un monto y estabas en "Una sola vez", te pasa a Mensual
+          setActiveMode("monthly");
+        }
+      });
     });
 
+    // "Otro monto" (por ahora solo guarda el valor; lo implementamos luego)
+    otherAmtBtn.addEventListener("click", () => {
+      const raw = (otherAmt.value || "").trim().replace(",", ".");
+      const n = Number(raw);
+      if (!Number.isFinite(n) || n <= 0) {
+        alert("Ingresá un monto válido (ej: 15)");
+        return;
+      }
+      amtBtns.forEach(b => b.classList.remove("active"));
+      selectedMonthlyAmount = Number(n.toFixed(2));
+      alert("Listo. Ahora tocá PayPal (Mensual).");
+    });
+
+    // Acción PayPal principal
+    ppAction.addEventListener("click", async () => {
+      if (supportMode === "once") {
+        const url = (PAYPAL_URL || "").trim();
+        if (!url) {
+          alert("Link sin configurar. Editá apoyar.html y pegá tu URL de PayPal.");
+          return;
+        }
+        const finalUrl = /^https?:\/\//i.test(url) ? url : ("https://" + url);
+        window.open(finalUrl, "_blank", "noopener");
+        return;
+      }
+
+      // Mensual (default usa lo seleccionado)
+      await startMonthlySubscription(selectedMonthlyAmount);
+    });
 
     // init
     selectAmount(7);
     setActiveMode("once");
+
     async function copyText(txt){
       try{
         await navigator.clipboard.writeText(txt);
@@ -538,16 +516,14 @@
         alert("No se pudo copiar automáticamente. Copialo manual.");
       }
     }
-
-    // Botones de copiar (usa data-copy-target="idDelCode")
-    document.querySelectorAll('[data-copy-target]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const id = btn.getAttribute('data-copy-target');
+    document.querySelectorAll("[data-copy-target]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.getAttribute("data-copy-target");
         const el = document.getElementById(id);
         if(!el) return;
         copyText(el.innerText);
       });
     });
-  </script>
+</script>
 </body>
 </html>
