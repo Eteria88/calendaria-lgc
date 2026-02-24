@@ -413,7 +413,19 @@
     }
 
     amtBtns.forEach((btn) => {
-      btn.addEventListener("click", () => selectAmount(Number(btn.dataset.amt)));
+      btn.addEventListener("click", async () => {
+        const n = Number(btn.dataset.amt);
+        // Feedback visual
+        selectAmount(n);
+
+        // Si estamos en modo mensual, 1 click = ir a PayPal
+        if (supportMode === "monthly") {
+          await startMonthlySubscription(n);
+        } else {
+          // Si están en "Una sola vez" y tocan un monto mensual, cambiamos a Mensual (no redirigimos todavía)
+          setActiveMode("monthly");
+        }
+      });
     });
 
     otherAmtBtn.addEventListener("click", () => {
@@ -455,6 +467,26 @@
         paypalStatus.textContent = "Cancelaste el proceso de suscripción.";
       }
     })();
+
+
+    async function startMonthlySubscription(amount){
+      // Mensual
+      await startMonthlySubscription(selectedMonthlyAmount);
+    });
+        const data = await res.json();
+        if (!data || !data.ok || !data.approve_url) {
+          alert("No se pudo iniciar la suscripción. Intentalo de nuevo.");
+          ppAction.disabled = false;
+          ppAction.textContent = "PayPal (Mensual)";
+          return;
+        }
+        window.location.href = data.approve_url;
+      }catch(e){
+        alert("Error de red. Intentalo de nuevo.");
+        ppAction.disabled = false;
+        ppAction.textContent = "PayPal (Mensual)";
+      }
+    }
 
     // Acción PayPal (una sola vez vs mensual)
     ppAction.addEventListener("click", async () => {
