@@ -8,12 +8,18 @@ export default async function handler(req, res) {
 
   try {
     const body = req.body || {};
-    const plan_id = body.plan_id || process.env.PAYPAL_PLAN_ID;
+    const amount = Number(body.amount);
+
+    // Elegimos plan según monto
+    let plan_id;
+    if (amount === 7) plan_id = process.env.PAYPAL_PLAN_ID_7;
+    else if (amount === 33) plan_id = process.env.PAYPAL_PLAN_ID_33;
+    else plan_id = process.env.PAYPAL_PLAN_ID; // default (11)
 
     if (!plan_id) {
       return res
         .status(400)
-        .json({ error: "Missing plan_id (and PAYPAL_PLAN_ID not set)" });
+        .json({ error: "Missing plan_id env var for selected amount" });
     }
 
     const { access_token, base } = await getAccessToken();
@@ -38,9 +44,7 @@ export default async function handler(req, res) {
     const data = await r.json();
 
     if (!r.ok) {
-      return res
-        .status(r.status)
-        .json({ error: "PayPal error", details: data });
+      return res.status(r.status).json({ error: "PayPal error", details: data });
     }
 
     const approve_url = (data.links || []).find((l) => l.rel === "approve")?.href;
@@ -49,6 +53,7 @@ export default async function handler(req, res) {
       ok: true,
       id: data.id,
       approve_url,
+      amount: amount || 11,
     });
   } catch (e) {
     return res.status(500).json({ error: e?.message || "Server error" });
