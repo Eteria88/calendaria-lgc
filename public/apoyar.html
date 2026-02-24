@@ -416,6 +416,11 @@
       modeOnce.classList.toggle("active", !isMonthly);
       modeMonthly.classList.toggle("active", isMonthly);
       monthlyBox.style.display = isMonthly ? "block" : "none";
+
+      // Ocultar Mercado Pago en modo Mensual (por ahora la suscripción la hacemos solo por PayPal)
+      mpBtn.style.display = isMonthly ? "none" : "";
+
+      // Texto PayPal
       ppAction.textContent = isMonthly ? "PayPal (Mensual)" : "PayPal";
     }
 
