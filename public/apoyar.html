@@ -91,6 +91,37 @@
       margin-top:12px;
       flex-wrap:wrap;
     }
+    .supportTitle{
+      margin:14px 0 6px;
+      font-size:18px;
+      letter-spacing:-0.2px;
+    }
+    .supportSubtitle{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.4;
+    }
+    .divider{
+      height:1px;
+      background:rgba(255,255,255,.08);
+      margin:10px 0 12px;
+    }
+
+    /* Pills más compactas y con 2 líneas */
+    .mode{margin-top:10px}
+    .pill{
+      padding:10px 14px;
+      min-height:44px;
+      text-align:left;
+      gap:2px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:center;
+    }
+    .pillTop{font-size:13px; font-weight:800; letter-spacing:-0.1px}
+    .pillSub{font-size:11px; font-weight:700; opacity:.75; line-height:1.2}
     .pill{
       min-height:38px;
       padding:10px 14px;
@@ -175,12 +206,21 @@
 
         <p>Si te aporta valor y querés apoyar su continuidad y crecimiento, podés hacerlo por cualquiera de estos medios:</p>
       </div>
-      <div class="muted sectionLabel">Formas de apoyar</div>
+      <h2 class="supportTitle">Apoyar el proyecto</h2>
+      <p class="supportSubtitle">Tu aporte sostiene servidores, desarrollo y expansión de la herramienta.</p>
+      <div class="divider"></div>
+      <div class="muted sectionLabel">Elegí tu forma de apoyo</div>
 
 
       <div class="mode">
-        <button class="pill active" type="button" id="modeOnce">Una sola vez</button>
-        <button class="pill" type="button" id="modeMonthly">Mensual</button>
+        <button class="pill active" type="button" id="modeOnce">
+          <span class="pillTop">Aporte único</span>
+          <span class="pillSub">una sola vez</span>
+        </button>
+        <button class="pill" type="button" id="modeMonthly">
+          <span class="pillTop">Aporte recurrente</span>
+          <span class="pillSub">cancelable cuando quieras</span>
+        </button>
       </div>
 
       <!-- Selector de monto mensual -->
