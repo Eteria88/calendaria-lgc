@@ -10,8 +10,8 @@
   --text:rgba(255,255,255,.92);--muted:rgba(255,255,255,.68);
   --cyan:#7cc7ff;--good:#9cffd5;
   /* tonos más técnicos/sutiles */
-  --junText:rgba(92, 162, 140, .92);  /* 30 junio (verde técnico, más oscuro) */
-  --decText:rgba(192, 172, 98, .92);  /* 31 diciembre (amarillo técnico, sutil) */
+  --junText:rgba(48,184,142,.92);  /* 30 junio (verde técnico, más oscuro) */
+  --decText:rgba(207,184,74,.92);  /* 31 diciembre (amarillo técnico, sutil) */
   --shadow:0 10px 24px rgba(0,0,0,.35);
   --r:16px;
   --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
@@ -74,7 +74,11 @@ details.accordion .matrixWrap{margin-top:10px}
 @media(max-width:939px){.grid2{grid-template-columns:1fr}}
 /* Matrix */
 .matrixWrap{display:flex;flex-direction:column;gap:12px}
-.matrixGroup{border:1px solid rgba(124,199,255,.14);border-radius:14px;padding:10px;background:rgba(255,255,255,.01)}
+.matrixGroup{border:1px solid rgba(124,199,255,.14);border-radius:14px;background:rgba(255,255,255,.01);padding:0;overflow:hidden}
+.matrixGroup[open]{box-shadow:0 0 0 1px rgba(124,199,255,.06) inset}
+.matrixGroup>summary{list-style:none;cursor:pointer;padding:10px 12px}
+.matrixGroup>summary::-webkit-details-marker{display:none}
+.matrixGroup .groupGrid{padding:0 12px 12px}
 .groupHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .groupTitle{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.70)}
 .groupRule{flex:1;height:1px;background:rgba(124,199,255,.12)}
@@ -84,23 +88,28 @@ details.accordion .matrixWrap{margin-top:10px}
 
 /* Base: misma estética oscura, el color lo lleva la tipografía */
 .cellBase{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01))}
-.cellBase.jun .year,.cellBase.jun .mark{color:var(--junText)}
-.cellBase.dec .year,.cellBase.dec .mark{color:var(--decText)}
 
 /* Calculable: un poquito más profundo para separar */
 .cellCalc{background:rgba(0,0,0,.18);border:1px solid rgba(124,199,255,.18)}
-.topline{display:flex;align-items:center;justify-content:flex-start;gap:10px}
-.dlabel{font-size:12px;opacity:.85}
-.code{font-family:var(--mono);font-size:12px;opacity:.75}
-.bigRow{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.year{font-family:var(--mono);font-weight:850;font-size:28px;letter-spacing:.2px;line-height:1}
-.mark{font-family:var(--mono);font-weight:900;font-size:30px;line-height:1;opacity:.98}
-.delta{font-family:var(--mono);font-weight:800;font-size:22px;line-height:1}
-.deltaSub{font-size:11px;color:var(--muted);margin-top:4px}
-.calcText.jun{color:var(--junText)}
-.calcText.dec{color:var(--decText)}
-/* Input */
-.formRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+
+/* micro-jerarquía dentro de celda */
+.dateLine{font-size:12px;color:var(--muted);letter-spacing:.2px}
+.yearLine{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:6px}
+.year{font-family:var(--mono);font-weight:850;font-size:26px;letter-spacing:.2px;line-height:1;color:var(--text)}
+.mark{font-family:var(--mono);font-weight:900;font-size:20px;line-height:1;opacity:.95}
+.val{font-family:var(--mono);font-weight:900;font-size:22px;line-height:1;margin-top:10px;color:var(--text)}
+
+/* color sólo en tipografía */
+.jun .mark,.jun .val{color:var(--junText)}
+.dec .mark,.dec .val{color:var(--decText)}
+.cellBase.jun .mark,.cellBase.jun .year{color:var(--junText)}
+.cellBase.dec .mark,.cellBase.dec .year{color:var(--decText)}
+
+/* estados */
+.cell{transition:border-color .15s ease, transform .08s ease, background .15s ease}
+.cell:hover{border-color:rgba(124,199,255,.42);background:linear-gradient(180deg,rgba(124,199,255,.06),rgba(255,255,255,.012))}
+.cell:focus{outline:2px solid rgba(124,199,255,.35);outline-offset:2px}
+.cell:active{transform:translateY(1px)}
 @media(max-width:520px){.formRow{grid-template-columns:1fr}}
 .input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ol);background:rgba(0,0,0,.22);color:var(--text);font-size:14px}
 .btn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer}
@@ -273,11 +282,10 @@ function valueForISO(refISO, iso){
 function mkBaseCell(e){
   const div = document.createElement("div");
   div.className = `cell cellBase ${e.kind}`;
+  div.tabIndex = 0;
   div.innerHTML = `
-    <div class="topline">
-      <div class="dlabel">${e.day}</div>
-    </div>
-    <div class="bigRow">
+    <div class="dateLine">${e.day}</div>
+    <div class="yearLine">
       <div class="year">${e.year}</div>
       <div class="mark">${e.mark}</div>
     </div>
@@ -287,16 +295,16 @@ function mkBaseCell(e){
 
 function mkCalcCell(e){
   const div = document.createElement("div");
-  div.className = `cell cellCalc`;
+  div.className = `cell cellCalc ${e.kind}`;
+  div.tabIndex = 0;
   div.innerHTML = `
-    <div class="topline">
-      <div class="dlabel">${e.day} de ${e.year}</div>
+    <div class="dateLine">${e.day}</div>
+    <div class="yearLine">
+      <div class="year">${e.year}</div>
+      <div class="mark">${e.mark}</div>
     </div>
-    <div class="bigRow">
-      <div class="code calcText ${e.kind}">${e.mark}</div>
-      <div class="delta calcText ${e.kind}" data-iso="${e.iso}" data-scale="">—</div>
-    </div>
-`;
+    <div class="val" data-iso="${e.iso}" data-scale="">—</div>
+  `;
   return div;
 }
 
@@ -312,22 +320,24 @@ function render(){
     {title:"Escala Planeta Tierra", items: events.slice(18,27)},
   ];
 
-  function groupBlock(title){
-    const g = document.createElement('div');
+  function groupBlock(title, isOpen){
+    const g = document.createElement('details');
     g.className = 'matrixGroup';
+    g.open = !!isOpen;
     g.innerHTML = `
-      <div class="groupHead">
+      <summary class="groupHead">
         <div class="groupTitle">${title}</div>
         <div class="groupRule" aria-hidden="true"></div>
-      </div>
+      </summary>
       <div class="groupGrid"></div>
     `;
     return g;
   }
 
-  groups.forEach(gr=>{
-    const bG = groupBlock(gr.title);
-    const cG = groupBlock(gr.title);
+  const isMobile = window.matchMedia('(max-width:720px)').matches;
+  groups.forEach((gr,gi)=>{
+    const bG = groupBlock(gr.title, !isMobile || gi===0);
+    const cG = groupBlock(gr.title, !isMobile || gi===0);
     const bGrid = bG.querySelector('.groupGrid');
     const cGrid = cG.querySelector('.groupGrid');
     gr.items.forEach(e=>{
