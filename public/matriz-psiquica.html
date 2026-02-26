@@ -61,8 +61,6 @@ header{position:relative;display:flex;align-items:center;justify-content:space-b
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .stack{display:grid;grid-template-columns:1fr;gap:14px}
 
-.formRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
-
 /* Acordeón minimal */
 details.accordion > summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;user-select:none}
 details.accordion > summary::-webkit-details-marker{display:none}
@@ -99,6 +97,8 @@ details.accordion .matrixWrap{margin-top:10px}
 .yearLine{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:6px}
 .year{font-family:var(--mono);font-weight:850;font-size:26px;letter-spacing:.2px;line-height:1;color:var(--text)}
 .mark{font-family:var(--mono);font-weight:900;font-size:20px;line-height:1;opacity:.95}
+.markWrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.baseHint{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.42)}
 .val{font-family:var(--mono);font-weight:900;font-size:22px;line-height:1;margin-top:10px;color:var(--text)}
 
 /* color sólo en tipografía */
@@ -112,15 +112,8 @@ details.accordion .matrixWrap{margin-top:10px}
 .cell:hover{border-color:rgba(124,199,255,.42);background:linear-gradient(180deg,rgba(124,199,255,.06),rgba(255,255,255,.012))}
 .cell:focus{outline:2px solid rgba(124,199,255,.35);outline-offset:2px}
 .cell:active{transform:translateY(1px)}
-@media(max-width:520px){.formRow{grid-template-columns:1fr
-  .dateLine{font-size:11px}
-  .year{font-size:22px}
-  .mark{font-size:16px}
-  .val{font-size:18px}
-  .input{padding:9px 10px;font-size:13px}
-  .btn{padding:9px 10px}
-}}
-.input{display:block;width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ol);background:rgba(0,0,0,.22);color:var(--text);font-size:14px}
+@media(max-width:520px){.formRow{grid-template-columns:1fr}}
+.input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ol);background:rgba(0,0,0,.22);color:var(--text);font-size:14px}
 .btn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer}
 .btn:hover{background:rgba(255,255,255,.06)}
 .note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
@@ -180,10 +173,7 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
     <main>
       <section class="card">
         <h2 class="h1">Matriz Psíquica de la Tierra</h2>
-        <div class="note">
-          Base de cálculo: <b>segundos intercalares</b> (30 de Junio / 31 de Diciembre).
-          Ingresá una fecha y se calcula la <b>diferencia de días</b> hacia cada fecha de segundo intercalar.
-        </div>
+
       </section>
 
       <div class="stack" style="margin-top:14px">
@@ -201,13 +191,14 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
         </details>
 
         <section class="card">
-          <div class="h2">Matriz calculable</div>
+          <div class="h2">Matriz calculablele</div>
 
           <div class="formRow" style="margin-bottom:10px">
             <div>
               <label class="small" for="refDate">Fecha de referencia</label>
               <input class="input" id="refDate" type="date" min="0001-01-01" max="9999-12-31"/>
-</div>
+              <div class="note" style="margin-top:6px">Tip: podés probar con <b>14/05/1948</b> (ejemplo de EN RED 100).</div>
+            </div>
             <button class="btn" id="btnCalc" type="button">Calcular</button>
           </div>
 
@@ -287,6 +278,12 @@ function valueForISO(refISO, iso){
   return diffDays(anchor, iso);
 }
 
+function baseHintHTML(mark){
+  if(mark === 'AB') return '<div class="baseHint">Base 12</div>';
+  if(mark === 'BA') return '<div class="baseHint">Base 21</div>';
+  return '';
+}
+
 function mkBaseCell(e){
   const div = document.createElement("div");
   div.className = `cell cellBase ${e.kind}`;
@@ -295,7 +292,7 @@ function mkBaseCell(e){
     <div class="dateLine">${e.day}</div>
     <div class="yearLine">
       <div class="year">${e.year}</div>
-      <div class="mark">${e.mark}</div>
+      <div class="markWrap"><div class="mark">${e.mark}</div>${baseHintHTML(e.mark)}</div>
     </div>
   `;
   return div;
@@ -309,7 +306,7 @@ function mkCalcCell(e){
     <div class="dateLine">${e.day}</div>
     <div class="yearLine">
       <div class="year">${e.year}</div>
-      <div class="mark">${e.mark}</div>
+      <div class="markWrap"><div class="mark">${e.mark}</div>${baseHintHTML(e.mark)}</div>
     </div>
     <div class="val" data-iso="${e.iso}" data-scale="">—</div>
   `;
