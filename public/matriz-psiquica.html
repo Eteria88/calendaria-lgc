@@ -231,8 +231,29 @@ const events = [
   {iso:"1973-12-31", day:"31 de Diciembre", year:"1973", mark:"3", kind:"dec"},
 ];
 
-// escala por bloque (9 + 9 + 9)
-const scaleForIndex = (i)=> (i < 9 ? 'cosmos' : (i < 18 ? 'solar' : 'tierra'));
+// helpers cronológicos (para cálculo por escalas)
+const eventsChron = [...events].sort((a,b)=> a.iso.localeCompare(b.iso));
+const idxByISO = Object.fromEntries(eventsChron.map((e,i)=>[e.iso,i])); // 0..26
+
+function scaleForISO(iso){
+  const i = idxByISO[iso];
+  if(i == null) return 'tierra';
+  if(i < 9) return 'tierra';
+  if(i < 18) return 'solar';
+  return 'cosmos';
+}
+
+function valueForISO(refISO, iso){
+  const i = idxByISO[iso];
+  if(i == null) return 0;
+  if(i < 9){
+    // Escala Planeta Tierra: base contra referencia (ej: 14/05/1948 → 30/06/1972 = 8813)
+    return diffDays(refISO, iso);
+  }
+  // Escala Sistema Solar y Cosmos: diferencia contra el evento 9 posiciones atrás (n - 9)
+  const anchor = eventsChron[i-9].iso;
+  return diffDays(anchor, iso);
+}
 
 function mkBaseCell(e){
   const div = document.createElement("div");
@@ -258,7 +279,7 @@ function mkCalcCell(e){
     </div>
     <div class="bigRow">
       <div class="code calcText ${e.kind}">${e.mark}</div>
-      <div class="delta calcText ${e.kind}" data-iso="${e.iso}" data-scale="${scaleForIndex(events.indexOf(e))}">—</div>
+      <div class="delta calcText ${e.kind}" data-iso="${e.iso}" data-scale="">—</div>
     </div>
 `;
   return div;
@@ -296,7 +317,10 @@ function render(){
     const cGrid = cG.querySelector('.groupGrid');
     gr.items.forEach(e=>{
       bGrid.appendChild(mkBaseCell(e));
-      cGrid.appendChild(mkCalcCell(e));
+      const cCell = mkCalcCell(e);
+      const deltaEl = cCell.querySelector('[data-iso]');
+      if(deltaEl) deltaEl.setAttribute('data-scale', scaleForISO(e.iso));
+      cGrid.appendChild(cCell);
     });
     baseEl.appendChild(bG);
     calcEl.appendChild(cG);
@@ -316,10 +340,8 @@ function diffDays(refISO, eventISO){
 }
 
 function formatInt(n){
-  // separador de miles estilo ES
-  const sign = n < 0 ? "-" : "";
-  const abs = Math.abs(n);
-  return sign + abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  // sin separador de miles (LGC: frecuencias)
+  return String(n);
 }
 
 function doCalc(){
@@ -330,27 +352,9 @@ function doCalc(){
     return;
   }
 
-  // 1) Base B[i] = días(ref → Si)
-  const B = {};
-  events.forEach(e=>{ B[e.iso] = diffDays(ref, e.iso); });
-
-  // 2) Anclas por escala (según EN RED 100)
-  const anchorISO = {
-    tierra: null,              // Tierra = B[i] tal cual
-    solar:  "1972-06-30",      // Solar se apoya en 30/06/1972
-    cosmos: "1981-06-30"       // Cosmos se apoya en 30/06/1981
-  };
-  const anchorB = {
-    tierra: 0,
-    solar:  B[anchorISO.solar] ?? 0,
-    cosmos: B[anchorISO.cosmos] ?? 0,
-  };
-
-  // 3) Render por celda (valor = B[i] - B[anclaEscala])
   document.querySelectorAll("[data-iso][data-scale]").forEach(el=>{
     const iso = el.getAttribute("data-iso");
-    const sc = el.getAttribute("data-scale");
-    const v = (B[iso] ?? 0) - (anchorB[sc] ?? 0);
+    const v = valueForISO(ref, iso);
     el.textContent = formatInt(v);
   });
 
