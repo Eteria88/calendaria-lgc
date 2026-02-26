@@ -196,6 +196,34 @@ function calcRangeAuto(startId, endId){
 }
 
 
+// --- Años cumplidos por calendario (no promedio de días) ---
+function fullYearsBetween(S, E){
+  // Devuelve años completos entre S y E (aniversarios).
+  // Si E < S, devuelve negativo.
+  var sign = 1;
+  var s = S, e = E;
+
+  if(jdnMixed(E.y,E.m,E.d) < jdnMixed(S.y,S.m,S.d)){
+    sign = -1;
+    s = E; e = S;
+  }
+
+  var years = e.y - s.y;
+  // Si aún no llegó al mes/día del aniversario, resta 1
+  if(e.m < s.m || (e.m === s.m && e.d < s.d)) years -= 1;
+
+  return years * sign;
+}
+
+function calcYearsAuto(startId, endId){
+  var sI = $(startId) ? $(startId).value : '';
+  var eI = $(endId) ? $(endId).value : '';
+  var S = flex(sI), E = flex(eI);
+  if(!(S && E)) return null;
+  return fullYearsBetween(S, E);
+}
+
+
 
 function bandaEtaria(dias){
   var bandas = [
@@ -328,7 +356,7 @@ function renderBandSchedule(){
 }else{
   setText('outA', String(exA));
   setText('resA', String(exA));
-  setText('yearsOutA', String(Math.floor((exA) / 365.2425)));
+  setText('yearsOutA', String(calcYearsAuto('startA','endA')));
 }
 
       if(exB === null){
@@ -336,7 +364,7 @@ function renderBandSchedule(){
 }else{
   setText('outB', String(exB));
   setText('resB', String(exB));
-  setText('yearsOutB', String(Math.floor((exB) / 365.2425)));
+  setText('yearsOutB', String(calcYearsAuto('startB','endB')));
 }
 
       

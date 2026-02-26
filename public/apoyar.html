@@ -84,6 +84,55 @@
     .topActions a{min-height:36px}
     .note{margin-top:10px}
 
+    /* Toggle Una sola vez / Mensual */
+    .mode{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+        .supportSubtitle{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.4;
+    }
+    .divider{
+      height:1px;
+      background:rgba(255,255,255,.08);
+      margin:10px 0 12px;
+    }
+
+    /* Pills más compactas y con 2 líneas */
+    .mode{margin-top:10px}
+    .pill{
+      padding:10px 14px;
+      min-height:44px;
+      text-align:left;
+      gap:2px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:center;
+    }
+    .pillTop{font-size:13px; font-weight:800; letter-spacing:-0.1px}
+        .pill{
+      min-height:38px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--ol);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .pill:hover{background:rgba(255,255,255,.07)}
+    .pill.active{
+      background:rgba(124,199,255,.22);
+      box-shadow:0 0 0 1px rgba(124,199,255,.12) inset;
+    }
+
     .sectionTitle{
       margin:0 0 10px 0;
       font-size:18px;
@@ -91,10 +140,50 @@
       letter-spacing:.2px;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
+
+    /* Selector mensual */
+    .monthlyRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .pill.amt{
+      font-weight:800;
+    }
     .about{
       font-size:15px;
       line-height:1.6;
     }
+
+    /* Cards de monto mensual */
+    .monthlyCards{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 520px){
+      .monthlyCards{grid-template-columns: 1fr}
+    }
+    .amtCard{
+      border:1px solid var(--ol);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      border-radius:14px;
+      padding:12px 12px 10px;
+      text-align:left;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease, box-shadow .12s ease;
+      min-height:64px;
+    }
+    .amtCard:hover{background:rgba(255,255,255,.06); transform:translateY(-1px)}
+    .amtCard.active{
+      background:rgba(124,199,255,.18);
+      box-shadow:0 0 0 1px rgba(124,199,255,.14) inset;
+    }
+    .amtValue{font-weight:900; letter-spacing:-0.2px; font-size:15px}
+    .monthlyMicro{margin-top:10px}
     .about p{ margin:0 0 12px 0; }
     .about p:last-child{ margin-bottom:0; }
     .about ul{
@@ -107,7 +196,41 @@
       font-weight:700;
     }
 
-  </style>
+  
+    /* Tags pequeños (ARS / USD / INT) */
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      font-size:11px;
+      font-weight:800;
+      line-height:1;
+      margin-left:8px;
+      opacity:.9;
+      white-space:nowrap;
+    }
+
+    /* CTA comunidad */
+    .ctaRow{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .aboutHeading{
+      margin:0 0 10px 0;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+    }
+</style>
 </head>
 <body>
   <header>
@@ -129,7 +252,7 @@
         <p>El foco está en una participación consciente y ordenada, integrando la experiencia individual con una red de observación e interpretación compartida.</p>
         <p>Tu donación contribuye a sostener la aplicación, su desarrollo y su actualización constante a lo largo de las <b>23 vueltas</b> que componen cada año solar en Calendaria. También permite mejorar la estabilidad del sistema y ampliar sus capacidades de forma progresiva.</p>
 
-        <p><b>¿Qué hace posible tu aporte?</b></p>
+        <p class="aboutHeading"><b>¿Qué hace posible tu aporte?</b></p>
         <ul>
           <li><b>Infraestructura y operación:</b> dominio, hosting, despliegues y disponibilidad.</li>
           <li><b>Mantenimiento y evolución:</b> correcciones, refactorización, mejoras de rendimiento y compatibilidad entre dispositivos/navegadores.</li>
@@ -140,13 +263,54 @@
 
         <p>Si te aporta valor y querés apoyar su continuidad y crecimiento, podés hacerlo por cualquiera de estos medios:</p>
       </div>
-      <div class="muted sectionLabel">Formas de apoyar</div>
+            <div class="divider"></div>
+      <div class="muted sectionLabel">Elegí tu forma de apoyo</div>
 
+
+      <div class="mode">
+        <button class="pill active" type="button" id="modeOnce">
+          <span class="pillTop">Aporte único</span>
+        </button>
+        <button class="pill" type="button" id="modeMonthly">
+          <span class="pillTop">Aporte mensual</span>
+        </button>
+      </div>
+
+      <!-- Selector de monto mensual -->
+      <div class="monthly" id="monthlyBox" style="display:none">
+        <div class="monthlyCards" id="monthlyCards">
+          <button class="amtCard active" type="button" data-amt="7" aria-label="Aporte mensual USD 7">
+            <div class="amtValue">USD 7</div>
+          </button>
+
+          <button class="amtCard" type="button" data-amt="11" aria-label="Aporte mensual USD 11">
+            <div class="amtValue">USD 11</div>
+          </button>
+
+          <button class="amtCard" type="button" data-amt="33" aria-label="Aporte mensual USD 33">
+            <div class="amtValue">USD 33</div>
+          </button>
+        </div>
+
+
+        <div class="muted note" style="margin-top:10px">
+          El monto se debita <b>cada mes</b>. Podés cancelar la suscripción cuando quieras desde tu cuenta PayPal.
+        </div>
+      </div>
 
       <div class="grid">
-        <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago</a>
-        <a class="btn" id="ppBtn" href="#" target="_blank" rel="noopener">PayPal</a>
+        <a class="btn" id="mpBtn" href="#" target="_blank" rel="noopener">Mercado Pago <span class="tag">ARS</span></a>
+        <button class="btn" id="ppAction" type="button">PayPal</button>
       </div>
+
+<div class="muted note" id="paypalStatus" style="display:none;margin-top:10px"></div>
+      <div class="ctaRow">
+        <a class="btn secondary" href="https://t.me/calendarialgcred" target="_blank" rel="noopener">
+          Súmate a la comunidad <span class="tag">Telegram</span>
+        </a>
+      </div>
+
+
 
       <div class="muted" style="margin-top:12px">Contacto del proyecto (comentarios, sugerencias, info):</div>
       <div class="row">
@@ -163,7 +327,7 @@
 
     
     <div class="card">
-      <div style="font-size:14px;margin-bottom:8px">Transferencia (Argentina) — Global66</div>
+      <div style="font-size:14px;margin-bottom:8px">Transferencia (Argentina) — Global66 <span class="tag">ARS</span></div>
 
       <div class="muted">Alias:</div>
       <div class="row">
@@ -291,29 +455,135 @@
       </details>
     </div>
 <script>
-    // Pegá tus links reales acá:
-    const MP_URL = "https://link.mercadopago.com.ar/joanandrey";     // ej: https://link.mercadopago.com/...
-    const PAYPAL_URL = "https://www.paypal.me/decodificacionbio"; // ej: https://paypal.me/...
+    // Links (una sola vez)
+    const MP_URL = "https://link.mercadopago.com.ar/joanandrey";
+    const PAYPAL_URL = "https://paypal.me/calendarialgc";
 
-    const mpBtn = document.getElementById('mpBtn');
-    const ppBtn = document.getElementById('ppBtn');
+    const mpBtn = document.getElementById("mpBtn");
+    const ppAction = document.getElementById("ppAction");
+    const modeOnce = document.getElementById("modeOnce");
+    const modeMonthly = document.getElementById("modeMonthly");
+    const paypalStatus = document.getElementById("paypalStatus");
+
+    // --- Modo y monto mensual ---
+    const monthlyBox = document.getElementById("monthlyBox");
+    const amtBtns = Array.from(document.querySelectorAll(".amtCard"));
+
+    let supportMode = "once"; // "once" | "monthly"
+    let selectedMonthlyAmount = 7; // default
+
     function setBtn(btn, url){
       if(url && url.trim()){
         url = url.trim();
-        // Si falta esquema (http/https), se asume https
         if(!/^https?:\/\//i.test(url)) url = "https://" + url;
         btn.href = url;
       }else{
         btn.href = "#";
         btn.style.opacity = ".55";
-        btn.addEventListener('click', (e)=>{
+        btn.addEventListener("click", (e)=>{
           e.preventDefault();
-          alert("Link sin configurar. Editá public/apoyar.html y pegá tu URL.");
+          alert("Link sin configurar. Editá apoyar.html y pegá tu URL.");
         });
       }
     }
+
     setBtn(mpBtn, MP_URL);
-    setBtn(ppBtn, PAYPAL_URL);
+
+    function selectAmount(n){
+      selectedMonthlyAmount = n;
+      amtBtns.forEach(b => b.classList.toggle("active", Number(b.dataset.amt) === n));
+    }
+
+    function setActiveMode(next){
+      supportMode = next;
+      const isMonthly = supportMode === "monthly";
+      modeOnce.classList.toggle("active", !isMonthly);
+      modeMonthly.classList.toggle("active", isMonthly);
+      monthlyBox.style.display = isMonthly ? "block" : "none";
+
+      // Ocultar Mercado Pago en modo Mensual (por ahora la suscripción la hacemos solo por PayPal)
+      mpBtn.style.display = isMonthly ? "none" : "";
+
+      // Texto PayPal
+      ppAction.textContent = isMonthly ? "PayPal (Mensual)" : "PayPal";
+    }
+
+    modeOnce.addEventListener("click", () => setActiveMode("once"));
+    modeMonthly.addEventListener("click", () => setActiveMode("monthly"));
+
+    // Estado al volver de PayPal
+    (function syncStatusFromQuery(){
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get("paypal");
+      if (p === "success") {
+        paypalStatus.style.display = "block";
+        paypalStatus.textContent = "✅ Suscripción iniciada. ¡Gracias por apoyar el proyecto!";
+      } else if (p === "cancel") {
+        paypalStatus.style.display = "block";
+        paypalStatus.textContent = "Cancelaste el proceso de suscripción.";
+      }
+    })();
+
+    async function startMonthlySubscription(amount){
+      ppAction.disabled = true;
+      ppAction.textContent = "Conectando con PayPal…";
+      try{
+        const res = await fetch("/api/paypal/create-subscription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount }),
+        });
+        const data = await res.json();
+        if (!data || !data.ok || !data.approve_url) {
+          alert("No se pudo iniciar la suscripción. Intentalo de nuevo.");
+          ppAction.disabled = false;
+          ppAction.textContent = "PayPal (Mensual)";
+          return;
+        }
+        window.location.href = data.approve_url;
+      }catch(e){
+        alert("Error de red. Intentalo de nuevo.");
+        ppAction.disabled = false;
+        ppAction.textContent = "PayPal (Mensual)";
+      }
+    }
+
+    // 1 click en USD 7 / 11 / 33 cuando estás en Mensual
+    amtBtns.forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const n = Number(btn.dataset.amt);
+        selectAmount(n);
+
+        if (supportMode === "monthly") {
+          await startMonthlySubscription(n);
+        } else {
+          // si tocás un monto y estabas en "Una sola vez", te pasa a Mensual
+          setActiveMode("monthly");
+        }
+      });
+    });
+
+    // Acción PayPal principal
+    ppAction.addEventListener("click", async () => {
+      if (supportMode === "once") {
+        const url = (PAYPAL_URL || "").trim();
+        if (!url) {
+          alert("Link sin configurar. Editá apoyar.html y pegá tu URL de PayPal.");
+          return;
+        }
+        const finalUrl = /^https?:\/\//i.test(url) ? url : ("https://" + url);
+        window.open(finalUrl, "_blank", "noopener");
+        return;
+      }
+
+      // Mensual (default usa lo seleccionado)
+      await startMonthlySubscription(selectedMonthlyAmount);
+    });
+
+    // init
+    selectAmount(7);
+    setActiveMode("once");
+
     async function copyText(txt){
       try{
         await navigator.clipboard.writeText(txt);
@@ -322,16 +592,14 @@
         alert("No se pudo copiar automáticamente. Copialo manual.");
       }
     }
-
-    // Botones de copiar (usa data-copy-target="idDelCode")
-    document.querySelectorAll('[data-copy-target]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const id = btn.getAttribute('data-copy-target');
+    document.querySelectorAll("[data-copy-target]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.getAttribute("data-copy-target");
         const el = document.getElementById(id);
         if(!el) return;
         copyText(el.innerText);
       });
     });
-  </script>
+</script>
 </body>
 </html>
