@@ -61,6 +61,8 @@ header{position:relative;display:flex;align-items:center;justify-content:space-b
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .stack{display:grid;grid-template-columns:1fr;gap:14px}
 
+.formRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+
 /* Acordeón minimal */
 details.accordion > summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;user-select:none}
 details.accordion > summary::-webkit-details-marker{display:none}
@@ -110,8 +112,15 @@ details.accordion .matrixWrap{margin-top:10px}
 .cell:hover{border-color:rgba(124,199,255,.42);background:linear-gradient(180deg,rgba(124,199,255,.06),rgba(255,255,255,.012))}
 .cell:focus{outline:2px solid rgba(124,199,255,.35);outline-offset:2px}
 .cell:active{transform:translateY(1px)}
-@media(max-width:520px){.formRow{grid-template-columns:1fr}}
-.input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ol);background:rgba(0,0,0,.22);color:var(--text);font-size:14px}
+@media(max-width:520px){.formRow{grid-template-columns:1fr
+  .dateLine{font-size:11px}
+  .year{font-size:22px}
+  .mark{font-size:16px}
+  .val{font-size:18px}
+  .input{padding:9px 10px;font-size:13px}
+  .btn{padding:9px 10px}
+}}
+.input{display:block;width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ol);background:rgba(0,0,0,.22);color:var(--text);font-size:14px}
 .btn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer}
 .btn:hover{background:rgba(255,255,255,.06)}
 .note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
@@ -192,14 +201,13 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
         </details>
 
         <section class="card">
-          <div class="h2">Matriz calculablele</div>
+          <div class="h2">Matriz calculable</div>
 
           <div class="formRow" style="margin-bottom:10px">
             <div>
               <label class="small" for="refDate">Fecha de referencia</label>
               <input class="input" id="refDate" type="date" min="0001-01-01" max="9999-12-31"/>
-              <div class="note" style="margin-top:6px">Tip: podés probar con <b>14/05/1948</b> (ejemplo de EN RED 100).</div>
-            </div>
+</div>
             <button class="btn" id="btnCalc" type="button">Calcular</button>
           </div>
 
