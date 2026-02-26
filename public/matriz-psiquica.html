@@ -80,9 +80,10 @@ details.accordion .matrixWrap{margin-top:10px}
 .matrixGroup>summary::-webkit-details-marker{display:none}
 .matrixGroup .groupGrid{padding:0 12px 12px}
 .groupHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.groupTitle{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.86)}
+.groupTitle{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.70)}
 .groupRule{flex:1;height:1px;background:rgba(124,199,255,.12)}
-.groupGrid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:8px;border:1px solid rgba(124,199,255,.16);padding:8px 8px 10px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between;
+.groupGrid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px}
+.cell{border-radius:12px;border:1px solid rgba(124,199,255,.16);padding:10px 10px 12px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;
   background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.012))}
 
 /* Base: misma estética oscura, el color lo lleva la tipografía */
@@ -92,12 +93,11 @@ details.accordion .matrixWrap{margin-top:10px}
 .cellCalc{background:rgba(0,0,0,.18);border:1px solid rgba(124,199,255,.18)}
 
 /* micro-jerarquía dentro de celda */
-.dateLine{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.yearLine{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:4px;font-weight:850;font-size:24px;letter-spacing:.2px;line-height:1;color:var(--text)}
-.mark{font-family:var(--mono);font-weight:900;font-size:18px;line-height:1;opacity:.95}
-.markWrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.baseNote{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.45)}
-.val{font-family:var(--mono);font-weight:900;font-size:20px;line-height:1;margin-top:8px;color:var(--text)}
+.dateLine{font-size:12px;color:var(--muted);letter-spacing:.2px}
+.yearLine{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:6px}
+.year{font-family:var(--mono);font-weight:850;font-size:26px;letter-spacing:.2px;line-height:1;color:var(--text)}
+.mark{font-family:var(--mono);font-weight:900;font-size:20px;line-height:1;opacity:.95}
+.val{font-family:var(--mono);font-weight:900;font-size:22px;line-height:1;margin-top:10px;color:var(--text)}
 
 /* color sólo en tipografía */
 .jun .mark,.jun .val{color:var(--junText)}
@@ -110,43 +110,12 @@ details.accordion .matrixWrap{margin-top:10px}
 .cell:hover{border-color:rgba(124,199,255,.42);background:linear-gradient(180deg,rgba(124,199,255,.06),rgba(255,255,255,.012))}
 .cell:focus{outline:2px solid rgba(124,199,255,.35);outline-offset:2px}
 .cell:active{transform:translateY(1px)}
-.formRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
-.formRow > div{min-width:0}
 @media(max-width:520px){.formRow{grid-template-columns:1fr}}
 .input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ol);background:rgba(0,0,0,.22);color:var(--text);font-size:14px}
 .btn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer}
 .btn:hover{background:rgba(255,255,255,.06)}
 .note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
 hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
-
-/* --- Ajuste layout: solo Matriz calculable (más centrado, prolijo) --- */
-.cellCalc{
-  align-items:center;
-  text-align:center;
-  justify-content:flex-start;
-  gap:6px;
-}
-.cellCalc .dateLine{
-  width:100%;
-  justify-content:center;
-}
-.cellCalc .yearLine{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin-top:4px;
-  gap:8px;
-}
-.cellCalc .markWrap{
-  align-items:center;
-}
-.cellCalc .val{
-  width:100%;
-  text-align:center;
-  margin-top:8px;
-}
-
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
@@ -223,13 +192,14 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
         </details>
 
         <section class="card">
-          <div class="h2">Matriz calculable</div>
+          <div class="h2">Matriz calculablele</div>
 
           <div class="formRow" style="margin-bottom:10px">
             <div>
               <label class="small" for="refDate">Fecha de referencia</label>
               <input class="input" id="refDate" type="date" min="0001-01-01" max="9999-12-31"/>
-</div>
+              <div class="note" style="margin-top:6px">Tip: podés probar con <b>14/05/1948</b> (ejemplo de EN RED 100).</div>
+            </div>
             <button class="btn" id="btnCalc" type="button">Calcular</button>
           </div>
 
@@ -314,12 +284,10 @@ function mkBaseCell(e){
   div.className = `cell cellBase ${e.kind}`;
   div.tabIndex = 0;
   div.innerHTML = `
-    <div class="dateLine">${e.day} de ${e.year}</div>
+    <div class="dateLine">${e.day}</div>
     <div class="yearLine">
-      <div class="markWrap">
-        <div class="mark">${e.mark}</div>
-        ${(e.mark==="AB")?`<div class="baseNote">Base 12</div>`:(e.mark==="BA")?`<div class="baseNote">Base 21</div>`:""}
-      </div>
+      <div class="year">${e.year}</div>
+      <div class="mark">${e.mark}</div>
     </div>
   `;
   return div;
@@ -330,12 +298,10 @@ function mkCalcCell(e){
   div.className = `cell cellCalc ${e.kind}`;
   div.tabIndex = 0;
   div.innerHTML = `
-    <div class="dateLine">${e.day} de ${e.year}</div>
+    <div class="dateLine">${e.day}</div>
     <div class="yearLine">
-      <div class="markWrap">
-        <div class="mark">${e.mark}</div>
-        ${(e.mark==="AB")?`<div class="baseNote">Base 12</div>`:(e.mark==="BA")?`<div class="baseNote">Base 21</div>`:""}
-      </div>
+      <div class="year">${e.year}</div>
+      <div class="mark">${e.mark}</div>
     </div>
     <div class="val" data-iso="${e.iso}" data-scale="">—</div>
   `;
