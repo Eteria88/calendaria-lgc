@@ -59,6 +59,18 @@ header{position:relative;display:flex;align-items:center;justify-content:space-b
 .h1{margin:0 0 6px 0;font-size:20px}
 .h2{margin:0 0 10px 0;font-size:14px;color:rgba(255,255,255,.86)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stack{display:grid;grid-template-columns:1fr;gap:14px}
+
+/* Acordeón minimal */
+details.accordion > summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;user-select:none}
+details.accordion > summary::-webkit-details-marker{display:none}
+details.accordion .chev{width:18px;height:18px;position:relative;opacity:.85}
+details.accordion .chev:before,details.accordion .chev:after{content:"";position:absolute;left:50%;top:50%;width:10px;height:2px;background:var(--cyan);transform-origin:center;border-radius:2px}
+details.accordion .chev:before{transform:translate(-50%,-50%) rotate(0deg)}
+details.accordion .chev:after{transform:translate(-50%,-50%) rotate(90deg)}
+details.accordion[open] .chev:after{transform:translate(-50%,-50%) rotate(0deg);opacity:.0}
+details.accordion .matrixWrap{margin-top:10px}
+
 @media(max-width:939px){.grid2{grid-template-columns:1fr}}
 /* Matrix */
 .matrixWrap{display:flex;flex-direction:column;gap:12px}
@@ -152,23 +164,26 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
         <h2 class="h1">Matriz Psíquica de la Tierra</h2>
         <div class="note">
           Base de cálculo: <b>segundos intercalares</b> (30 de Junio / 31 de Diciembre).
-          Ingresá una fecha y se calcula <b>Δdías</b> hacia cada fecha de segundo intercalar.
+          Ingresá una fecha y se calcula la <b>diferencia de días</b> hacia cada fecha de segundo intercalar.
         </div>
       </section>
 
-      <div class="grid2" style="margin-top:14px">
-        <section class="card">
-          <div class="h2">Matriz base (instrucción)</div>
+      <div class="stack" style="margin-top:14px">
+        <details class="card accordion" id="baseAccordion">
+          <summary>
+            <div class="h2">Matriz base (instrucción)</div>
+            <span class="chev" aria-hidden="true"></span>
+          </summary>
           <div class="matrixWrap" id="baseMatrix"></div>
           <div class="note">
             Código de color (solo tipografía):
             <b style="color:var(--junText)">30 de Junio</b> ·
             <b style="color:var(--decText)">31 de Diciembre</b>
           </div>
-        </section>
+        </details>
 
         <section class="card">
-          <div class="h2">Matriz calculable (Δdías)</div>
+          <div class="h2">Matriz calculablele</div>
 
           <div class="formRow" style="margin-bottom:10px">
             <div>
@@ -275,7 +290,7 @@ function mkCalcCell(e){
   div.className = `cell cellCalc`;
   div.innerHTML = `
     <div class="topline">
-      <div class="dlabel">${e.day}</div>
+      <div class="dlabel">${e.day} de ${e.year}</div>
     </div>
     <div class="bigRow">
       <div class="code calcText ${e.kind}">${e.mark}</div>
