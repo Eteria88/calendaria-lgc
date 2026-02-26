@@ -120,6 +120,35 @@ details.accordion .matrixWrap{margin-top:10px}
 .btn:hover{background:rgba(255,255,255,.06)}
 .note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
 hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
+
+/* --- Ajuste layout: solo Matriz calculable (más centrado, prolijo) --- */
+.cellCalc{
+  align-items:center;
+  text-align:center;
+  justify-content:flex-start;
+  gap:6px;
+}
+.cellCalc .dateLine{
+  width:100%;
+  justify-content:center;
+}
+.cellCalc .yearLine{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-top:4px;
+  gap:8px;
+}
+.cellCalc .markWrap{
+  align-items:center;
+}
+.cellCalc .val{
+  width:100%;
+  text-align:center;
+  margin-top:8px;
+}
+
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
