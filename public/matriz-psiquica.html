@@ -3,14 +3,15 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Matriz Psíquica de la Tierra — Calendaria</title>
+<title>Matriz Psíquica de la Tierra — Calendaria‑LGC</title>
 <style>
 :root{
   --bg:#0b0d10;--panel:#0f1318;--ol:rgba(124,199,255,.22);
   --text:rgba(255,255,255,.92);--muted:rgba(255,255,255,.68);
   --cyan:#7cc7ff;--good:#9cffd5;
-  --jun:#3f5f45; /* verde (30 junio) */
-  --dec:#cbb673; /* amarillo (31 diciembre) */
+  /* tonos más técnicos/sutiles */
+  --junText:rgba(92, 162, 140, .92);  /* 30 junio (verde técnico, más oscuro) */
+  --decText:rgba(192, 172, 98, .92);  /* 31 diciembre (amarillo técnico, sutil) */
   --shadow:0 10px 24px rgba(0,0,0,.35);
   --r:16px;
   --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
@@ -21,20 +22,17 @@ body{margin:0;background:radial-gradient(900px 700px at 50% -200px, rgba(124,199
 linear-gradient(180deg, rgba(124,199,255,.06), transparent 25%),
 var(--bg);color:var(--text);font-family:var(--sans)}
 a{color:inherit}
-.wrap{max-width:1100px;margin:0 auto;padding:0 14px 24px}
-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:12px 10px;margin:0 -14px 12px;border-bottom:1px solid rgba(124,199,255,.14);
-  backdrop-filter: blur(10px); background: rgba(11,13,16,.7)}
-.sun{display:inline-block;width:10px;height:10px;border-radius:99px;background:var(--cyan);box-shadow:0 0 16px rgba(124,199,255,.65);margin-right:8px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 14px 24px}
+/* Header sin franja oscura: limpio, aireado */
+header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 0 10px;margin:0 0 14px;background:transparent;border-bottom:1px solid rgba(124,199,255,.10)}
+.sun{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--cyan);box-shadow:0 0 10px rgba(124,199,255,.45);margin-right:8px;vertical-align:middle}
 .menuBtn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 10px;border-radius:12px;cursor:pointer}
 .menuBtn:hover{background:rgba(255,255,255,.06)}
 .small{font-size:12px;color:var(--muted)}
-.badge{display:inline-block;border:1px solid var(--ol);background:rgba(255,255,255,.03);
-  padding:6px 10px;border-radius:999px;font-size:12px;color:rgba(255,255,255,.86)}
-.layout{display:grid;grid-template-columns:260px 1fr;gap:14px}
-@media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
-.sidenav{position:sticky;top:58px;height:calc(100dvh - 70px);border:1px solid var(--ol);border-radius:12px;padding:12px;
-  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+.layout{display:grid;grid-template-columns:1fr;gap:14px}
+/* Menú lateral fuera (solo hamburguesa / drawer) */
+.sidenav{display:none}
 .nav-title{font-weight:700;letter-spacing:.3px;margin-bottom:8px;color:rgba(255,255,255,.88)}
 .nav-link{display:block;padding:8px 10px;margin:4px 0;border-radius:10px;border:1px solid var(--ol);
   color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
@@ -63,21 +61,32 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:939px){.grid2{grid-template-columns:1fr}}
 /* Matrix */
-.matrixWrap{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px}
-.cell{border-radius:12px;border:1px solid rgba(0,0,0,.35);padding:10px 10px 12px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between}
-.cellBase.jun{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)), var(--jun)}
-.cellBase.dec{background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03)), var(--dec)}
+.matrixWrap{display:flex;flex-direction:column;gap:12px}
+.matrixGroup{border:1px solid rgba(124,199,255,.14);border-radius:14px;padding:10px;background:rgba(255,255,255,.01)}
+.groupHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.groupTitle{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.70)}
+.groupRule{flex:1;height:1px;background:rgba(124,199,255,.12)}
+.groupGrid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px}
+.cell{border-radius:12px;border:1px solid rgba(124,199,255,.16);padding:10px 10px 12px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.012))}
+
+/* Base: misma estética oscura, el color lo lleva la tipografía */
+.cellBase{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01))}
+.cellBase.jun .year,.cellBase.jun .mark{color:var(--junText)}
+.cellBase.dec .year,.cellBase.dec .mark{color:var(--decText)}
+
+/* Calculable: un poquito más profundo para separar */
 .cellCalc{background:rgba(0,0,0,.18);border:1px solid rgba(124,199,255,.18)}
-.topline{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.dlabel{font-size:12px;opacity:.9}
-.code{font-family:var(--mono);font-size:12px;opacity:.9}
+.topline{display:flex;align-items:center;justify-content:flex-start;gap:10px}
+.dlabel{font-size:12px;opacity:.85}
+.code{font-family:var(--mono);font-size:12px;opacity:.75}
 .bigRow{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.year{font-family:var(--mono);font-weight:800;font-size:28px;letter-spacing:.2px;line-height:1}
-.mark{font-family:var(--mono);font-weight:900;font-size:30px;line-height:1;opacity:.95}
+.year{font-family:var(--mono);font-weight:850;font-size:28px;letter-spacing:.2px;line-height:1}
+.mark{font-family:var(--mono);font-weight:900;font-size:30px;line-height:1;opacity:.98}
 .delta{font-family:var(--mono);font-weight:800;font-size:22px;line-height:1}
 .deltaSub{font-size:11px;color:var(--muted);margin-top:4px}
-.calcText.jun{color:rgba(156,255,213,.92)}
-.calcText.dec{color:rgba(255,233,152,.92)}
+.calcText.jun{color:var(--junText)}
+.calcText.dec{color:var(--decText)}
 /* Input */
 .formRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
 @media(max-width:520px){.formRow{grid-template-columns:1fr}}
@@ -91,7 +100,7 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
 <meta name="theme-color" content="#0b0d10"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="Calendaria"/>
+<meta name="apple-mobile-web-app-title" content="Calendaria-LGC"/>
 <link rel="apple-touch-icon" href="/icons/calendaria-512.png"/>
 </head>
 <body>
@@ -118,8 +127,8 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
   </div>
 
   <header>
-    <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div>
-    <span class="small">Matriz Psíquica</span>
+    <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria‑LGC</h1></div>
+    <span class="small" aria-hidden="true"></span>
     <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button>
   </header>
 
@@ -140,8 +149,7 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
 
     <main>
       <section class="card">
-        <div class="badge">Actualización — 26·02·2026</div>
-        <h2 class="h1" style="margin-top:10px">Matriz Psíquica de la Tierra</h2>
+        <h2 class="h1">Matriz Psíquica de la Tierra</h2>
         <div class="note">
           Base de cálculo: <b>segundos intercalares</b> (30 de Junio / 31 de Diciembre).
           Ingresá una fecha y se calcula <b>Δdías</b> hacia cada fecha de segundo intercalar.
@@ -153,10 +161,9 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
           <div class="h2">Matriz base (instrucción)</div>
           <div class="matrixWrap" id="baseMatrix"></div>
           <div class="note">
-            Colores: <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--jun);border:1px solid rgba(255,255,255,.12);vertical-align:middle"></span>
-            <b>30 de Junio</b> (verde) ·
-            <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--dec);border:1px solid rgba(255,255,255,.12);vertical-align:middle"></span>
-            <b>31 de Diciembre</b> (amarillo)
+            Código de color (solo tipografía):
+            <b style="color:var(--junText)">30 de Junio</b> ·
+            <b style="color:var(--decText)">31 de Diciembre</b>
           </div>
         </section>
 
@@ -224,13 +231,15 @@ const events = [
   {iso:"1973-12-31", day:"31 de Diciembre", year:"1973", mark:"3", kind:"dec"},
 ];
 
+// escala por bloque (9 + 9 + 9)
+const scaleForIndex = (i)=> (i < 9 ? 'cosmos' : (i < 18 ? 'solar' : 'tierra'));
+
 function mkBaseCell(e){
   const div = document.createElement("div");
   div.className = `cell cellBase ${e.kind}`;
   div.innerHTML = `
     <div class="topline">
       <div class="dlabel">${e.day}</div>
-      <div class="code">${e.iso}</div>
     </div>
     <div class="bigRow">
       <div class="year">${e.year}</div>
@@ -246,14 +255,12 @@ function mkCalcCell(e){
   div.innerHTML = `
     <div class="topline">
       <div class="dlabel">${e.day}</div>
-      <div class="code">${e.iso}</div>
     </div>
     <div class="bigRow">
       <div class="code calcText ${e.kind}">${e.mark}</div>
-      <div class="delta calcText ${e.kind}" data-iso="${e.iso}">—</div>
+      <div class="delta calcText ${e.kind}" data-iso="${e.iso}" data-scale="${scaleForIndex(events.indexOf(e))}">—</div>
     </div>
-    <div class="deltaSub">Δdías desde referencia</div>
-  `;
+`;
   return div;
 }
 
@@ -262,9 +269,37 @@ function render(){
   const calcEl = document.getElementById("calcMatrix");
   baseEl.innerHTML = "";
   calcEl.innerHTML = "";
-  events.forEach(e=>{
-    baseEl.appendChild(mkBaseCell(e));
-    calcEl.appendChild(mkCalcCell(e));
+
+  const groups = [
+    {title:"Escala Cosmos", items: events.slice(0,9)},
+    {title:"Escala Sistema Solar", items: events.slice(9,18)},
+    {title:"Escala Planeta Tierra", items: events.slice(18,27)},
+  ];
+
+  function groupBlock(title){
+    const g = document.createElement('div');
+    g.className = 'matrixGroup';
+    g.innerHTML = `
+      <div class="groupHead">
+        <div class="groupTitle">${title}</div>
+        <div class="groupRule" aria-hidden="true"></div>
+      </div>
+      <div class="groupGrid"></div>
+    `;
+    return g;
+  }
+
+  groups.forEach(gr=>{
+    const bG = groupBlock(gr.title);
+    const cG = groupBlock(gr.title);
+    const bGrid = bG.querySelector('.groupGrid');
+    const cGrid = cG.querySelector('.groupGrid');
+    gr.items.forEach(e=>{
+      bGrid.appendChild(mkBaseCell(e));
+      cGrid.appendChild(mkCalcCell(e));
+    });
+    baseEl.appendChild(bG);
+    calcEl.appendChild(cG);
   });
 }
 
@@ -274,9 +309,10 @@ function parseISODateToUTC(iso){
 }
 
 function diffDays(refISO, eventISO){
+  // devuelve días(evento - referencia)
   const a = parseISODateToUTC(refISO);
   const b = parseISODateToUTC(eventISO);
-  return Math.round((a - b) / 86400000);
+  return Math.round((b - a) / 86400000);
 }
 
 function formatInt(n){
@@ -293,15 +329,32 @@ function doCalc(){
     note.textContent = "Elegí una fecha válida para calcular.";
     return;
   }
-  document.querySelectorAll("[data-iso]").forEach(el=>{
+
+  // 1) Base B[i] = días(ref → Si)
+  const B = {};
+  events.forEach(e=>{ B[e.iso] = diffDays(ref, e.iso); });
+
+  // 2) Anclas por escala (según EN RED 100)
+  const anchorISO = {
+    tierra: null,              // Tierra = B[i] tal cual
+    solar:  "1972-06-30",      // Solar se apoya en 30/06/1972
+    cosmos: "1981-06-30"       // Cosmos se apoya en 30/06/1981
+  };
+  const anchorB = {
+    tierra: 0,
+    solar:  B[anchorISO.solar] ?? 0,
+    cosmos: B[anchorISO.cosmos] ?? 0,
+  };
+
+  // 3) Render por celda (valor = B[i] - B[anclaEscala])
+  document.querySelectorAll("[data-iso][data-scale]").forEach(el=>{
     const iso = el.getAttribute("data-iso");
-    const d = diffDays(ref, iso);
-    el.textContent = formatInt(d);
+    const sc = el.getAttribute("data-scale");
+    const v = (B[iso] ?? 0) - (anchorB[sc] ?? 0);
+    el.textContent = formatInt(v);
   });
 
-  // ejemplo destacado: ref → 1972-06-30
-  const ex = diffDays(ref, "1972-06-30");
-  note.innerHTML = `Referencia: <b>${ref}</b> · Ejemplo: Δdías a <b>30/06/1972</b> = <b>${formatInt(ex)}</b>`;
+  note.textContent = "";
 }
 
 render();
