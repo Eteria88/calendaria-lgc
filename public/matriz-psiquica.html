@@ -82,8 +82,7 @@ details.accordion .matrixWrap{margin-top:10px}
 .groupHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .groupTitle{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.86)}
 .groupRule{flex:1;height:1px;background:rgba(124,199,255,.12)}
-.groupGrid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px}
-.cell{border-radius:12px;border:1px solid rgba(124,199,255,.16);padding:10px 10px 12px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;
+.groupGrid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:8px;border:1px solid rgba(124,199,255,.16);padding:8px 8px 10px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between;
   background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.012))}
 
 /* Base: misma estética oscura, el color lo lleva la tipografía */
@@ -93,13 +92,12 @@ details.accordion .matrixWrap{margin-top:10px}
 .cellCalc{background:rgba(0,0,0,.18);border:1px solid rgba(124,199,255,.18)}
 
 /* micro-jerarquía dentro de celda */
-.dateLine{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.yearLine{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:6px}
-.year{font-family:var(--mono);font-weight:850;font-size:26px;letter-spacing:.2px;line-height:1;color:var(--text)}
-.mark{font-family:var(--mono);font-weight:900;font-size:20px;line-height:1;opacity:.95}
+.dateLine{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yearLine{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:4px;font-weight:850;font-size:24px;letter-spacing:.2px;line-height:1;color:var(--text)}
+.mark{font-family:var(--mono);font-weight:900;font-size:18px;line-height:1;opacity:.95}
 .markWrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 .baseNote{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.45)}
-.val{font-family:var(--mono);font-weight:900;font-size:22px;line-height:1;margin-top:10px;color:var(--text)}
+.val{font-family:var(--mono);font-weight:900;font-size:20px;line-height:1;margin-top:8px;color:var(--text)}
 
 /* color sólo en tipografía */
 .jun .mark,.jun .val{color:var(--junText)}
