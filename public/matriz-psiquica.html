@@ -136,6 +136,33 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
 #calcMatrix .groupGrid{gap:10px;}
 #calcMatrix .cellCalc{min-height:86px;}
 
+
+.calcWrap{ transform: none; }
+}
+
+
+/* Desktop: keep scales vertical but reduce scroll by compacting CALCULABLE only */
+@media (min-width: 980px) and (min-height: 740px){
+  /* Base matrix stays collapsed; make calculable fit in one viewport */
+  body{ overflow: hidden; }
+  /* Slight scale-down only for the calculable matrix area */
+  #calcMatrix{
+    transform: scale(0.90);
+    transform-origin: top center;
+  }
+  /* Tighten spacing a touch inside calculable blocks */
+  #calcMatrix .scaleBlock{ padding: 10px 12px; margin-top: 10px; }
+  #calcMatrix .calcGrid{ gap: 8px; }
+  #calcMatrix .calcCell{ padding: 10px 10px; min-height: 92px; }
+  #calcMatrix .calcMeta{ font-size: 11px; line-height: 1.15; }
+  #calcMatrix .calcValue{ font-size: 22px; line-height: 1.05; }
+}
+/* If the viewport is short, allow scrolling rather than clipping */
+@media (min-width: 980px) and (max-height: 739px){
+  body{ overflow: auto; }
+  #calcMatrix{ transform: none; }
+}
+
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
@@ -209,13 +236,13 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
         </details>
 
         <section class="card">
-          <div class="h2">Matriz calculablele</div>
+          <div class="h2">Matriz calculable</div>
 
           <div class="formRow" style="margin-bottom:10px">
             <div>
               <label class="small" for="refDate">Fecha de referencia</label>
               <input class="input" id="refDate" type="date" min="0001-01-01" max="9999-12-31"/>
-              <div class="note" style="margin-top:6px">Tip: podés probar con <b>14/05/1948</b> (ejemplo de EN RED 100).</div>
+              
             </div>
             <button class="btn" id="btnCalc" type="button">Calcular</button>
           </div>
