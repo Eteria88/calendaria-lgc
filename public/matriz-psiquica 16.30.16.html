@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Matriz Psíquica de la Tierra — Calendaria‑LGC</title>
+<style>
+:root{
+  --bg:#0b0d10;--panel:#0f1318;--ol:rgba(124,199,255,.22);
+  --text:rgba(255,255,255,.92);--muted:rgba(255,255,255,.68);
+  --cyan:#7cc7ff;--good:#9cffd5;
+  /* tonos más técnicos/sutiles */
+  --junText:rgba(48,184,142,.92);  /* 30 junio (verde técnico, más oscuro) */
+  --decText:rgba(207,184,74,.92);  /* 31 diciembre (amarillo técnico, sutil) */
+  --shadow:0 10px 24px rgba(0,0,0,.35);
+  --r:16px;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 700px at 50% -200px, rgba(124,199,255,.16), transparent 55%),
+linear-gradient(180deg, rgba(124,199,255,.06), transparent 25%),
+var(--bg);color:var(--text);font-family:var(--sans)}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 14px 24px}
+/* Header sin franja oscura: limpio, aireado */
+header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 0 10px;margin:0 0 14px;background:transparent;border-bottom:1px solid rgba(124,199,255,.10)}
+.sun{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--cyan);box-shadow:0 0 10px rgba(124,199,255,.45);margin-right:8px;vertical-align:middle}
+.menuBtn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 10px;border-radius:12px;cursor:pointer}
+.menuBtn:hover{background:rgba(255,255,255,.06)}
+.small{font-size:12px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:1fr;gap:14px}
+/* Menú lateral fuera (solo hamburguesa / drawer) */
+.sidenav{display:none}
+.nav-title{font-weight:700;letter-spacing:.3px;margin-bottom:8px;color:rgba(255,255,255,.88)}
+.nav-link{display:block;padding:8px 10px;margin:4px 0;border-radius:10px;border:1px solid var(--ol);
+  color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
+.nav-link:hover{background:rgba(255,255,255,.06)}
+.nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+/* Mobile drawer */
+.mobileNav{position:fixed;inset:0;display:none;z-index:60}
+.mobileNav.show{display:block}
+.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.mobileNavPanel{position:absolute;top:0;right:0;height:100%;width:min(92vw,340px);
+  background:linear-gradient(180deg,rgba(18,22,28,.98),rgba(12,14,18,.98));
+  border-left:1px solid rgba(124,199,255,.18);box-shadow:var(--shadow)}
+.mobileNavHeader{display:flex;align-items:center;justify-content:space-between;padding:12px 12px;border-bottom:1px solid rgba(124,199,255,.12)}
+.closeBtn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 10px;border-radius:12px;cursor:pointer}
+.mobileList{display:flex;flex-direction:column;padding:10px}
+.mnav-link{display:block;padding:10px 12px;margin:6px 0;border-radius:12px;border:1px solid rgba(124,199,255,.18);
+  text-decoration:none;background:rgba(255,255,255,.02)}
+.mnav-link:hover{background:rgba(255,255,255,.06)}
+.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff}
+
+/* Cards */
+.card{border:1px solid var(--ol);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
+  padding:14px;box-shadow:var(--shadow)}
+.h1{margin:0 0 6px 0;font-size:20px}
+.h2{margin:0 0 10px 0;font-size:14px;color:rgba(255,255,255,.86)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stack{display:grid;grid-template-columns:1fr;gap:14px}
+
+/* Acordeón minimal */
+details.accordion > summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;user-select:none}
+details.accordion > summary::-webkit-details-marker{display:none}
+details.accordion .chev{width:18px;height:18px;position:relative;opacity:.85}
+details.accordion .chev:before,details.accordion .chev:after{content:"";position:absolute;left:50%;top:50%;width:10px;height:2px;background:var(--cyan);transform-origin:center;border-radius:2px}
+details.accordion .chev:before{transform:translate(-50%,-50%) rotate(0deg)}
+details.accordion .chev:after{transform:translate(-50%,-50%) rotate(90deg)}
+details.accordion[open] .chev:after{transform:translate(-50%,-50%) rotate(0deg);opacity:.0}
+details.accordion .matrixWrap{margin-top:10px}
+
+@media(max-width:939px){.grid2{grid-template-columns:1fr}}
+/* Matrix */
+.matrixWrap{display:flex;flex-direction:column;gap:12px}
+.matrixGroup{border:1px solid rgba(124,199,255,.14);border-radius:14px;background:rgba(255,255,255,.01);padding:0;overflow:hidden}
+.matrixGroup[open]{box-shadow:0 0 0 1px rgba(124,199,255,.06) inset}
+.matrixGroup>summary{list-style:none;cursor:pointer;padding:10px 12px}
+.matrixGroup>summary::-webkit-details-marker{display:none}
+.matrixGroup .groupGrid{padding:0 12px 12px}
+.groupHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.groupTitle{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.70)}
+.groupRule{flex:1;height:1px;background:rgba(124,199,255,.12)}
+.groupGrid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px}
+.cell{border-radius:12px;border:1px solid rgba(124,199,255,.16);padding:10px 10px 12px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.012))}
+
+/* Base: misma estética oscura, el color lo lleva la tipografía */
+.cellBase{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01))}
+
+/* Calculable: un poquito más profundo para separar */
+.cellCalc{background:rgba(0,0,0,.18);border:1px solid rgba(124,199,255,.18)}
+
+/* micro-jerarquía dentro de celda */
+.dateLine{font-size:12px;color:var(--muted);letter-spacing:.2px}
+.yearLine{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:6px}
+.year{font-family:var(--mono);font-weight:850;font-size:26px;letter-spacing:.2px;line-height:1;color:var(--text)}
+.mark{font-family:var(--mono);font-weight:900;font-size:20px;line-height:1;opacity:.95}
+.val{font-family:var(--mono);font-weight:900;font-size:22px;line-height:1;margin-top:10px;color:var(--text)}
+
+/* color sólo en tipografía */
+.jun .mark,.jun .val{color:var(--junText)}
+.dec .mark,.dec .val{color:var(--decText)}
+.cellBase.jun .mark,.cellBase.jun .year{color:var(--junText)}
+.cellBase.dec .mark,.cellBase.dec .year{color:var(--decText)}
+
+/* estados */
+.cell{transition:border-color .15s ease, transform .08s ease, background .15s ease}
+.cell:hover{border-color:rgba(124,199,255,.42);background:linear-gradient(180deg,rgba(124,199,255,.06),rgba(255,255,255,.012))}
+.cell:focus{outline:2px solid rgba(124,199,255,.35);outline-offset:2px}
+.cell:active{transform:translateY(1px)}
+@media(max-width:520px){.formRow{grid-template-columns:1fr}}
+.input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ol);background:rgba(0,0,0,.22);color:var(--text);font-size:14px}
+.btn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer}
+.btn:hover{background:rgba(255,255,255,.06)}
+.note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
+</style>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#0b0d10"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Calendaria-LGC"/>
+<link rel="apple-touch-icon" href="/icons/calendaria-512.png"/>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="mobileNav" id="mobileNav" aria-hidden="true">
+    <div class="mobileNavPanel">
+      <div class="mobileNavHeader">
+        <span>Menú</span>
+        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
+      </div>
+      <nav class="mobileList">
+        <a class="mnav-link" href="./">Inicio</a>
+        <a class="mnav-link" href="./marcas-lgc.html">Marcas LGC</a>
+        <a class="mnav-link" href="./range.html">Comparador LGC</a>
+        <a class="mnav-link" href="./letters.html">Letras a números</a>
+        <a class="mnav-link active" href="./matriz-psiquica.html">Matriz Psíquica de la Tierra</a>
+        <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
+        <a class="mnav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
+        <a class="mnav-link" href="./apoyar.html">Apoyar el proyecto</a>
+      </nav>
+    </div>
+    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
+  </div>
+
+  <header>
+    <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria‑LGC</h1></div>
+    <span class="small" aria-hidden="true"></span>
+    <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidenav">
+      <nav>
+        <div class="nav-title">Menú</div>
+        <a class="nav-link" href="./">Inicio</a>
+        <a class="nav-link" href="./marcas-lgc.html">Marcas LGC</a>
+        <a class="nav-link" href="./range.html">Comparador LGC</a>
+        <a class="nav-link" href="./letters.html">Letras a números</a>
+        <a class="nav-link active" href="./matriz-psiquica.html">Matriz Psíquica de la Tierra</a>
+        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
+        <a class="nav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
+        <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="card">
+        <h2 class="h1">Matriz Psíquica de la Tierra</h2>
+        <div class="note">
+          Base de cálculo: <b>segundos intercalares</b> (30 de Junio / 31 de Diciembre).
+          Ingresá una fecha y se calcula la <b>diferencia de días</b> hacia cada fecha de segundo intercalar.
+        </div>
+      </section>
+
+      <div class="stack" style="margin-top:14px">
+        <details class="card accordion" id="baseAccordion">
+          <summary>
+            <div class="h2">Matriz base (instrucción)</div>
+            <span class="chev" aria-hidden="true"></span>
+          </summary>
+          <div class="matrixWrap" id="baseMatrix"></div>
+          <div class="note">
+            Código de color (solo tipografía):
+            <b style="color:var(--junText)">30 de Junio</b> ·
+            <b style="color:var(--decText)">31 de Diciembre</b>
+          </div>
+        </details>
+
+        <section class="card">
+          <div class="h2">Matriz calculablele</div>
+
+          <div class="formRow" style="margin-bottom:10px">
+            <div>
+              <label class="small" for="refDate">Fecha de referencia</label>
+              <input class="input" id="refDate" type="date" min="0001-01-01" max="9999-12-31"/>
+              <div class="note" style="margin-top:6px">Tip: podés probar con <b>14/05/1948</b> (ejemplo de EN RED 100).</div>
+            </div>
+            <button class="btn" id="btnCalc" type="button">Calcular</button>
+          </div>
+
+          <div class="matrixWrap" id="calcMatrix"></div>
+
+          <hr class="sep"/>
+          <div class="note" id="calcNote">
+            Elegí una fecha y presioná <b>Calcular</b>.
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+const events = [
+  // Orden visual tal como en tu imagen (de arriba hacia abajo, izquierda a derecha)
+  {iso:"2012-06-30", day:"30 de Junio", year:"2012", mark:"X", kind:"jun"},
+  {iso:"2015-06-30", day:"30 de Junio", year:"2015", mark:"Y", kind:"jun"},
+  {iso:"2016-12-31", day:"31 de Diciembre", year:"2016", mark:"Z", kind:"dec"},
+
+  {iso:"1998-12-31", day:"31 de Diciembre", year:"1998", mark:"U", kind:"dec"},
+  {iso:"2005-12-31", day:"31 de Diciembre", year:"2005", mark:"V", kind:"dec"},
+  {iso:"2008-12-31", day:"31 de Diciembre", year:"2008", mark:"W", kind:"dec"},
+
+  {iso:"1994-06-30", day:"30 de Junio", year:"1994", mark:"R", kind:"jun"},
+  {iso:"1995-12-31", day:"31 de Diciembre", year:"1995", mark:"S", kind:"dec"},
+  {iso:"1997-06-30", day:"30 de Junio", year:"1997", mark:"T", kind:"jun"},
+
+  {iso:"1990-12-31", day:"31 de Diciembre", year:"1990", mark:"O", kind:"dec"},
+  {iso:"1992-06-30", day:"30 de Junio", year:"1992", mark:"P", kind:"jun"},
+  {iso:"1993-06-30", day:"30 de Junio", year:"1993", mark:"Q", kind:"jun"},
+
+  {iso:"1985-06-30", day:"30 de Junio", year:"1985", mark:"M", kind:"jun"},
+  {iso:"1987-12-31", day:"31 de Diciembre", year:"1987", mark:"N", kind:"dec"},
+  {iso:"1989-12-31", day:"31 de Diciembre", year:"1989", mark:"N", kind:"dec"},
+
+  {iso:"1981-06-30", day:"30 de Junio", year:"1981", mark:"J", kind:"jun"},
+  {iso:"1982-06-30", day:"30 de Junio", year:"1982", mark:"K", kind:"jun"},
+  {iso:"1983-06-30", day:"30 de Junio", year:"1983", mark:"L", kind:"jun"},
+
+  {iso:"1977-12-31", day:"31 de Diciembre", year:"1977", mark:"7", kind:"dec"},
+  {iso:"1978-12-31", day:"31 de Diciembre", year:"1978", mark:"8", kind:"dec"},
+  {iso:"1979-12-31", day:"31 de Diciembre", year:"1979", mark:"9", kind:"dec"},
+
+  {iso:"1974-12-31", day:"31 de Diciembre", year:"1974", mark:"4", kind:"dec"},
+  {iso:"1975-12-31", day:"31 de Diciembre", year:"1975", mark:"5", kind:"dec"},
+  {iso:"1976-12-31", day:"31 de Diciembre", year:"1976", mark:"6", kind:"dec"},
+
+  {iso:"1972-06-30", day:"30 de Junio", year:"1972", mark:"AB", kind:"jun"},
+  {iso:"1972-12-31", day:"31 de Diciembre", year:"1972", mark:"BA", kind:"dec"},
+  {iso:"1973-12-31", day:"31 de Diciembre", year:"1973", mark:"3", kind:"dec"},
+];
+
+// helpers cronológicos (para cálculo por escalas)
+const eventsChron = [...events].sort((a,b)=> a.iso.localeCompare(b.iso));
+const idxByISO = Object.fromEntries(eventsChron.map((e,i)=>[e.iso,i])); // 0..26
+
+function scaleForISO(iso){
+  const i = idxByISO[iso];
+  if(i == null) return 'tierra';
+  if(i < 9) return 'tierra';
+  if(i < 18) return 'solar';
+  return 'cosmos';
+}
+
+function valueForISO(refISO, iso){
+  const i = idxByISO[iso];
+  if(i == null) return 0;
+  if(i < 9){
+    // Escala Planeta Tierra: base contra referencia (ej: 14/05/1948 → 30/06/1972 = 8813)
+    return diffDays(refISO, iso);
+  }
+  // Escala Sistema Solar y Cosmos: diferencia contra el evento 9 posiciones atrás (n - 9)
+  const anchor = eventsChron[i-9].iso;
+  return diffDays(anchor, iso);
+}
+
+function mkBaseCell(e){
+  const div = document.createElement("div");
+  div.className = `cell cellBase ${e.kind}`;
+  div.tabIndex = 0;
+  div.innerHTML = `
+    <div class="dateLine">${e.day}</div>
+    <div class="yearLine">
+      <div class="year">${e.year}</div>
+      <div class="mark">${e.mark}</div>
+    </div>
+  `;
+  return div;
+}
+
+function mkCalcCell(e){
+  const div = document.createElement("div");
+  div.className = `cell cellCalc ${e.kind}`;
+  div.tabIndex = 0;
+  div.innerHTML = `
+    <div class="dateLine">${e.day}</div>
+    <div class="yearLine">
+      <div class="year">${e.year}</div>
+      <div class="mark">${e.mark}</div>
+    </div>
+    <div class="val" data-iso="${e.iso}" data-scale="">—</div>
+  `;
+  return div;
+}
+
+function render(){
+  const baseEl = document.getElementById("baseMatrix");
+  const calcEl = document.getElementById("calcMatrix");
+  baseEl.innerHTML = "";
+  calcEl.innerHTML = "";
+
+  const groups = [
+    {title:"Escala Cosmos", items: events.slice(0,9)},
+    {title:"Escala Sistema Solar", items: events.slice(9,18)},
+    {title:"Escala Planeta Tierra", items: events.slice(18,27)},
+  ];
+
+  function groupBlock(title, isOpen){
+    const g = document.createElement('details');
+    g.className = 'matrixGroup';
+    g.open = !!isOpen;
+    g.innerHTML = `
+      <summary class="groupHead">
+        <div class="groupTitle">${title}</div>
+        <div class="groupRule" aria-hidden="true"></div>
+      </summary>
+      <div class="groupGrid"></div>
+    `;
+    return g;
+  }
+
+  const isMobile = window.matchMedia('(max-width:720px)').matches;
+  groups.forEach((gr,gi)=>{
+    const bG = groupBlock(gr.title, !isMobile || gi===0);
+    const cG = groupBlock(gr.title, !isMobile || gi===0);
+    const bGrid = bG.querySelector('.groupGrid');
+    const cGrid = cG.querySelector('.groupGrid');
+    gr.items.forEach(e=>{
+      bGrid.appendChild(mkBaseCell(e));
+      const cCell = mkCalcCell(e);
+      const deltaEl = cCell.querySelector('[data-iso]');
+      if(deltaEl) deltaEl.setAttribute('data-scale', scaleForISO(e.iso));
+      cGrid.appendChild(cCell);
+    });
+    baseEl.appendChild(bG);
+    calcEl.appendChild(cG);
+  });
+}
+
+function parseISODateToUTC(iso){
+  const [y,m,d] = iso.split("-").map(Number);
+  return Date.UTC(y, m-1, d);
+}
+
+function diffDays(refISO, eventISO){
+  // devuelve días(evento - referencia)
+  const a = parseISODateToUTC(refISO);
+  const b = parseISODateToUTC(eventISO);
+  return Math.round((b - a) / 86400000);
+}
+
+function formatInt(n){
+  // sin separador de miles (LGC: frecuencias)
+  return String(n);
+}
+
+function doCalc(){
+  const ref = document.getElementById("refDate").value;
+  const note = document.getElementById("calcNote");
+  if(!ref){
+    note.textContent = "Elegí una fecha válida para calcular.";
+    return;
+  }
+
+  document.querySelectorAll("[data-iso][data-scale]").forEach(el=>{
+    const iso = el.getAttribute("data-iso");
+    const v = valueForISO(ref, iso);
+    el.textContent = formatInt(v);
+  });
+
+  note.textContent = "";
+}
+
+render();
+
+document.getElementById("btnCalc").addEventListener("click", doCalc);
+document.getElementById("refDate").addEventListener("change", ()=>{ /* auto-calc opcional */ });
+
+/* Drawer */
+const menuBtn = document.getElementById("menuBtn");
+const mobileNav = document.getElementById("mobileNav");
+const closeMenu = document.getElementById("closeMenu");
+const overlay = document.getElementById("mobileOverlay");
+
+function openMenu(){
+  mobileNav.classList.add("show");
+  mobileNav.setAttribute("aria-hidden","false");
+}
+function closeMenuFn(){
+  mobileNav.classList.remove("show");
+  mobileNav.setAttribute("aria-hidden","true");
+}
+menuBtn?.addEventListener("click", openMenu);
+closeMenu?.addEventListener("click", closeMenuFn);
+overlay?.addEventListener("click", closeMenuFn);
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeMenuFn(); });
+
+// default: precargar ejemplo si viene por query ?ref=
+const params = new URLSearchParams(location.search);
+if(params.get("ref")){
+  document.getElementById("refDate").value = params.get("ref");
+  doCalc();
+}
+</script>
+</body>
+</html>
