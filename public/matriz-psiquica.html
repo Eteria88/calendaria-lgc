@@ -31,8 +31,9 @@ header h1{display:inline-block;margin:0;font-weight:650;letter-spacing:.35px;fon
 
 .sun{display:inline-block;width:17px;height:17px;border-radius:999px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.92) 0%, var(--cyan) 38%, rgba(124,199,255,.18) 72%, rgba(124,199,255,.08) 100%);border:1px solid rgba(124,199,255,.55);box-shadow:0 0 12px rgba(124,199,255,.22);margin-right:8px;vertical-align:middle;position:relative}
 .sun::after{content:"";position:absolute;inset:-5px;border-radius:999px;border:1px solid rgba(124,199,255,.18)}
-.menuBtn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 10px;border-radius:12px;cursor:pointer}
-.menuBtn:hover{background:rgba(255,255,255,.06)}
+.btnVolver{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:600;letter-spacing:.2px;transition:transform .08s ease,background .15s ease,border-color .15s ease}
+.btnVolver:hover{background:rgba(255,255,255,.06);border-color:rgba(124,199,255,.26)}
+.btnVolver:active{transform:translateY(1px)}
 .small{font-size:12px;color:var(--muted)}
 .layout{display:grid;grid-template-columns:1fr;gap:14px}
 /* Menú lateral fuera (solo hamburguesa / drawer) */
@@ -42,15 +43,6 @@ header h1{display:inline-block;margin:0;font-weight:650;letter-spacing:.35px;fon
   color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
 .nav-link:hover{background:rgba(255,255,255,.06)}
 .nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
-/* Mobile drawer */
-.mobileNav{position:fixed;inset:0;display:none;z-index:60}
-.mobileNav.show{display:block}
-.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.55)}
-.mobileNavPanel{position:absolute;top:0;right:0;height:100%;width:min(92vw,340px);
-  background:linear-gradient(180deg,rgba(18,22,28,.98),rgba(12,14,18,.98));
-  border-left:1px solid rgba(124,199,255,.18);box-shadow:var(--shadow)}
-.mobileNavHeader{display:flex;align-items:center;justify-content:space-between;padding:12px 12px;border-bottom:1px solid rgba(124,199,255,.12)}
-.closeBtn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 10px;border-radius:12px;cursor:pointer}
 .mobileList{display:flex;flex-direction:column;padding:10px}
 .mnav-link{display:block;padding:10px 12px;margin:6px 0;border-radius:12px;border:1px solid rgba(124,199,255,.18);
   text-decoration:none;background:rgba(255,255,255,.02)}
@@ -632,31 +624,10 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
 </head>
 <body>
 <div class="wrap">
-
-  <div class="mobileNav" id="mobileNav" aria-hidden="true">
-    <div class="mobileNavPanel">
-      <div class="mobileNavHeader">
-        <span>Menú</span>
-        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
-      </div>
-      <nav class="mobileList">
-        <a class="mnav-link" href="./">Inicio</a>
-        <a class="mnav-link" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="mnav-link" href="./range.html">Comparador LGC</a>
-        <a class="mnav-link" href="./letters.html">Letras a números</a>
-        <a class="mnav-link active" href="./matriz-psiquica.html">Matriz Psíquica de la Mente Digital de la Tierra</a>
-        <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
-        <a class="mnav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
-        <a class="mnav-link" href="./apoyar.html">Apoyar el proyecto</a>
-      </nav>
-    </div>
-    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-  </div>
-
-  <header>
+<header>
     <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria‑LGC</h1></div>
     <span class="small" aria-hidden="true"></span>
-    <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button>
+    <button class="btnVolver" id="btnVolver" aria-label="Volver" title="Volver">Volver</button>
   </header>
 
   <div class="layout">
@@ -940,25 +911,13 @@ function render(){
 render();
 
 document.getElementById("refDate").addEventListener("change", ()=>{ /* auto-calc opcional */ });
+// Volver (como en otras páginas)
+document.getElementById('btnVolver')?.addEventListener('click', () => {
+  if (window.history.length > 1) window.history.back();
+  else window.location.href = './';
+});
 
-/* Drawer */
-const menuBtn = document.getElementById("menuBtn");
-const mobileNav = document.getElementById("mobileNav");
-const closeMenu = document.getElementById("closeMenu");
-const overlay = document.getElementById("mobileOverlay");
 
-function openMenu(){
-  mobileNav.classList.add("show");
-  mobileNav.setAttribute("aria-hidden","false");
-}
-function closeMenuFn(){
-  mobileNav.classList.remove("show");
-  mobileNav.setAttribute("aria-hidden","true");
-}
-menuBtn?.addEventListener("click", openMenu);
-closeMenu?.addEventListener("click", closeMenuFn);
-overlay?.addEventListener("click", closeMenuFn);
-document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeMenuFn(); });
 
 // default: precargar ejemplo si viene por query ?ref=
 const params = new URLSearchParams(location.search);
