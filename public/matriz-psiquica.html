@@ -777,15 +777,69 @@ function scaleForISO(iso){
 }
 
 
-function parseISODateToUTC(iso){
+function isoToYMD(iso){
   const [y,m,d] = iso.split("-").map(Number);
-  return Date.UTC(y, m-1, d);
+  return {y, m, d};
+}
+function cmpYMD(a,b){
+  if(a.y!==b.y) return a.y-b.y;
+  if(a.m!==b.m) return a.m-b.m;
+  return a.d-b.d;
+}
+const GREGORIAN_START = {y:1582, m:10, d:15}; // 15/10/1582 (Gregoriano)
+const JULIAN_END      = {y:1582, m:10, d:4};  // 04/10/1582 (Juliano)
+const GAP_START       = {y:1582, m:10, d:5};  // 05/10/1582 (no existe en la reforma)
+const GAP_END         = {y:1582, m:10, d:14}; // 14/10/1582 (no existe en la reforma)
+
+function isInGregorianReformGap(ymd){
+  return cmpYMD(ymd, GAP_START) >= 0 && cmpYMD(ymd, GAP_END) <= 0;
+}
+
+// Julian Day Number (JDN) — algoritmos enteros (soporta años desde 0001)
+// Nota: usamos calendario Juliano hasta 04/10/1582 inclusive, y Gregoriano desde 15/10/1582 inclusive.
+function jdnGregorian(y,m,d){
+  const a = Math.floor((14 - m) / 12);
+  const y2 = y + 4800 - a;
+  const m2 = m + 12*a - 3;
+  return d
+    + Math.floor((153*m2 + 2)/5)
+    + 365*y2
+    + Math.floor(y2/4)
+    - Math.floor(y2/100)
+    + Math.floor(y2/400)
+    - 32045;
+}
+function jdnJulian(y,m,d){
+  const a = Math.floor((14 - m) / 12);
+  const y2 = y + 4800 - a;
+  const m2 = m + 12*a - 3;
+  return d
+    + Math.floor((153*m2 + 2)/5)
+    + 365*y2
+    + Math.floor(y2/4)
+    - 32083;
+}
+function toJDN(iso){
+  if(!iso || typeof iso !== "string") return null;
+  const ymd = isoToYMD(iso);
+  if(!Number.isFinite(ymd.y) || !Number.isFinite(ymd.m) || !Number.isFinite(ymd.d)) return null;
+
+  // Fechas "inexistentes" por el salto Juliano→Gregoriano
+  if(isInGregorianReformGap(ymd)) return null;
+
+  // Selección de calendario por fecha histórica
+  if(cmpYMD(ymd, GREGORIAN_START) >= 0) return jdnGregorian(ymd.y, ymd.m, ymd.d);
+  return jdnJulian(ymd.y, ymd.m, ymd.d);
 }
 function diffDays(fromISO, toISO){
-  const a = parseISODateToUTC(fromISO);
-  const b = parseISODateToUTC(toISO);
-  return Math.round((b - a) / 86400000);
+  const a = toJDN(fromISO);
+  const b = toJDN(toISO);
+  if(a==null || b==null) return null;
+  const delta = b - a;
+  // En Calendaria tratamos la 'frecuencia' como conteo inclusivo (ambos extremos cuentan)
+  return (delta >= 0) ? (delta + 1) : (delta - 1);
 }
+
 function formatInt(n){
   return String(n);
 }
@@ -797,15 +851,38 @@ function doCalcFor(refInputId, matrixId, noteId){
     if (note) note.textContent = "Elegí una fecha válida para calcular.";
     return;
   }
+
+  // Validación: reforma Juliano→Gregoriano (05/10/1582 al 14/10/1582 no existe)
+  if (toJDN(ref) == null){
+    if (note) note.textContent = "Esa fecha no es válida en el calendario histórico (salto Juliano→Gregoriano: 05/10/1582 al 14/10/1582).";
+    // limpiar valores
+    const scope0 = document.getElementById(matrixId);
+    if (scope0) scope0.querySelectorAll('.val').forEach(v=> v.textContent = '—');
+    return;
+  }
+
   const scope = document.getElementById(matrixId);
   if(!scope) return;
+
+  let anyInvalid = false;
   scope.querySelectorAll("[data-iso]").forEach(el=>{
     const iso = el.getAttribute("data-iso");
     const v = valueForISO(ref, iso);
-    el.textContent = formatInt(v);
+    if (v == null){
+      anyInvalid = true;
+      el.textContent = "—";
+    } else {
+      el.textContent = formatInt(v);
+    }
   });
-  if (note) note.textContent = "";
+
+  if (note){
+    note.textContent = anyInvalid
+      ? "Se omitieron valores por una fecha inválida en la reforma Juliano→Gregoriano (05/10/1582–14/10/1582)."
+      : "";
+  }
 }
+
 
 function valueForISO(refISO, iso){
   const i = idxByISO[iso];
