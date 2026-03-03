@@ -197,9 +197,7 @@ if(allTags.length){
         '<div class="head">' +
           '<div class="hleft">' +
             '<div class="titleRow">' +
-              '<a class="titleLink" href="' + esc(yt) + '" target="_blank" rel="noopener"><b class="cardTitle">' + esc(it.title_display || it.title) + '</b></a>' +
-              '<span class="pill meta-pill idBadge">#' + it.n + '</span>' +
-            '</div>' +
+              '<a class="titleLink" href="' + esc(yt) + '" target="_blank" rel="noopener"><b class="cardTitle">' + esc(it.title_display || it.title) + '</b></a>' +            '</div>' +
             '<div class="meta">' + meta.join('') + '</div>' +
           '</div>' +
           '<div class="actions">' + actions.join('') + '</div>' +
