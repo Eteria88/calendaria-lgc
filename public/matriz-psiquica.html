@@ -831,12 +831,17 @@ function toJDN(iso){
   if(cmpYMD(ymd, GREGORIAN_START) >= 0) return jdnGregorian(ymd.y, ymd.m, ymd.d);
   return jdnJulian(ymd.y, ymd.m, ymd.d);
 }
-function diffDays(fromISO, toISO){
+function diffDaysExclusive(fromISO, toISO){
   const a = toJDN(fromISO);
   const b = toJDN(toISO);
   if(a==null || b==null) return null;
-  const delta = b - a;
-  // En Calendaria tratamos la 'frecuencia' como conteo inclusivo (ambos extremos cuentan)
+  // Días transcurridos: diferencia estricta (misma fecha => 0). No cuenta el día inicial.
+  return b - a;
+}
+function diffDaysInclusive(fromISO, toISO){
+  const delta = diffDaysExclusive(fromISO, toISO);
+  if(delta==null) return null;
+  // Conteo inclusivo: ambos extremos cuentan (misma fecha => 1).
   return (delta >= 0) ? (delta + 1) : (delta - 1);
 }
 
@@ -888,12 +893,15 @@ function valueForISO(refISO, iso){
   const i = idxByISO[iso];
   if(i == null) return 0;
   if(i < 9){
-    // Escala Planeta Tierra: base contra referencia (ej: 14/05/1948 → 30/06/1972 = 8813)
-    return diffDays(refISO, iso);
+    // Escala Planeta Tierra:
+// - Si la referencia es 0001-01-01, tratamos el resultado como "Frecuencia absoluta" (conteo inclusivo desde el origen).
+// - Para cualquier otra referencia, usamos "días transcurridos" (exclusivo) como en las métricas de Ale.
+if(refISO === '0001-01-01') return diffDaysInclusive(refISO, iso);
+return diffDaysExclusive(refISO, iso);
   }
   // Escala Sistema Solar y Cosmos: diferencia contra el evento 9 posiciones atrás (n - 9)
   const anchor = eventsChron[i-9].iso;
-  return diffDays(anchor, iso);
+  return diffDaysExclusive(anchor, iso);
 }
 
 function baseHintHTML(mark){
