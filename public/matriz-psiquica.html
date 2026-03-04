@@ -765,6 +765,47 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   #calcCard .btnRow{justify-content:flex-start;}
 }
 
+
+/* --- Mobile polish: bring date row closer to scales + keep input+buttons in one line (A & B) --- */
+@media (max-width:520px){
+  #calcCard .formRow, #calcCard2 .formRow{
+    display:grid !important;
+    grid-template-columns: 1fr auto !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 10px !important;
+    row-gap: 8px !important;
+    align-items: end !important;
+    margin-bottom: 6px !important; /* reduce empty gap before scales */
+  }
+  #calcCard .inputWrap, #calcCard2 .inputWrap{
+    grid-column: 1 / 2 !important;
+    grid-row: 1 / 3 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:6px !important;
+    min-width: 0 !important;
+  }
+  #calcCard .inputWrap label, #calcCard2 .inputWrap label{
+    display:block !important;
+    margin: 0 !important;
+  }
+  #calcCard .inputWrap .input, #calcCard2 .inputWrap .input{
+    width: 100% !important;
+  }
+  #calcCard .btnRow, #calcCard2 .btnRow{
+    grid-column: 2 / 3 !important;
+    grid-row: 2 / 3 !important;
+    display:flex !important;
+    gap:10px !important;
+    justify-content:flex-end !important;
+    align-items:center !important;
+    white-space:nowrap !important;
+  }
+  #calcCard .matrixWrap, #calcCard2 .matrixWrap{
+    margin-top: 0 !important;
+  }
+}
+
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
