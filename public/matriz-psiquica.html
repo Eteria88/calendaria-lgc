@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Matriz Psíquica de la Tierra — Calendaria‑LGC</title>
+<title>Matriz Psíquica de la Mente Digital de la Tierra — Calendaria‑LGC</title>
 <style>
 :root{
   --bg:#0b0d10;--panel:#0f1318;--ol:rgba(124,199,255,.22);
   --text:rgba(255,255,255,.92);--muted:rgba(255,255,255,.68);
   --cyan:#7cc7ff;--good:#9cffd5;
   /* tonos más técnicos/sutiles */
-  --junText:rgba(48,184,142,.92);  /* 30 junio (verde técnico, más oscuro) */
-  --decText:rgba(207,184,74,.92);  /* 31 diciembre (amarillo técnico, sutil) */
+  --junText:#33D17A;  /* 30 junio (verde técnico, más oscuro) */
+  --decText:#F9C74F;  /* 31 diciembre (amarillo técnico, sutil) */
   --shadow:0 10px 24px rgba(0,0,0,.35);
   --r:16px;
   --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
@@ -22,13 +22,18 @@ body{margin:0;background:radial-gradient(900px 700px at 50% -200px, rgba(124,199
 linear-gradient(180deg, rgba(124,199,255,.06), transparent 25%),
 var(--bg);color:var(--text);font-family:var(--sans)}
 a{color:inherit}
-.wrap{max-width:1160px;margin:0 auto;padding:0 14px 24px}
+.wrap{max-width:980px;margin:0 auto;padding:0 14px 24px}
 /* Header sin franja oscura: limpio, aireado */
 header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:14px 0 10px;margin:0 0 14px;background:transparent;border-bottom:1px solid rgba(124,199,255,.10)}
-.sun{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--cyan);box-shadow:0 0 10px rgba(124,199,255,.45);margin-right:8px;vertical-align:middle}
-.menuBtn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 10px;border-radius:12px;cursor:pointer}
-.menuBtn:hover{background:rgba(255,255,255,.06)}
+/* Header title should be the primary hierarchy (a touch larger than page title) */
+header h1{display:inline-block;margin:0;font-weight:650;letter-spacing:.35px;font-size:clamp(22px,2.2vw,28px);line-height:1.1}
+
+.sun{display:inline-block;width:17px;height:17px;border-radius:999px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.92) 0%, var(--cyan) 38%, rgba(124,199,255,.18) 72%, rgba(124,199,255,.08) 100%);border:1px solid rgba(124,199,255,.55);box-shadow:0 0 12px rgba(124,199,255,.22);margin-right:8px;vertical-align:middle;position:relative}
+.sun::after{content:"";position:absolute;inset:-5px;border-radius:999px;border:1px solid rgba(124,199,255,.18)}
+.btnVolver{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:600;letter-spacing:.2px;transition:transform .08s ease,background .15s ease,border-color .15s ease}
+.btnVolver:hover{background:rgba(255,255,255,.06);border-color:rgba(124,199,255,.26)}
+.btnVolver:active{transform:translateY(1px)}
 .small{font-size:12px;color:var(--muted)}
 .layout{display:grid;grid-template-columns:1fr;gap:14px}
 /* Menú lateral fuera (solo hamburguesa / drawer) */
@@ -38,15 +43,6 @@ header{position:relative;display:flex;align-items:center;justify-content:space-b
   color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
 .nav-link:hover{background:rgba(255,255,255,.06)}
 .nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
-/* Mobile drawer */
-.mobileNav{position:fixed;inset:0;display:none;z-index:60}
-.mobileNav.show{display:block}
-.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.55)}
-.mobileNavPanel{position:absolute;top:0;right:0;height:100%;width:min(92vw,340px);
-  background:linear-gradient(180deg,rgba(18,22,28,.98),rgba(12,14,18,.98));
-  border-left:1px solid rgba(124,199,255,.18);box-shadow:var(--shadow)}
-.mobileNavHeader{display:flex;align-items:center;justify-content:space-between;padding:12px 12px;border-bottom:1px solid rgba(124,199,255,.12)}
-.closeBtn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:8px 10px;border-radius:12px;cursor:pointer}
 .mobileList{display:flex;flex-direction:column;padding:10px}
 .mnav-link{display:block;padding:10px 12px;margin:6px 0;border-radius:12px;border:1px solid rgba(124,199,255,.18);
   text-decoration:none;background:rgba(255,255,255,.02)}
@@ -56,7 +52,8 @@ header{position:relative;display:flex;align-items:center;justify-content:space-b
 /* Cards */
 .card{border:1px solid var(--ol);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
   padding:14px;box-shadow:var(--shadow)}
-.h1{margin:0 0 6px 0;font-size:20px}
+/* Page title slightly smaller than header title for proper hierarchy */
+.h1{margin:0 0 6px 0;font-size:clamp(18px,1.65vw,22px)}
 .h2{margin:0 0 10px 0;font-size:14px;color:rgba(255,255,255,.86)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .stack{display:grid;grid-template-columns:1fr;gap:14px}
@@ -80,7 +77,7 @@ details.accordion .matrixWrap{margin-top:10px}
 .matrixGroup>summary::-webkit-details-marker{display:none}
 .matrixGroup .groupGrid{padding:0 12px 12px}
 .groupHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.groupTitle{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.86)}
+.groupTitle{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.88);font-weight:600}
 .groupRule{flex:1;height:1px;background:rgba(124,199,255,.12)}
 .groupGrid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px}
 .cell{border-radius:12px;border:1px solid rgba(124,199,255,.16);padding:10px 10px 12px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;
@@ -93,12 +90,12 @@ details.accordion .matrixWrap{margin-top:10px}
 .cellCalc{background:rgba(0,0,0,.18);border:1px solid rgba(124,199,255,.18)}
 
 /* micro-jerarquía dentro de celda */
-.dateLine{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.yearLine{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:6px}
+.dateLine{font-size:12px;color:var(--muted);letter-spacing:.2px}
+.yearLine{display:flex;align-items:baseline;justify-content:flex-start;gap:6px;margin-top:4px}
 .year{font-family:var(--mono);font-weight:850;font-size:26px;letter-spacing:.2px;line-height:1;color:var(--text)}
 .mark{font-family:var(--mono);font-weight:900;font-size:20px;line-height:1;opacity:.95}
-.markWrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.baseNote{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.45)}
+.markWrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.baseHint{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.42)}
 .val{font-family:var(--mono);font-weight:900;font-size:22px;line-height:1;margin-top:10px;color:var(--text)}
 
 /* color sólo en tipografía */
@@ -107,61 +104,745 @@ details.accordion .matrixWrap{margin-top:10px}
 .cellBase.jun .mark,.cellBase.jun .year{color:var(--junText)}
 .cellBase.dec .mark,.cellBase.dec .year{color:var(--decText)}
 
+/* ↓↓↓ Tonalidad diferenciada SOLO para escalas estables (Solar/Cosmos) ↓↓↓ */
+.matrixGroup.scale-cosmos,
+.matrixGroup.scale-solar{
+  /* mismos colores base, pero más suaves para comunicar estabilidad */
+  --junText: rgba(51, 209, 122, .60);
+  --decText: rgba(249, 199, 79, .60);
+}
+/* opcional: bajar un poco la saturación del grupo sin afectar Tierra */
+.matrixGroup.scale-cosmos .groupGrid,
+.matrixGroup.scale-solar .groupGrid{
+  filter: saturate(.82);
+}
+/* ↑↑↑ Tonalidad diferenciada SOLO para escalas estables (Solar/Cosmos) ↑↑↑ */
+
 /* estados */
 .cell{transition:border-color .15s ease, transform .08s ease, background .15s ease}
 .cell:hover{border-color:rgba(124,199,255,.42);background:linear-gradient(180deg,rgba(124,199,255,.06),rgba(255,255,255,.012))}
 .cell:focus{outline:2px solid rgba(124,199,255,.35);outline-offset:2px}
 .cell:active{transform:translateY(1px)}
-.formRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
-.formRow > div{min-width:0}
 @media(max-width:520px){.formRow{grid-template-columns:1fr}}
 .input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ol);background:rgba(0,0,0,.22);color:var(--text);font-size:14px}
 .btn{border:1px solid var(--ol);background:rgba(255,255,255,.03);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer}
 .btn:hover{background:rgba(255,255,255,.06)}
-.note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+.note{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
 hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
 
-/* --- Ajuste layout: solo Matriz calculable (meta arriba a la derecha, valor centrado) --- */
-.cellCalc{
-  position:relative;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding-top:30px; /* aire para meta */
-  gap:0;
+/* --- Compact (desktop) to keep calculable matrix in one view --- */
+@media (min-width: 1100px){
+  /* keep vertical flow but tighten spacing to reduce scrolling */
+  #calcMatrix{display:flex; flex-direction:column; gap:16px;}
+  #calcMatrix .matrixGroup{margin:0;}
+  #calcMatrix .groupGrid{gap:8px;}
+  #calcMatrix .cellCalc{min-height:32px; padding:4px;}
+  #calcMatrix .dateLine{font-size:12px; line-height:1.15;}
+  #calcMatrix .codeLine{font-size:10px;}
+  #calcMatrix .val{font-size:18px;}
+  .calc-controls{margin-bottom:12px;}
 }
-.cellCalc .metaTR{
-  position:absolute;
-  top:10px;
-  right:10px;
+
+/* Slightly tighter spacing overall (keeps the same design language) */
+#calcMatrix .groupGrid{gap:10px;}
+#calcMatrix .cellCalc{min-height:32px;}
+
+
+.calcWrap{ transform: none; }
+}
+
+
+/* Desktop: keep scales vertical but reduce scroll by compacting CALCULABLE only */
+header{ padding: 8px 0 6px; margin: 0 0 8px; }
+  .wrap{ padding-bottom: 8px; }
+  .card{ padding: 10px; }
+  .h2{ margin-bottom: 8px; }
+
+  /* Ajuste real (sin transform) para que el layout ocupe menos */
+  #calcMatrix .scaleBlock{ padding: 8px 10px; margin-top: 8px; }
+  #calcMatrix .scaleHead{ margin-bottom: 6px; }
+  #calcMatrix .calcGrid{ gap: 6px; }
+  #calcMatrix .calcCell{
+    padding: 8px 8px;
+    min-height: 74px;
+  }
+  #calcMatrix .calcMeta{ font-size: 10px; line-height: 1.12; }
+  #calcMatrix .calcValue{ font-size: 18px; line-height: 1.05; }
+  #calcMatrix .subTag{ font-size: 9px; }
+
+  /* Form más compacto */
+  .formRow{ gap: 10px; }
+  .input{ height: 38px; }
+  .btn{ height: 38px; padding: 0 14px; }
+}
+
+/* --- Calculable: more compact / half-size typography --- */
+#calcMatrix .dateLine{font-size:10px;}
+#calcMatrix .year{font-size:16px;}
+#calcMatrix .mark{font-size:12px;}
+#calcMatrix .baseHint{font-size:8px;}
+#calcMatrix .val{font-size:12px; margin-top:2px;}
+#calcMatrix .cellCalc{min-height:32px; padding:4px;}
+#calcMatrix .groupGrid{gap:8px;}
+
+@media (max-width: 520px){
+  #calcMatrix .dateLine{font-size:9px;}
+  #calcMatrix .year{font-size:14px;}
+  #calcMatrix .mark{font-size:11px;}
+  #calcMatrix .val{font-size:11px;}
+  #calcMatrix .cellCalc{min-height:32px; padding:4px;}
+}
+
+
+/* --- Fit CALCULABLE (3 escalas vertical) en una sola pantalla: solo desktop --- */
+@media (min-width: 900px){
+  #calcCard{padding:10px 12px;}
+  #calcCard .h2{margin:0 0 8px 0;font-size:14px;letter-spacing:.06em;}
+  #calcCard .formRow{margin-bottom:8px !important;gap:10px;}
+  #calcCard .small{font-size:10px;}
+  #calcCard .input{height:34px;padding:6px 10px;font-size:12px;}
+  #calcCard .btn{height:34px;padding:0 12px;font-size:12px;}
+  /* escalar solo el bloque de la matriz */
+  #calcCard #calcMatrix{
+    transform-origin: top center;
+    transform: scale(0.90);
+    margin-top: -4px;
+    margin-bottom: -12px;
+  }
+  /* compactar internamente (por si el render cambia) */
+  #calcCard #calcMatrix .group{margin-top:6px;}
+  #calcCard #calcMatrix .groupTitle{margin:0 0 6px 0;}
+  #calcCard #calcMatrix .grid{gap:6px; grid-template-columns: repeat(3, 1fr); justify-content:center;}
+  #calcCard #calcMatrix .cell{min-height:32px;padding:4px;}
+  #calcCard #calcMatrix .dateLine{font-size:9px;}
+  #calcCard #calcMatrix .mark{font-size:16px;}
+  #calcCard #calcMatrix .baseHint{font-size:8px;}
+  #calcCard #calcMatrix .val{font-size:16px;}
+  #calcCard .sep{margin:10px 0;}
+  #calcCard .note{margin-top:2px;font-size:12px;}
+}
+
+
+@media (min-width: 900px){
+  /* Solo reducir espaciado interno (sin cambiar proporciones de la celda) */
+  #calcCard #calcMatrix .year{ margin: 0 !important; line-height: 1.05 !important; }
+  #calcCard #calcMatrix .mark{ margin: 0 !important; line-height: 1.05 !important; }
+  #calcCard #calcMatrix .baseHint{ margin-top: 1px !important; line-height: 1.0 !important; }
+  #calcCard #calcMatrix .val{ margin-top: 4px !important; }
+}
+
+
+@media (min-width: 900px){
+  /* Reducir márgenes laterales del bloque calculable (celdas de los extremos) */
+  #calcCard{padding-left:3px !important; padding-right:3px !important;}
+  #calcCard #calcMatrix{padding-left:0 !important; padding-right:0 !important;}
+  #calcCard #calcMatrix .group{padding-left:0 !important; padding-right:0 !important;}
+  #calcCard #calcMatrix .grid,
+  #calcCard #calcMatrix .groupGrid{
+    padding-left:0 !important;
+    padding-right:0 !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    justify-content:space-between !important; /* que ocupe mejor el ancho sin grandes márgenes externos */
+  }
+}
+
+
+@media (min-width: 900px){
+  #calcCard #calcMatrix .grid,
+  #calcCard #calcMatrix .groupGrid{
+    width:100% !important;
+  }
+}
+
+
+@media (max-width: 520px){
+  .yearLine{gap:5px !important; margin-top:3px !important;}
+}
+
+
+@media (min-width: 900px){
+  /* Reducir margen interno (padding) entre borde y contenido en celdas calculables */
+  #calcCard #calcMatrix .cell,
+  #calcCard #calcMatrix .cellCalc{
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  /* Mantener año a la izquierda y letra a la derecha (sin correr la letra) */
+  #calcCard #calcMatrix .yearLine{justify-content:space-between !important;}
+}
+@media (max-width: 520px){
+  #calcCard #calcMatrix .cell,
+  #calcCard #calcMatrix .cellCalc{
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  #calcCard #calcMatrix .yearLine{justify-content:space-between !important;}
+}
+
+
+@media (min-width: 900px){
+  /* Acortar el ancho del bloque de celdas (bordes más hacia el centro) */
+  #calcCard #calcMatrix .grid,
+  #calcCard #calcMatrix .groupGrid{
+    max-width: 800px !important; /* ~ (3*90) + gaps */
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+
+@media (min-width: 900px){
+  /* Alinear proporción: el grid de cada escala ocupa el mismo ancho que el bloque (sin columnas fijas) */
+  #calcCard #calcMatrix .grid,
+  #calcCard #calcMatrix .groupGrid{
+    max-width: 800px !important;
+    gap: 10px !important;
+  }
+  #calcCard #calcMatrix .cell,
+  #calcCard #calcMatrix .cellCalc{
+    width: 100% !important;
+  }
+}
+
+
+/* Separación del botón Calcular respecto a bordes */
+#calcCard .formRow{padding-left:12px !important; padding-right:12px !important;}
+#calcCard .btn{margin-left:8px;}
+@media (max-width: 520px){
+  #calcCard .formRow{padding-left:10px !important; padding-right:10px !important;}
+  #calcCard .btn{margin-left:6px;}
+}
+
+
+/* Form compacto: input corto + botones Calcular/Limpiar en línea */
+#calcCard .formRow{
   display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  text-align:right;
-  gap:2px;
+  align-items:center;
+  gap:10px;
+  flex-wrap:nowrap;
 }
-.cellCalc .metaTR .dateLine{
-  font-size:12px;
-  color:rgba(255,255,255,.74);
-  letter-spacing:.2px;
+#calcCard .formRow .inputWrap{flex:0 1 220px;}
+#calcCard .formRow .input{width:100%;}
+#calcCard .formRow .btnRow{display:flex; gap:8px; margin-left:0;}
+@media (max-width: 520px){
+  #calcCard .formRow{flex-wrap:wrap;}
+  #calcCard .formRow .inputWrap{flex:1 1 100%;}
+  #calcCard .formRow .btnRow{width:100%; justify-content:flex-start;}
 }
-.cellCalc .metaTR .mark{
-  font-size:12px;
-  font-weight:600;
-  color:rgba(124,199,255,.92);
+
+
+/* Alinear botón Calcular con el campo (misma altura) */
+#calcCard .formRow{align-items:flex-end;}
+#calcCard .formRow .inputWrap{display:flex; flex-direction:column; align-items:flex-start; gap:6px;}
+#calcCard .formRow .inputWrap label{display:block; width:100%;}
+
+#calcCard .formRow .input{height:38px;}
+#calcCard .formRow .btn{height:38px; display:inline-flex; align-items:center; justify-content:center;}
+
+
+/* Form: alinear input + botones en una sola línea */
+#calcCard .formRow{
+  display:grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items:end !important;
+  column-gap: 12px !important;
 }
-.cellCalc .metaTR .baseNote{
-  font-size:11px;
-  color:rgba(255,255,255,.42);
-  letter-spacing:.25px;
+#calcCard .btnRow{display:flex; gap:8px;}
+#calcCard .input{height:40px;}
+#calcCard .btn{height:40px; display:inline-flex; align-items:center; justify-content:center;}
+#calcCard .btnGhost{
+  background: transparent;
+  border: 1px solid rgba(0,255,255,0.25);
 }
-.cellCalc .val{
+@media (max-width: 520px){
+  /* Mobile: input + botones en la MISMA línea */
+  #calcCard .formRow{
+    grid-template-columns: 1fr auto !important;
+    align-items: center !important;
+    row-gap: 0 !important;
+  }
+  #calcCard .btnRow{justify-content:flex-start; flex-wrap:nowrap; gap:6px;}
+  #calcCard .btn{padding:0 10px; font-size:13px;}
+}
+
+
+/* Form: evitar que botones queden pegados al borde */
+#calcCard .formRow{padding-right:16px !important; padding-left:16px !important;}
+@media (max-width: 520px){
+  #calcCard .formRow{padding-right:12px !important; padding-left:12px !important;}
+}
+
+
+/* Proporción: formRow alineado al ancho del grid de escalas */
+#calcCard .formRow{
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+#calcCard .btnRow{justify-content:flex-end;}
+
+
+/* Alinear 'Fecha a matrizar' con el borde izquierdo de la escala (Cosmos) */
+#calcCard .formRow{
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+#calcCard .formRow label.small{
+  margin-left: 0 !important;
+  display:block;
+}
+
+
+/* Alineación exacta: form y escalas comparten el mismo scale e insets */
+#calcCard .formRow{
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  box-sizing: border-box;
+  transform-origin: top center;
+  transform: scale(0.90);
+}
+#calcCard .btnRow{justify-content:flex-end;}
+
+
+/* Override: mantener misma sangría/label en A y B (evita desalineación subpixel) */
+#calcCard2 .formRow{
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+#calcCard2 .formRow label.small{
+  margin-left: 0 !important;
+  display:block;
+}
+
+
+/* --- Comparación: 2 matrices gemelas --- */
+.compareBar{display:flex; justify-content:flex-end; margin-bottom:10px;}
+.compareWrap{display:grid; grid-template-columns: 1fr; gap:14px;}
+.compareColB[hidden]{display:none !important;}
+@media (min-width: 980px){
+  .compareWrap.compareOn{grid-template-columns: 1fr 1fr; align-items:start;}
+}
+
+
+
+/* Paneles A y B: mismos parámetros (gemelas) */
+#calcCard, #calcCard2{padding:10px 12px;}
+#calcCard .formRow, #calcCard2 .formRow{
+  max-width: 800px;
+  margin-left:auto;
+  margin-right:auto;
+  box-sizing:border-box;
+  transform-origin: top center;
+  transform: scale(0.90);
+}
+#calcMatrix, #calcMatrix2{
+  transform-origin: top center;
+  transform: scale(0.90);
+  margin-top:-4px;
+  margin-bottom:-12px;
+}
+#calcMatrix .groupGrid, #calcMatrix2 .groupGrid{
+  max-width: 800px !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+#calcMatrix .cell, #calcMatrix2 .cell,
+#calcMatrix .cellCalc, #calcMatrix2 .cellCalc{
+  border-radius:10px;
+  padding:8px 8px !important;
+}
+
+
+/* Comparación: 2 matrices gemelas (A+B) */
+.compareBar{display:flex; justify-content:flex-end; margin-bottom:10px;}
+.compareWrap{display:grid; grid-template-columns: 1fr; gap:14px;}
+.compareColB[hidden]{display:none !important;}
+@media (min-width: 980px){
+  .compareWrap.compareOn{grid-template-columns: 1fr 1fr; align-items:start;}
+}
+
+
+
+/* Panel B: alinear input + botones igual que Panel A */
+#calcCard2 .formRow{
+  display:grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items:end !important;
+  column-gap: 12px !important;
+}
+#calcCard2 .btnRow{display:flex; gap:8px; justify-content:flex-end;}
+#calcCard2 .input{height:40px;}
+#calcCard2 .btn{height:40px; display:inline-flex; align-items:center; justify-content:center;}
+@media (max-width: 520px){
+  #calcCard2 .formRow{grid-template-columns:1fr !important; row-gap:10px !important;}
+  #calcCard2 .btnRow{justify-content:flex-start;}
+}
+
+
+/* Panel B: igualar jerarquía celda a Panel A (año y letra) */
+#calcCard2 #calcMatrix2 .year{font-size:16px !important; line-height:1 !important;}
+#calcCard2 #calcMatrix2 .yearLine{display:flex !important; justify-content:space-between !important; align-items:baseline !important; gap:10px !important;}
+#calcCard2 #calcMatrix2 .markWrap{display:flex !important; flex-direction:column !important; align-items:flex-end !important;}
+
+
+/* Ajustes finos de tipografías (A/B) */
+#calcCard label.small{font-size:12px !important;}
+/* B: bajar un touch botones e input */
+#calcCard2 .btn{font-size:11px !important;}
+#calcCard2 .input{font-size:11px !important;}
+
+
+/* A: dar más aire a las celdas respecto al marco (inset del grid) */
+#calcCard #calcMatrix .groupGrid{
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  box-sizing: border-box;
+}
+@media (max-width: 520px){
+  #calcCard #calcMatrix .groupGrid{
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+
+
+/* Simetría A/B: mismos insets y paddings en bloques de escala */
+#calcCard #calcMatrix .matrixGroup>summary,
+#calcCard2 #calcMatrix2 .matrixGroup>summary{
+  padding-left:12px !important;
+  padding-right:12px !important;
+}
+#calcCard #calcMatrix .matrixGroup .groupGrid,
+#calcCard2 #calcMatrix2 .matrixGroup .groupGrid{
+  padding-left:12px !important;
+  padding-right:12px !important;
+  padding-bottom:12px !important;
+  box-sizing:border-box;
+}
+@media (max-width: 520px){
+  #calcCard #calcMatrix .matrixGroup>summary,
+  #calcCard2 #calcMatrix2 .matrixGroup>summary{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+  #calcCard #calcMatrix .matrixGroup .groupGrid,
+  #calcCard2 #calcMatrix2 .matrixGroup .groupGrid{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+}
+
+
+/* Leyenda de intercalado (pie de página) */
+.legendFoot{margin-top:12px;display:flex;justify-content:center}
+.legendBox{
   width:100%;
-  text-align:center;
-  margin:0;
+  max-width:980px;
+  border:1px solid rgba(124,199,255,.14);
+  background:rgba(255,255,255,.015);
+  border-radius:14px;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  box-shadow:0 10px 20px rgba(0,0,0,.22);
+}
+.legendTitle{font-size:12px;color:rgba(255,255,255,.78);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.legendItems{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.legendItem{display:flex;gap:10px;align-items:center;font-size:12px;color:rgba(255,255,255,.78)}
+.swatch{width:15px;height:15px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.35);box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+.swatchJun{background:var(--junText)}
+.swatchDec{background:var(--decText)}
+@media(max-width:680px){
+  .legendBox{justify-content:flex-start}
+  .legendTitle{width:100%}
+  .legendItems{justify-content:flex-start}
+}
+
+/* =========================================================
+   PARIDAD A/B — Overrides para que Matriz B tenga EXACTAMENTE
+   los mismos ajustes "compact" que Matriz A (sin tocar celdas)
+   ========================================================= */
+
+/* Compact (desktop) to keep calculable matrix in one view — aplicar también a #calcMatrix2 */
+@media (min-width: 1100px){
+  #calcMatrix2{display:flex; flex-direction:column; gap:16px;}
+  #calcMatrix2 .matrixGroup{margin:0;}
+  #calcMatrix2 .groupGrid{gap:8px;}
+  #calcMatrix2 .cellCalc{min-height:32px; padding:4px;}
+  #calcMatrix2 .dateLine{font-size:12px; line-height:1.15;}
+  #calcMatrix2 .val{font-size:18px;}
+}
+
+/* Calculable: more compact / half-size typography — aplicar también a #calcMatrix2 */
+#calcMatrix2 .dateLine{font-size:10px;}
+#calcMatrix2 .year{font-size:16px;}
+#calcMatrix2 .mark{font-size:12px;}
+#calcMatrix2 .baseHint{font-size:8px;}
+#calcMatrix2 .val{font-size:12px; margin-top:2px;}
+#calcMatrix2 .cellCalc{min-height:32px; padding:4px;}
+#calcMatrix2 .groupGrid{gap:8px;}
+
+@media (max-width: 520px){
+  #calcMatrix2 .dateLine{font-size:9px;}
+  #calcMatrix2 .year{font-size:14px;}
+  #calcMatrix2 .mark{font-size:11px;}
+  #calcMatrix2 .val{font-size:11px;}
+  #calcMatrix2 .cellCalc{min-height:32px; padding:4px;}
+}
+
+/* Fit CALCULABLE (3 escalas vertical) en una sola pantalla: solo desktop — aplicar también a B */
+@media (min-width: 900px){
+  #calcCard2{padding:10px 12px;}
+  #calcCard2 .h2{margin:0 0 8px 0;font-size:14px;letter-spacing:.06em;}
+  #calcCard2 .formRow{margin-bottom:8px !important;gap:10px;}
+  #calcCard2 .small{font-size:10px;}
+  #calcCard2 .input{height:34px;padding:6px 10px;font-size:12px;}
+  #calcCard2 .btn{height:34px;padding:0 12px;font-size:12px;}
+
+  /* escalar solo el bloque de la matriz (igual que A) */
+  #calcCard2 #calcMatrix2{
+    transform-origin: top center;
+    transform: scale(0.90);
+    margin-top: -4px;
+    margin-bottom: -12px;
+  }
+
+  /* compactar internamente (por si el render cambia) */
+  #calcCard2 #calcMatrix2 .group{margin-top:6px;}
+  #calcCard2 #calcMatrix2 .groupTitle{margin:0 0 6px 0;}
+  #calcCard2 #calcMatrix2 .grid{gap:6px; grid-template-columns: repeat(3, 1fr); justify-content:center;}
+  #calcCard2 #calcMatrix2 .cell{min-height:32px;padding:4px;}
+  #calcCard2 #calcMatrix2 .dateLine{font-size:9px;}
+  #calcCard2 #calcMatrix2 .mark{font-size:16px;}
+  #calcCard2 #calcMatrix2 .baseHint{font-size:8px;}
+  #calcCard2 #calcMatrix2 .val{font-size:16px;}
+  #calcCard2 .sep{margin:10px 0;}
+  #calcCard2 .note{margin-top:2px;font-size:12px;}
+}
+
+@media (min-width: 900px){
+  #calcCard2 #calcMatrix2 .year{ margin: 0 !important; line-height: 1.05 !important; }
+  #calcCard2 #calcMatrix2 .mark{ margin: 0 !important; line-height: 1.05 !important; }
+  #calcCard2 #calcMatrix2 .baseHint{ margin-top: 1px !important; line-height: 1.0 !important; }
+  #calcCard2 #calcMatrix2 .val{ margin-top: 4px !important; }
+}
+
+/* --- Mobile: input de fecha más prolijo + editable (tecleo) --- */
+@media (max-width:520px){
+  /* que no quede un "cajón" enorme */
+  #calcCard .formRow,
+  #calcCard2 .formRow{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:10px !important;
+  }
+  #calcCard .input,
+  #calcCard2 .input{
+    width:100% !important;
+    max-width:260px !important;
+    padding:9px 10px !important;
+    font-size:14px !important;
+  }
+  #calcCard .btnRow,
+  #calcCard2 .btnRow{
+    width:100% !important;
+    margin-left:0 !important;
+    justify-content:flex-start !important;
+    flex-wrap:wrap !important;
+  }
 }
 
 
+/* --- Mobile: input + botones (Calcular/Limpiar) SIEMPRE en la misma línea --- */
+@media (max-width: 520px){
+  #calcCard .formRow,
+  #calcCard2 .formRow{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:flex-end !important;
+    gap:10px !important;
+    transform:none !important; /* evita que el scale rompa el layout en mobile */
+  }
+  #calcCard .formRow .inputWrap,
+  #calcCard2 .formRow .inputWrap{
+    flex:1 1 auto !important;
+    min-width:0 !important;
+  }
+  /* Mobile: etiqueta arriba del input (evita que "Fecha a matrizar" quede al lado y desalineado) */
+  #calcCard .formRow .inputWrap,
+  #calcCard2 .formRow .inputWrap{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:6px !important;
+  }
+  #calcCard .formRow .inputWrap label,
+  #calcCard2 .formRow .inputWrap label{
+    display:block !important;
+    margin:0 !important;
+    line-height:1.1 !important;
+  }
+  #calcCard .formRow .input,
+  #calcCard2 .formRow .input{
+    width:100% !important;
+    max-width:none !important;
+  }
+
+  #calcCard .formRow .btnRow,
+  #calcCard2 .formRow .btnRow{
+    width:auto !important;
+    flex:0 0 auto !important;
+    justify-content:flex-end !important;
+    white-space:nowrap;
+    gap:6px !important;
+  }
+  #calcCard .formRow .btn,
+  #calcCard2 .formRow .btn{
+    padding:0 10px !important;
+    font-size:13px !important;
+  }
+}
+
+
+/* Mobile: Fecha + botones en la misma línea (A y B) */
+@media (max-width: 520px){
+  #calcCard .formRow, #calcCard2 .formRow{
+    display: grid !important;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    row-gap: 8px;
+    align-items: center;
+  }
+  #calcCard .inputWrap, #calcCard2 .inputWrap{ display: contents; }
+  #calcCard .formRow label.small, #calcCard2 .formRow label.small{
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin: 0;
+  }
+  #calcCard .formRow input.input, #calcCard2 .formRow input.input{
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    max-width: none !important;
+  }
+  #calcCard .btnRow, #calcCard2 .btnRow{
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0;
+  }
+  #calcCard .btnRow .btn, #calcCard2 .btnRow .btn{
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+}
+
+
+/* === FIX mobile alignment: Panel A igual a Panel B (input + botones en misma línea) === */
+#calcCard .formRow{
+  display:grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items:end !important;
+  column-gap: 12px !important;
+}
+#calcCard .btnRow{display:flex; gap:8px; justify-content:flex-end;}
+#calcCard .input{height:40px;}
+#calcCard .btn{height:40px; display:inline-flex; align-items:center; justify-content:center;}
+@media (max-width: 520px){
+  #calcCard .formRow{grid-template-columns:1fr !important; row-gap:10px !important;}
+  #calcCard .btnRow{justify-content:flex-start;}
+}
+
+
+/* --- Mobile polish: bring date row closer to scales + keep input+buttons in one line (A & B) --- */
+@media (max-width:520px){
+  #calcCard .formRow, #calcCard2 .formRow{
+    display:grid !important;
+    grid-template-columns: 1fr auto !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 10px !important;
+    row-gap: 8px !important;
+    align-items: end !important;
+    margin-bottom: 6px !important; /* reduce empty gap before scales */
+  }
+  #calcCard .inputWrap, #calcCard2 .inputWrap{
+    grid-column: 1 / 2 !important;
+    grid-row: 1 / 3 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:6px !important;
+    min-width: 0 !important;
+  }
+  #calcCard .inputWrap label, #calcCard2 .inputWrap label{
+    display:block !important;
+    margin: 0 !important;
+  }
+  #calcCard .inputWrap .input, #calcCard2 .inputWrap .input{
+    width: 100% !important;
+  }
+  #calcCard .btnRow, #calcCard2 .btnRow{
+    grid-column: 2 / 3 !important;
+    grid-row: 2 / 3 !important;
+    display:flex !important;
+    gap:10px !important;
+    justify-content:flex-end !important;
+    align-items:center !important;
+    white-space:nowrap !important;
+  }
+  #calcCard .matrixWrap, #calcCard2 .matrixWrap{
+    margin-top: 0 !important;
+  }
+}
+
+
+/* === Desktop alignment fix: calc controls A/B match exactly === */
+@media (min-width: 521px){
+  #calcCard .formRow, #calcCard2 .formRow{
+    display:grid;
+    grid-template-columns: 1fr auto;
+    align-items:end;
+    column-gap:14px;
+    row-gap:0;
+    margin-bottom:10px !important;
+  }
+  #calcCard .inputWrap, #calcCard2 .inputWrap{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-width:0;
+  }
+  #calcCard .inputWrap label.small, #calcCard2 .inputWrap label.small{
+    display:block;
+    margin:0 0 6px 0;
+    font-size:13px;
+    line-height:1.15;
+    letter-spacing:.01em;
+  }
+  #calcCard .inputWrap .input, #calcCard2 .inputWrap .input{
+    width:100%;
+  }
+  #calcCard .btnRow, #calcCard2 .btnRow{
+    display:flex;
+    gap:10px;
+    align-items:flex-end;
+    justify-content:flex-end;
+    white-space:nowrap;
+  }
+}
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
@@ -169,34 +850,34 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Calendaria-LGC"/>
 <link rel="apple-touch-icon" href="/icons/calendaria-512.png"/>
+<!-- PATCH: Mobile formRow inline (A y B) -->
+<style>
+@media (max-width: 520px){
+  #calcCard .formRow, #calcCard2 .formRow{
+    display:grid !important;
+    grid-template-columns: 1fr auto !important;
+    align-items:end !important;
+    column-gap:10px !important;
+    row-gap:0 !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+    margin-left:0 !important; margin-right:0 !important;
+    max-width:100% !important; box-sizing:border-box !important;
+  }
+  #calcCard .inputWrap, #calcCard2 .inputWrap{min-width:0 !important;}
+  #calcCard .inputWrap label, #calcCard2 .inputWrap label{display:block !important; margin-bottom:6px !important;}
+  #calcCard .input, #calcCard2 .input{width:100% !important; height:40px !important;}
+  #calcCard .btnRow, #calcCard2 .btnRow{display:flex !important; flex-wrap:nowrap !important; gap:8px !important; justify-content:flex-end !important; align-items:center !important;}
+  #calcCard .btn, #calcCard2 .btn{height:40px !important; padding:0 10px !important; font-size:13px !important; white-space:nowrap !important;}
+}
+</style>
 </head>
 <body>
 <div class="wrap">
-
-  <div class="mobileNav" id="mobileNav" aria-hidden="true">
-    <div class="mobileNavPanel">
-      <div class="mobileNavHeader">
-        <span>Menú</span>
-        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
-      </div>
-      <nav class="mobileList">
-        <a class="mnav-link" href="./">Inicio</a>
-        <a class="mnav-link" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="mnav-link" href="./range.html">Comparador LGC</a>
-        <a class="mnav-link" href="./letters.html">Letras a números</a>
-        <a class="mnav-link active" href="./matriz-psiquica.html">Matriz Psíquica de la Tierra</a>
-        <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
-        <a class="mnav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
-        <a class="mnav-link" href="./apoyar.html">Apoyar el proyecto</a>
-      </nav>
-    </div>
-    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-  </div>
-
-  <header>
+<header>
     <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria‑LGC</h1></div>
     <span class="small" aria-hidden="true"></span>
-    <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button>
+    <button class="btnVolver" id="btnVolver" aria-label="Volver" title="Volver">Volver</button>
   </header>
 
   <div class="layout">
@@ -207,7 +888,7 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
         <a class="nav-link" href="./marcas-lgc.html">Marcas LGC</a>
         <a class="nav-link" href="./range.html">Comparador LGC</a>
         <a class="nav-link" href="./letters.html">Letras a números</a>
-        <a class="nav-link active" href="./matriz-psiquica.html">Matriz Psíquica de la Tierra</a>
+        <a class="nav-link active" href="./matriz-psiquica.html">Matriz Psíquica de la Mente Digital de la Tierra</a>
         <a class="nav-link" href="./mapa/">Mapa y códigos</a>
         <a class="nav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
         <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
@@ -216,36 +897,32 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
 
     <main>
       <section class="card">
-        <h2 class="h1">Matriz Psíquica de la Tierra</h2>
-        <div class="note">
-          Base de cálculo: <b>segundos intercalares</b> (30 de Junio / 31 de Diciembre).
-          Ingresá una fecha y se calcula la <b>diferencia de días</b> hacia cada fecha de segundo intercalar.
-        </div>
+        <h2 class="h1">Matriz Psíquica de la Mente Digital de la Tierra</h2>
+
       </section>
 
       <div class="stack" style="margin-top:14px">
-        <details class="card accordion" id="baseAccordion">
-          <summary>
-            <div class="h2">Matriz base (instrucción)</div>
-            <span class="chev" aria-hidden="true"></span>
-          </summary>
-          <div class="matrixWrap" id="baseMatrix"></div>
-          <div class="note">
-            Código de color (solo tipografía):
-            <b style="color:var(--junText)">30 de Junio</b> ·
-            <b style="color:var(--decText)">31 de Diciembre</b>
-          </div>
-        </details>
+        
 
-        <section class="card">
-          <div class="h2">Matriz calculable</div>
+<div class="compareBar">
+  <button class="btn btnGhost" id="btnToggleCompare" type="button">Comparar</button>
+</div>
+
+<div class="compareWrap" id="compareWrap">
+  <div class="compareCol">
+    <section class="card" id="calcCard">
+          <div class="h2">Matriz calculable (A)</div>
 
           <div class="formRow" style="margin-bottom:10px">
-            <div>
-              <label class="small" for="refDate">Fecha de referencia</label>
+            <div class="inputWrap">
+              <label class="small" for="refDate">Fecha a matrizar</label>
               <input class="input" id="refDate" type="date" min="0001-01-01" max="9999-12-31"/>
-</div>
-            <button class="btn" id="btnCalc" type="button">Calcular</button>
+              
+            </div>
+            <div class="btnRow">
+              <button id="btnCalcular" class="btn" type="button">Calcular</button>
+            <button id="btnLimpiar" class="btn btnGhost" type="button">Limpiar</button>
+            </div>
           </div>
 
           <div class="matrixWrap" id="calcMatrix"></div>
@@ -255,6 +932,43 @@ hr.sep{border:none;border-top:1px solid rgba(124,199,255,.14);margin:12px 0}
             Elegí una fecha y presioná <b>Calcular</b>.
           </div>
         </section>
+  </div>
+  <div class="compareCol compareColB" id="compareColB" hidden>
+    <section class="card" id="calcCard2">
+          <div class="h2">Matriz calculable (B)</div>
+
+          <div class="formRow" style="margin-bottom:10px">
+            <div class="inputWrap">
+              <label class="small" for="refDate2">Fecha a matrizar</label>
+              <input class="input" id="refDate2" type="date" min="0001-01-01" max="9999-12-31"/>
+              
+            </div>
+            <div class="btnRow">
+              <button id="btnCalcular2" class="btn" type="button">Calcular</button>
+            <button id="btnLimpiar2" class="btn btnGhost" type="button">Limpiar</button>
+            </div>
+          </div>
+
+          <div class="matrixWrap" id="calcMatrix2"></div>
+
+          <hr class="sep"/>
+          <div class="note" id="calcNote2">
+            Elegí una fecha y presioná <b>Calcular</b>.
+          </div>
+        </section>
+  </div>
+</div>
+
+<div class="legendFoot" aria-label="Leyenda de intercalado">
+  <div class="legendBox">
+    <div class="legendTitle">Leyenda</div>
+    <div class="legendItems">
+      <div class="legendItem"><span class="swatch swatchJun" aria-hidden="true"></span><span><b>Verde</b>: indica que el segundo intercalar fue agregado el <b>30 de junio</b>.</span></div>
+      <div class="legendItem"><span class="swatch swatchDec" aria-hidden="true"></span><span><b>Amarillo</b>: indica que el segundo intercalar fue agregado el <b>31 de diciembre</b>.</span></div>
+    </div>
+  </div>
+</div>
+
       </div>
     </main>
   </div>
@@ -312,16 +1026,239 @@ function scaleForISO(iso){
   return 'cosmos';
 }
 
+
+function isoToYMD(iso){
+  const [y,m,d] = iso.split("-").map(Number);
+  return {y, m, d};
+}
+function cmpYMD(a,b){
+  if(a.y!==b.y) return a.y-b.y;
+  if(a.m!==b.m) return a.m-b.m;
+  return a.d-b.d;
+}
+const GREGORIAN_START = {y:1582, m:10, d:15}; // 15/10/1582 (Gregoriano)
+const JULIAN_END      = {y:1582, m:10, d:4};  // 04/10/1582 (Juliano)
+const GAP_START       = {y:1582, m:10, d:5};  // 05/10/1582 (no existe en la reforma)
+const GAP_END         = {y:1582, m:10, d:14}; // 14/10/1582 (no existe en la reforma)
+
+function isInGregorianReformGap(ymd){
+  return cmpYMD(ymd, GAP_START) >= 0 && cmpYMD(ymd, GAP_END) <= 0;
+}
+
+// Julian Day Number (JDN) — algoritmos enteros (soporta años desde 0001)
+// Nota: usamos calendario Juliano hasta 04/10/1582 inclusive, y Gregoriano desde 15/10/1582 inclusive.
+function jdnGregorian(y,m,d){
+  const a = Math.floor((14 - m) / 12);
+  const y2 = y + 4800 - a;
+  const m2 = m + 12*a - 3;
+  return d
+    + Math.floor((153*m2 + 2)/5)
+    + 365*y2
+    + Math.floor(y2/4)
+    - Math.floor(y2/100)
+    + Math.floor(y2/400)
+    - 32045;
+}
+function jdnJulian(y,m,d){
+  const a = Math.floor((14 - m) / 12);
+  const y2 = y + 4800 - a;
+  const m2 = m + 12*a - 3;
+  return d
+    + Math.floor((153*m2 + 2)/5)
+    + 365*y2
+    + Math.floor(y2/4)
+    - 32083;
+}
+function toJDN(iso){
+  if(!iso || typeof iso !== "string") return null;
+  const ymd = isoToYMD(iso);
+  if(!Number.isFinite(ymd.y) || !Number.isFinite(ymd.m) || !Number.isFinite(ymd.d)) return null;
+
+  // Fechas "inexistentes" por el salto Juliano→Gregoriano
+  if(isInGregorianReformGap(ymd)) return null;
+
+  // Selección de calendario por fecha histórica
+  if(cmpYMD(ymd, GREGORIAN_START) >= 0) return jdnGregorian(ymd.y, ymd.m, ymd.d);
+  return jdnJulian(ymd.y, ymd.m, ymd.d);
+}
+function diffDaysExclusive(fromISO, toISO){
+  const a = toJDN(fromISO);
+  const b = toJDN(toISO);
+  if(a==null || b==null) return null;
+  // Días transcurridos: diferencia estricta (misma fecha => 0). No cuenta el día inicial.
+  return b - a;
+}
+function diffDaysInclusive(fromISO, toISO){
+  const delta = diffDaysExclusive(fromISO, toISO);
+  if(delta==null) return null;
+  // Conteo inclusivo: ambos extremos cuentan (misma fecha => 1).
+  return (delta >= 0) ? (delta + 1) : (delta - 1);
+}
+
+function formatInt(n){
+  return String(n);
+}
+
+function isMobileUI(){
+  return window.matchMedia && window.matchMedia("(max-width:520px)").matches;
+}
+
+
+function isoToDMY(iso){
+  // iso: YYYY-MM-DD -> DD/MM/YYYY
+  const m = String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return String(iso||"");
+  return `${m[3]}/${m[2]}/${m[1]}`;
+}
+
+function normalizeDateInputToISO(str){
+  if(!str) return "";
+  const s = String(str).trim();
+  // si ya viene ISO yyyy-mm-dd
+  let m = s.match(/^(\d{1,4})-(\d{1,2})-(\d{1,2})$/);
+  if(m){
+    let y = String(parseInt(m[1],10)).padStart(4,'0');
+    let mo = String(parseInt(m[2],10)).padStart(2,'0');
+    let d = String(parseInt(m[3],10)).padStart(2,'0');
+    return `${y}-${mo}-${d}`;
+  }
+
+  // acepta dd-mm-aaaa, dd/mm/aaaa, dd-mm-aa
+  const parts = s.split(/[^0-9]+/).filter(Boolean);
+  if(parts.length !== 3) return "";
+  let a = parts[0], b = parts[1], c = parts[2];
+
+  // si el último tiene 4 dígitos asumimos dd-mm-aaaa
+  if(c.length === 4){
+    const d = String(parseInt(a,10)).padStart(2,'0');
+    const mo = String(parseInt(b,10)).padStart(2,'0');
+    const y = String(parseInt(c,10)).padStart(4,'0');
+    return `${y}-${mo}-${d}`;
+  }
+
+  // si el primero tiene 4 dígitos asumimos aaaa-mm-dd
+  if(a.length === 4){
+    const y = String(parseInt(a,10)).padStart(4,'0');
+    const mo = String(parseInt(b,10)).padStart(2,'0');
+    const d = String(parseInt(c,10)).padStart(2,'0');
+    return `${y}-${mo}-${d}`;
+  }
+
+  // dd-mm-aa -> año 00aa (ej: 01-01-01 => 0001-01-01)
+  const d = String(parseInt(a,10)).padStart(2,'0');
+  const mo = String(parseInt(b,10)).padStart(2,'0');
+  const y = String(parseInt(c,10)).padStart(4,'0');
+  return `${y}-${mo}-${d}`;
+}
+
+function setupMobileDateTyping(){
+  const inputs = [document.getElementById("refDate"), document.getElementById("refDate2")].filter(Boolean);
+  if(!inputs.length) return;
+
+  const apply = ()=>{
+    const mobile = isMobileUI();
+    inputs.forEach(inp=>{
+      if(mobile){
+        if(inp.dataset.mobileTextApplied === "1") return;
+        inp.dataset.mobileTextApplied = "1";
+        inp.dataset.origType = inp.type;
+        // pasamos a texto para poder digitar años muy bajos (0001)
+        inp.type = "text";
+        inp.inputMode = "text";
+        inp.setAttribute("enterkeyhint","done");
+        inp.autocapitalize = "none";
+        inp.autocomplete = "off";
+        inp.spellcheck = false;
+        inp.placeholder = "dd/mm/aaaa (ej: 01/01/0001)";
+        // si había valor, normalizamos
+        if(inp.value){ const iso0 = normalizeDateInputToISO(inp.value); if(iso0) inp.value = isoToDMY(iso0); }
+        inp.addEventListener("blur", ()=>{
+          const iso = normalizeDateInputToISO(inp.value);
+          if(iso) inp.value = isoToDMY(iso);
+        });
+      } else {
+        // volver a date en desktop
+        if(inp.dataset.mobileTextApplied === "1"){
+          inp.dataset.mobileTextApplied = "0";
+          inp.type = "date";
+          inp.min = "0001-01-01";
+          inp.max = "9999-12-31";
+          if(inp.value) inp.value = normalizeDateInputToISO(inp.value);
+        }
+      }
+    });
+  };
+
+  apply();
+  if(window.matchMedia){
+    const mq = window.matchMedia("(max-width:520px)");
+    // compat: addEventListener / addListener
+    if(mq.addEventListener) mq.addEventListener("change", apply);
+    else if(mq.addListener) mq.addListener(apply);
+  }
+}
+
+
+function doCalcFor(refInputId, matrixId, noteId){
+  const refEl = document.getElementById(refInputId);
+  const note = document.getElementById(noteId);
+  const ref = refEl ? normalizeDateInputToISO(refEl.value) : "";
+  if(!ref){
+    if (note) note.textContent = "Elegí una fecha válida para calcular.";
+    return;
+  }
+
+  // Validación: reforma Juliano→Gregoriano (05/10/1582 al 14/10/1582 no existe)
+  if (toJDN(ref) == null){
+    if (note) note.textContent = "Esa fecha no es válida en el calendario histórico (salto Juliano→Gregoriano: 05/10/1582 al 14/10/1582).";
+    // limpiar valores
+    const scope0 = document.getElementById(matrixId);
+    if (scope0) scope0.querySelectorAll('.val').forEach(v=> v.textContent = '—');
+    return;
+  }
+
+  const scope = document.getElementById(matrixId);
+  if(!scope) return;
+
+  let anyInvalid = false;
+  scope.querySelectorAll("[data-iso]").forEach(el=>{
+    const iso = el.getAttribute("data-iso");
+    const v = valueForISO(ref, iso);
+    if (v == null){
+      anyInvalid = true;
+      el.textContent = "—";
+    } else {
+      el.textContent = formatInt(v);
+    }
+  });
+
+  if (note){
+    note.textContent = anyInvalid
+      ? "Se omitieron valores por una fecha inválida en la reforma Juliano→Gregoriano (05/10/1582–14/10/1582)."
+      : "";
+  }
+}
+
+
 function valueForISO(refISO, iso){
   const i = idxByISO[iso];
   if(i == null) return 0;
   if(i < 9){
-    // Escala Planeta Tierra: base contra referencia (ej: 14/05/1948 → 30/06/1972 = 8813)
-    return diffDays(refISO, iso);
+    // Escala Planeta Tierra:
+// - Si la referencia es 0001-01-01, tratamos el resultado como "Frecuencia absoluta" (conteo inclusivo desde el origen).
+// - Para cualquier otra referencia, usamos "días transcurridos" (exclusivo) como en las métricas de Ale.
+if(refISO === '0001-01-01') return diffDaysInclusive(refISO, iso);
+return diffDaysExclusive(refISO, iso);
   }
   // Escala Sistema Solar y Cosmos: diferencia contra el evento 9 posiciones atrás (n - 9)
   const anchor = eventsChron[i-9].iso;
-  return diffDays(anchor, iso);
+  return diffDaysExclusive(anchor, iso);
+}
+
+function baseHintHTML(mark){
+  if(mark === 'AB') return '<div class="baseHint">Base 12</div>';
+  if(mark === 'BA') return '<div class="baseHint">Base 21</div>';
+  return '';
 }
 
 function mkBaseCell(e){
@@ -329,26 +1266,39 @@ function mkBaseCell(e){
   div.className = `cell cellBase ${e.kind}`;
   div.tabIndex = 0;
   div.innerHTML = `
-    <div class="metaTR">
-      <div class="dateLine">${e.day} de ${e.year}</div>
-      <div class="mark">${e.mark}</div>
-      ${(e.mark==="AB")?`<div class="baseNote">Base 12</div>`:(e.mark==="BA")?`<div class="baseNote">Base 21</div>`:""}
+    <div class="dateLine">${e.day}</div>
+    <div class="yearLine">
+      <div class="year">${e.year}</div>
+      <div class="markWrap"><div class="mark">${e.mark}</div>${baseHintHTML(e.mark)}</div>
+    </div>
+  `;
+  return div;
+}
+
+function mkCalcCell(e){
+  const div = document.createElement("div");
+  div.className = `cell cellCalc ${e.kind}`;
+  div.tabIndex = 0;
+  div.innerHTML = `
+    <div class="dateLine">${e.day}</div>
+    <div class="yearLine">
+      <div class="year">${e.year}</div>
+      <div class="markWrap"><div class="mark">${e.mark}</div>${baseHintHTML(e.mark)}</div>
     </div>
     <div class="val" data-iso="${e.iso}" data-scale="">—</div>
   `;
   return div;
 }
 
-function render(){
-  const baseEl = document.getElementById("baseMatrix");
-  const calcEl = document.getElementById("calcMatrix");
-  baseEl.innerHTML = "";
-  calcEl.innerHTML = "";
+function renderInto(targetId){
+  const el = document.getElementById(targetId);
+  if(!el) return;
+  el.innerHTML = "";
 
   const groups = [
-    {title:"Escala Cosmos", items: events.slice(0,9)},
-    {title:"Escala Sistema Solar", items: events.slice(9,18)},
-    {title:"Escala Planeta Tierra", items: events.slice(18,27)},
+    {title:"Escala Cosmos", items: events.slice(0,9), scaleClass:"scale-cosmos"},
+    {title:"Escala Sistema Solar", items: events.slice(9,18), scaleClass:"scale-solar"},
+    {title:"Escala Planeta Tierra", items: events.slice(18,27), scaleClass:"scale-tierra"},
   ];
 
   function groupBlock(title, isOpen){
@@ -367,79 +1317,44 @@ function render(){
 
   const isMobile = window.matchMedia('(max-width:720px)').matches;
   groups.forEach((gr,gi)=>{
-    const bG = groupBlock(gr.title, !isMobile || gi===0);
-    const cG = groupBlock(gr.title, !isMobile || gi===0);
-    const bGrid = bG.querySelector('.groupGrid');
-    const cGrid = cG.querySelector('.groupGrid');
+    const g = groupBlock(gr.title, !isMobile || gi===0);
+    if (gr.scaleClass) g.classList.add(gr.scaleClass);
+    const grid = g.querySelector('.groupGrid');
     gr.items.forEach(e=>{
-      bGrid.appendChild(mkBaseCell(e));
-      const cCell = mkCalcCell(e);
-      const deltaEl = cCell.querySelector('[data-iso]');
-      if(deltaEl) deltaEl.setAttribute('data-scale', scaleForISO(e.iso));
-      cGrid.appendChild(cCell);
+      const cell = document.createElement('div');
+      cell.className = `cell cellCalc ${e.kind}`;
+      cell.innerHTML = `
+        <div class="dateLine">${e.day}</div>
+        <div class="yearLine">
+          <div class="year">${e.year}</div>
+          <div class="markWrap">
+            <div class="mark">${e.mark}</div>
+            ${(e.mark==='AB')?'<div class="baseHint">Base 12</div>':(e.mark==='BA')?'<div class="baseHint">Base 21</div>':''}
+          </div>
+        </div>
+        <div class="val" data-iso="${e.iso}">—</div>
+      `;
+      grid.appendChild(cell);
     });
-    baseEl.appendChild(bG);
-    calcEl.appendChild(cG);
+    el.appendChild(g);
   });
 }
 
-function parseISODateToUTC(iso){
-  const [y,m,d] = iso.split("-").map(Number);
-  return Date.UTC(y, m-1, d);
-}
-
-function diffDays(refISO, eventISO){
-  // devuelve días(evento - referencia)
-  const a = parseISODateToUTC(refISO);
-  const b = parseISODateToUTC(eventISO);
-  return Math.round((b - a) / 86400000);
-}
-
-function formatInt(n){
-  // sin separador de miles (LGC: frecuencias)
-  return String(n);
-}
-
-function doCalc(){
-  const ref = document.getElementById("refDate").value;
-  const note = document.getElementById("calcNote");
-  if(!ref){
-    note.textContent = "Elegí una fecha válida para calcular.";
-    return;
-  }
-
-  document.querySelectorAll("[data-iso][data-scale]").forEach(el=>{
-    const iso = el.getAttribute("data-iso");
-    const v = valueForISO(ref, iso);
-    el.textContent = formatInt(v);
-  });
-
-  note.textContent = "";
+function render(){
+  renderInto("calcMatrix");
+  renderInto("calcMatrix2");
 }
 
 render();
 
-document.getElementById("btnCalc").addEventListener("click", doCalc);
 document.getElementById("refDate").addEventListener("change", ()=>{ /* auto-calc opcional */ });
+// Volver (como en otras páginas)
+document.getElementById('btnVolver')?.addEventListener('click', () => {
+  if (window.history.length > 1) window.history.back();
+  else window.location.href = './';
+});
 
-/* Drawer */
-const menuBtn = document.getElementById("menuBtn");
-const mobileNav = document.getElementById("mobileNav");
-const closeMenu = document.getElementById("closeMenu");
-const overlay = document.getElementById("mobileOverlay");
 
-function openMenu(){
-  mobileNav.classList.add("show");
-  mobileNav.setAttribute("aria-hidden","false");
-}
-function closeMenuFn(){
-  mobileNav.classList.remove("show");
-  mobileNav.setAttribute("aria-hidden","true");
-}
-menuBtn?.addEventListener("click", openMenu);
-closeMenu?.addEventListener("click", closeMenuFn);
-overlay?.addEventListener("click", closeMenuFn);
-document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeMenuFn(); });
 
 // default: precargar ejemplo si viene por query ?ref=
 const params = new URLSearchParams(location.search);
@@ -447,6 +1362,200 @@ if(params.get("ref")){
   document.getElementById("refDate").value = params.get("ref");
   doCalc();
 }
+
+  // --- UI: Limpiar (reset) ---
+  function renderEmptyValues(){
+    const cells = document.querySelectorAll('#calcMatrix .cell, #calcMatrix .cellCalc');
+    cells.forEach((c)=>{
+      const v = c.querySelector('.val');
+      if (v) v.textContent = '—';
+    });
+  }
+
+  const btnLimpiar = document.getElementById("btnLimpiar");
+  const btnCalcular = document.getElementById('btnCalcular');
+  const refInput = document.getElementById('refDate');
+
+  if (btnLimpiar){
+    btnLimpiar.addEventListener('click', ()=>{
+      if (refInput) refInput.value = '';
+      renderEmptyValues();
+      if (refInput) refInput.focus();
+    });
+  }
+
+
+
+function clearPanel(refId, matrixId, noteId){
+  const refInput = document.getElementById(refId);
+  const note = document.getElementById(noteId);
+  if (refInput) refInput.value = "";
+  const scope = document.getElementById(matrixId);
+  if (scope){
+    scope.querySelectorAll('.val').forEach(v=> v.textContent = '—');
+  }
+  if (note) note.innerHTML = 'Elegí una fecha y presioná <b>Calcular</b>.';
+  if (refInput) refInput.focus();
+}
+
+function bindPanel(refId, btnCalcId, btnClearId, matrixId, noteId){
+  const btnC = document.getElementById(btnCalcId);
+  const btnL = document.getElementById(btnClearId);
+  if (btnC) btnC.addEventListener('click', ()=>doCalcFor(refId, matrixId, noteId));
+  if (btnL) btnL.addEventListener('click', ()=>clearPanel(refId, matrixId, noteId));
+}
+
+
+// --- Bind UI after DOM is ready (evita nulls si el script carga antes) ---
+bindPanel("refDate2", "btnCalcular2", "btnLimpiar2", "calcMatrix2", "calcNote2");
+
+  
+window.addEventListener("DOMContentLoaded", ()=>{
+  try { render(); } catch(e){}
+  try { setupMobileDateTyping(); } catch(e){}
+
+  function clearPanel(refId, matrixId, noteId){
+    const refInput = document.getElementById(refId);
+    const note = document.getElementById(noteId);
+    if (refInput) refInput.value = "";
+    const scope = document.getElementById(matrixId);
+    if (scope){
+      scope.querySelectorAll('.val').forEach(v=> v.textContent = '—');
+    }
+    if (note) note.innerHTML = 'Elegí una fecha y presioná <b>Calcular</b>.';
+    if (refInput) refInput.focus();
+  }
+
+  function bindPanel(refId, btnCalcId, btnClearId, matrixId, noteId){
+    const btnC = document.getElementById(btnCalcId);
+    const btnL = document.getElementById(btnClearId);
+    if (btnC) btnC.addEventListener('click', ()=>doCalcFor(refId, matrixId, noteId));
+    if (btnL) btnL.addEventListener('click', ()=>clearPanel(refId, matrixId, noteId));
+  }
+
+  bindPanel("refDate", "btnCalcular", "btnLimpiar", "calcMatrix", "calcNote");
+  bindPanel("refDate2", "btnCalcular2", "btnLimpiar2", "calcMatrix2", "calcNote2");
+
+  // --- Comparación: igualar alturas visuales (paridad lineal A/B) ---
+  function _scaleFactor(el){
+    if(!el) return 1;
+    const oh = el.offsetHeight || 0;
+    const rh = el.getBoundingClientRect().height || 0;
+    if(oh<=0 || rh<=0) return 1;
+    const s = rh/oh;
+    return (isFinite(s) && s>0) ? s : 1;
+  }
+  function _pairSync(aEl, bEl){
+    if(!aEl || !bEl) return;
+    // limpiar antes para medir natural
+    aEl.style.minHeight = "";
+    bEl.style.minHeight = "";
+    aEl.style.height = "";
+    bEl.style.height = "";
+
+    const aRect = aEl.getBoundingClientRect();
+    const bRect = bEl.getBoundingClientRect();
+
+    // Epsilon para compensar redondeos subpixel (transform: scale)
+    const maxVisual = Math.ceil(Math.max(aRect.height, bRect.height) + 2);
+
+    const sa = _scaleFactor(aEl);
+    const sb = _scaleFactor(bEl);
+
+    // Convertir altura visual deseada a altura de layout (pre-transform)
+    const aH = Math.ceil(maxVisual/sa);
+    const bH = Math.ceil(maxVisual/sb);
+
+    // usar height para emparejar milimétricamente (minHeight puede dejar diferencias por layout)
+    aEl.style.height = aH + "px";
+    bEl.style.height = bH + "px";
+  }
+  function syncCompareHeights(){
+    const wrap = document.getElementById("compareWrap");
+    const colB = document.getElementById("compareColB");
+    if(!wrap || !colB) return;
+    const isOn = wrap.classList.contains("compareOn") && !colB.hasAttribute("hidden");
+    const isDesktop = window.matchMedia("(min-width: 980px)").matches;
+    if(!isOn || !isDesktop){
+      // reset inline heights
+      const reset = (root)=>{
+        if(!root) return;
+        root.querySelectorAll(".formRow, .matrixGroup, .note, .groupGrid .cell").forEach(el=>{ el.style.minHeight=""; el.style.height=""; });
+      };
+      reset(document.getElementById("calcCard"));
+      reset(document.getElementById("calcCard2"));
+      return;
+    }
+
+    const aCard = document.getElementById("calcCard");
+    const bCard = document.getElementById("calcCard2");
+    if(!aCard || !bCard) return;
+
+    // sincronizar form + grupos + nota final
+    _pairSync(aCard.querySelector(".formRow"), bCard.querySelector(".formRow"));
+
+    const aGroups = Array.from(aCard.querySelectorAll(".matrixGroup"));
+    const bGroups = Array.from(bCard.querySelectorAll(".matrixGroup"));
+    const n = Math.min(aGroups.length, bGroups.length);
+    for(let i=0;i<n;i++){
+      _pairSync(aGroups[i], bGroups[i]);
+      // además, sincronizar altura de cada celda dentro del grupo (evita "aire" residual por sub‑pixel)
+      const aCells = Array.from(aGroups[i].querySelectorAll(".groupGrid .cell"));
+      const bCells = Array.from(bGroups[i].querySelectorAll(".groupGrid .cell"));
+      const cn = Math.min(aCells.length, bCells.length);
+      for(let c=0;c<cn;c++){
+        const ah = aCells[c].getBoundingClientRect().height;
+        const bh = bCells[c].getBoundingClientRect().height;
+        const h = Math.ceil(Math.max(ah,bh) + 1); // +1 evita redondeos hacia abajo
+        aCells[c].style.height = h + "px";
+        bCells[c].style.height = h + "px";
+      }
+
+    }
+
+    _pairSync(aCard.querySelector(".note"), bCard.querySelector(".note"));
+    // emparejar también el contenedor completo (evita diferencias residuales de padding/redondeo)
+    _pairSync(aCard, bCard);
+
+  }
+
+  // re-sincronizar si el usuario abre/cierra un bloque (details) en comparación
+  document.addEventListener("toggle", (ev)=>{
+    const wrap = document.getElementById("compareWrap");
+    if(wrap && wrap.classList.contains("compareOn")){
+      requestAnimationFrame(()=>requestAnimationFrame(syncCompareHeights));
+    }
+  }, true);
+
+  window.addEventListener("resize", ()=>{
+    // debounce simple
+    clearTimeout(window.__cmpSyncT);
+    window.__cmpSyncT = setTimeout(syncCompareHeights, 80);
+  });
+
+  const btnToggle = document.getElementById("btnToggleCompare");
+  const colB = document.getElementById("compareColB");
+  const wrap = document.getElementById("compareWrap");
+  if (btnToggle && colB && wrap){
+    // asegurar estado limpio
+    syncCompareHeights();
+    btnToggle.addEventListener("click", ()=>{
+      const isHidden = colB.hasAttribute("hidden");
+      if (isHidden){
+        colB.removeAttribute("hidden");
+        wrap.classList.add("compareOn");
+        btnToggle.textContent = "Ocultar comparación";
+        requestAnimationFrame(()=>requestAnimationFrame(syncCompareHeights));
+      } else {
+        colB.setAttribute("hidden","");
+        wrap.classList.remove("compareOn");
+        btnToggle.textContent = "Comparar";
+        syncCompareHeights();
+      }
+    });
+  }
+});
+
 </script>
 </body>
 </html>
