@@ -333,8 +333,10 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
 
 
 /* Alinear botón Calcular con el campo (misma altura) */
-#calcCard .formRow{align-items:stretch;}
-#calcCard .formRow .inputWrap{display:flex;}
+#calcCard .formRow{align-items:flex-end;}
+#calcCard .formRow .inputWrap{display:flex; flex-direction:column; align-items:flex-start; gap:6px;}
+#calcCard .formRow .inputWrap label{display:block; width:100%;}
+
 #calcCard .formRow .input{height:38px;}
 #calcCard .formRow .btn{height:38px; display:inline-flex; align-items:center; justify-content:center;}
 
@@ -806,6 +808,41 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   }
 }
 
+
+/* === Desktop alignment fix: calc controls A/B match exactly === */
+@media (min-width: 521px){
+  #calcCard .formRow, #calcCard2 .formRow{
+    display:grid;
+    grid-template-columns: 1fr auto;
+    align-items:end;
+    column-gap:14px;
+    row-gap:0;
+    margin-bottom:10px !important;
+  }
+  #calcCard .inputWrap, #calcCard2 .inputWrap{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-width:0;
+  }
+  #calcCard .inputWrap label.small, #calcCard2 .inputWrap label.small{
+    display:block;
+    margin:0 0 6px 0;
+    font-size:13px;
+    line-height:1.15;
+    letter-spacing:.01em;
+  }
+  #calcCard .inputWrap .input, #calcCard2 .inputWrap .input{
+    width:100%;
+  }
+  #calcCard .btnRow, #calcCard2 .btnRow{
+    display:flex;
+    gap:10px;
+    align-items:flex-end;
+    justify-content:flex-end;
+    white-space:nowrap;
+  }
+}
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
