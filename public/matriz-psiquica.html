@@ -958,7 +958,9 @@ function setupMobileDateTyping(){
         inp.dataset.origType = inp.type;
         // pasamos a texto para poder digitar años muy bajos (0001)
         inp.type = "text";
-        inp.inputMode = "numeric";
+        inp.inputMode = "text";
+        inp.setAttribute("enterkeyhint","done");
+        inp.autocapitalize = "none";
         inp.autocomplete = "off";
         inp.spellcheck = false;
         inp.placeholder = "dd/mm/aaaa (ej: 01/01/0001)";
