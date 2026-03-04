@@ -689,6 +689,46 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   }
 }
 
+
+/* Mobile: Fecha + botones en la misma línea (A y B) */
+@media (max-width: 520px){
+  #calcCard .formRow, #calcCard2 .formRow{
+    display: grid !important;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    row-gap: 8px;
+    align-items: center;
+  }
+  #calcCard .inputWrap, #calcCard2 .inputWrap{ display: contents; }
+  #calcCard .formRow label.small, #calcCard2 .formRow label.small{
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin: 0;
+  }
+  #calcCard .formRow input.input, #calcCard2 .formRow input.input{
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    max-width: none !important;
+  }
+  #calcCard .btnRow, #calcCard2 .btnRow{
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0;
+  }
+  #calcCard .btnRow .btn, #calcCard2 .btnRow .btn{
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+}
+
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
