@@ -772,6 +772,27 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Calendaria-LGC"/>
 <link rel="apple-touch-icon" href="/icons/calendaria-512.png"/>
+<!-- PATCH: Mobile formRow inline (A y B) -->
+<style>
+@media (max-width: 520px){
+  #calcCard .formRow, #calcCard2 .formRow{
+    display:grid !important;
+    grid-template-columns: 1fr auto !important;
+    align-items:end !important;
+    column-gap:10px !important;
+    row-gap:0 !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+    margin-left:0 !important; margin-right:0 !important;
+    max-width:100% !important; box-sizing:border-box !important;
+  }
+  #calcCard .inputWrap, #calcCard2 .inputWrap{min-width:0 !important;}
+  #calcCard .inputWrap label, #calcCard2 .inputWrap label{display:block !important; margin-bottom:6px !important;}
+  #calcCard .input, #calcCard2 .input{width:100% !important; height:40px !important;}
+  #calcCard .btnRow, #calcCard2 .btnRow{display:flex !important; flex-wrap:nowrap !important; gap:8px !important; justify-content:flex-end !important; align-items:center !important;}
+  #calcCard .btn, #calcCard2 .btn{height:40px !important; padding:0 10px !important; font-size:13px !important; white-space:nowrap !important;}
+}
+</style>
 </head>
 <body>
 <div class="wrap">
