@@ -658,6 +658,37 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   }
 }
 
+
+/* --- Mobile: input + botones (Calcular/Limpiar) SIEMPRE en la misma línea --- */
+@media (max-width: 520px){
+  #calcCard .formRow,
+  #calcCard2 .formRow{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:flex-end !important;
+    gap:10px !important;
+    transform:none !important; /* evita que el scale rompa el layout en mobile */
+  }
+  #calcCard .formRow .inputWrap,
+  #calcCard2 .formRow .inputWrap{
+    flex:1 1 auto !important;
+    min-width:0 !important;
+  }
+  #calcCard .formRow .btnRow,
+  #calcCard2 .formRow .btnRow{
+    width:auto !important;
+    flex:0 0 auto !important;
+    justify-content:flex-end !important;
+    white-space:nowrap;
+    gap:6px !important;
+  }
+  #calcCard .formRow .btn,
+  #calcCard2 .formRow .btn{
+    padding:0 10px !important;
+    font-size:13px !important;
+  }
+}
+
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
@@ -708,7 +739,7 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
           <div class="h2">Matriz calculable (A)</div>
 
           <div class="formRow" style="margin-bottom:10px">
-            <div>
+            <div class="inputWrap">
               <label class="small" for="refDate">Fecha a matrizar</label>
               <input class="input" id="refDate" type="date" min="0001-01-01" max="9999-12-31"/>
               
@@ -732,7 +763,7 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
           <div class="h2">Matriz calculable (B)</div>
 
           <div class="formRow" style="margin-bottom:10px">
-            <div>
+            <div class="inputWrap">
               <label class="small" for="refDate2">Fecha a matrizar</label>
               <input class="input" id="refDate2" type="date" min="0001-01-01" max="9999-12-31"/>
               
