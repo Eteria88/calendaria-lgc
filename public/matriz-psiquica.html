@@ -104,6 +104,20 @@ details.accordion .matrixWrap{margin-top:10px}
 .cellBase.jun .mark,.cellBase.jun .year{color:var(--junText)}
 .cellBase.dec .mark,.cellBase.dec .year{color:var(--decText)}
 
+/* ↓↓↓ Tonalidad diferenciada SOLO para escalas estables (Solar/Cosmos) ↓↓↓ */
+.matrixGroup.scale-cosmos,
+.matrixGroup.scale-solar{
+  /* mismos colores base, pero más suaves para comunicar estabilidad */
+  --junText: rgba(51, 209, 122, .60);
+  --decText: rgba(249, 199, 79, .60);
+}
+/* opcional: bajar un poco la saturación del grupo sin afectar Tierra */
+.matrixGroup.scale-cosmos .groupGrid,
+.matrixGroup.scale-solar .groupGrid{
+  filter: saturate(.82);
+}
+/* ↑↑↑ Tonalidad diferenciada SOLO para escalas estables (Solar/Cosmos) ↑↑↑ */
+
 /* estados */
 .cell{transition:border-color .15s ease, transform .08s ease, background .15s ease}
 .cell:hover{border-color:rgba(124,199,255,.42);background:linear-gradient(180deg,rgba(124,199,255,.06),rgba(255,255,255,.012))}
@@ -945,9 +959,9 @@ function renderInto(targetId){
   el.innerHTML = "";
 
   const groups = [
-    {title:"Escala Cosmos", items: events.slice(0,9)},
-    {title:"Escala Sistema Solar", items: events.slice(9,18)},
-    {title:"Escala Planeta Tierra", items: events.slice(18,27)},
+    {title:"Escala Cosmos", items: events.slice(0,9), scaleClass:"scale-cosmos"},
+    {title:"Escala Sistema Solar", items: events.slice(9,18), scaleClass:"scale-solar"},
+    {title:"Escala Planeta Tierra", items: events.slice(18,27), scaleClass:"scale-tierra"},
   ];
 
   function groupBlock(title, isOpen){
@@ -967,6 +981,7 @@ function renderInto(targetId){
   const isMobile = window.matchMedia('(max-width:720px)').matches;
   groups.forEach((gr,gi)=>{
     const g = groupBlock(gr.title, !isMobile || gi===0);
+    if (gr.scaleClass) g.classList.add(gr.scaleClass);
     const grid = g.querySelector('.groupGrid');
     gr.items.forEach(e=>{
       const cell = document.createElement('div');
