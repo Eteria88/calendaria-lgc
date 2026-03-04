@@ -628,6 +628,33 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   #calcCard2 #calcMatrix2 .baseHint{ margin-top: 1px !important; line-height: 1.0 !important; }
   #calcCard2 #calcMatrix2 .val{ margin-top: 4px !important; }
 }
+
+/* --- Mobile: input de fecha más prolijo + editable (tecleo) --- */
+@media (max-width:520px){
+  /* que no quede un "cajón" enorme */
+  #calcCard .formRow,
+  #calcCard2 .formRow{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:10px !important;
+  }
+  #calcCard .input,
+  #calcCard2 .input{
+    width:100% !important;
+    max-width:260px !important;
+    padding:9px 10px !important;
+    font-size:14px !important;
+  }
+  #calcCard .btnRow,
+  #calcCard2 .btnRow{
+    width:100% !important;
+    margin-left:0 !important;
+    justify-content:flex-start !important;
+    flex-wrap:wrap !important;
+  }
+}
+
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
@@ -862,6 +889,97 @@ function diffDaysInclusive(fromISO, toISO){
 function formatInt(n){
   return String(n);
 }
+
+function isMobileUI(){
+  return window.matchMedia && window.matchMedia("(max-width:520px)").matches;
+}
+
+function normalizeDateInputToISO(str){
+  if(!str) return "";
+  const s = String(str).trim();
+  // si ya viene ISO yyyy-mm-dd
+  let m = s.match(/^(\d{1,4})-(\d{1,2})-(\d{1,2})$/);
+  if(m){
+    let y = String(parseInt(m[1],10)).padStart(4,'0');
+    let mo = String(parseInt(m[2],10)).padStart(2,'0');
+    let d = String(parseInt(m[3],10)).padStart(2,'0');
+    return `${y}-${mo}-${d}`;
+  }
+
+  // acepta dd-mm-aaaa, dd/mm/aaaa, dd-mm-aa
+  const parts = s.split(/[^0-9]+/).filter(Boolean);
+  if(parts.length !== 3) return "";
+  let a = parts[0], b = parts[1], c = parts[2];
+
+  // si el último tiene 4 dígitos asumimos dd-mm-aaaa
+  if(c.length === 4){
+    const d = String(parseInt(a,10)).padStart(2,'0');
+    const mo = String(parseInt(b,10)).padStart(2,'0');
+    const y = String(parseInt(c,10)).padStart(4,'0');
+    return `${y}-${mo}-${d}`;
+  }
+
+  // si el primero tiene 4 dígitos asumimos aaaa-mm-dd
+  if(a.length === 4){
+    const y = String(parseInt(a,10)).padStart(4,'0');
+    const mo = String(parseInt(b,10)).padStart(2,'0');
+    const d = String(parseInt(c,10)).padStart(2,'0');
+    return `${y}-${mo}-${d}`;
+  }
+
+  // dd-mm-aa -> año 00aa (ej: 01-01-01 => 0001-01-01)
+  const d = String(parseInt(a,10)).padStart(2,'0');
+  const mo = String(parseInt(b,10)).padStart(2,'0');
+  const y = String(parseInt(c,10)).padStart(4,'0');
+  return `${y}-${mo}-${d}`;
+}
+
+function setupMobileDateTyping(){
+  const inputs = [document.getElementById("refDate"), document.getElementById("refDate2")].filter(Boolean);
+  if(!inputs.length) return;
+
+  const apply = ()=>{
+    const mobile = isMobileUI();
+    inputs.forEach(inp=>{
+      if(mobile){
+        if(inp.dataset.mobileTextApplied === "1") return;
+        inp.dataset.mobileTextApplied = "1";
+        inp.dataset.origType = inp.type;
+        // pasamos a texto para poder digitar años muy bajos (0001)
+        inp.type = "text";
+        inp.inputMode = "numeric";
+        inp.autocomplete = "off";
+        inp.spellcheck = false;
+        inp.placeholder = "aaaa-mm-dd (ej: 0001-01-01)";
+        // si había valor, normalizamos
+        if(inp.value) inp.value = normalizeDateInputToISO(inp.value);
+        inp.addEventListener("blur", ()=>{
+          const iso = normalizeDateInputToISO(inp.value);
+          if(iso) inp.value = iso;
+        });
+      } else {
+        // volver a date en desktop
+        if(inp.dataset.mobileTextApplied === "1"){
+          inp.dataset.mobileTextApplied = "0";
+          inp.type = "date";
+          inp.min = "0001-01-01";
+          inp.max = "9999-12-31";
+          if(inp.value) inp.value = normalizeDateInputToISO(inp.value);
+        }
+      }
+    });
+  };
+
+  apply();
+  if(window.matchMedia){
+    const mq = window.matchMedia("(max-width:520px)");
+    // compat: addEventListener / addListener
+    if(mq.addEventListener) mq.addEventListener("change", apply);
+    else if(mq.addListener) mq.addListener(apply);
+  }
+}
+
+
 function doCalcFor(refInputId, matrixId, noteId){
   const refEl = document.getElementById(refInputId);
   const note = document.getElementById(noteId);
@@ -1075,6 +1193,7 @@ bindPanel("refDate2", "btnCalcular2", "btnLimpiar2", "calcMatrix2", "calcNote2")
   
 window.addEventListener("DOMContentLoaded", ()=>{
   try { render(); } catch(e){}
+  try { setupMobileDateTyping(); } catch(e){}
 
   function clearPanel(refId, matrixId, noteId){
     const refInput = document.getElementById(refId);
