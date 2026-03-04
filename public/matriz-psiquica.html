@@ -354,11 +354,14 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   border: 1px solid rgba(0,255,255,0.25);
 }
 @media (max-width: 520px){
+  /* Mobile: input + botones en la MISMA línea */
   #calcCard .formRow{
-    grid-template-columns: 1fr !important;
-    row-gap: 10px !important;
+    grid-template-columns: 1fr auto !important;
+    align-items: center !important;
+    row-gap: 0 !important;
   }
-  #calcCard .btnRow{justify-content:flex-start;}
+  #calcCard .btnRow{justify-content:flex-start; flex-wrap:nowrap; gap:6px;}
+  #calcCard .btn{padding:0 10px; font-size:13px;}
 }
 
 
@@ -894,6 +897,14 @@ function isMobileUI(){
   return window.matchMedia && window.matchMedia("(max-width:520px)").matches;
 }
 
+
+function isoToDMY(iso){
+  // iso: YYYY-MM-DD -> DD/MM/YYYY
+  const m = String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return String(iso||"");
+  return `${m[3]}/${m[2]}/${m[1]}`;
+}
+
 function normalizeDateInputToISO(str){
   if(!str) return "";
   const s = String(str).trim();
@@ -950,12 +961,12 @@ function setupMobileDateTyping(){
         inp.inputMode = "numeric";
         inp.autocomplete = "off";
         inp.spellcheck = false;
-        inp.placeholder = "aaaa-mm-dd (ej: 0001-01-01)";
+        inp.placeholder = "dd/mm/aaaa (ej: 01/01/0001)";
         // si había valor, normalizamos
-        if(inp.value) inp.value = normalizeDateInputToISO(inp.value);
+        if(inp.value){ const iso0 = normalizeDateInputToISO(inp.value); if(iso0) inp.value = isoToDMY(iso0); }
         inp.addEventListener("blur", ()=>{
           const iso = normalizeDateInputToISO(inp.value);
-          if(iso) inp.value = iso;
+          if(iso) inp.value = isoToDMY(iso);
         });
       } else {
         // volver a date en desktop
@@ -983,7 +994,7 @@ function setupMobileDateTyping(){
 function doCalcFor(refInputId, matrixId, noteId){
   const refEl = document.getElementById(refInputId);
   const note = document.getElementById(noteId);
-  const ref = refEl ? refEl.value : "";
+  const ref = refEl ? normalizeDateInputToISO(refEl.value) : "";
   if(!ref){
     if (note) note.textContent = "Elegí una fecha válida para calcular.";
     return;
