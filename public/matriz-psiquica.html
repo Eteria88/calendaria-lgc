@@ -729,6 +729,22 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   }
 }
 
+
+/* === FIX mobile alignment: Panel A igual a Panel B (input + botones en misma línea) === */
+#calcCard .formRow{
+  display:grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items:end !important;
+  column-gap: 12px !important;
+}
+#calcCard .btnRow{display:flex; gap:8px; justify-content:flex-end;}
+#calcCard .input{height:40px;}
+#calcCard .btn{height:40px; display:inline-flex; align-items:center; justify-content:center;}
+@media (max-width: 520px){
+  #calcCard .formRow{grid-template-columns:1fr !important; row-gap:10px !important;}
+  #calcCard .btnRow{justify-content:flex-start;}
+}
+
 </style>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
