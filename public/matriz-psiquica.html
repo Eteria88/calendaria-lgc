@@ -674,6 +674,26 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
     flex:1 1 auto !important;
     min-width:0 !important;
   }
+  /* Mobile: etiqueta arriba del input (evita que "Fecha a matrizar" quede al lado y desalineado) */
+  #calcCard .formRow .inputWrap,
+  #calcCard2 .formRow .inputWrap{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:6px !important;
+  }
+  #calcCard .formRow .inputWrap label,
+  #calcCard2 .formRow .inputWrap label{
+    display:block !important;
+    margin:0 !important;
+    line-height:1.1 !important;
+  }
+  #calcCard .formRow .input,
+  #calcCard2 .formRow .input{
+    width:100% !important;
+    max-width:none !important;
+  }
+
   #calcCard .formRow .btnRow,
   #calcCard2 .formRow .btnRow{
     width:auto !important;
