@@ -719,13 +719,14 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       el=$('#brickIdx'); if(el) el.textContent=Math.floor((qD-1)/3)+1;
       el=$('#brickDay'); if(el) el.textContent=((qD-1)%3)+1;
 
-      // *** CHANGE: life days computed vs reference date Rf (not today) ***
+      // Días de vida: mismo criterio del comparador/bandas.
+      // Usa calendario mixto LGC (Juliano hasta 04/10/1582, Gregoriano desde 15/10/1582)
+      // y conteo exclusivo (mismo día = 0).
       el=$('#lifeDays'); 
       if(el){
-        if(dob){
-          var refUTC = Date.UTC(Rf.y, Rf.m-1, Rf.d);
-          var dobUTC = Date.UTC(Db.y, Db.m-1, Db.d);
-          el.textContent = Math.max(0, Math.floor((refUTC - dobUTC) / ms));
+        if(Db){
+          var lifeDays = jdnCut(Rf.y, Rf.m, Rf.d) - jdnCut(Db.y, Db.m, Db.d);
+          el.textContent = Math.max(0, lifeDays);
         } else {
           el.textContent = '0';
         }
