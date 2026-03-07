@@ -139,8 +139,8 @@
     }
     .pillTop{font-size:13px; font-weight:800; letter-spacing:-0.1px}
         .pill{
-      min-height:38px;
-      padding:10px 15px;
+      min-height:34px;
+      padding:8px 13px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.10);
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
@@ -148,7 +148,8 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       font-weight:700;
       cursor:pointer;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+      font-size:14px;
       transition:background .16s ease, border-color .16s ease, transform .16s ease, box-shadow .16s ease;
     }
     .pill:hover{
@@ -156,9 +157,9 @@
       transform:translateY(-1px);
     }
     .pill.active{
-      background:linear-gradient(180deg, rgba(124,199,255,.24), rgba(124,199,255,.14));
-      border-color:rgba(124,199,255,.52);
-      box-shadow:0 0 0 1px rgba(124,199,255,.10) inset, 0 8px 18px rgba(0,0,0,.18);
+      background:linear-gradient(180deg, rgba(124,199,255,.15), rgba(124,199,255,.08));
+      border-color:rgba(124,199,255,.34);
+      box-shadow:0 0 0 1px rgba(124,199,255,.04) inset, 0 3px 8px rgba(0,0,0,.10);
     }
 
     .sectionTitle{
@@ -185,12 +186,26 @@
       line-height:1.72;
     }
 
+    /* Mensual simplificado */
+    .monthlySimple{
+      margin-top:14px;
+      display:flex;
+      justify-content:center;
+    }
+    .monthlySimple .btn{
+      width:min(100%, 360px);
+      min-height:44px;
+      border-radius:14px;
+      font-size:14px;
+    }
+
     /* Cards de monto mensual */
     .monthlySplit{
       display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
+      grid-template-columns:minmax(280px, 360px);
       gap:12px;
-      margin-top:12px;
+      margin-top:14px;
+      justify-content:center;
       align-items:stretch;
     }
     @media (max-width: 760px){
@@ -205,7 +220,7 @@
       padding:13px;
       display:flex;
       flex-direction:column;
-      min-height:168px;
+      min-height:146px;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
     }
     .payPanelTitle{
@@ -220,13 +235,7 @@
       letter-spacing:.1px;
       line-height:1.2;
     }
-    .payPanelText{
-      margin:0 0 12px;
-      color:var(--muted);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      font-size:13px;
-      line-height:1.45;
-    }
+    
     .monthlyCards{
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -261,10 +270,7 @@
     }
     .amtValue{font-weight:900; letter-spacing:-0.2px; font-size:13px; line-height:1.1}
     .monthlyMicro{margin-top:10px}
-    .payPanelAction{
-      margin-top:auto;
-      width:100%;
-    }
+    .payPanelAction{width:100%;}
     .about p{ margin:0 0 14px 0; }
     .about p:last-child{ margin-bottom:0; }
     .about ul{
@@ -296,7 +302,7 @@
 
     /* CTA comunidad */
     .ctaRow{
-      margin-top:12px;
+      margin-top:8px;
       display:flex;
       gap:10px;
       flex-wrap:wrap;
@@ -330,19 +336,18 @@
     }
 
     .onceGrid{
-      gap:10px;
-      margin-top:10px;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+    @media (max-width: 760px){
+      .onceGrid{grid-template-columns:1fr}
     }
     .onceGrid .btn{
       min-height:44px;
-      padding:10px 12px;
-      border-radius:11px;
-      font-size:15px;
-      font-weight:700;
-    }
-    .onceGrid .btnLabel{
-      gap:6px;
-      font-size:15px;
+      border-radius:13px;
+      font-size:14px;
     }
 
     .supportLayout{
@@ -411,34 +416,36 @@
       margin-top:2px;
       margin-bottom:2px;
     }
-    .payPanelAction{min-height:44px;}
-    .payPanelAction .btnLabel{letter-spacing:.01em;}
-    .payPanelTitle,
+        .payPanelTitle,
     .sectionLabel,
     .sectionTitle{ text-wrap:balance; }
     .aboutCol .muted strong,
     .aboutCol .muted b{ color:rgba(245,248,252,.98); }
     .about ul li::marker{ color:rgba(255,255,255,.74); }
     .contactBlock{
-      margin-top:30px;
-      padding-top:24px;
-      border-top:1px solid rgba(255,255,255,.06);
+      margin-top:34px;
+      padding-top:28px;
+      border-top:1px solid rgba(255,255,255,.045);
     }
     .communityBtn{
       display:inline-flex;
       width:auto;
-      padding-inline:15px;
-      background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.03));
+      padding-inline:12px;
+      min-height:34px;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.025));
+      border-color:rgba(255,255,255,.08);
+      box-shadow:none;
+      font-weight:620;
     }
     .contactLabel{
       margin-top:20px;
-      margin-bottom:13px;
+      margin-bottom:12px;
       font-size:13px;
     }
     .contactRow{
       display:grid;
       grid-template-columns:minmax(0,1fr) auto;
-      gap:12px;
+      gap:14px;
       align-items:center;
     }
     .contactRow code{
@@ -446,7 +453,7 @@
       overflow:auto;
       white-space:nowrap;
       font-size:12.5px;
-      min-height:40px;
+      min-height:38px;
       display:flex;
       align-items:center;
       background:linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.14));
@@ -460,10 +467,13 @@
     }
     .contactActions .btn.secondary,
     .contactActions .btn{
-      min-height:40px;
-      padding:10px 13px;
+      min-height:38px;
+      padding:9px 12px;
       white-space:nowrap;
       font-size:13px;
+      font-weight:650;
+      background:linear-gradient(180deg, rgba(255,255,255,.048), rgba(255,255,255,.026));
+      border-color:rgba(255,255,255,.08);
     }
     .intlTransferCard{
       margin-top:18px;
@@ -506,8 +516,6 @@
     }
     @media (max-width: 560px){
       .payCol{padding:14px 12px}
-      .monthlySplit{gap:10px}
-      .payPanel{min-height:0}
       .contactRow{
         grid-template-columns:1fr;
       }
@@ -549,7 +557,7 @@
               <li><b>Experiencia de uso:</b> interfaz, legibilidad, accesibilidad y navegación.</li>
             </ul>
 
-            <p>Si te aporta valor y querés acompañar su continuidad, podés hacerlo por cualquiera de estos medios.</p>
+            <p>Si te aporta valor y quieres acompañar su continuidad, puedes hacerlo por cualquiera de estos medios.</p>
           </div>
         </div>
 
@@ -558,57 +566,33 @@
           
           <div class="mode">
             <button class="pill active" type="button" id="modeOnce">
-              <span class="pillTop">Aporte único</span>
+              <span class="pillTop">Aporte</span>
             </button>
             <button class="pill" type="button" id="modeMonthly">
-              <span class="pillTop">Aporte mensual</span>
+              <span class="pillTop">Mensual con Mercado Pago</span>
             </button>
           </div>
 
-          <!-- Selector mensual separado por método -->
+          <!-- Aporte mensual: solo Mercado Pago -->
           <div class="monthly" id="monthlyBox" style="display:none">
-            <div class="monthlySplit">
-              <div class="payPanel">
-                <h3 class="payPanelTitle">PayPal mensual <span class="tag">USD</span></h3>
-                                <div class="monthlyCards" id="monthlyCards">
-                  <button class="amtCard active" type="button" data-amt="7" aria-label="Aporte mensual USD 7">
-                    <div class="amtValue">USD 7</div>
-                  </button>
-
-                  <button class="amtCard" type="button" data-amt="11" aria-label="Aporte mensual USD 11">
-                    <div class="amtValue">USD 11</div>
-                  </button>
-
-                  <button class="amtCard" type="button" data-amt="33" aria-label="Aporte mensual USD 33">
-                    <div class="amtValue">USD 33</div>
-                  </button>
-                </div>
-                <button class="btn payPanelAction" id="ppAction" type="button"><span class="btnLabel">Continuar con PayPal</span></button>
-              </div>
-
-              <div class="payPanel">
-                <h3 class="payPanelTitle">Mercado Pago mensual <span class="tag">ARS</span></h3>
-                <p class="payPanelText">Plan mensual disponible en pesos argentinos.</p>
-                <a class="btn payPanelAction" id="mpBtn" href="#" target="_blank" rel="noopener"><span class="btnLabel">Suscribirme con Mercado Pago</span></a>
-              </div>
+            <div class="monthlySimple">
+              <a class="btn payPanelAction" id="mpBtn" href="#" target="_blank" rel="noopener"><span class="btnLabel">Mercado Pago</span></a>
             </div>
           </div>
 
-          <div class="grid onceGrid" id="onceGrid">
-            <a class="btn" id="mpBtnOnce" href="#" target="_blank" rel="noopener"><span class="btnLabel">Mercado Pago</span></a>
+          <div class="onceGrid" id="onceGrid">
             <button class="btn" id="ppActionOnce" type="button"><span class="btnLabel">PayPal</span></button>
+            <a class="btn" id="mpBtnOnce" href="#" target="_blank" rel="noopener"><span class="btnLabel">Mercado Pago</span></a>
           </div>
-
-          <div class="muted note" id="paypalStatus" style="display:none;margin-top:10px"></div>
 
           <div class="contactBlock">
             <div class="ctaRow" style="margin-top:0">
               <a class="btn secondary communityBtn" href="https://t.me/calendarialgcred" target="_blank" rel="noopener">
-                Súmate a la comunidad <span class="tag">Telegram</span>
+                Únete a la comunidad <span class="tag">Telegram</span>
               </a>
             </div>
 
-            <div class="muted contactLabel">Contacto del proyecto (comentarios, sugerencias, info)</div>
+            <div class="muted contactLabel">Contacto del proyecto</div>
             <div class="contactRow">
               <code id="contactEmail">appcalendaria.lgc@gmail.com</code>
               <div class="contactActions">
@@ -618,7 +602,7 @@
             </div>
 
             <div class="muted closingNote">
-              Aporte opcional. La app sigue siendo abierta para todos.
+              Aporte opcional. La app sigue abierta para todos.
             </div>
           </div>
         </div>
@@ -628,9 +612,8 @@
         <div class="card intlTransferCard">
       <div class="subtleSectionTitle">Transferencia internacional (opcional)</div>
       <div class="muted note intlTransferNote">
-        Si estás fuera de Argentina, lo más simple suele ser <b>PayPal</b>.<br><br>
-        Si preferís transferencia bancaria, abrí la sección y copiá los datos.<br><br>
-        <b>Nota:</b> no necesitás descargar Global66 para enviarme; podés transferir desde tu banco. Si tenés dudas, escribime a <a href="mailto:appcalendaria.lgc@gmail.com">appcalendaria.lgc@gmail.com</a>.
+        Si estás fuera de Argentina, lo más simple suele ser <b>PayPal</b>.<br>
+        Si prefieres transferencia bancaria, abre la sección y copia los datos.
       </div>
 
       <details>
@@ -733,24 +716,18 @@
     // Links (una sola vez)
     const MP_URL = "https://link.mercadopago.com.ar/appcalendarialgc";
     const MP_MONTHLY_URL = "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=372455a813214071b64418977494277b";
-    const PAYPAL_URL = "https://paypal.me/calendarialgc";
+    const PAYPAL_URL = "https://www.paypal.com/donate/?hosted_button_id=RF9NQ4FQBLBZS";
 
     const mpBtn = document.getElementById("mpBtn");
     const mpBtnOnce = document.getElementById("mpBtnOnce");
-    const ppAction = document.getElementById("ppAction");
     const ppActionOnce = document.getElementById("ppActionOnce");
     const modeOnce = document.getElementById("modeOnce");
     const modeMonthly = document.getElementById("modeMonthly");
-    const paypalStatus = document.getElementById("paypalStatus");
     const onceGrid = document.getElementById("onceGrid");
 
     // --- Modo y monto mensual ---
     const monthlyBox = document.getElementById("monthlyBox");
-    const amtBtns = Array.from(document.querySelectorAll(".amtCard"));
-
     let supportMode = "once"; // "once" | "monthly"
-    let selectedMonthlyAmount = 7; // default
-
     function setBtn(btn, url){
       if(url && url.trim()){
         url = url.trim();
@@ -769,10 +746,6 @@
     setBtn(mpBtn, MP_MONTHLY_URL);
     setBtn(mpBtnOnce, MP_URL);
 
-    function selectAmount(n){
-      selectedMonthlyAmount = n;
-      amtBtns.forEach(b => b.classList.toggle("active", Number(b.dataset.amt) === n));
-    }
 
     function setActiveMode(next){
       supportMode = next;
@@ -787,68 +760,13 @@
     modeOnce.addEventListener("click", () => setActiveMode("once"));
     modeMonthly.addEventListener("click", () => setActiveMode("monthly"));
 
-    // Estado al volver de PayPal
-    (function syncStatusFromQuery(){
-      const params = new URLSearchParams(window.location.search);
-      const p = params.get("paypal");
-      if (p === "success") {
-        paypalStatus.style.display = "block";
-        paypalStatus.textContent = "✅ Suscripción iniciada. ¡Gracias por apoyar el proyecto!";
-      } else if (p === "cancel") {
-        paypalStatus.style.display = "block";
-        paypalStatus.textContent = "Cancelaste el proceso de suscripción.";
-      }
-    })();
 
-    async function startMonthlySubscription(amount){
-      ppAction.disabled = true;
-      ppAction.textContent = "Conectando con PayPal…";
-      try{
-        const res = await fetch("/api/paypal/create-subscription", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount }),
-        });
-        const data = await res.json();
-        if (!data || !data.ok || !data.approve_url) {
-          alert("No se pudo iniciar la suscripción. Intentalo de nuevo.");
-          ppAction.disabled = false;
-          ppAction.innerHTML = '<span class="btnLabel">Continuar con PayPal</span>';
-          return;
-        }
-        window.location.href = data.approve_url;
-      }catch(e){
-        alert("Error de red. Intentalo de nuevo.");
-        ppAction.disabled = false;
-        ppAction.innerHTML = '<span class="btnLabel">Continuar con PayPal</span>';
-      }
-    }
-
-    // 1 click en USD 7 / 11 / 33 cuando estás en Mensual
-    amtBtns.forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const n = Number(btn.dataset.amt);
-        selectAmount(n);
-
-        if (supportMode === "monthly") {
-          await startMonthlySubscription(n);
-        } else {
-          // si tocás un monto y estabas en "Una sola vez", te pasa a Mensual
-          setActiveMode("monthly");
-        }
-      });
-    });
-
-    // Acción PayPal mensual
-    ppAction.addEventListener("click", async () => {
-      await startMonthlySubscription(selectedMonthlyAmount);
-    });
 
     // Acción PayPal aporte único
     ppActionOnce.addEventListener("click", async () => {
       const url = (PAYPAL_URL || "").trim();
       if (!url) {
-        alert("Link sin configurar. Editá apoyar.html y pegá tu URL de PayPal.");
+        alert("Enlace sin configurar. Edita apoyar.html y pega tu URL de PayPal.");
         return;
       }
       const finalUrl = /^https?:\/\//i.test(url) ? url : ("https://" + url);
@@ -856,7 +774,6 @@
     });
 
     // init
-    selectAmount(7);
     setActiveMode("once");
 
     async function copyText(txt){
@@ -864,7 +781,7 @@
         await navigator.clipboard.writeText(txt);
         alert("Copiado ✅");
       }catch(e){
-        alert("No se pudo copiar automáticamente. Copialo manual.");
+        alert("No se pudo copiar automáticamente. Cópialo manualmente.");
       }
     }
     document.querySelectorAll("[data-copy-target]").forEach(btn=>{
