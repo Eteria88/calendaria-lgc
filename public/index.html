@@ -9,8 +9,10 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:radial-gradient(1200px 800px at 80% -10%,#12202b 0%,#0b0d10 40%) fixed;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:1100px;margin:0 auto;padding:20px}
-header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(11,13,16,.88),rgba(11,13,16,.68));backdrop-filter:saturate(130%) blur(8px);padding:8px 0 12px 0;border-bottom:1px solid rgba(111,138,166,.10)}
-.headerBar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;min-height:48px}
+header{position:sticky;top:0;z-index:10;position:sticky;padding:8px 0 12px 0;background:transparent;border-bottom:none;overflow:visible;isolation:isolate}
+header::before{content:"";position:absolute;inset:0 0 2px 0;border-bottom:1px solid rgba(111,138,166,.08);border-bottom-right-radius:18px;background:linear-gradient(90deg,rgba(8,13,20,.76) 0%,rgba(8,13,20,.66) 54%,rgba(8,13,20,.42) 82%,rgba(8,13,20,.12) 94%,rgba(8,13,20,0) 100%);backdrop-filter:saturate(130%) blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+header::after{content:"";position:absolute;right:0;top:0;bottom:2px;width:96px;background:linear-gradient(90deg,rgba(8,13,20,0) 0%,rgba(8,13,20,.12) 55%,rgba(8,13,20,0) 100%);pointer-events:none}
+.headerBar{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;min-height:48px;padding-right:6px}
 .headerBrand{display:flex;align-items:center;gap:10px;min-width:0}
 .headerBrand h1{display:inline-block;margin:0;font-size:clamp(26px,3vw,34px);line-height:1;font-weight:750;letter-spacing:-.03em}
 .sun{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);box-shadow:0 0 18px #ffb347;display:inline-block;flex:0 0 auto}
@@ -99,8 +101,8 @@ th:first-child,td:first-child{text-align:left}
   border:1px solid rgba(111,138,166,.26);
   border-radius:16px;
   padding:14px 12px;
-  background:linear-gradient(180deg,rgba(7,11,18,.62),rgba(7,11,18,.42));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.02), 0 10px 28px rgba(0,0,0,.14);
+  background:linear-gradient(180deg,rgba(7,11,17,.68),rgba(7,11,17,.44));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03), 0 10px 28px rgba(0,0,0,.16);
 }
 .sidenav nav{display:flex;flex-direction:column;height:100%}
 .nav-title{
@@ -122,10 +124,10 @@ th:first-child,td:first-child{text-align:left}
   transform:translateX(1px);
 }
 .nav-link.active{
-  background:linear-gradient(180deg,rgba(124,199,255,.16),rgba(124,199,255,.08));
-  border-color:rgba(124,199,255,.58);
+  background:linear-gradient(180deg,rgba(124,199,255,.11),rgba(124,199,255,.05));
+  border-color:rgba(124,199,255,.48);
   color:#ffffff;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.10), inset 3px 0 0 rgba(124,199,255,.92);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), inset 2px 0 0 rgba(124,199,255,.72);
 }
 @media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
 
@@ -172,7 +174,9 @@ body.noScroll{overflow:hidden}
 @media(max-width:599px){
   .wrap{padding:14px}
   header{padding:8px 0 10px 0}
-  .headerBar{grid-template-columns:1fr auto;grid-template-areas:"brand right" "center center";gap:10px 12px;align-items:center}
+  header::before{border-bottom-right-radius:14px}
+  header::after{width:56px}
+  .headerBar{grid-template-columns:1fr auto;grid-template-areas:"brand right" "center center";gap:10px 12px;align-items:center;padding-right:0}
   .headerBrand{grid-area:brand}
   .headerCenter{grid-area:center;justify-content:flex-start}
   .headerContext{align-items:flex-start}
