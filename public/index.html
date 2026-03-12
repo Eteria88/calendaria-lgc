@@ -206,125 +206,6 @@ body.noScroll{overflow:hidden}
 }
 
 
-
-/* Top card: técnica de secuenciación (refinamiento conservador) */
-.top-card{
-  position:relative;
-  padding:14px 14px 12px;
-}
-.topCardLayout{
-  display:grid;
-  grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);
-  gap:14px;
-  align-items:start;
-}
-.topCardInfo{
-  min-width:0;
-  padding-right:4px;
-}
-.topCardHead{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:6px;
-  margin-bottom:10px;
-}
-.topCardMeta{
-  min-height:18px;
-  margin:0;
-  color:rgba(159,179,200,.76);
-}
-.topMetrics{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(72px,1fr));
-  gap:10px 14px;
-  align-items:end;
-  margin-bottom:10px;
-}
-.metricBlock{
-  min-width:0;
-}
-.metricBlock .small{
-  font-size:11px;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  color:rgba(159,179,200,.74);
-  margin-bottom:3px;
-}
-.metricValue{
-  color:#f3f7ff;
-  line-height:1.02;
-  letter-spacing:-.02em;
-}
-.metricValue.metricText{font-size:clamp(18px,2vw,20px);font-weight:650}
-.metricValue.metricNum{font-size:clamp(18px,2.4vw,20px);font-weight:720}
-.metricValue.metricTurn{font-size:clamp(20px,2.8vw,22px);font-weight:760}
-.turnStack{grid-column:4 / span 2}
-.topTiming{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  align-items:center;
-  margin:0 0 8px;
-  color:rgba(230,241,255,.80);
-  font-size:12px;
-}
-.topTiming .timingDot{
-  color:rgba(159,179,200,.42);
-}
-.turnProgress{
-  max-width:286px;
-  margin-top:2px;
-}
-.turnProgress .progress{height:7px;background:rgba(255,255,255,.035)}
-.periodicCtaWrap{
-  position:absolute;
-  top:110px;
-  right:16px;
-}
-.elementBadge{
-  position:absolute;
-  top:12px;
-  right:12px;
-}
-.periodicLink{
-  cursor:pointer;
-  text-decoration:none;
-  letter-spacing:.08em;
-}
-@media(max-width:999px){
-  .topCardLayout{
-    grid-template-columns:1fr;
-  }
-  .topCardInfo{
-    padding-right:92px;
-  }
-  .periodicCtaWrap{
-    top:106px;
-  }
-}
-@media(max-width:599px){
-  .top-card{padding:12px}
-  .topCardLayout{gap:12px}
-  .topMetrics{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px 12px;
-  }
-  .turnStack{grid-column:1 / -1}
-  .topCardInfo{
-    padding-right:0;
-  }
-  .periodicCtaWrap{
-    position:static;
-    margin:6px 0 0;
-  }
-  .topTiming{
-    font-size:11px;
-    gap:6px;
-  }
-  .turnProgress{max-width:none}
-}
-
 /* Periodic element badge (overlay, non-intrusive) */
 .top-card{position:relative}
 .elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
@@ -1049,61 +930,32 @@ body.noScroll{overflow:hidden}
     <div class="elementBadge" title="Hydrogen — 1">
       <img id="elementTile" src="/hydrogen.png" alt="Hydrogen element tile">
     </div>
-    <div class="periodicCtaWrap">
-      <a href="/periodic.html?el=H" id="openPeriodicLink" class="badge periodicLink">Ver tabla periódica</a>
+    <div style="position:absolute;top:110px;right:16px;">
+      <a href="/periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
     </div>
 
-    <div class="topCardLayout">
-      <div class="topCardInfo">
-        <div class="topCardHead">
-          <div class="badge" id="apPhaseBadge">—</div>
-          <div class="small topCardMeta" id="calCycleLabel">&nbsp;</div>
-        </div>
-
-        <div class="topMetrics">
-          <div class="metricBlock" id="calCardBlock">
-            <div class="small">Cardinalidad</div>
-            <div class="mono metricValue metricText" id="calCard">—</div>
-          </div>
-
-          <div class="metricBlock" id="calStepBlock">
-            <div class="small">Columna</div>
-            <div class="mono metricValue metricText" id="calStep">—</div>
-          </div>
-
-          <div class="metricBlock">
-            <div class="small" id="calDayLabel">Paso</div>
-            <div class="mono metricValue metricNum" id="calDay">—</div>
-          </div>
-
-          <div class="metricBlock" id="anilloDayBlock" style="display:none">
-            <div class="small">Día</div>
-            <div class="mono metricValue metricNum" id="anilloSeqDay">—</div>
-          </div>
-
-          <div class="metricBlock" id="calMemBlock">
-            <div class="small">Memoria</div>
-            <div class="mono metricValue metricText" id="calMem">—</div>
-          </div>
-
-          <div class="metricBlock turnStack" id="calTurnBlock">
+    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+      <div>
+        <div class="badge" id="apPhaseBadge">—</div>
+        <div class="small" id="calCycleLabel" style="margin-bottom:14px">&nbsp;</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div id="calCardBlock"><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
+          <div id="calStepBlock"><div class="small">Columna</div><div class="mono" id="calStep">—</div></div>
+          <div><div class="small" id="calDayLabel">Paso</div><div class="mono" id="calDay" style="font-size:20px">—</div></div>
+          <div id="anilloDayBlock" style="display:none"><div class="small">Día</div><div class="mono" id="anilloSeqDay" style="font-size:20px">—</div></div>
+          <div id="calMemBlock"><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
+          <div id="calTurnBlock">
             <div class="small">Vuelta</div>
-            <div class="mono metricValue metricTurn" id="calTurn">—</div>
+            <div class="mono" id="calTurn">—</div>
             <div class="small" id="calTurnRange" style="display:none">—</div>
-            <div class="topTiming">
-              <span>inicio: <span id="turnStartInline">—</span></span>
-              <span class="timingDot">·</span>
-              <span>fin: <span id="turnEndInline">—</span></span>
-              <span class="timingDot">·</span>
-              <span>extensión: <span id="turnExtInline">—</span></span>
+            <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
+            <div style="margin-top:10px">
             </div>
-            <div class="turnProgress">
-              <div class="progress"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
-            </div>
+<!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta </span><span class="mono" id="turnDay">—</span></div> -->
+<!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Paso en cuadrante (1–4) </span><span class="mono" id="blockDay">—</span></div> -->
           </div>
         </div>
       </div>
-
       <div id="cardinalPlane" class="plane"><div class="planeGrid">
         <div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
         <div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
@@ -3115,41 +2967,4 @@ if ('serviceWorker' in navigator) {
   }
 })();
 </script>
-
-<script>
-(function(){
-  function syncTopCardTiming(){
-    var startEl = document.getElementById('turnStartInline');
-    var endEl = document.getElementById('turnEndInline');
-    var extEl = document.getElementById('turnExtInline');
-    if(!startEl || !endEl || !extEl) return;
-
-    var phase = document.getElementById('apPhaseBadge');
-    var raw = (phase && phase.textContent ? phase.textContent : '').replace(/\s+/g,' ').trim();
-    var start='—', end='—', ext='—';
-
-    var mStart = raw.match(/inicio:\s*([^·]+)/i);
-    var mEnd = raw.match(/fin:\s*([^·]+)/i);
-    var mExt = raw.match(/extensi[oó]n:\s*(\d+)/i);
-
-    if(mStart && mStart[1]) start = mStart[1].trim();
-    if(mEnd && mEnd[1]) end = mEnd[1].trim();
-    if(mExt && mExt[1]) ext = mExt[1].trim();
-
-    startEl.textContent = start;
-    endEl.textContent = end;
-    extEl.textContent = ext;
-  }
-  document.addEventListener('DOMContentLoaded', function(){
-    syncTopCardTiming();
-    setTimeout(syncTopCardTiming, 150);
-    setTimeout(syncTopCardTiming, 600);
-  });
-  window.addEventListener('load', function(){
-    setTimeout(syncTopCardTiming, 0);
-    setTimeout(syncTopCardTiming, 500);
-  });
-})();
-</script>
-
 </body></html>
