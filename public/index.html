@@ -207,12 +207,32 @@ body.noScroll{overflow:hidden}
 
 
 /* Periodic element badge (overlay, non-intrusive) */
-.top-card{position:relative}
-.elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
-.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
-@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+.top-card{position:relative;padding:16px 16px 14px 16px}
+.topCardShell{display:flex;gap:14px;align-items:stretch;justify-content:space-between;flex-wrap:wrap}
+.topCardInfo{flex:1 1 420px;min-width:0;padding-right:2px}
+.topCardAside{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex:0 0 auto;min-width:90px}
+.apparatusKicker{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border:1px solid rgba(111,138,166,.34);border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(230,241,255,.82)}
+.cycleSubline{margin:8px 0 0 0;min-height:14px;font-size:11px;letter-spacing:.02em;color:rgba(159,179,200,.64)}
+.apparatusMetrics{display:grid;grid-template-columns:repeat(5,minmax(0,max-content));gap:14px 20px;align-items:end;margin-top:12px}
+.metricItem{min-width:0}
+.metricLabel{font-size:11px;line-height:1;letter-spacing:.03em;color:rgba(159,179,200,.84);margin-bottom:5px}
+.metricValue{font-size:15px;line-height:1.05;font-weight:600;letter-spacing:-.01em;color:rgba(240,247,255,.96)}
+.metricValue.metricStrong{font-size:17px;font-weight:650}
+.metricSubline{margin-top:4px;font-size:11px;color:rgba(159,179,200,.68)}
+.turnTimeline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12px;line-height:1.25;color:rgba(206,222,239,.8)}
+.turnTimeline .sep{color:rgba(111,138,166,.55)}
+.turnTimeline .ext{color:rgba(183,204,225,.72)}
+.turnProgress{max-width:286px;margin-top:8px}
+.turnProgress .progress{height:5px;margin-top:0;background:rgba(255,255,255,.035);border-color:rgba(111,138,166,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.015)}
+.turnProgress .progressInner{background:linear-gradient(90deg,rgba(99,168,255,.92),rgba(124,199,255,.9) 68%,rgba(162,220,255,.82))}
+.elementBadge{position:relative;top:auto;right:auto;border:1px solid rgba(111,138,166,.24);border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.016));
+  padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.03);display:none;pointer-events:none;z-index:10}
+.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid rgba(111,138,166,.22)}
+.periodicLink{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:0 11px;border-radius:999px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(230,241,255,.78);border:1px solid rgba(111,138,166,.22);background:linear-gradient(180deg,rgba(255,255,255,.022),rgba(255,255,255,.008));text-decoration:none;transition:border-color .18s ease,color .18s ease,background .18s ease}
+.periodicLink:hover{border-color:rgba(124,199,255,.34);color:#f2f8ff;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015))}
+@media (max-width:839px){.apparatusMetrics{grid-template-columns:repeat(3,minmax(0,max-content));gap:12px 18px}.topCardAside{align-items:flex-start;order:2}.topCardInfo{order:1;flex-basis:100%}}
+@media (max-width:599px){.top-card{padding:14px 14px 12px 14px}.topCardShell{gap:10px}.apparatusKicker{font-size:11px}.cycleSubline{margin-top:6px}.apparatusMetrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}.metricValue{font-size:14px}.metricValue.metricStrong{font-size:16px}.turnTimeline{gap:6px;row-gap:4px;font-size:11px}.turnProgress{max-width:100%}.topCardAside{flex-direction:row;align-items:center;justify-content:space-between;width:100%}.elementBadge img{width:68px}}
 .anilloTitle{
   text-align:center;
   margin-top:6px;
@@ -927,35 +947,53 @@ body.noScroll{overflow:hidden}
       <div id="dbg" class="status">estado: cargando…</div>
 
       <section class="card top-card">
-    <div class="elementBadge" title="Hydrogen — 1">
-      <img id="elementTile" src="/hydrogen.png" alt="Hydrogen element tile">
-    </div>
-    <div style="position:absolute;top:110px;right:16px;">
-      <a href="/periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
-    </div>
+    <div class="topCardShell">
+      <div class="topCardInfo">
+        <div class="apparatusKicker" id="apPhaseBadge">—</div>
+        <div class="cycleSubline" id="calCycleLabel">&nbsp;</div>
 
-    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-      <div>
-        <div class="badge" id="apPhaseBadge">—</div>
-        <div class="small" id="calCycleLabel" style="margin-bottom:14px">&nbsp;</div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <div id="calCardBlock"><div class="small">Cardinalidad</div><div class="mono" id="calCard">—</div></div>
-          <div id="calStepBlock"><div class="small">Columna</div><div class="mono" id="calStep">—</div></div>
-          <div><div class="small" id="calDayLabel">Paso</div><div class="mono" id="calDay" style="font-size:20px">—</div></div>
-          <div id="anilloDayBlock" style="display:none"><div class="small">Día</div><div class="mono" id="anilloSeqDay" style="font-size:20px">—</div></div>
-          <div id="calMemBlock"><div class="small">Memoria</div><div class="mono" id="calMem">—</div></div>
-          <div id="calTurnBlock">
-            <div class="small">Vuelta</div>
-            <div class="mono" id="calTurn">—</div>
-            <div class="small" id="calTurnRange" style="display:none">—</div>
-            <div class="progress" style="margin-top:8px"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
-            <div style="margin-top:10px">
+        <div class="apparatusMetrics">
+          <div class="metricItem" id="calCardBlock">
+            <div class="metricLabel">Cardinalidad</div>
+            <div class="metricValue metricStrong" id="calCard">—</div>
+          </div>
+          <div class="metricItem" id="calStepBlock">
+            <div class="metricLabel">Columna</div>
+            <div class="metricValue" id="calStep">—</div>
+          </div>
+          <div class="metricItem">
+            <div class="metricLabel" id="calDayLabel">Paso</div>
+            <div class="metricValue metricStrong" id="calDay">—</div>
+          </div>
+          <div class="metricItem" id="anilloDayBlock" style="display:none">
+            <div class="metricLabel">Día</div>
+            <div class="metricValue metricStrong" id="anilloSeqDay">—</div>
+          </div>
+          <div class="metricItem" id="calMemBlock">
+            <div class="metricLabel">Memoria</div>
+            <div class="metricValue" id="calMem">—</div>
+          </div>
+          <div class="metricItem" id="calTurnBlock">
+            <div class="metricLabel">Vuelta</div>
+            <div class="metricValue metricStrong" id="calTurn">—</div>
+            <div class="turnTimeline">
+              <span id="calTurnRange" class="metricSubline" style="display:none">—</span>
             </div>
-<!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>Día en la vuelta </span><span class="mono" id="turnDay">—</span></div> -->
-<!-- <div class="small" style="display:flex;justify-content:space-between;margin-top:2px"><span>Paso en cuadrante (1–4) </span><span class="mono" id="blockDay">—</span></div> -->
+            <div class="turnProgress">
+              <div class="progress"><div class="progressInner" id="turnProgressInner" style="width:0%"></div></div>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="topCardAside">
+        <div class="elementBadge" title="Hydrogen — 1">
+          <img id="elementTile" src="/hydrogen.png" alt="Hydrogen element tile">
+        </div>
+        <a href="/periodic.html?el=H" id="openPeriodicLink" class="periodicLink">Ver tabla periódica</a>
+      </div>
+    </div>
+
       <div id="cardinalPlane" class="plane"><div class="planeGrid">
         <div class="cell" id="cellNO" style="grid-area:1/1"><div class="cellInner"><div class="cTitle">NO</div><div class="cRange">9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
         <div class="cell" id="cellNE" style="grid-area:1/2"><div class="cellInner"><div class="cTitle">NE</div><div class="cRange">5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8</div></div><div class="cSteps"><span class="cStep" data-step="1">L</span><span class="cStep" data-step="2">I</span><span class="cStep" data-step="3">H</span><span class="cStep" data-step="4">C</span></div></div>
