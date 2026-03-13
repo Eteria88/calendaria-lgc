@@ -9,9 +9,18 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:radial-gradient(1200px 800px at 80% -10%,#12202b 0%,#0b0d10 40%) fixed;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:1100px;margin:0 auto;padding:20px}
-header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(11,13,16,.85),rgba(11,13,16,.65));backdrop-filter:saturate(130%) blur(8px);padding:10px 0 12px 0;display:flex;justify-content:space-between;align-items:center}
-.sun{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);box-shadow:0 0 18px #ffb347;display:inline-block;margin-right:8px}
+header{position:sticky;top:0;z-index:10;position:sticky;padding:8px 0 12px 0;background:transparent;border-bottom:none;overflow:visible;isolation:isolate}
+header::before{content:"";position:absolute;inset:0 0 2px 0;border-bottom:1px solid rgba(111,138,166,.08);border-bottom-right-radius:18px;background:linear-gradient(90deg,rgba(8,13,20,.76) 0%,rgba(8,13,20,.66) 54%,rgba(8,13,20,.42) 82%,rgba(8,13,20,.12) 94%,rgba(8,13,20,0) 100%);backdrop-filter:saturate(130%) blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+header::after{content:"";position:absolute;right:0;top:0;bottom:2px;width:96px;background:linear-gradient(90deg,rgba(8,13,20,0) 0%,rgba(8,13,20,.12) 55%,rgba(8,13,20,0) 100%);pointer-events:none}
+.headerBar{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;min-height:48px;padding-right:6px}
+.headerBrand{display:flex;align-items:center;gap:10px;min-width:0}
+.headerBrand h1{display:inline-block;margin:0;font-size:clamp(26px,3vw,34px);line-height:1;font-weight:750;letter-spacing:-.03em}
+.sun{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);box-shadow:0 0 18px #ffb347;display:inline-block;flex:0 0 auto}
 .small{font-size:12px;color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.mono.big{font-size:clamp(26px,7vw,40px)}
+.headerCenter{display:flex;justify-content:center;min-width:0}
+.headerContext{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;transform:translateY(1px)}
+.headerLabel{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(159,179,200,.40)}
+.headerValue{font-size:12px;line-height:1.2;color:rgba(230,241,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:3px 8px;letter-spacing:.6px;text-transform:uppercase}
     .fieldHead{display:flex;justify-content:space-between;align-items:center;gap:10px}
     .dowBadge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);border:1px solid var(--ol);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.03)}
@@ -87,34 +96,90 @@ th:first-child,td:first-child{text-align:left}
 .table-wrap::-webkit-scrollbar-thumb:hover, .anchors-scroll::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#7cc7ff,#63a8ff)}
 
 .layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
-.sidenav{position:sticky;top:58px;height:calc(100dvh - 70px);border:1px solid var(--ol);border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
-.nav-title{font-size:12px;color:var(--muted);margin-bottom:8px}
-.nav-link{display:block;padding:8px 10px;margin:4px 0;border-radius:8px;border:1px solid var(--ol);color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
-.nav-link:hover{background:rgba(255,255,255,.06)}
-.nav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+.sidenav{
+  position:sticky;top:58px;height:calc(100dvh - 70px);
+  border:1px solid rgba(111,138,166,.26);
+  border-radius:16px;
+  padding:14px 12px;
+  background:linear-gradient(180deg,rgba(7,11,17,.68),rgba(7,11,17,.44));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03), 0 10px 28px rgba(0,0,0,.16);
+}
+.sidenav nav{display:flex;flex-direction:column;height:100%}
+.nav-title{
+  font-size:11px;color:rgba(159,179,200,.84);margin:0 0 12px 2px;
+  letter-spacing:.08em;text-transform:uppercase
+}
+.nav-group{display:flex;flex-direction:column;gap:6px}
+.nav-support{margin-top:14px;padding-top:14px;border-top:1px solid rgba(111,138,166,.18)}
+.nav-link{
+  position:relative;display:block;padding:10px 12px;margin:0;border-radius:10px;
+  border:1px solid rgba(111,138,166,.22);color:rgba(230,241,255,.96);text-decoration:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.012));
+  transition:background .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease,color .18s ease;
+}
+.nav-link:hover{
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
+  border-color:rgba(124,199,255,.34);
+  color:#f3f8ff;
+  transform:translateX(1px);
+}
+.nav-link.active{
+  background:linear-gradient(180deg,rgba(124,199,255,.11),rgba(124,199,255,.05));
+  border-color:rgba(124,199,255,.48);
+  color:#ffffff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), inset 2px 0 0 rgba(124,199,255,.72);
+}
 @media(max-width:839px){.layout{grid-template-columns:1fr}.sidenav{display:none}}
 
 
-.menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
-@media(max-width:839px){.menuBtn{display:inline-block}}
+.menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.12);border:1px solid rgba(111,138,166,.26);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
+.menuBtn:hover{background:rgba(124,199,255,.18);border-color:rgba(124,199,255,.38)}
+
+@media(max-width:839px){.menuBtn{display:inline-block;grid-area:right;justify-self:end}.header-actions{display:none}}
+@media(min-width:840px){.menuBtn{display:none}}
+
 body.noScroll{overflow:hidden}
 .mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
 .mobileNav.open{pointer-events:auto}
-.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
+.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.42);backdrop-filter:blur(3px);opacity:0;transition:opacity .22s ease;z-index:1}
 .mobileNav.open .mobileOverlay{opacity:1}
-.mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
+.mobileNavPanel{
+  position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;
+  background:linear-gradient(180deg,rgba(11,17,24,.96),rgba(11,17,24,.90));
+  border-right:1px solid rgba(111,138,166,.24);
+  transform:translateX(-102%);transition:transform .22s ease;z-index:2;
+  box-shadow:10px 0 30px rgba(0,0,0,.34);will-change:transform
+}
 .mobileNav.open .mobileNavPanel{transform:translateX(0)}
-.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
-.closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
-.mobileList{display:flex;flex-direction:column;padding:10px}
-.mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
-.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
+.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:14px 14px 12px;border-bottom:1px solid rgba(111,138,166,.16)}
+.mobileNavHeader span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(159,179,200,.84)}
+.closeBtn{background:transparent;border:1px solid rgba(111,138,166,.24);border-radius:10px;color:var(--text);padding:4px 9px;cursor:pointer}
+.closeBtn:hover{border-color:rgba(124,199,255,.34);background:rgba(255,255,255,.03)}
+.mobileList{display:flex;flex-direction:column;padding:12px}
+.mnav-group{display:flex;flex-direction:column;gap:6px}
+.mnav-support{margin-top:14px;padding-top:14px;border-top:1px solid rgba(111,138,166,.16)}
+.mnav-link{
+  position:relative;display:block;padding:11px 12px;margin:0;border:1px solid rgba(111,138,166,.22);
+  border-radius:10px;color:rgba(230,241,255,.96);text-decoration:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.024),rgba(255,255,255,.012))
+}
+.mnav-link.active{
+  background:linear-gradient(180deg,rgba(124,199,255,.16),rgba(124,199,255,.08));
+  border-color:rgba(124,199,255,.58);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10), inset 3px 0 0 rgba(124,199,255,.92)
+}
 
 
 /* --- Responsive mobile tuning --- */
 @media(max-width:599px){
   .wrap{padding:14px}
   header{padding:8px 0 10px 0}
+  header::before{border-bottom-right-radius:14px}
+  header::after{width:56px}
+  .headerBar{grid-template-columns:1fr auto;grid-template-areas:"brand right" "center center";gap:10px 12px;align-items:center;padding-right:0}
+  .headerBrand{grid-area:brand}
+  .headerCenter{grid-area:center;justify-content:flex-start}
+  .headerContext{align-items:flex-start}
   .card,.tile{padding:12px}
   .mcard{grid-column:1/-1}
   .mono.big{font-size:clamp(22px,8vw,34px); word-break:break-word; overflow-wrap:anywhere}
@@ -132,11 +197,12 @@ body.noScroll{overflow:hidden}
 
 
 /* Link "Volver a portada" en header */
-.header-actions{display:flex;gap:10px;align-items:center}
-.header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border:1px solid var(--ol);padding:6px 10px;border-radius:10px;text-decoration:none}
-.header-actions a:hover{border-color:#6f8aa6;color:#d7e6ff}
+.header-actions{display:flex;gap:10px;align-items:center;justify-self:end}
+.header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:rgba(230,241,255,.82);border:1px solid rgba(111,138,166,.24);padding:7px 12px;border-radius:12px;text-decoration:none;background:linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,.008));transition:border-color .18s ease,color .18s ease,background .18s ease,transform .18s ease}
+.header-actions a:hover{border-color:#6f8aa6;color:#f0f6ff;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));transform:translateY(-1px)}
 @media (max-width:480px){
-  .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.12em}
+  .header-actions a{font-size:11px;padding:6px 8px;letter-spacing:.10em}
+  .headerValue{font-size:11px}
 }
 
 
@@ -808,33 +874,53 @@ body.noScroll{overflow:hidden}
         <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
       </div>
       <nav class="mobileList">
-                <a class="mnav-link active" href="/">Inicio</a>
-        <a class="mnav-link" href="/marcas-lgc.html">Marcas LGC</a>
-        <a class="mnav-link" href="/range.html">Comparador LGC</a>
-        <a class="mnav-link" href="/letters.html">Letras a números</a>
-        <a class="mnav-link" href="/matriz-psiquica.html">Matriz Psíquica</a>
-        <a class="mnav-link" href="/mapa/">Mapa y códigos</a>
-        <a class="mnav-link" href="/indice-ale-en-red.html">Instrucción</a>
-        <a class="mnav-link" href="/apoyar.html">Apoyar el proyecto</a>
+        <div class="mnav-group">
+          <a class="mnav-link active" href="/">Inicio</a>
+          <a class="mnav-link" href="/marcas-lgc.html">Marcas LGC</a>
+          <a class="mnav-link" href="/range.html">Comparador LGC</a>
+          <a class="mnav-link" href="/letters.html">Letras a números</a>
+          <a class="mnav-link" href="/matriz-psiquica.html">Matriz Psíquica</a>
+          <a class="mnav-link" href="/mapa/">Mapa y códigos</a>
+          <a class="mnav-link" href="/indice-ale-en-red.html">Instrucción</a>
+        </div>
+        <div class="mnav-group mnav-support">
+          <a class="mnav-link" href="/apoyar.html">Apoyar el proyecto</a>
+        </div>
       </nav>
     </div>
     <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
   </div>
 
-  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" id="nowTZ">—</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
+  <header>
+    <div class="headerBar">
+      <div class="headerBrand"><span class="sun"></span><h1>Calendaria</h1></div>
+      <div class="headerCenter">
+        <div class="headerContext">
+          <span class="headerLabel">Zona horaria</span>
+          <span class="headerValue" id="nowTZ">—</span>
+        </div>
+      </div>
+      <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button>
+      <div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div>
+    </div>
+  </header>
 
   <div class="layout">
     <aside class="sidenav">
       <nav>
         <div class="nav-title">Menú</div>
-                <a class="nav-link active" href="/">Inicio</a>
-        <a class="nav-link" href="/marcas-lgc.html">Marcas LGC</a>
-        <a class="nav-link" href="/range.html">Comparador LGC</a>
-        <a class="nav-link" href="/letters.html">Letras a números</a>
-        <a class="nav-link" href="/matriz-psiquica.html">Matriz Psíquica</a>
-        <a class="nav-link" href="/mapa/">Mapa y códigos</a>
-        <a class="nav-link" href="/indice-ale-en-red.html">Instrucción</a>
-        <a class="nav-link" href="/apoyar.html">Apoyar el proyecto</a>
+        <div class="nav-group">
+          <a class="nav-link active" href="/">Inicio</a>
+          <a class="nav-link" href="/marcas-lgc.html">Marcas LGC</a>
+          <a class="nav-link" href="/range.html">Comparador LGC</a>
+          <a class="nav-link" href="/letters.html">Letras a números</a>
+          <a class="nav-link" href="/matriz-psiquica.html">Matriz Psíquica</a>
+          <a class="nav-link" href="/mapa/">Mapa y códigos</a>
+          <a class="nav-link" href="/indice-ale-en-red.html">Instrucción</a>
+        </div>
+        <div class="nav-group nav-support">
+          <a class="nav-link" href="/apoyar.html">Apoyar el proyecto</a>
+        </div>
       </nav>
     </aside>
     <main>
