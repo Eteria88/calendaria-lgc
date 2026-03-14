@@ -445,6 +445,40 @@ body.noScroll{overflow:hidden}
     #calog thead th{position:sticky;top:0;background:var(--bg);z-index:2}
     #calog tr.calog-current td{background:rgba(255,255,255,.06)}
 
+
+/* === Módulo Aparatos === */
+.aparatos-card{margin-top:12px}
+.aparatos-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.aparatos-sub{max-width:720px}
+.aparatos-controls{display:grid;grid-template-columns:minmax(0,220px) auto;gap:10px;align-items:end}
+.aparatos-actions{display:flex;gap:8px;flex-wrap:wrap}
+.aparatos-hint{margin-top:8px}
+.aparatos-empty{margin-top:12px;padding:14px;border:1px dashed var(--ol);border-radius:12px;background:rgba(255,255,255,.02);color:var(--muted)}
+.aparatos-result{display:none;margin-top:14px}
+.aparatos-result.is-visible{display:block}
+.aparatos-result-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.aparatos-title{display:flex;flex-direction:column;gap:6px}
+.aparatos-title h3{margin:0;font-size:clamp(20px,3vw,26px);letter-spacing:-.02em}
+.aparatos-years{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ap-year{border:1px solid var(--ol);border-radius:14px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015))}
+.ap-year-role{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ap-year-num{font-size:clamp(22px,4vw,30px);font-weight:760;line-height:1;margin-bottom:8px}
+.ap-year-formula{font-size:12px;color:var(--muted)}
+.ap-year-decide{border-color:rgba(255,209,102,.38);box-shadow:inset 0 0 0 1px rgba(255,209,102,.12)}
+.ap-year-asume{border-color:rgba(124,199,255,.28)}
+.ap-year-asimila{border-color:rgba(0,230,118,.24)}
+.ap-year-desafia{border-color:rgba(255,140,66,.24)}
+.aparatos-phrase{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.ap-word{border:1px dashed var(--ol);border-radius:12px;padding:10px 12px;text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.02)}
+.ap-word strong{display:block;color:var(--text);font-size:13px;letter-spacing:.06em}
+@media(max-width:839px){
+  .aparatos-controls{grid-template-columns:1fr}
+  .aparatos-years,.aparatos-phrase{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:519px){
+  .aparatos-years,.aparatos-phrase{grid-template-columns:1fr}
+}
+
 </style>
   <!-- Splash Landing v3 (forzado) + mobile responsive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -838,6 +872,7 @@ body.noScroll{overflow:hidden}
     opacity: .86;
   }
 }
+
 </style>
 
 
@@ -882,6 +917,7 @@ body.noScroll{overflow:hidden}
           <a class="mnav-link" href="/matriz-psiquica.html">Matriz Psíquica</a>
           <a class="mnav-link" href="/mapa/">Mapa y códigos</a>
           <a class="mnav-link" href="/indice-ale-en-red.html">Instrucción</a>
+          <a class="mnav-link" href="#aparatos">Aparatos</a>
         </div>
         <div class="mnav-group mnav-support">
           <a class="mnav-link" href="/apoyar.html">Apoyar el proyecto</a>
@@ -917,6 +953,7 @@ body.noScroll{overflow:hidden}
           <a class="nav-link" href="/matriz-psiquica.html">Matriz Psíquica</a>
           <a class="nav-link" href="/mapa/">Mapa y códigos</a>
           <a class="nav-link" href="/indice-ale-en-red.html">Instrucción</a>
+          <a class="nav-link" href="#aparatos">Aparatos</a>
         </div>
         <div class="nav-group nav-support">
           <a class="nav-link" href="/apoyar.html">Apoyar el proyecto</a>
@@ -1136,6 +1173,73 @@ body.noScroll{overflow:hidden}
       <div class="chips"><span class="chip mono" id="freqAppPos">+—</span><span class="chip mono" id="freqAppNeg">−—</span></div>
       <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Día de encaje</span><span class="mono" style="font-size:11px"><span id="apNegDate">—</span></span></div>
       <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span class="small">Frecuencia de anulación del aparato</span><span class="mono" id="annApp">—</span></div>
+    </div>
+  </section>
+
+
+  <section class="card aparatos-card" id="aparatos">
+    <div class="aparatos-head">
+      <div class="aparatos-sub">
+        <div class="section-title">Aparatos</div>
+        <div class="small">Busca un número de aparato y la app te devolverá su estructura base: ASUME, ASIMILA, DESAFÍA y DECIDE.</div>
+      </div>
+      <div class="badge">Etapa 1 · estructura base</div>
+    </div>
+
+    <div class="aparatos-controls">
+      <label class="field" for="aparatoInput">
+        <span class="small">Número de aparato</span>
+        <input class="input mono" id="aparatoInput" type="number" inputmode="numeric" min="1" step="1" placeholder="Ej. 396">
+      </label>
+      <div class="aparatos-actions">
+        <button class="btn" id="aparatoSearchBtn" type="button">Buscar aparato</button>
+        <button class="btn" id="aparatoClearBtn" type="button">Limpiar</button>
+      </div>
+    </div>
+
+    <div class="small aparatos-hint">Regla: ASUME = 4·N − 3 · ASIMILA = 4·N − 2 · DESAFÍA = 4·N − 1 · DECIDE = 4·N.</div>
+
+    <div class="aparatos-empty" id="aparatoEmptyState">Todavía no buscaste ningún aparato. Prueba con <span class="mono">396</span>, <span class="mono">493</span> o <span class="mono">500</span>.</div>
+
+    <div class="aparatos-result" id="aparatoResult" aria-live="polite">
+      <div class="aparatos-result-head">
+        <div class="aparatos-title">
+          <div class="badge" id="aparatoBadge">Aparato —</div>
+          <h3 id="aparatoTitle">Aparato —</h3>
+          <div class="small" id="aparatoSummary">—</div>
+        </div>
+        <div class="small mono" id="aparatoEquation">—</div>
+      </div>
+
+      <div class="aparatos-years">
+        <article class="ap-year ap-year-asume">
+          <div class="ap-year-role">Asume</div>
+          <div class="ap-year-num mono" id="aparatoAsumeYear">—</div>
+          <div class="ap-year-formula mono">4·N − 3</div>
+        </article>
+        <article class="ap-year ap-year-asimila">
+          <div class="ap-year-role">Asimila</div>
+          <div class="ap-year-num mono" id="aparatoAsimilaYear">—</div>
+          <div class="ap-year-formula mono">4·N − 2</div>
+        </article>
+        <article class="ap-year ap-year-desafia">
+          <div class="ap-year-role">Desafía</div>
+          <div class="ap-year-num mono" id="aparatoDesafiaYear">—</div>
+          <div class="ap-year-formula mono">4·N − 1</div>
+        </article>
+        <article class="ap-year ap-year-decide">
+          <div class="ap-year-role">Decide</div>
+          <div class="ap-year-num mono" id="aparatoDecideYear">—</div>
+          <div class="ap-year-formula mono">4·N</div>
+        </article>
+      </div>
+
+      <div class="aparatos-phrase">
+        <div class="ap-word"><strong>Si decides</strong> cuarto año</div>
+        <div class="ap-word"><strong>asumir</strong> primer año</div>
+        <div class="ap-word"><strong>asimilarás</strong> segundo año</div>
+        <div class="ap-word"><strong>el desafío</strong> tercer año</div>
+      </div>
     </div>
   </section>
 
