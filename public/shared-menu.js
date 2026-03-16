@@ -6,13 +6,13 @@
   var current = config.current || '';
   var items = [
     { key:'inicio', label:'Inicio', href:'/' },
+    { key:'aparatos', label:'Aparatos', href:'/aparatos.html' },
+    { key:'matriz', label:'Matriz Psíquica', href:'/matriz-psiquica.html' },
+    { key:'mapa', label:'Mapa y códigos', href:'/mapa/' },
     { key:'marcas', label:'Marcas LGC', href:'/marcas-lgc.html' },
     { key:'comparador', label:'Comparador LGC', href:'/range.html' },
     { key:'letras', label:'Letras a números', href:'/letters.html' },
-    { key:'matriz', label:'Matriz Psíquica', href:'/matriz-psiquica.html' },
-    { key:'mapa', label:'Mapa y códigos', href:'/mapa/' },
-    { key:'instruccion', label:'Instrucción', href:'/indice-ale-en-red.html' },
-    { key:'aparatos', label:'Aparatos', href:'/aparatos.html' }
+    { key:'instruccion', label:'Instrucción', href:'/indice-ale-en-red.html' }
   ];
   var supportItems = [
     { key:'apoyar', label:'Apoyar el proyecto', href:'/apoyar.html' }
