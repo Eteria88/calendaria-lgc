@@ -115,6 +115,26 @@ footer.small{padding-left:236px}
   .headerBar{grid-template-columns:auto 1fr auto}
   footer.small{padding-left:0}
 }
+
+
+/* === Ajuste comparador: sidebar compacta + área operativa prioritaria === */
+body > .wrap{max-width:1180px;padding:10px 20px 24px}
+main > .wrap{max-width:1000px}
+@media(min-width:840px){
+  .layout{display:grid !important;grid-template-columns:184px minmax(0,1fr) !important;gap:22px;align-items:start}
+  .sidenav{
+    display:block !important;position:sticky;top:72px;width:auto;height:calc(100dvh - 86px);
+    padding:10px 10px 12px;border-radius:14px
+  }
+  .nav-title{margin:0 0 10px 2px;font-size:10px}
+  .nav-group{gap:5px}
+  .nav-support{margin-top:12px;padding-top:12px}
+  .nav-link{padding:8px 10px;border-radius:9px;font-size:15px}
+  footer.small{padding-left:206px}
+}
+@media(min-width:1060px){
+  main > .wrap{max-width:1040px}
+}
 </style>
 <link rel="stylesheet" href="/shared-menu.css">
 <link href="/manifest.webmanifest" rel="manifest"/>
