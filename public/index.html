@@ -849,6 +849,7 @@ body.noScroll{overflow:hidden}
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Calendaria">
 <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+<link rel="stylesheet" href="/shared-menu.css">
 </head><body>
 
   <div id="splash" class="splash" role="dialog" aria-label="Portada Calendaria">
@@ -867,30 +868,7 @@ body.noScroll{overflow:hidden}
 
 <div class="wrap">
 
-  <div class="mobileNav" id="mobileNav" aria-hidden="true">
-    <div class="mobileNavPanel">
-      <div class="mobileNavHeader">
-        <span>Menú</span>
-        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
-      </div>
-      <nav class="mobileList">
-        <div class="mnav-group">
-          <a class="mnav-link active" href="/">Inicio</a>
-          <a class="mnav-link" href="/marcas-lgc.html">Marcas LGC</a>
-          <a class="mnav-link" href="/range.html">Comparador LGC</a>
-          <a class="mnav-link" href="/letters.html">Letras a números</a>
-          <a class="mnav-link" href="/matriz-psiquica.html">Matriz Psíquica</a>
-          <a class="mnav-link" href="/mapa/">Mapa y códigos</a>
-          <a class="mnav-link" href="/indice-ale-en-red.html">Instrucción</a>
-          <a class="mnav-link" href="/aparatos.html">Aparatos</a>
-        </div>
-        <div class="mnav-group mnav-support">
-          <a class="mnav-link" href="/apoyar.html">Apoyar el proyecto</a>
-        </div>
-      </nav>
-    </div>
-    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-  </div>
+  <div data-cal-menu="mobile"></div>
 
   <header>
     <div class="headerBar">
@@ -907,24 +885,7 @@ body.noScroll{overflow:hidden}
   </header>
 
   <div class="layout">
-    <aside class="sidenav">
-      <nav>
-        <div class="nav-title">Menú</div>
-        <div class="nav-group">
-          <a class="nav-link active" href="/">Inicio</a>
-          <a class="nav-link" href="/marcas-lgc.html">Marcas LGC</a>
-          <a class="nav-link" href="/range.html">Comparador LGC</a>
-          <a class="nav-link" href="/letters.html">Letras a números</a>
-          <a class="nav-link" href="/matriz-psiquica.html">Matriz Psíquica</a>
-          <a class="nav-link" href="/mapa/">Mapa y códigos</a>
-          <a class="nav-link" href="/indice-ale-en-red.html">Instrucción</a>
-          <a class="nav-link" href="/aparatos.html">Aparatos</a>
-        </div>
-        <div class="nav-group nav-support">
-          <a class="nav-link" href="/apoyar.html">Apoyar el proyecto</a>
-        </div>
-      </nav>
-    </aside>
+    <aside class="sidenav" data-cal-menu="desktop"></aside>
     <main>
       <div id="dbg" class="status">estado: cargando…</div>
 
@@ -2969,4 +2930,6 @@ if ('serviceWorker' in navigator) {
   }
 })();
 </script>
+<script>window.CAL_MENU_CONFIG={current:"inicio"};</script>
+<script src="/shared-menu.js"></script>
 </body></html>
