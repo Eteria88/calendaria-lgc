@@ -63,7 +63,39 @@
     .footerBand{background:linear-gradient(180deg, #56a59d, #4a9189);color:#f7fbff;border-radius:0 0 14px 14px;overflow:hidden;border:1px solid rgba(255,255,255,.07)}.footerMain{text-align:center;font-size:17px;font-weight:620;line-height:1.08;padding:11px 14px 7px;border-bottom:1px solid rgba(0,0,0,.08)}.footerMeta{display:grid;grid-template-columns:1fr 1fr;gap:0}.footerMeta>div{padding:8px 14px;font-size:12px;font-weight:620;text-align:center;border-right:1px solid rgba(0,0,0,.08)}.footerMeta>div:last-child{border-right:0}
     .muted{color:var(--muted)}
     @media (max-width:1100px){.topGrid{grid-template-columns:1fr}.quadGrid{grid-template-columns:1fr}.formulaCard{max-width:100%}.ruleList{grid-template-columns:repeat(4,minmax(0,1fr))}.architectureCard{min-height:auto}.architectureInner{padding:16px 18px}}
-    @media (max-width:760px){.wrap{padding:14px}header{margin:-14px -14px 16px;padding:14px}.headerBar{grid-template-columns:1fr;gap:10px}.context{text-align:left}.heroHead,.searchWrap,.footerMeta,.timeline{grid-template-columns:1fr;display:grid}.ruleList{grid-template-columns:1fr 1fr}.phraseRail{grid-template-columns:1fr}.phraseLine{display:none}.footerMain{font-size:22px}.cells{grid-template-columns:repeat(13,minmax(74px,1fr))}}
+    @media (max-width:760px){
+      .wrap{padding:14px}
+      header{margin:-14px -14px 16px;padding:14px}
+      .headerBar{grid-template-columns:1fr;gap:10px}
+      .context{text-align:left}
+      .topCardLayout{grid-template-columns:1fr;gap:12px}
+      .topCardRight{grid-template-rows:auto auto;gap:10px}
+      .card{padding:14px}
+      .architectureInner{padding:14px 15px}
+      .architectureKicker{margin-bottom:12px;font-size:9px}
+      .architectureEquation{margin-bottom:16px}
+      .architectureEquation strong{font-size:15px}
+      .architectureRows{gap:6px}
+      .architectureRow{grid-template-columns:58px 1fr;gap:10px;padding-top:8px}
+      .architectureRow strong{font-size:13px}
+      .architectureRow span{font-size:11.5px;line-height:1.35}
+      .architectureNote{margin:10px 0 0;font-size:9.8px;line-height:1.45}
+      .formulaCard{padding:11px 12px}
+      .formulaEyebrow{font-size:8.5px}
+      .formulaLine{font-size:10.3px;line-height:1.5}
+      .formulaSub{font-size:8.8px}
+      .heroHead,.footerMeta,.timeline{grid-template-columns:1fr;display:grid}
+      .searchWrap{grid-template-columns:1fr;gap:10px;justify-content:stretch}
+      .btn{width:100%;min-height:44px}
+      .status{max-width:100%}
+      .infoBubble summary{display:flex;width:100%;justify-content:flex-start;white-space:normal;padding:9px 12px;line-height:1.35;border-radius:14px}
+      .infoContent{margin-top:10px;padding:14px 16px 15px;max-height:232px;font-size:13.2px;line-height:1.68}
+      .ruleList{grid-template-columns:1fr 1fr}
+      .phraseRail{grid-template-columns:1fr}
+      .phraseLine{display:none}
+      .footerMain{font-size:22px}
+      .cells{grid-template-columns:repeat(13,minmax(74px,1fr))}
+    }
   </style>
 </head>
 <body>
