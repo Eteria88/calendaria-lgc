@@ -64,6 +64,7 @@ body.noScroll{overflow:hidden}
 
 .layout{display:block;gap:0}
 .menuBtn{display:inline-block}
+@media(min-width:840px){.menuBtn{display:none !important}}
 
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);
   opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:40}
@@ -103,6 +104,8 @@ header::after{
   pointer-events:none
 }
 .headerBar{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;min-height:48px;padding-right:6px}
+.headerCenter:empty{display:none}
+@media(min-width:840px){.headerBar{grid-template-columns:auto 1fr}}
 .headerBrand{display:flex;align-items:center;gap:10px;min-width:0}
 .headerBrand h1{display:inline-block;margin:0;font-size:clamp(26px,3vw,34px);line-height:1;font-weight:750;letter-spacing:-.03em}
 .headerCenter{display:flex;justify-content:center;min-width:0}
@@ -123,7 +126,8 @@ main > .wrap{max-width:1000px}
 @media(min-width:840px){
   .layout{display:grid !important;grid-template-columns:184px minmax(0,1fr) !important;gap:22px;align-items:start}
   .sidenav{
-    display:block !important;position:sticky;top:72px;width:auto;height:calc(100dvh - 86px);
+    display:block !important;position:sticky;top:72px;left:auto;width:auto;height:calc(100dvh - 86px);
+    transform:none !important;overflow:auto;
     padding:10px 10px 12px;border-radius:14px
   }
   .nav-title{margin:0 0 10px 2px;font-size:10px}
@@ -149,12 +153,7 @@ main > .wrap{max-width:1000px}
 <header>
   <div class="headerBar">
     <div class="headerBrand"><span class="sun"></span><h1>Calendaria</h1></div>
-    <div class="headerCenter">
-      <div class="headerContext">
-        <span class="headerLabel">Módulo</span>
-        <span class="headerValue">Comparador LGC</span>
-      </div>
-    </div>
+    <div class="headerCenter"></div>
     <button aria-expanded="false" aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button>
   </div>
 </header>
