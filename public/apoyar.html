@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Apoyar — Calendaria-LGC</title>
+  <link rel="stylesheet" href="/shared-menu.css">
 
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="manifest" href="/manifest.webmanifest">
@@ -526,20 +527,89 @@
       .communityBtn{width:100%}
     }
 
+
+    .appLayout{
+      display:grid;
+      grid-template-columns:220px minmax(0,1fr);
+      gap:18px;
+      align-items:start;
+      max-width:1220px;
+      margin:0 auto;
+      padding:16px;
+    }
+    .pageMain{min-width:0}
+    .headerBar{
+      max-width:1220px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .headerStart{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .headerBrand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .headerBrand h1{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .supportWrap{
+      max-width:none;
+      margin:0;
+      padding:0;
+    }
+    .wrap{max-width:none;margin:0;padding:0}
+    @media(max-width:839px){
+      header{padding:12px 14px}
+      .headerBar{display:block}
+      .headerStart{
+        display:flex;
+        align-items:center;
+        justify-content:flex-start;
+        gap:10px;
+      }
+      .headerBrand h1{font-size:15px}
+      .appLayout{
+        grid-template-columns:1fr;
+        gap:0;
+        padding:14px;
+      }
+      .menuBtn{
+        margin-left:0;
+        order:-1;
+      }
+    }
+
 </style>
 </head>
 <body>
   <header>
-    <div class="brand">
-      <span class="sun"></span>
-      <h1>Apoyar el proyecto</h1>
-    </div>
-    <div class="topActions">
-      <a class="btn secondary" href="./">Inicio</a>
+    <div class="headerBar">
+      <div class="headerStart">
+        <button class="menuBtn" id="menuBtn" type="button" aria-label="Abrir menú" aria-expanded="false" title="Menú">☰</button>
+        <div class="headerBrand">
+          <span class="sun"></span>
+          <h1>Apoyar el proyecto</h1>
+        </div>
+      </div>
     </div>
   </header>
 
-  <div class="wrap">
+  <div class="appLayout">
+    <div data-cal-menu="mobile"></div>
+    <aside class="sidenav" data-cal-menu="desktop"></aside>
+    <main class="pageMain">
+      <div class="wrap supportWrap">
     <div class="card">
 
       <div class="supportLayout">
@@ -711,7 +781,11 @@
           </div>
         </div>
       </details>
-    </div>
+          </div>
+    </main>
+  </div>
+<script>window.CAL_MENU_CONFIG={current:"apoyar"};</script>
+<script src="/shared-menu.js"></script>
 <script>
     // Links (una sola vez)
     const MP_URL = "https://link.mercadopago.com.ar/appcalendarialgc";
