@@ -33,20 +33,6 @@ th,td{padding:10px 12px;border-bottom:1px solid var(--ol);text-align:left}
 .key .k{font-weight:700}
 .key .v{font-size:12px;color:var(--muted)}
 
-.menuBtn{display:none;margin-left:8px;background:rgba(124,199,255,.15);border:1px solid var(--ol);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer}
-@media(max-width:839px){.menuBtn{display:inline-block}}
-body.noScroll{overflow:hidden}
-.mobileNav{position:fixed;inset:0;pointer-events:none;z-index:9999}
-.mobileNav.open{pointer-events:auto}
-.mobileOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .22s ease;z-index:1}
-.mobileNav.open .mobileOverlay{opacity:1}
-.mobileNavPanel{position:absolute;top:0;left:0;width:82%;max-width:320px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-right:1px solid var(--ol);transform:translateX(-102%);transition:transform .22s ease;z-index:2;box-shadow:6px 0 20px rgba(0,0,0,.3);will-change:transform}
-.mobileNav.open .mobileNavPanel{transform:translateX(0)}
-.mobileNavHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ol)}
-.closeBtn{background:transparent;border:1px solid var(--ol);border-radius:8px;color:var(--text);padding:4px 8px;cursor:pointer}
-.mobileList{display:flex;flex-direction:column;padding:10px}
-.mnav-link{display:block;padding:10px 12px;margin:6px 10px;border:1px solid var(--ol);border-radius:10px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.02)}
-.mnav-link.active{background:rgba(124,199,255,.18);border-color:#7cc7ff;box-shadow:inset 0 0 0 1px rgba(124,199,255,.4)}
 
 
 /* --- Responsive mobile tuning --- */
@@ -85,7 +71,9 @@ body.noScroll{overflow:hidden}
   }
 }
 
-</style>  <link rel="manifest" href="/manifest.webmanifest">
+</style>
+<link rel="stylesheet" href="/shared-menu.css">
+<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b0d10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -94,40 +82,11 @@ body.noScroll{overflow:hidden}
 </head><body>
 <div class="wrap">
 
-  <div class="mobileNav" id="mobileNav" aria-hidden="true">
-    <div class="mobileNavPanel">
-      <div class="mobileNavHeader">
-        <span>Menú</span>
-        <button class="closeBtn" id="closeMenu" aria-label="Cerrar">×</button>
-      </div>
-      <nav class="mobileList">
-                <a class="mnav-link" href="./">Inicio</a>
-        <a class="mnav-link" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="mnav-link" href="./range.html">Comparador LGC</a>
-        <a class="mnav-link active" href="./letters.html">Letras a números</a>
-        <a class="mnav-link" href="./matriz-psiquica.html">Matriz Psíquica</a>
-        <a class="mnav-link" href="./mapa/">Mapa y códigos</a>
-        <a class="mnav-link" href="./indice-ale-en-red.html">Instrucción</a>
-        <a class="mnav-link" href="./apoyar.html">Apoyar el proyecto</a></nav>
-    </div>
-    <div class="mobileOverlay" id="mobileOverlay" tabindex="-1"></div>
-  </div>
+  <div data-cal-menu="mobile"></div>
 
-  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><span class="small" style="display:none">Herramientas</span><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button></header>
+  <header><div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" title="Menú">☰</button></header>
   <div class="layout">
-    <aside class="sidenav">
-      <nav>
-        <div class="nav-title">Menú</div>
-                <a class="nav-link" href="./">Inicio</a>
-        <a class="nav-link" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="nav-link" href="./range.html">Comparador LGC</a>
-        <a class="nav-link active" href="./letters.html">Letras a números</a>
-        <a class="nav-link" href="./matriz-psiquica.html">Matriz Psíquica</a>
-        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
-        <a class="nav-link" href="./indice-ale-en-red.html">Instrucción</a>
-        <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
-      </nav>
-    </aside>
+    <aside class="sidenav" data-cal-menu="desktop"></aside>
     <main>
       <div id="ldbg" class="status" style="display:none">estado: cargando…</div>
 
@@ -176,6 +135,8 @@ body.noScroll{overflow:hidden}
   <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
 </div>
 <noscript><div style="color:#ff9aa2;padding:8px 20px">Necesitás habilitar JavaScript para usar el conversor.</div></noscript>
+<script>window.CAL_MENU_CONFIG={current:"letras"};</script>
+<script src="/shared-menu.js" defer></script>
 <script src="./letters.js" defer></script>
 <script src="./common.js" defer></script>
 
