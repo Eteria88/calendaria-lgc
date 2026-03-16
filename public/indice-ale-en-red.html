@@ -201,7 +201,7 @@ body.has-global-menu .page-main{
   background:transparent;
   box-shadow:none;
 }
-body.has-global-menu .global-menu-col .sidenav{
+body.has-global-menu .global-menu-col.sidenav{
   border:1px solid rgba(111,138,166,.30);
   border-radius:22px;
   padding:14px 10px 12px;
@@ -213,9 +213,9 @@ body.has-global-menu .global-menu-col .sidenav{
     0 18px 44px rgba(0,0,0,.28),
     0 0 0 1px rgba(16,28,44,.24);
 }
-body.has-global-menu .global-menu-col .nav-title{margin-bottom:12px;padding-left:3px}
-body.has-global-menu .global-menu-col .nav-group{gap:6px}
-body.has-global-menu .global-menu-col .nav-link{
+body.has-global-menu .global-menu-col.sidenav .nav-title{margin-bottom:12px;padding-left:3px}
+body.has-global-menu .global-menu-col.sidenav .nav-group{gap:6px}
+body.has-global-menu .global-menu-col.sidenav .nav-link{
   padding:8px 11px;
   min-height:40px;
   border-radius:12px;
@@ -233,7 +233,7 @@ body.has-global-menu .global-menu-col .nav-link{
 <div class="wrap">
   <div class="mobileMenuHost"><div data-cal-menu="mobile"></div></div>
   <div class="page-shell">
-    <aside class="global-menu-col" aria-label="Navegación principal"><div data-cal-menu="desktop"></div></aside>
+    <aside class="global-menu-col sidenav" aria-label="Navegación principal"><div data-cal-menu="desktop"></div></aside>
     <main class="page-main">
 <div class="top">
 <div class="title">
