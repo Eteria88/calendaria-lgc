@@ -844,7 +844,7 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   }
 }
 </style>
-<link rel="stylesheet" href="/shared-menu.css">
+<link rel="stylesheet" href="/shared-menu.css"/>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0b0d10"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -872,19 +872,29 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   #calcCard .btn, #calcCard2 .btn{height:40px !important; padding:0 10px !important; font-size:13px !important; white-space:nowrap !important;}
 }
 </style>
+
+<style>
+@media (min-width: 840px){
+  .layout{align-items:start;}
+  main{min-width:0;}
+}
+@media (max-width: 839px){
+  header{gap:8px;}
+}
+</style>
 </head>
 <body>
 <div class="wrap">
-  <div data-cal-menu="mobile"></div>
-
-  <header>
-    <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria‑LGC</h1></div>
+<header>
     <div style="display:flex;align-items:center;gap:10px">
-      <span class="small" aria-hidden="true"></span>
-      <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" title="Menú">☰</button>
-      <button class="btnVolver" id="btnVolver" aria-label="Volver" title="Volver">Volver</button>
+      <button class="menuBtn" id="menuBtn" type="button" aria-label="Abrir menú" aria-expanded="false" title="Menú">☰</button>
+      <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria‑LGC</h1></div>
     </div>
+    <span class="small" aria-hidden="true"></span>
+    <button class="btnVolver" id="btnVolver" aria-label="Volver" title="Volver">Volver</button>
   </header>
+
+  <div data-cal-menu="mobile"></div>
 
   <div class="layout">
     <aside class="sidenav" data-cal-menu="desktop"></aside>
@@ -967,6 +977,9 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
     </main>
   </div>
 </div>
+
+<script>window.CAL_MENU_CONFIG={current:"matriz"};</script>
+<script src="/shared-menu.js"></script>
 
 <script>
 const events = [
@@ -1551,7 +1564,5 @@ window.addEventListener("DOMContentLoaded", ()=>{
 });
 
 </script>
-<script>window.CAL_MENU_CONFIG={current:"matriz"};</script>
-<script src="/shared-menu.js"></script>
 </body>
 </html>
