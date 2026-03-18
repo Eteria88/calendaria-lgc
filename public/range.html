@@ -64,6 +64,7 @@ body.noScroll{overflow:hidden}
 
 .layout{display:block;gap:0}
 .menuBtn{display:inline-block}
+@media(min-width:840px){.menuBtn{display:none !important}}
 
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);
   opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:40}
@@ -83,7 +84,63 @@ body.noScroll{overflow:hidden}
 .tbl .mut{color:var(--muted);font-size:12px;margin-top:2px}
 .tbl tr.hi{background:rgba(156,255,213,.06)}
 
-input[type=date]{min-width:0;}</style>
+
+input[type=date]{min-width:0;}
+
+/* === Menú compartido / header unificado === */
+header{
+  position:sticky;top:0;z-index:20;padding:8px 0 12px 0;background:transparent;border-bottom:none;overflow:visible;isolation:isolate
+}
+header::before{
+  content:"";position:absolute;inset:0 0 2px 0;border-bottom:1px solid rgba(111,138,166,.08);
+  border-bottom-right-radius:18px;
+  background:linear-gradient(90deg,rgba(8,13,20,.76) 0%,rgba(8,13,20,.66) 54%,rgba(8,13,20,.42) 82%,rgba(8,13,20,.12) 94%,rgba(8,13,20,0) 100%);
+  backdrop-filter:saturate(130%) blur(8px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02)
+}
+header::after{
+  content:"";position:absolute;right:0;top:0;bottom:2px;width:96px;
+  background:linear-gradient(90deg,rgba(8,13,20,0) 0%,rgba(8,13,20,.12) 55%,rgba(8,13,20,0) 100%);
+  pointer-events:none
+}
+.headerBar{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;min-height:48px;padding-right:6px}
+.headerCenter:empty{display:none}
+@media(min-width:840px){.headerBar{grid-template-columns:auto 1fr}}
+.headerBrand{display:flex;align-items:center;gap:10px;min-width:0}
+.headerBrand h1{display:inline-block;margin:0;font-size:clamp(26px,3vw,34px);line-height:1;font-weight:750;letter-spacing:-.03em}
+.headerCenter{display:flex;justify-content:center;min-width:0}
+.headerContext{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;transform:translateY(1px)}
+.headerLabel{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(159,179,200,.40)}
+.headerValue{font-size:12px;line-height:1.2;color:rgba(230,241,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+main > .wrap{max-width:720px;margin:0;padding:0}
+footer.small{padding-left:236px}
+@media(max-width:839px){
+  .headerBar{grid-template-columns:auto 1fr auto}
+  footer.small{padding-left:0}
+}
+
+
+/* === Ajuste comparador: sidebar compacta + área operativa prioritaria === */
+body > .wrap{max-width:1180px;padding:10px 20px 24px}
+main > .wrap{max-width:1000px}
+@media(min-width:840px){
+  .layout{display:grid !important;grid-template-columns:184px minmax(0,1fr) !important;gap:22px;align-items:start}
+  .sidenav{
+    display:block !important;position:sticky;top:72px;left:auto;width:auto;height:calc(100dvh - 86px);
+    transform:none !important;overflow:auto;
+    padding:10px 10px 12px;border-radius:14px
+  }
+  .nav-title{margin:0 0 10px 2px;font-size:10px}
+  .nav-group{gap:5px}
+  .nav-support{margin-top:12px;padding-top:12px}
+  .nav-link{padding:8px 10px;border-radius:9px;font-size:15px}
+  footer.small{padding-left:206px}
+}
+@media(min-width:1060px){
+  main > .wrap{max-width:1040px}
+}
+</style>
+<link rel="stylesheet" href="/shared-menu.css">
 <link href="/manifest.webmanifest" rel="manifest"/>
 <meta content="#0b0d10" name="theme-color"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
@@ -92,27 +149,17 @@ input[type=date]{min-width:0;}</style>
 <link href="/icons/calendaria-512.png" rel="apple-touch-icon"/>
 </head><body>
 <div class="wrap">
+<div data-cal-menu="mobile"></div>
 <header>
-<div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria</h1></div>
-<button aria-expanded="false" aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button>
+  <div class="headerBar">
+    <div class="headerBrand"><span class="sun"></span><h1>Calendaria</h1></div>
+    <div class="headerCenter"></div>
+    <button aria-expanded="false" aria-label="Abrir menú" class="menuBtn" id="menuBtn" title="Menú">☰</button>
+  </div>
 </header>
-<div aria-hidden="true" class="backdrop" id="backdrop"></div>
 <div class="layout">
-  <aside class="sidenav">
-    <nav>
-      <div class="nav-title">Menú</div>
-              <a class="nav-link" href="./">Inicio</a>
-        <a class="nav-link" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="nav-link active" href="./range.html">Comparador LGC</a>
-        <a class="nav-link" href="./letters.html">Letras a números</a>
-        <a class="nav-link" href="./matriz-psiquica.html">Matriz Psíquica</a>
-        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
-        <a class="nav-link" href="./indice-ale-en-red.html">Instrucción</a>
-        <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
-    </nav>
-  </aside>
-
-    <main>
+  <aside class="sidenav" data-cal-menu="desktop"></aside>
+  <main>
     <div class="wrap">
       <h1 style="margin:0 0 4px 0;font-size:20px">Comparador LGC</h1>
 <div class="status" id="rdbg" style="display:none">estado: cargando…</div>
@@ -226,7 +273,6 @@ input[type=date]{min-width:0;}</style>
 </div>
 <footer class="small" style="opacity:.75;margin-top:12px">Hecho en el navegador.</footer>
 </div>
-<script defer="" src="./common.js"></script>
 <!-- Botones Hoy (rangos A y B) -->
 <script>
 document.addEventListener('DOMContentLoaded', function(){
@@ -267,4 +313,6 @@ if ('serviceWorker' in navigator) {
   window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
 </script>
 <script defer="" src="/_vercel/speed-insights/script.js"></script>
+<script>window.CAL_MENU_CONFIG={current:"comparador"};</script>
+<script src="/shared-menu.js"></script>
 </body></html>
