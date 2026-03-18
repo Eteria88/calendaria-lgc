@@ -821,6 +821,78 @@ var isGregorian = (Rf.y>1582) || (Rf.y===1582 && (Rf.m>10 || (Rf.m===10 && Rf.d>
       init=true;
       status((dowNameFromYMD(Rf.y, Rf.m, Rf.d) || '—') + ' ' + pad(Rf.d) + '/' + pad(Rf.m) + '/' + String(Rf.y).padStart(4,'0'), true);
     }
+
+    function getAparatoYears(n){
+      n = parseInt(n, 10);
+      if(!isFinite(n) || n < 1) return null;
+      return {
+        aparato: n,
+        asume: 4*n - 3,
+        asimila: 4*n - 2,
+        desafia: 4*n - 1,
+        decide: 4*n
+      };
+    }
+
+    function renderAparatoBase(n){
+      var data = getAparatoYears(n);
+      var input = document.getElementById('aparatoInput');
+      var empty = document.getElementById('aparatoEmptyState');
+      var result = document.getElementById('aparatoResult');
+      if(!input || !empty || !result) return;
+
+      if(!data){
+        empty.textContent = 'Ingresa un número entero positivo para buscar un aparato.';
+        empty.style.display = 'block';
+        result.classList.remove('is-visible');
+        return;
+      }
+
+      var badge = document.getElementById('aparatoBadge');
+      var title = document.getElementById('aparatoTitle');
+      var summary = document.getElementById('aparatoSummary');
+      var equation = document.getElementById('aparatoEquation');
+      var asume = document.getElementById('aparatoAsumeYear');
+      var asimila = document.getElementById('aparatoAsimilaYear');
+      var desafia = document.getElementById('aparatoDesafiaYear');
+      var decide = document.getElementById('aparatoDecideYear');
+
+      if(badge) badge.textContent = 'Aparato ' + data.aparato;
+      if(title) title.textContent = 'Aparato ' + data.aparato;
+      if(summary) summary.textContent = 'Años consecutivos: ' + data.asume + ', ' + data.asimila + ', ' + data.desafia + ', ' + data.decide + '.';
+      if(equation) equation.textContent = data.decide + ' ÷ 4 = ' + data.aparato;
+      if(asume) asume.textContent = data.asume;
+      if(asimila) asimila.textContent = data.asimila;
+      if(desafia) desafia.textContent = data.desafia;
+      if(decide) decide.textContent = data.decide;
+
+      empty.style.display = 'none';
+      result.classList.add('is-visible');
+
+      try{
+        var url = new URL(window.location.href);
+        url.searchParams.set('aparato', String(data.aparato));
+        history.replaceState(null, '', url.toString());
+      }catch(e){}
+    }
+
+    function clearAparatoBase(){
+      var input = document.getElementById('aparatoInput');
+      var empty = document.getElementById('aparatoEmptyState');
+      var result = document.getElementById('aparatoResult');
+      if(input) input.value = '';
+      if(result) result.classList.remove('is-visible');
+      if(empty){
+        empty.textContent = 'Todavía no buscaste ningún aparato. Prueba con 396, 493 o 500.';
+        empty.style.display = 'block';
+      }
+      try{
+        var url = new URL(window.location.href);
+        url.searchParams.delete('aparato');
+        history.replaceState(null, '', url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '') + url.hash);
+      }catch(e){}
+    }
+
     window.addEventListener('error', function(e){ status('error: '+e.message, false); });
     
 document.addEventListener('DOMContentLoaded', function(){
@@ -847,6 +919,31 @@ document.addEventListener('DOMContentLoaded', function(){
     el.addEventListener('input', upDebounced);
     el.addEventListener('change', up);
   });
+
+  var aparatoInput=document.getElementById('aparatoInput');
+  var aparatoSearchBtn=document.getElementById('aparatoSearchBtn');
+  var aparatoClearBtn=document.getElementById('aparatoClearBtn');
+  if(aparatoSearchBtn){
+    aparatoSearchBtn.addEventListener('click', function(){
+      renderAparatoBase(aparatoInput ? aparatoInput.value : '');
+    });
+  }
+  if(aparatoClearBtn){
+    aparatoClearBtn.addEventListener('click', clearAparatoBase);
+  }
+  if(aparatoInput){
+    aparatoInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        renderAparatoBase(aparatoInput.value);
+      }
+    });
+  }
+  var qp=parseSearch();
+  if(aparatoInput && qp.aparato){
+    aparatoInput.value = qp.aparato;
+    renderAparatoBase(qp.aparato);
+  }
 
   function readRefParts(){
     var refI=document.getElementById('ref');

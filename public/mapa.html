@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calendaria · Mapa y códigos</title>
 
+  <link rel="stylesheet" href="/shared-menu.css" />
   <link rel="stylesheet" href="mapa.css" />
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0b0d10">
@@ -12,6 +13,39 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Calendaria">
   <link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+
+  <style>
+    .panel-head{
+      align-items:flex-start;
+      gap:12px;
+    }
+    .panel-head-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-left:auto;
+    }
+    .panel-head .menuBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:44px;
+      padding:8px 12px;
+      margin-left:0;
+    }
+    .menuBtn .menuBtnLabel{
+      display:inline;
+    }
+    @media (max-width: 900px){
+      .panel-head{
+        align-items:center;
+      }
+      .panel-head .menuBtn{
+        min-width:44px;
+        padding:8px 10px;
+      }
+    }
+  </style>
 </head>
 <body data-view="list">
   <main class="layout">
@@ -23,39 +57,42 @@
     <aside class="panel">
       <div class="panel-head">
         <h2>Mapa y códigos (UIT)</h2>
-        <a class="home-link" href="/">← Volver</a>
+        <div class="panel-head-actions">
+          <button id="menuBtn" class="menuBtn" type="button" aria-label="Abrir menú" aria-expanded="false">
+            <span class="menuBtnLabel">Menú</span>
+          </button>
+        </div>
       </div>
 
       <div class="card">
-  <div class="actions-row">
+        <div class="actions-row">
           <a class="btn btn-primary" id="join-map" href="https://forms.gle/ZdAUgtPgwC4pURFUA" target="_blank" rel="noopener">Sumarme al mapa</a>
           <a class="btn btn-secondary" id="open-mymaps" href="https://www.google.com/maps/d/viewer?mid=1fyccg6vm9zw_SpEJ6B6cbUfTvyb0qRY" target="_blank" rel="noopener">Abrir mapa en Google</a>
         </div>
-<div class="panel-note" role="note">
-  Si quieres <strong>modificar</strong> o <strong>borrar</strong> algún registro, escribe a
-  <a class="panel-note__mail" href="mailto:maparedlgc@gmail.com">maparedlgc@gmail.com</a>
-</div>
-</div>
+        <div class="panel-note" role="note">
+          Si quieres <strong>modificar</strong> o <strong>borrar</strong> algún registro, escribe a
+          <a class="panel-note__mail" href="mailto:maparedlgc@gmail.com">maparedlgc@gmail.com</a>
+        </div>
+      </div>
 
       <div class="card">
-  <div class="section-title">Buscar</div>
+        <div class="section-title">Buscar</div>
 
-  <div class="field">
-    <label for="search">País</label>
-    <div class="field-row">
-      <input id="search" type="text" placeholder="Escribe un país…" autocomplete="off" />
-      <div id="search-code-badge" class="pill">—</div>
-    </div>
-  </div>
+        <div class="field">
+          <label for="search">País</label>
+          <div class="field-row">
+            <input id="search" type="text" placeholder="Escribe un país…" autocomplete="off" />
+            <div id="search-code-badge" class="pill">—</div>
+          </div>
+        </div>
 
-  <div class="field" style="margin-top:10px;">
-    <label for="search-code">Código</label>
-    <div class="field-row">
-      <input id="search-code" type="text" placeholder="+57, 54, +1…" autocomplete="off" />
-      <div id="search-code-name" class="pill">—</div>
-    </div>
-  </div>
-</div>
+        <div class="field" style="margin-top:10px;">
+          <label for="search-code">Código</label>
+          <div class="field-row">
+            <input id="search-code" type="text" placeholder="+57, 54, +1…" autocomplete="off" />
+            <div id="search-code-name" class="pill">—</div>
+          </div>
+        </div>
       </div>
 
       <div class="card list-card">
@@ -64,13 +101,13 @@
       </div>
 
       <div class="card selected-country is-hidden" id="selected-country" aria-live="polite">
-    <div class="section-title">Selección</div>
-    <div class="row">
-      <span class="name">—</span>
-      <span class="code" id="selected-code">—</span>
-    </div>
-  </div>
-</aside>
+        <div class="section-title">Selección</div>
+        <div class="row">
+          <span class="name">—</span>
+          <span class="code" id="selected-code">—</span>
+        </div>
+      </div>
+    </aside>
 
     <section class="map-wrap" aria-label="Mapa de la Red (Google My Maps)">
       <div class="mymaps-wrap">
@@ -85,22 +122,23 @@
     </section>
   </main>
 
+  <div data-cal-menu="mobile"></div>
+
   <script>
-    // Dataset de países + códigos:
-    // - "countries_embed.json" (local) te permite actualizar sin tocar el JS (solo editar JSON).
-    // - También podés poner una URL pública externa si la comunidad la mantiene.
+    window.CAL_MENU_CONFIG = { current: "mapa" };
     window.MAPA_DATA_URL = window.MAPA_DATA_URL || "countries_embed.json";
   </script>
+  <script src="/shared-menu.js"></script>
   <script src="mapa.js"></script>
 
   <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/sw.js').catch(function(err) {
-        console.log('Service worker registration failed:', err);
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(function(err) {
+          console.log('Service worker registration failed:', err);
+        });
       });
-    });
-  }
+    }
   </script>
 
   <script>

@@ -434,48 +434,14 @@ body.noScroll{overflow:hidden}
 }
 
 </style>
+<link rel="stylesheet" href="/shared-menu.css">
   
 <header><div><span class="sun"></span><h1 class="brandTitle" style="margin:0">Calendaria-LGC</h1></div><button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button><div class="header-actions"><a id="toSplashLink" href="/?splash=1">Volver a portada</a></div></header>
 
-<!-- Mobile menu drawer -->
-<div class="mobileNav" id="mobileNav" aria-hidden="true">
-  <div class="mobileOverlay" id="mobileOverlay"></div>
-  <div class="mobileNavPanel" role="dialog" aria-modal="true" aria-label="Menú">
-    <div class="mobileNavHeader">
-      <div class="nav-title">Menú</div>
-      <button class="closeBtn" id="menuCloseBtn" type="button" aria-label="Cerrar menú" title="Cerrar">✕</button>
-    </div>
-    <nav class="mobileList">
-      <a class="mnav-link" href="./">Inicio</a>
-<a class="mnav-link active" href="./marcas-lgc.html">Marcas LGC</a>
-<a class="mnav-link" href="./range.html">Comparador LGC</a>
-<a class="mnav-link" href="./letters.html">Letras a números</a>
-<a class="mnav-link" href="./matriz-psiquica.html">Matriz Psíquica</a>
-<a class="mnav-link" href="./mapa/">Mapa y códigos</a>
-<a class="mnav-link" href="./indice-ale-en-red.html">Instrucción</a>
-<a class="mnav-link" href="./apoyar.html">Apoyar el proyecto</a>
-    </nav>
-  </div>
-</div>
-
+<div data-cal-menu="mobile"></div>
 
   <div class="layout">
-    <aside class="sidenav">
-      <nav>
-        <div class="nav-title">Menú</div>
-        <a class="nav-link" href="./">Inicio</a>
-        <a class="nav-link active" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="nav-link" href="./range.html">Comparador LGC</a>
-        <a class="nav-link" href="./letters.html">Letras a números</a>
-        <a class="nav-link" href="./matriz-psiquica.html">Matriz Psíquica</a>
-        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
-
-        
-        <a class="nav-link" href="./indice-ale-en-red.html">Instrucción</a>
-          
-        <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
-      </nav>
-    </aside>
+    <aside class="sidenav" data-cal-menu="desktop"></aside>
     <main>
 <section class="card" style="margin-top:12px">
       <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;max-width:340px;justify-content:space-between;align-items:center"><span>Fecha de referencia</span><span class="dowBadge" id="refDow">—</span></div>
@@ -957,43 +923,7 @@ body.noScroll{overflow:hidden}
 </script>
 
 
-<script>
-(function(){
-  if (window.__cal_mobile_menu_drawer) return;
-  window.__cal_mobile_menu_drawer = true;
 
-  const btn = document.getElementById('menuBtn');
-  const nav = document.getElementById('mobileNav');
-  const overlay = document.getElementById('mobileOverlay');
-  const closeBtn = document.getElementById('menuCloseBtn');
-
-  if (!btn || !nav) return;
-
-  function setOpen(open){
-    nav.classList.toggle('open', open);
-    nav.setAttribute('aria-hidden', open ? 'false' : 'true');
-    document.body.classList.toggle('noScroll', open);
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  }
-
-  btn.addEventListener('click', (e)=>{
-    e.preventDefault();
-    setOpen(true);
-  });
-
-  if (overlay) overlay.addEventListener('click', ()=>setOpen(false));
-  if (closeBtn) closeBtn.addEventListener('click', ()=>setOpen(false));
-
-  document.addEventListener('keydown', (e)=>{
-    if (e.key === 'Escape') setOpen(false);
-  });
-
-  // Close when user taps a link
-  nav.addEventListener('click', (e)=>{
-    const a = e.target && e.target.closest ? e.target.closest('a') : null;
-    if (a) setOpen(false);
-  });
-})();
-</script>
-
+<script>window.CAL_MENU_CONFIG={current:"marcas"};</script>
+<script src="/shared-menu.js"></script>
 </body></html>

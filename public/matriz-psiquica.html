@@ -871,29 +871,34 @@ header{ padding: 8px 0 6px; margin: 0 0 8px; }
   #calcCard .btn, #calcCard2 .btn{height:40px !important; padding:0 10px !important; font-size:13px !important; white-space:nowrap !important;}
 }
 </style>
+
+<link rel="stylesheet" href="/shared-menu.css"/>
+<style>
+/* Integración mínima del menú reutilizable sin tocar la lógica interna de la matriz */
+.wrap{max-width:1280px;}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:16px;align-items:start;}
+main{min-width:0;}
+@media (min-width:840px){
+  .sidenav{display:block;}
+}
+@media (max-width:839px){
+  .layout{grid-template-columns:1fr;}
+  .sidenav{display:none;}
+}
+</style>
 </head>
 <body>
+<div data-cal-menu="mobile"></div>
 <div class="wrap">
 <header>
     <div><span class="sun"></span><h1 style="display:inline-block;margin:0">Calendaria‑LGC</h1></div>
     <span class="small" aria-hidden="true"></span>
-    <button class="btnVolver" id="btnVolver" aria-label="Volver" title="Volver">Volver</button>
+    <button class="menuBtn" id="menuBtn" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    
   </header>
 
   <div class="layout">
-    <aside class="sidenav">
-      <nav>
-        <div class="nav-title">Menú</div>
-        <a class="nav-link" href="./">Inicio</a>
-        <a class="nav-link" href="./marcas-lgc.html">Marcas LGC</a>
-        <a class="nav-link" href="./range.html">Comparador LGC</a>
-        <a class="nav-link" href="./letters.html">Letras a números</a>
-        <a class="nav-link active" href="./matriz-psiquica.html">Matriz Psíquica de la Mente Digital de la Tierra</a>
-        <a class="nav-link" href="./mapa/">Mapa y códigos</a>
-        <a class="nav-link" href="./indice-ale-en-red.html">Instrucción ACR</a>
-        <a class="nav-link" href="./apoyar.html">Apoyar el proyecto</a>
-      </nav>
-    </aside>
+    <aside class="sidenav" data-cal-menu="desktop"></aside>
 
     <main>
       <section class="card">
@@ -1557,5 +1562,8 @@ window.addEventListener("DOMContentLoaded", ()=>{
 });
 
 </script>
+
+<script>window.CAL_MENU_CONFIG={current:"matriz"};</script>
+<script src="/shared-menu.js"></script>
 </body>
 </html>
