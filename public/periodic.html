@@ -174,92 +174,172 @@ header{
 
 
 
-/* --- Tabla periódica viva · fase 1 --- */
+/* --- Tabla periódica viva · fase 2 --- */
 #periodicGridMount{
   width:100%;
   overflow:auto;
   -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(124,199,255,.45) rgba(255,255,255,.05);
 }
+#periodicGridMount::-webkit-scrollbar{height:10px;width:10px}
+#periodicGridMount::-webkit-scrollbar-thumb{
+  background:rgba(124,199,255,.32);
+  border-radius:999px;
+  border:2px solid rgba(255,255,255,.04);
+}
+#periodicGridMount::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+
+.wrap{max-width:1240px;margin:0 auto;padding:20px}
+
 .pgridWrap{
-  min-width:1120px;
-  padding:14px;
+  position:relative;
+  min-width:1540px;
+  padding:18px 22px 20px;
 }
 .pgrid{
+  --cell-w:44px;
+  --cell-h:58px;
+  --gap:3px;
   display:grid;
-  grid-template-columns:repeat(var(--p-cols), minmax(32px, 1fr));
-  grid-template-rows:repeat(var(--p-rows), minmax(72px, auto));
-  gap:6px;
+  grid-template-columns:repeat(var(--p-cols), var(--cell-w));
+  grid-template-rows:repeat(var(--p-rows), var(--cell-h));
+  gap:var(--gap);
+  width:max-content;
+  position:relative;
+}
+.p-node{
+  position:relative;
+  border-radius:8px;
+  border:1px solid rgba(135,160,188,.26);
+  color:#eaf3ff;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.018));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.p-node.is-clickable{cursor:pointer}
+.p-node.is-clickable:hover{
+  transform:translateY(-1px);
+  border-color:rgba(124,199,255,.46);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 18px rgba(0,0,0,.18);
 }
 .p-el{
-  position:relative;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:3px;
-  min-height:72px;
-  border-radius:10px;
-  border:1px solid rgba(111,138,166,.28);
-  color:#eaf3ff;
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.018));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
-  cursor:pointer;
-  padding:6px 4px 5px;
+  gap:2px;
+  padding:4px 3px 3px;
   text-align:center;
-}
-.p-el:hover{
-  transform:translateY(-1px);
-  border-color:rgba(124,199,255,.46);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.18);
 }
 .p-el.is-active{
   border-color:#7cc7ff;
-  box-shadow:inset 0 0 0 1px rgba(124,199,255,.75), 0 0 0 1px rgba(124,199,255,.22), 0 10px 24px rgba(0,0,0,.22);
-  background:linear-gradient(180deg,rgba(124,199,255,.22),rgba(124,199,255,.08));
+  box-shadow:inset 0 0 0 1px rgba(124,199,255,.82), 0 0 0 1px rgba(124,199,255,.18), 0 10px 24px rgba(0,0,0,.24);
 }
 .p-el__atomic{
   position:absolute;
-  top:5px;
-  left:6px;
-  font-size:10px;
+  top:4px;
+  left:5px;
+  font-size:9px;
   font-weight:700;
   color:rgba(230,241,255,.9);
 }
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:20px;
+  font-size:18px;
   font-weight:800;
   line-height:1;
-  letter-spacing:-.03em;
+  letter-spacing:-.04em;
 }
 .p-el__name{
-  font-size:9px;
-  line-height:1.1;
+  font-size:7px;
+  line-height:1.06;
   color:rgba(230,241,255,.82);
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
-.p-el.is-alkali{background:linear-gradient(180deg,rgba(255,149,92,.26),rgba(255,149,92,.10));}
-.p-el.is-alkaline{background:linear-gradient(180deg,rgba(255,214,102,.25),rgba(255,214,102,.10));}
-.p-el.is-transition{background:linear-gradient(180deg,rgba(140,196,255,.24),rgba(140,196,255,.09));}
-.p-el.is-post-transition{background:linear-gradient(180deg,rgba(199,170,255,.24),rgba(199,170,255,.10));}
-.p-el.is-metalloid{background:linear-gradient(180deg,rgba(255,230,109,.24),rgba(255,230,109,.10));}
-.p-el.is-nonmetal{background:linear-gradient(180deg,rgba(255,160,208,.26),rgba(255,160,208,.10));}
-.p-el.is-halogen{background:linear-gradient(180deg,rgba(255,195,93,.26),rgba(255,195,93,.10));}
-.p-el.is-noble{background:linear-gradient(180deg,rgba(255,165,196,.26),rgba(255,165,196,.10));}
-.p-el.is-lanthanide{background:linear-gradient(180deg,rgba(100,220,185,.28),rgba(100,220,185,.10));}
-.p-el.is-actinide{background:linear-gradient(180deg,rgba(127,235,127,.28),rgba(127,235,127,.10));}
-
-@media (max-width:839px){
-  .pgridWrap{padding:10px}
-  .pgrid{gap:5px;grid-template-rows:repeat(var(--p-rows), minmax(62px, auto));}
-  .p-el{min-height:62px;border-radius:9px;padding:5px 3px 4px}
-  .p-el__symbol{font-size:17px}
-  .p-el__name{font-size:8px}
+.p-slab{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(180deg,rgba(15,14,18,.94),rgba(19,18,24,.98));
+  border-color:rgba(255,255,255,.10);
+  color:#e5cf60;
+  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:16px;
+  font-weight:700;
 }
+.p-orb{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background:radial-gradient(circle at 30% 28%, rgba(255,195,234,.95), rgba(244,109,186,.92));
+  border-color:rgba(255,235,248,.4);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
+  color:#fff8fe;
+  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:16px;
+  font-weight:800;
+}
+.p-side,
+.p-top{
+  position:absolute;
+  color:rgba(228,238,251,.86);
+  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:12px;
+  pointer-events:none;
+}
+.p-side.left{left:-22px}
+.p-side.right{right:-22px}
+.p-top{top:-26px; transform:translateX(-50%)}
+.p-top small{
+  display:block;
+  font-size:9px;
+  opacity:.72;
+  margin-top:-1px;
+}
+.p-top.dual{top:-34px}
+.p-top.dual b{display:block; font-weight:700}
+.p-top.dual small{margin-top:0}
 
+.p-node.is-alkali{background:linear-gradient(180deg,rgba(244,108,82,.90),rgba(176,78,54,.82))}
+.p-node.is-alkaline{background:linear-gradient(180deg,rgba(255,190,56,.92),rgba(196,136,18,.84)); color:#2a1e03}
+.p-node.is-transition{background:linear-gradient(180deg,rgba(172,210,243,.92),rgba(116,153,190,.84)); color:#101a25}
+.p-node.is-post-transition{background:linear-gradient(180deg,rgba(205,162,236,.93),rgba(150,106,190,.86)); color:#1c1027}
+.p-node.is-metalloid{background:linear-gradient(180deg,rgba(255,223,61,.95),rgba(213,171,16,.88)); color:#241d02}
+.p-node.is-nonmetal{background:linear-gradient(180deg,rgba(188,220,255,.95),rgba(140,175,208,.88)); color:#112033}
+.p-node.is-halogen{background:linear-gradient(180deg,rgba(255,224,40,.96),rgba(227,185,11,.90)); color:#221e04}
+.p-node.is-noble{background:linear-gradient(180deg,rgba(255,169,196,.95),rgba(222,104,142,.88)); color:#2b1320}
+.p-node.is-lanthanide{background:linear-gradient(180deg,rgba(107,206,182,.95),rgba(52,136,118,.90)); color:#071a16}
+.p-node.is-actinide{background:linear-gradient(180deg,rgba(134,230,132,.96),rgba(68,158,67,.91)); color:#071c08}
+.p-node.is-ghost{background:linear-gradient(180deg,rgba(214,214,214,.92),rgba(143,143,143,.86)); color:#1d1d1d;}
+
+.p-node.is-top-red{background:linear-gradient(180deg,rgba(236,91,79,.94),rgba(174,58,49,.86))}
+.p-node.is-top-orange{background:linear-gradient(180deg,rgba(255,186,44,.95),rgba(194,129,15,.88)); color:#2a1e03}
+.p-node.is-top-blue{background:linear-gradient(180deg,rgba(157,202,243,.96),rgba(103,149,191,.90)); color:#102033}
+.p-node.is-top-green{background:linear-gradient(180deg,rgba(117,231,125,.96),rgba(64,166,70,.91)); color:#081b09}
+.p-node.is-top-gray{background:linear-gradient(180deg,rgba(210,210,210,.94),rgba(148,148,148,.88)); color:#181818}
+
+@media (min-width:1180px){
+  .wrap{max-width:1380px}
+}
+@media (max-width:839px){
+  .wrap{padding:14px}
+  .pgridWrap{min-width:1280px;padding:14px 14px 16px}
+  .pgrid{
+    --cell-w:38px;
+    --cell-h:52px;
+    --gap:3px;
+  }
+  .p-el__symbol{font-size:16px}
+  .p-el__name{font-size:6px}
+  .p-slab,.p-orb{font-size:14px}
+  .p-side.left{left:-18px}
+  .p-side.right{right:-18px}
+  .p-top{font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -2985,6 +3065,225 @@ header{
 <script defer src="/_vercel/speed-insights/script.js"></script>
 
 <script src="./periodic-data.js"></script>
-<script src="./periodic-render.js"></script>
+<script>
+(function(){
+  const mount = document.getElementById('periodicGridMount');
+  if (!mount || !window.PERIODIC_DATA || !window.PERIODIC_DATA.length) return;
+
+  const logicalRows = [-2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const rowMap = Object.fromEntries(logicalRows.map((r, i) => [String(r), i + 1]));
+  const maxCol = 32;
+  const maxRow = logicalRows.length;
+
+  function esc(str){
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function getActiveKey() {
+    const bodyKey = (document.body.getAttribute('data-el') || '').trim().toUpperCase();
+    if (bodyKey) return bodyKey;
+    const m = /[?&]el=([^&]+)/.exec(window.location.search);
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : 'H';
+  }
+
+  const activeKey = getActiveKey();
+
+  function topCategory(col){
+    if (col === 1) return 'top-red';
+    if (col === 2) return 'top-orange';
+    if (col >= 3 && col <= 26) return 'top-blue';
+    if (col >= 27 && col <= 30) return 'top-green';
+    return 'top-gray';
+  }
+
+  function makeElementNode(item, logicalRow, col, extraClass, preferred){
+    if (!item) return null;
+
+    const key = String(item.key || item.symbol).toUpperCase();
+    const active = key === activeKey;
+
+    const cls = ['p-node','p-el','is-clickable','is-' + (extraClass || item.category)];
+    if (active) cls.push('is-active');
+
+    return {
+      type: 'element',
+      key,
+      symbol: item.symbol,
+      atomic: item.atomic,
+      name: item.name,
+      row: rowMap[String(logicalRow)],
+      col,
+      preferred: !!preferred,
+      className: cls.join(' '),
+      html:
+        '<span class="p-el__atomic">' + esc(item.atomic) + '</span>' +
+        '<span class="p-el__symbol">' + esc(item.symbol) + '</span>' +
+        '<span class="p-el__name">' + esc(item.name) + '</span>'
+    };
+  }
+
+  const nodes = [];
+
+  [
+    {col:1, html:'<b>1</b><small>IA</small>', cls:'p-top dual'},
+    {col:2, html:'<b>2</b><small>IIA</small>', cls:'p-top dual'},
+    {col:17, html:'3<small>IIIB</small>', cls:'p-top'},
+    {col:18, html:'4<small>IVB</small>', cls:'p-top'},
+    {col:19, html:'5<small>VB</small>', cls:'p-top'},
+    {col:20, html:'6<small>VIB</small>', cls:'p-top'},
+    {col:21, html:'7<small>VIIB</small>', cls:'p-top'},
+    {col:22, html:'8<small>VIII</small>', cls:'p-top'},
+    {col:23, html:'9<small>VIII</small>', cls:'p-top'},
+    {col:24, html:'10<small>VIII</small>', cls:'p-top'},
+    {col:25, html:'11<small>IB</small>', cls:'p-top'},
+    {col:26, html:'12<small>IIB</small>', cls:'p-top'},
+    {col:27, html:'13<small>IIIA</small>', cls:'p-top'},
+    {col:28, html:'14<small>IVA</small>', cls:'p-top'},
+    {col:29, html:'15<small>VA</small>', cls:'p-top'},
+    {col:30, html:'16<small>VIA</small>', cls:'p-top'},
+    {col:31, html:'17<small>VIIA</small>', cls:'p-top'},
+    {col:32, html:'18<small>VIIIA</small>', cls:'p-top'},
+  ].forEach(l => {
+    nodes.push({
+      type:'label',
+      row:1,
+      col:l.col,
+      className:l.cls,
+      html:l.html
+    });
+  });
+
+  logicalRows.forEach(r => {
+    const rr = rowMap[String(r)];
+    nodes.push({type:'side', side:'left', row:rr, col:1, className:'p-side left', html:String(r)});
+    nodes.push({type:'side', side:'right', row:rr, col:maxCol, className:'p-side right', html:String(r)});
+  });
+
+  window.PERIODIC_DATA.forEach(item => {
+    nodes.push(makeElementNode(item, item.row, item.col, null, item.row <= 7));
+  });
+
+  let orb = 30;
+  for (let col = 2; col <= 31; col += 1, orb -= 1) {
+    nodes.push({
+      type:'orb',
+      row:rowMap['1'],
+      col,
+      className:'p-node p-orb',
+      html:String(orb)
+    });
+  }
+
+  for (let logicalRow = 2; logicalRow <= 5; logicalRow += 1) {
+    for (let col = 3; col <= 26; col += 1) {
+      const value = 221 + (logicalRow - 2) - 4 * (col - 3);
+      nodes.push({
+        type:'slab',
+        row:rowMap[String(logicalRow)],
+        col,
+        className:'p-node p-slab',
+        html:String(value)
+      });
+    }
+  }
+
+  for (let atomic = 87, col = 1; atomic <= 118; atomic += 1, col += 1) {
+    const item = window.PERIODIC_DATA.find(d => d.atomic === atomic);
+    nodes.push(makeElementNode(item, -2, col, topCategory(col), false));
+  }
+
+  for (let atomic = 118, col = 1; atomic >= 87; atomic -= 1, col += 1) {
+    const item = window.PERIODIC_DATA.find(d => d.atomic === atomic);
+    nodes.push(makeElementNode(item, -1, col, topCategory(col), false));
+  }
+
+  const row7Items = window.PERIODIC_DATA
+    .filter(d => d.row === 7)
+    .sort((a,b) => a.col - b.col);
+
+  [8, 9].forEach(logicalRow => {
+    row7Items.forEach(item => {
+      nodes.push(makeElementNode(item, logicalRow, item.col, topCategory(item.col), false));
+    });
+  });
+
+  const wrap = document.createElement('div');
+  wrap.className = 'pgridWrap';
+
+  const grid = document.createElement('div');
+  grid.className = 'pgrid';
+  grid.style.setProperty('--p-cols', String(maxCol));
+  grid.style.setProperty('--p-rows', String(maxRow));
+
+  nodes.forEach(node => {
+    if (!node) return;
+
+    if (node.type === 'label') {
+      const div = document.createElement('div');
+      div.className = node.className;
+      div.style.gridColumn = String(node.col);
+      div.style.gridRow = String(node.row);
+      div.innerHTML = node.html;
+      grid.appendChild(div);
+      return;
+    }
+
+    if (node.type === 'side') {
+      const anchor = document.createElement('div');
+      anchor.style.gridColumn = String(node.col);
+      anchor.style.gridRow = String(node.row);
+      anchor.style.position = 'relative';
+
+      const div = document.createElement('div');
+      div.className = node.className;
+      div.style.top = '50%';
+      div.style.transform = 'translateY(-50%)';
+      div.innerHTML = node.html;
+
+      anchor.appendChild(div);
+      grid.appendChild(anchor);
+      return;
+    }
+
+    const el = document.createElement(node.type === 'element' ? 'button' : 'div');
+
+    if (node.type === 'element') {
+      el.type = 'button';
+      el.dataset.key = node.key;
+      el.dataset.preferred = node.preferred ? '1' : '0';
+      el.title = node.symbol + ' · ' + node.atomic + ' · ' + node.name;
+
+      el.addEventListener('click', function(){
+        const url = new URL(window.location.href);
+        url.searchParams.set('el', node.symbol);
+        window.location.href = url.toString();
+      });
+    }
+
+    el.className = node.className;
+    el.style.gridColumn = String(node.col);
+    el.style.gridRow = String(node.row);
+    el.innerHTML = node.html;
+    grid.appendChild(el);
+  });
+
+  wrap.appendChild(grid);
+  mount.innerHTML = '';
+  mount.appendChild(wrap);
+
+  const preferred = grid.querySelector('.is-active[data-preferred="1"]');
+  const activeNode = preferred || grid.querySelector('.is-active');
+
+  if (activeNode) {
+    requestAnimationFrame(() => {
+      activeNode.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
+    });
+  }
+})();
+</script>
 </body>
 </html>
