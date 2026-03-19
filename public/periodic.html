@@ -411,6 +411,22 @@ header{
   .p-top{font-size:10px}
 }
 
+
+.p-el__variant{
+  position:absolute;
+  right:4px;
+  top:4px;
+  font-size:6px;
+  line-height:1;
+  padding:2px 3px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(6,10,16,.18);
+  color:rgba(236,244,255,.70);
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
 </style>
 </head>
 <body>
@@ -3135,18 +3151,109 @@ header{
 </script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 
+
 <script src="./periodic-data.js"></script>
 
+<script>
+(function(){
+  if (!window.PERIODIC_DATA || !window.PERIODIC_DATA.length) return;
+
+  function getActiveKey() {
+    const bodyKey = (document.body.getAttribute('data-el') || '').trim().toUpperCase();
+    if (bodyKey) return bodyKey;
+    const m = /[?&]el=([^&]+)/.exec(window.location.search);
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : 'H';
+  }
+
+  function findItemByKey(key){
+    key = String(key || '').trim().toUpperCase();
+    return window.PERIODIC_DATA.find(function(item){
+      return String(item.key || item.symbol).toUpperCase() === key ||
+             String(item.symbol || '').toUpperCase() === key;
+    }) || null;
+  }
+
+  function readDisplay(item, zone, fallbackAtomic){
+    const zoneMap = {
+      main: ['main', 'grid', 'base'],
+      topForward: ['topForward', 'top_fwd', 'minus2', 'row-2'],
+      topReverse: ['topReverse', 'top_rev', 'minus1', 'row-1'],
+      bottomA: ['bottomA', 'row8', '8'],
+      bottomB: ['bottomB', 'row9', '9']
+    };
+
+    const display = (item && item.display) || {};
+    const keys = (zoneMap[zone] || []).concat(['main','grid','base']);
+
+    let zoneDisplay = null;
+    for (const k of keys) {
+      if (display && typeof display === 'object' && display[k]) {
+        zoneDisplay = display[k];
+        break;
+      }
+    }
+
+    const number =
+      (zoneDisplay && zoneDisplay.number != null ? zoneDisplay.number : null) ??
+      (item && item.displayNumber != null ? item.displayNumber : null) ??
+      (fallbackAtomic != null ? fallbackAtomic : (item ? item.atomic : ''));
+
+    const symbol =
+      (zoneDisplay && zoneDisplay.symbol ? zoneDisplay.symbol : null) ??
+      (item && item.displaySymbol ? item.displaySymbol : null) ??
+      (item ? item.symbol : '');
+
+    const name =
+      (zoneDisplay && zoneDisplay.name ? zoneDisplay.name : null) ??
+      (item && item.displayName ? item.displayName : null) ??
+      (item ? item.name : '');
+
+    const mass =
+      (zoneDisplay && zoneDisplay.mass != null ? zoneDisplay.mass : null) ??
+      (item && item.displayMass != null ? item.displayMass : null) ??
+      (item && item.mass != null ? item.mass : '');
+
+    const variant =
+      (zoneDisplay && zoneDisplay.variant ? zoneDisplay.variant : null) ??
+      (item && item.variantLabel ? item.variantLabel : null) ?? '';
+
+    return { number, symbol, name, mass, variant };
+  }
+
+  window.PERIODIC_LGC = Object.assign({}, window.PERIODIC_LGC || {}, {
+    getActiveKey,
+    findItemByKey,
+    readDisplay
+  });
+
+  const activeItem = findItemByKey(getActiveKey());
+  if (!activeItem) return;
+
+  const display = readDisplay(activeItem, 'main', activeItem.atomic);
+
+  const label = document.getElementById('periodicElementLabel');
+  const colRowLabel = document.getElementById('colRowLabel');
+  if (label) {
+    label.textContent = [display.symbol, display.number, display.name].filter(Boolean).join(' · ');
+  }
+  if (colRowLabel && activeItem.col && activeItem.row) {
+    colRowLabel.textContent = 'Columna ' + activeItem.col + ' · Fila ' + activeItem.row;
+  }
+})();
+</script>
 
 <script>
 (function(){
   const mount = document.getElementById('periodicGridMount');
-  if (!mount || !window.PERIODIC_DATA || !window.PERIODIC_DATA.length) return;
+  if (!mount || !window.PERIODIC_DATA || !window.PERIODIC_DATA.length || !window.PERIODIC_LGC) return;
 
   const logicalRows = [-2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   const rowMap = Object.fromEntries(logicalRows.map((r, i) => [String(r), i + 1]));
   const maxCol = 32;
   const maxRow = logicalRows.length;
+  const getActiveKey = window.PERIODIC_LGC.getActiveKey;
+  const findItemByKey = window.PERIODIC_LGC.findItemByKey;
+  const readDisplay = window.PERIODIC_LGC.readDisplay;
 
   function esc(str){
     return String(str == null ? '' : str)
@@ -3154,13 +3261,6 @@ header{
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
-  }
-
-  function getActiveKey() {
-    const bodyKey = (document.body.getAttribute('data-el') || '').trim().toUpperCase();
-    if (bodyKey) return bodyKey;
-    const m = /[?&]el=([^&]+)/.exec(window.location.search);
-    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : 'H';
   }
 
   const activeKey = getActiveKey();
@@ -3173,40 +3273,45 @@ header{
     return 'top-gray';
   }
 
-  function makeElementNode(item, logicalRow, col, extraClass, preferred, overrides){
+  function zoneForRow(logicalRow){
+    if (logicalRow === -2) return 'topForward';
+    if (logicalRow === -1) return 'topReverse';
+    if (logicalRow === 8) return 'bottomA';
+    if (logicalRow === 9) return 'bottomB';
+    return 'main';
+  }
+
+  function makeElementNode(item, logicalRow, col, extraClass, preferred){
     if (!item) return null;
     const key = String(item.key || item.symbol).toUpperCase();
     const active = key === activeKey;
     const cls = ['p-node', 'p-el', 'is-clickable', 'is-' + (extraClass || item.category)];
     if (active) cls.push('is-active');
-    const symbol = overrides && overrides.symbol ? overrides.symbol : item.symbol;
-    const atomic = overrides && overrides.atomic != null ? overrides.atomic : item.atomic;
-    const name = overrides && overrides.name ? overrides.name : item.name;
-    const mass = overrides && overrides.mass != null ? overrides.mass : (item.mass || '');
+    const zone = zoneForRow(logicalRow);
+    const display = readDisplay(item, zone, item.atomic);
+
+    const titleParts = [display.symbol || item.symbol, display.number, display.name || item.name].filter(Boolean);
+
     return {
       type: 'element',
       key,
-      symbol,
-      atomic,
-      name,
-      mass,
+      symbol: item.symbol,
+      title: titleParts.join(' · '),
       row: rowMap[String(logicalRow)],
       col,
       preferred: !!preferred,
+      zone,
       className: cls.join(' '),
       html:
-        (atomic !== '' ? '<span class="p-el__atomic">' + esc(atomic) + '</span>' : '') +
-        '<span class="p-el__symbol">' + esc(symbol) + '</span>' +
-        '<span class="p-el__name">' + esc(name) + '</span>' +
-        (mass ? '<span class="p-el__mass">' + esc(mass) + '</span>' : '')
+        '<span class="p-el__atomic">' + esc(display.number) + '</span>' +
+        (display.variant ? '<span class="p-el__variant">' + esc(display.variant) + '</span>' : '') +
+        '<span class="p-el__symbol">' + esc(display.symbol || item.symbol) + '</span>' +
+        '<span class="p-el__name">' + esc(display.name || item.name) + '</span>' +
+        (display.mass !== '' ? '<span class="p-el__mass">' + esc(display.mass) + '</span>' : '')
     };
   }
 
-  const byAtomic = new Map(window.PERIODIC_DATA.map(d => [Number(d.atomic), d]));
-  const row7Items = window.PERIODIC_DATA.filter(d => d.row === 7).sort((a,b) => a.col - b.col);
   const nodes = [];
-
-  nodes.push({type:'axisTitle', row:1, col:1, className:'p-axis-title', html:'Arquitectura base'});
 
   [
     {col:1, html:'<b>1</b><small>IA</small>', cls:'p-top dual'},
@@ -3226,8 +3331,18 @@ header{
     {col:29, html:'15<small>VA</small>', cls:'p-top'},
     {col:30, html:'16<small>VIA</small>', cls:'p-top'},
     {col:31, html:'17<small>VIIA</small>', cls:'p-top'},
-    {col:32, html:'18<small>VIIIA</small>', cls:'p-top'}
-  ].forEach(l => nodes.push({type:'label', row:1, col:l.col, className:l.cls, html:l.html}));
+    {col:32, html:'18<small>VIIIA</small>', cls:'p-top'},
+  ].forEach(l => {
+    nodes.push({ type:'label', row:1, col:l.col, className:l.cls, html:l.html });
+  });
+
+  nodes.push({
+    type:'axisTitle',
+    row:1,
+    col:1,
+    className:'p-axis-title',
+    html:'Arquitectura base'
+  });
 
   logicalRows.forEach(r => {
     const rr = rowMap[String(r)];
@@ -3241,25 +3356,29 @@ header{
 
   let orb = 30;
   for (let col = 2; col <= 31; col += 1, orb -= 1) {
-    nodes.push({type:'orb', row:rowMap['1'], col, className:'p-node p-orb', html:String(orb)});
+    nodes.push({ type:'orb', row:rowMap['1'], col, className:'p-node p-orb', html:String(orb) });
   }
 
   for (let logicalRow = 2; logicalRow <= 5; logicalRow += 1) {
     for (let col = 3; col <= 26; col += 1) {
       const value = 221 + (logicalRow - 2) - 4 * (col - 3);
-      nodes.push({type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value)});
+      nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
     }
   }
 
   for (let atomic = 87, col = 1; atomic <= 118; atomic += 1, col += 1) {
-    const item = byAtomic.get(atomic);
+    const item = window.PERIODIC_DATA.find(d => d.atomic === atomic);
     nodes.push(makeElementNode(item, -2, col, topCategory(col), false));
   }
 
   for (let atomic = 118, col = 1; atomic >= 87; atomic -= 1, col += 1) {
-    const item = byAtomic.get(atomic);
+    const item = window.PERIODIC_DATA.find(d => d.atomic === atomic);
     nodes.push(makeElementNode(item, -1, col, topCategory(col), false));
   }
+
+  const row7Items = window.PERIODIC_DATA
+    .filter(d => d.row === 7)
+    .sort((a,b) => a.col - b.col);
 
   [8, 9].forEach(logicalRow => {
     row7Items.forEach(item => {
@@ -3308,10 +3427,13 @@ header{
       el.type = 'button';
       el.dataset.key = node.key;
       el.dataset.preferred = node.preferred ? '1' : '0';
-      el.title = node.symbol + ' · ' + node.atomic + ' · ' + node.name;
+      el.dataset.zone = node.zone;
+      el.title = node.title;
       el.addEventListener('click', function(){
+        const sourceItem = findItemByKey(node.key);
+        const nextSymbol = sourceItem ? sourceItem.symbol : node.symbol;
         const url = new URL(window.location.href);
-        url.searchParams.set('el', node.symbol);
+        url.searchParams.set('el', nextSymbol);
         window.location.href = url.toString();
       });
     }
