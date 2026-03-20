@@ -280,15 +280,15 @@ header{
 .p-el__atomic,
 .p-el__corner{
   position:absolute;
-  top:3px;
+  top:5px;
   font-size:9px;
   font-weight:700;
   line-height:1;
   color:rgba(232,241,255,.92);
 }
 .p-el__atomic{ left:5px; }
-.p-el__corner--left{ left:5px; }
-.p-el__corner--right{ right:5px; text-align:right; }
+.p-el__corner--left{ left:3px; }
+.p-el__corner--right{ right:3px; text-align:right; }
 
 .p-el--corners .p-el__corner{
   top:2px;
@@ -319,8 +319,8 @@ header{
 @media (max-width:839px){
   .pel--ignore{}
   .p-el--corners .p-el__corner{
-    font-size:7px;
-    top:2px;
+    font-size:7.2px;
+    top:3px;
     letter-spacing:-0.05em;
   }
   .p-el--band-tight .p-el__corner{
@@ -451,7 +451,7 @@ header{
     min-width:1360px;
     padding:var(--top-gutter) var(--side-gutter) 20px;
   }
-  .pgrid{--cell-w:36px;--cell-h:50px;--gap:3px}
+  .pgrid{--cell-w:40px;--cell-h:44px;--gap:3px}
   .p-el__symbol{font-size:16px}
   .p-el__name{font-size:6px}
   .p-slab,.p-orb{font-size:13px}
@@ -3427,6 +3427,7 @@ header{
       nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
     }
   }
+  });
 
   const wrap = document.createElement('div');
   wrap.className = 'pgridWrap';
