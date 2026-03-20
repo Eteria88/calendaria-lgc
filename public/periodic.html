@@ -178,7 +178,7 @@ header{
 .wrap{max-width:1380px;margin:0 auto;padding:20px}
 .periodicContainer{
   position:relative;
-  border-radius:18px;
+  border-radius:16px;
   overflow:hidden;
   border:1px solid rgba(214,231,255,.16);
   background:
@@ -186,7 +186,7 @@ header{
     radial-gradient(1200px 560px at 90% 0%, rgba(72,129,255,.08), transparent 45%),
     linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
   min-height:320px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  box-shadow:none;
 }
 #periodicGridMount{
   width:100%;
@@ -204,16 +204,16 @@ header{
 #periodicGridMount::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
 
 .pgridWrap{
-  --top-gutter:42px;
-  --side-gutter:34px;
+  --top-gutter:48px;
+  --side-gutter:40px;
   position:relative;
-  min-width:1640px;
+  min-width:1668px;
   padding:var(--top-gutter) var(--side-gutter) 26px;
 }
 .pgrid{
-  --cell-w:44px;
-  --cell-h:54px;
-  --gap:3px;
+  --cell-w:45px;
+  --cell-h:53px;
+  --gap:2px;
   display:grid;
   grid-template-columns:repeat(var(--p-cols), var(--cell-w));
   grid-template-rows:repeat(var(--p-rows), var(--cell-h));
@@ -237,15 +237,15 @@ header{
       rgba(255,255,255,.05) calc((var(--cell-h) + var(--gap)) * 7 + 20px),
       transparent calc((var(--cell-h) + var(--gap)) * 7 + 20px)
     );
-  opacity:.55;
+  opacity:.18;
 }
 .p-node{
   position:relative;
-  border-radius:8px;
-  border:1px solid rgba(135,160,188,.28);
+  border-radius:4px;
+  border:1px solid rgba(135,160,188,.22);
   color:#eaf3ff;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.018));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  box-shadow:none;
 }
 .p-node.is-clickable{cursor:pointer}
 .p-node.is-clickable:hover{
@@ -386,37 +386,29 @@ header{
   pointer-events:none;
 }
 .p-side{
-  font-size:11px;
+  font-size:12px;
   line-height:1;
 }
-.p-side.left{left:auto; right:calc(100% + 10px)}
-.p-side.right{right:auto; left:calc(100% + 10px)}
+.p-side.left{left:auto; right:calc(100% + 12px)}
+.p-side.right{right:auto; left:calc(100% + 12px)}
 .p-top{
   left:50%;
-  top:-21px;
+  top:-23px;
   transform:translateX(-50%);
-  font-size:10px;
+  font-size:10.5px;
   text-align:center;
-  line-height:.96;
+  line-height:1.03;
   white-space:nowrap;
-}
-.p-top b{
-  display:block;
-  font-size:8.5px;
-  font-weight:700;
-  line-height:1;
 }
 .p-top small{
   display:block;
-  opacity:.9;
-  margin-top:-1px;
-  font-size:7.3px;
-  font-weight:700;
+  opacity:.84;
+  margin-top:0;
+  font-size:5.8px;
   letter-spacing:-0.01em;
-  line-height:1;
   max-width:96%;
 }
-.p-top.dual{top:-21px}
+.p-top.dual{top:-23px}
 .p-top.dual small{transform:none;}
 .p-top.dual b{display:block;font-weight:700}
 .p-axis-title{
@@ -442,7 +434,7 @@ header{
 @media (min-width:1280px){
   .wrap{max-width:1460px}
   .pgridWrap{min-width:1700px}
-  .pgrid{--cell-w:44px;--cell-h:54px}
+  .pgrid{--cell-w:45px;--cell-h:53px}
 }
 @media (max-width:839px){
   .wrap{padding:14px}
@@ -452,7 +444,7 @@ header{
     min-width:1360px;
     padding:var(--top-gutter) var(--side-gutter) 20px;
   }
-  .pgrid{--cell-w:41px;--cell-h:46px;--gap:3px}
+  .pgrid{--cell-w:41px;--cell-h:46px;--gap:2px}
   .p-el__symbol{font-size:15px}
   .p-el__name{font-size:5px}
   .p-slab,.p-orb{font-size:13px}
