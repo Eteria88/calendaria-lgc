@@ -204,8 +204,8 @@ header{
 #periodicGridMount::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
 
 .pgridWrap{
-  --top-gutter:46px;
-  --side-gutter:38px;
+  --top-gutter:42px;
+  --side-gutter:34px;
   position:relative;
   min-width:1640px;
   padding:var(--top-gutter) var(--side-gutter) 26px;
@@ -370,32 +370,32 @@ header{
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:8px;
-  overflow:hidden;
+  border-radius:12px;
   background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));
   border-color:rgba(255,255,255,.10);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
   color:#fff8fe;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   font-size:15px;
   font-weight:800;
-  line-height:1;
+  text-shadow:0 1px 0 rgba(0,0,0,.18);
+  overflow:hidden;
 }
 .p-orb::before{
   content:"";
   position:absolute;
-  inset:10%;
-  border-radius:999px;
-  background:radial-gradient(circle at 50% 42%, rgba(255,236,247,.98) 0 58%, rgba(243,152,209,.98) 84%, rgba(232,90,175,.98) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.40), 0 0 0 1px rgba(236,120,191,.55);
+  left:50%;
+  top:50%;
+  width:calc(100% - 7px);
+  height:calc(100% - 7px);
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 34% 28%, rgba(255,232,246,.98) 0%, rgba(252,194,228,.98) 34%, rgba(240,137,199,.95) 72%, rgba(224,94,176,.94) 100%);
+  border:1px solid rgba(255,235,248,.48);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42), 0 0 0 1px rgba(0,0,0,.10);
 }
-.p-orb > * , .p-orb{ z-index:0; }
-.p-orb{ isolation:isolate; }
-.p-orb{z-index:0;}
-.p-orb span,
-.p-orb strong,
-.p-orb em,
-.p-orb b{position:relative;z-index:1;}
+.p-orb > *,.p-orb{
+  z-index:1;
+}
 .p-side,
 .p-top{
   position:absolute;
@@ -407,13 +407,13 @@ header{
   font-size:11px;
   line-height:1;
 }
-.p-side.left{left:auto; right:calc(100% + 13px)}
-.p-side.right{right:auto; left:calc(100% + 13px)}
+.p-side.left{left:auto; right:calc(100% + 10px)}
+.p-side.right{right:auto; left:calc(100% + 10px)}
 .p-top{
   left:50%;
-  top:-24px;
+  top:-21px;
   transform:translateX(-50%);
-  font-size:9px;
+  font-size:10px;
   text-align:center;
   line-height:1.03;
   white-space:nowrap;
@@ -422,11 +422,11 @@ header{
   display:block;
   opacity:.84;
   margin-top:0;
-  font-size:7.3px;
+  font-size:5.8px;
   letter-spacing:-0.01em;
   max-width:96%;
 }
-.p-top.dual{top:-24px}
+.p-top.dual{top:-21px}
 .p-top.dual small{transform:none;}
 .p-top.dual b{display:block;font-weight:700}
 .p-axis-title{
