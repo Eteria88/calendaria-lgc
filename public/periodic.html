@@ -204,8 +204,8 @@ header{
 #periodicGridMount::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
 
 .pgridWrap{
-  --top-gutter:56px;
-  --side-gutter:46px;
+  --top-gutter:48px;
+  --side-gutter:40px;
   position:relative;
   min-width:1668px;
   padding:var(--top-gutter) var(--side-gutter) 26px;
@@ -410,31 +410,26 @@ header{
   font-size:12px;
   line-height:1;
 }
-.p-side.left{left:auto; right:calc(100% + 16px)}
-.p-side.right{right:auto; left:calc(100% + 16px)}
+.p-side.left{left:auto; right:calc(100% + 12px)}
+.p-side.right{right:auto; left:calc(100% + 12px)}
 .p-top{
   left:50%;
-  top:-31px;
+  top:-23px;
   transform:translateX(-50%);
-  font-size:9.7px;
+  font-size:10.5px;
   text-align:center;
-  line-height:1;
+  line-height:1.03;
   white-space:nowrap;
-}
-.p-top b{
-  display:block;
-  font-weight:700;
-  letter-spacing:-0.02em;
 }
 .p-top small{
   display:block;
-  opacity:.9;
-  margin-top:-1px;
-  font-size:7.3px;
-  letter-spacing:0;
+  opacity:.84;
+  margin-top:0;
+  font-size:5.8px;
+  letter-spacing:-0.01em;
   max-width:96%;
 }
-.p-top.dual{top:-31px}
+.p-top.dual{top:-23px}
 .p-top.dual small{transform:none;}
 .p-top.dual b{display:block;font-weight:700}
 .p-axis-title{
@@ -465,8 +460,8 @@ header{
 @media (max-width:839px){
   .wrap{padding:14px}
   .pgridWrap{
-    --top-gutter:44px;
-    --side-gutter:34px;
+    --top-gutter:38px;
+    --side-gutter:28px;
     min-width:1360px;
     padding:var(--top-gutter) var(--side-gutter) 20px;
   }
@@ -474,10 +469,9 @@ header{
   .p-el__symbol{font-size:15px}
   .p-el__name{font-size:5px}
   .p-slab,.p-orb{font-size:13px}
-  .p-side.left{left:auto; right:calc(100% + 12px)}
-  .p-side.right{right:auto; left:calc(100% + 12px)}
-  .p-top{left:50%; transform:translateX(-50%); top:-25px; font-size:9.2px}
-  .p-top small{font-size:6.6px; margin-top:-1px}
+  .p-side.left{left:auto; right:calc(100% + 9px)}
+  .p-side.right{right:auto; left:calc(100% + 9px)}
+  .p-top{left:50%; transform:translateX(-50%); top:-18px; font-size:10px}
 }
 
 
@@ -3434,12 +3428,19 @@ header{
     nodes.push({ type:'orb', row:rowMap['1'], col, className:'p-node p-orb', html:String(orb) });
   }
 
-  for (let logicalRow = 2; logicalRow <= 5; logicalRow += 1) {
-    for (let col = 3; col <= 26; col += 1) {
-      const value = 221 + (logicalRow - 2) - 4 * (col - 3);
+  const slabSpecs = [
+    { logicalRow: 2, startCol: 3, endCol: 21, startValue: 221 },
+    { logicalRow: 3, startCol: 3, endCol: 21, startValue: 222 },
+    { logicalRow: 4, startCol: 3, endCol: 16, startValue: 223 },
+    { logicalRow: 5, startCol: 3, endCol: 16, startValue: 224 },
+  ];
+
+  slabSpecs.forEach(({ logicalRow, startCol, endCol, startValue }) => {
+    for (let col = startCol; col <= endCol; col += 1) {
+      const value = startValue - 4 * (col - startCol);
       nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
     }
-  }
+  });
 
   const wrap = document.createElement('div');
   wrap.className = 'pgridWrap';
