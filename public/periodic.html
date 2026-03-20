@@ -366,35 +366,17 @@ header{
   font-weight:700;
 }
 .p-orb{
-  position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:12px;
-  background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));
-  border-color:rgba(255,255,255,.10);
+  border-radius:999px;
+  background:radial-gradient(circle at 30% 28%, rgba(255,220,244,.96), rgba(245,115,193,.92));
+  border-color:rgba(255,235,248,.44);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
   color:#fff8fe;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   font-size:15px;
   font-weight:800;
-  text-shadow:0 1px 0 rgba(0,0,0,.18);
-  overflow:hidden;
-}
-.p-orb::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:calc(100% - 7px);
-  height:calc(100% - 7px);
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:radial-gradient(circle at 34% 28%, rgba(255,232,246,.98) 0%, rgba(252,194,228,.98) 34%, rgba(240,137,199,.95) 72%, rgba(224,94,176,.94) 100%);
-  border:1px solid rgba(255,235,248,.48);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.42), 0 0 0 1px rgba(0,0,0,.10);
-}
-.p-orb > *,.p-orb{
-  z-index:1;
 }
 .p-side,
 .p-top{
@@ -415,15 +397,23 @@ header{
   transform:translateX(-50%);
   font-size:10px;
   text-align:center;
-  line-height:1.03;
+  line-height:.96;
   white-space:nowrap;
+}
+.p-top b{
+  display:block;
+  font-size:8.5px;
+  font-weight:700;
+  line-height:1;
 }
 .p-top small{
   display:block;
-  opacity:.84;
-  margin-top:0;
-  font-size:5.8px;
+  opacity:.9;
+  margin-top:-1px;
+  font-size:7.3px;
+  font-weight:700;
   letter-spacing:-0.01em;
+  line-height:1;
   max-width:96%;
 }
 .p-top.dual{top:-21px}
