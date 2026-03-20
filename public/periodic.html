@@ -211,8 +211,8 @@ header{
   padding:var(--top-gutter) var(--side-gutter) 26px;
 }
 .pgrid{
-  --cell-w:40px;
-  --cell-h:56px;
+  --cell-w:42px;
+  --cell-h:52px;
   --gap:3px;
   display:grid;
   grid-template-columns:repeat(var(--p-cols), var(--cell-w));
@@ -280,7 +280,7 @@ header{
 .p-el__atomic,
 .p-el__corner{
   position:absolute;
-  top:4px;
+  top:3px;
   font-size:9px;
   font-weight:700;
   line-height:1;
@@ -291,57 +291,59 @@ header{
 .p-el__corner--right{ right:5px; text-align:right; }
 
 .p-el--corners .p-el__corner{
-  top:3px;
-  font-size:8px;
+  top:2px;
+  font-size:8.4px;
   line-height:1;
   font-weight:700;
   letter-spacing:-0.05em;
   opacity:.96;
 }
-.p-el--corners .p-el__corner--left{ left:4px; }
-.p-el--corners .p-el__corner--right{ right:4px; }
+.p-el--corners .p-el__corner--left{ left:3px; }
+.p-el--corners .p-el__corner--right{ right:3px; }
 
-.p-el--corners-dual .p-el__corner--left{ left:3px; }
-.p-el--corners-dual .p-el__corner--right{ right:3px; }
+.p-el--corners-dual .p-el__corner--left{ left:2px; }
+.p-el--corners-dual .p-el__corner--right{ right:2px; }
 
 .p-el--band-tight .p-el__corner{
-  top:2px;
-  font-size:7px;
-  letter-spacing:-0.06em;
+  top:1px;
+  font-size:8px;
+  letter-spacing:-0.05em;
 }
 .p-el--band-tight .p-el__symbol{
-  margin-top:10px;
+  margin-top:12px;
 }
 .p-el--band-tight .p-el__name{
-  margin-top:1px;
+  margin-top:2px;
 }
 
 @media (max-width:839px){
+  .pel--ignore{}
   .p-el--corners .p-el__corner{
     font-size:7px;
     top:2px;
-    letter-spacing:-0.06em;
+    letter-spacing:-0.05em;
   }
   .p-el--band-tight .p-el__corner{
-    font-size:6px;
-    top:2px;
-    letter-spacing:-0.07em;
+    font-size:6.6px;
+    top:1px;
+    letter-spacing:-0.06em;
   }
   .p-el--band-tight .p-el__symbol{
-    margin-top:9px;
+    margin-top:10px;
   }
 }
 
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:18px;
+  font-size:17px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.04em;
 }
 .p-el__name{
-  font-size:6px;
-  line-height:1.08;
+  font-size:5.4px;
+  line-height:1.04;
+  letter-spacing:-0.01em;
   color:rgba(230,241,255,.84);
   max-width:100%;
   overflow:hidden;
@@ -3425,6 +3427,7 @@ header{
       nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
     }
   }
+  });
 
   const wrap = document.createElement('div');
   wrap.className = 'pgridWrap';
