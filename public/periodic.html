@@ -399,6 +399,24 @@ header{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
   z-index:-1;
 }
+.p-orb .orb-main{
+  position:relative;
+  z-index:1;
+  line-height:1;
+}
+.p-orb .orb-top{
+  position:absolute;
+  top:6px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:1;
+  font-size:9px;
+  line-height:1;
+  color:rgba(15,15,18,.92);
+  font-weight:800;
+  letter-spacing:-0.01em;
+  pointer-events:none;
+}
 .p-side,
 .p-top{
   position:absolute;
@@ -3424,13 +3442,20 @@ header{
   });
 
   let orb = 30;
-  for (let col = 2; col <= 31; col += 1, orb -= 1) {
-    nodes.push({ type:'orb', row:rowMap['1'], col, className:'p-node p-orb', html:String(orb) });
+  let orbTop = 148;
+  for (let col = 2; col <= 31; col += 1, orb -= 1, orbTop -= 1) {
+    nodes.push({
+      type:'orb',
+      row:rowMap['1'],
+      col,
+      className:'p-node p-orb',
+      html:`<span class="orb-top">${orbTop}</span><span class="orb-main">${orb}</span>`
+    });
   }
 
   const slabRows = {
-    2: [221,217,213,209,205,201,197,193,189,185,181,177,173,169,167,165,163,161,159,157,155,153,151,149],
-    3: [222,218,214,210,206,202,198,194,190,186,182,178,174,170,168,166,164,162,160,158,156,154,152,150],
+    2: [221,217,213,209,205,201,197,193,189,185,181,177,173,169,165,161,157,153,149,151,155,159,163,167],
+    3: [222,218,214,210,206,202,198,194,190,186,182,178,174,170,166,162,158,154,150,152,156,160,164,168],
     4: [223,219,215,211,207,203,199,195,191,187,183,179,175,171],
     5: [224,220,216,212,208,204,200,196,192,188,184,180,176,172],
   };
