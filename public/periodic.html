@@ -211,8 +211,8 @@ header{
   padding:var(--top-gutter) var(--side-gutter) 26px;
 }
 .pgrid{
-  --cell-w:38px;
-  --cell-h:48px;
+  --cell-w:40px;
+  --cell-h:56px;
   --gap:3px;
   display:grid;
   grid-template-columns:repeat(var(--p-cols), var(--cell-w));
@@ -289,26 +289,15 @@ header{
 .p-el__atomic{ left:5px; }
 .p-el__corner--left{ left:5px; }
 .p-el__corner--right{ right:5px; text-align:right; }
-.p-el--band .p-el__corner{
-  top:3px;
-  font-size:8px;
-  letter-spacing:-.05em;
-}
-.p-el--band .p-el__symbol{ margin-top:6px; }
-.p-el--band.is-tail .p-el__corner{
-  font-size:7px;
-  letter-spacing:-.07em;
-}
-.p-el--band.is-tail .p-el__symbol{ margin-top:7px; }
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:16px;
+  font-size:18px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.04em;
 }
 .p-el__name{
-  font-size:5.5px;
+  font-size:6px;
   line-height:1.08;
   color:rgba(230,241,255,.84);
   max-width:100%;
@@ -417,7 +406,7 @@ header{
     min-width:1360px;
     padding:var(--top-gutter) var(--side-gutter) 20px;
   }
-  .pgrid{--cell-w:34px;--cell-h:50px;--gap:3px}
+  .pgrid{--cell-w:36px;--cell-h:50px;--gap:3px}
   .p-el__symbol{font-size:16px}
   .p-el__name{font-size:6px}
   .p-slab,.p-orb{font-size:13px}
@@ -3310,8 +3299,6 @@ header{
     const active = key === activeKey;
     const cls = ['p-node', 'p-el', 'is-clickable', 'is-' + (extraClass || item.category)];
     if (active) cls.push('is-active');
-    if (logicalRow === 7 || logicalRow === 9) cls.push('p-el--band');
-    if ((logicalRow === 7 || logicalRow === 9) && col >= 27) cls.push('is-tail');
     const zone = zoneForRow(logicalRow);
     const display = readDisplay(item, zone, item.atomic);
 
@@ -3392,17 +3379,7 @@ header{
       nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
     }
   }
-
-  for (let atomic = 87, col = 1; atomic <= 118; atomic += 1, col += 1) {
-    const item = window.PERIODIC_DATA.find(d => d.atomic === atomic);
-    nodes.push(makeElementNode(item, -2, col, topCategory(col), false));
-  }
-
-  for (let atomic = 118, col = 1; atomic >= 87; atomic -= 1, col += 1) {
-    const item = window.PERIODIC_DATA.find(d => d.atomic === atomic);
-    nodes.push(makeElementNode(item, -1, col, topCategory(col), false));
-  }
-
+  });
 
   const wrap = document.createElement('div');
   wrap.className = 'pgridWrap';

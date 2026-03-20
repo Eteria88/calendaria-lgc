@@ -1,5 +1,1029 @@
 window.PERIODIC_DATA = [
   {
+    "key": "FR",
+    "symbol": "Fr",
+    "name": "Francium",
+    "atomic": 87,
+    "col": 1,
+    "row": -2,
+    "category": "alkali",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-87",
+        "cornerTopRight": "225"
+      }
+    }
+  },
+  {
+    "key": "RA",
+    "symbol": "Ra",
+    "name": "Radium",
+    "atomic": 88,
+    "col": 2,
+    "row": -2,
+    "category": "alkaline",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-88",
+        "cornerTopRight": "226"
+      }
+    }
+  },
+  {
+    "key": "AC",
+    "symbol": "Ac",
+    "name": "Actinium",
+    "atomic": 89,
+    "col": 3,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-89",
+        "cornerTopRight": "227"
+      }
+    }
+  },
+  {
+    "key": "TH",
+    "symbol": "Th",
+    "name": "Thorium",
+    "atomic": 90,
+    "col": 4,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-90",
+        "cornerTopRight": "228"
+      }
+    }
+  },
+  {
+    "key": "PA",
+    "symbol": "Pa",
+    "name": "Protactinium",
+    "atomic": 91,
+    "col": 5,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-91",
+        "cornerTopRight": "229"
+      }
+    }
+  },
+  {
+    "key": "U",
+    "symbol": "U",
+    "name": "Uranium",
+    "atomic": 92,
+    "col": 6,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-92",
+        "cornerTopRight": "230"
+      }
+    }
+  },
+  {
+    "key": "NP",
+    "symbol": "Np",
+    "name": "Neptunium",
+    "atomic": 93,
+    "col": 7,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-93",
+        "cornerTopRight": "231"
+      }
+    }
+  },
+  {
+    "key": "PU",
+    "symbol": "Pu",
+    "name": "Plutonium",
+    "atomic": 94,
+    "col": 8,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-94",
+        "cornerTopRight": "232"
+      }
+    }
+  },
+  {
+    "key": "AM",
+    "symbol": "Am",
+    "name": "Americium",
+    "atomic": 95,
+    "col": 9,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-95",
+        "cornerTopRight": "233"
+      }
+    }
+  },
+  {
+    "key": "CM",
+    "symbol": "Cm",
+    "name": "Curium",
+    "atomic": 96,
+    "col": 10,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-96",
+        "cornerTopRight": "234"
+      }
+    }
+  },
+  {
+    "key": "BK",
+    "symbol": "Bk",
+    "name": "Berkelium",
+    "atomic": 97,
+    "col": 11,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-97",
+        "cornerTopRight": "235"
+      }
+    }
+  },
+  {
+    "key": "CF",
+    "symbol": "Cf",
+    "name": "Californium",
+    "atomic": 98,
+    "col": 12,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-98",
+        "cornerTopRight": "236"
+      }
+    }
+  },
+  {
+    "key": "ES",
+    "symbol": "Es",
+    "name": "Einsteinium",
+    "atomic": 99,
+    "col": 13,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-99",
+        "cornerTopRight": "237"
+      }
+    }
+  },
+  {
+    "key": "FM",
+    "symbol": "Fm",
+    "name": "Fermium",
+    "atomic": 100,
+    "col": 14,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-100",
+        "cornerTopRight": "238"
+      }
+    }
+  },
+  {
+    "key": "MD",
+    "symbol": "Md",
+    "name": "Mendelevium",
+    "atomic": 101,
+    "col": 15,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-101",
+        "cornerTopRight": "239"
+      }
+    }
+  },
+  {
+    "key": "NO",
+    "symbol": "No",
+    "name": "Nobelium",
+    "atomic": 102,
+    "col": 16,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-102",
+        "cornerTopRight": "240"
+      }
+    }
+  },
+  {
+    "key": "LR",
+    "symbol": "Lr",
+    "name": "Lawrencium",
+    "atomic": 103,
+    "col": 17,
+    "row": -2,
+    "category": "actinide",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-103",
+        "cornerTopRight": "241"
+      }
+    }
+  },
+  {
+    "key": "RF",
+    "symbol": "Rf",
+    "name": "Rutherfordium",
+    "atomic": 104,
+    "col": 18,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-104",
+        "cornerTopRight": "242"
+      }
+    }
+  },
+  {
+    "key": "DB",
+    "symbol": "Db",
+    "name": "Dubnium",
+    "atomic": 105,
+    "col": 19,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-105",
+        "cornerTopRight": "243"
+      }
+    }
+  },
+  {
+    "key": "SG",
+    "symbol": "Sg",
+    "name": "Seaborgium",
+    "atomic": 106,
+    "col": 20,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-106",
+        "cornerTopRight": "244"
+      }
+    }
+  },
+  {
+    "key": "BH",
+    "symbol": "Bh",
+    "name": "Bohrium",
+    "atomic": 107,
+    "col": 21,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-107",
+        "cornerTopRight": "245"
+      }
+    }
+  },
+  {
+    "key": "HS",
+    "symbol": "Hs",
+    "name": "Hassium",
+    "atomic": 108,
+    "col": 22,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-108",
+        "cornerTopRight": "246"
+      }
+    }
+  },
+  {
+    "key": "MT",
+    "symbol": "Mt",
+    "name": "Meitnerium",
+    "atomic": 109,
+    "col": 23,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-109",
+        "cornerTopRight": "247"
+      }
+    }
+  },
+  {
+    "key": "DS",
+    "symbol": "Ds",
+    "name": "Darmstadtium",
+    "atomic": 110,
+    "col": 24,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-110",
+        "cornerTopRight": "248"
+      }
+    }
+  },
+  {
+    "key": "RG",
+    "symbol": "Rg",
+    "name": "Roentgenium",
+    "atomic": 111,
+    "col": 25,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-111",
+        "cornerTopRight": "249"
+      }
+    }
+  },
+  {
+    "key": "CN",
+    "symbol": "Cn",
+    "name": "Copernicium",
+    "atomic": 112,
+    "col": 26,
+    "row": -2,
+    "category": "transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-112",
+        "cornerTopRight": "250"
+      }
+    }
+  },
+  {
+    "key": "NH",
+    "symbol": "Nh",
+    "name": "Nihonium",
+    "atomic": 113,
+    "col": 27,
+    "row": -2,
+    "category": "post-transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-113",
+        "cornerTopRight": "251"
+      }
+    }
+  },
+  {
+    "key": "FL",
+    "symbol": "Fl",
+    "name": "Flerovium",
+    "atomic": 114,
+    "col": 28,
+    "row": -2,
+    "category": "post-transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-114",
+        "cornerTopRight": "252"
+      }
+    }
+  },
+  {
+    "key": "MC",
+    "symbol": "Mc",
+    "name": "Moscovium",
+    "atomic": 115,
+    "col": 29,
+    "row": -2,
+    "category": "post-transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-115",
+        "cornerTopRight": "253"
+      }
+    }
+  },
+  {
+    "key": "LV",
+    "symbol": "Lv",
+    "name": "Livermorium",
+    "atomic": 116,
+    "col": 30,
+    "row": -2,
+    "category": "post-transition",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-116",
+        "cornerTopRight": "254"
+      }
+    }
+  },
+  {
+    "key": "TS",
+    "symbol": "Ts",
+    "name": "Tenessine",
+    "atomic": 117,
+    "col": 31,
+    "row": -2,
+    "category": "halogen",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-117",
+        "cornerTopRight": "255"
+      }
+    }
+  },
+  {
+    "key": "OG",
+    "symbol": "Og",
+    "name": "Oganesson",
+    "atomic": 118,
+    "col": 32,
+    "row": -2,
+    "category": "noble",
+    "display": {
+      "topForward": {
+        "number": "",
+        "cornerTopLeft": "-118",
+        "cornerTopRight": "256"
+      }
+    }
+  },
+  {
+    "key": "OG",
+    "symbol": "Og",
+    "name": "Oganesson",
+    "atomic": 118,
+    "col": 1,
+    "row": -1,
+    "category": "noble",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-118",
+        "cornerTopRight": "256"
+      }
+    }
+  },
+  {
+    "key": "TS",
+    "symbol": "Ts",
+    "name": "Tenessine",
+    "atomic": 117,
+    "col": 2,
+    "row": -1,
+    "category": "halogen",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-117",
+        "cornerTopRight": "255"
+      }
+    }
+  },
+  {
+    "key": "LV",
+    "symbol": "Lv",
+    "name": "Livermorium",
+    "atomic": 116,
+    "col": 3,
+    "row": -1,
+    "category": "post-transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-116",
+        "cornerTopRight": "254"
+      }
+    }
+  },
+  {
+    "key": "MC",
+    "symbol": "Mc",
+    "name": "Moscovium",
+    "atomic": 115,
+    "col": 4,
+    "row": -1,
+    "category": "post-transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-115",
+        "cornerTopRight": "253"
+      }
+    }
+  },
+  {
+    "key": "FL",
+    "symbol": "Fl",
+    "name": "Flerovium",
+    "atomic": 114,
+    "col": 5,
+    "row": -1,
+    "category": "post-transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-114",
+        "cornerTopRight": "252"
+      }
+    }
+  },
+  {
+    "key": "NH",
+    "symbol": "Nh",
+    "name": "Nihonium",
+    "atomic": 113,
+    "col": 6,
+    "row": -1,
+    "category": "post-transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-113",
+        "cornerTopRight": "251"
+      }
+    }
+  },
+  {
+    "key": "CN",
+    "symbol": "Cn",
+    "name": "Copernicium",
+    "atomic": 112,
+    "col": 7,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-112",
+        "cornerTopRight": "250"
+      }
+    }
+  },
+  {
+    "key": "RG",
+    "symbol": "Rg",
+    "name": "Roentgenium",
+    "atomic": 111,
+    "col": 8,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-111",
+        "cornerTopRight": "249"
+      }
+    }
+  },
+  {
+    "key": "DS",
+    "symbol": "Ds",
+    "name": "Darmstadtium",
+    "atomic": 110,
+    "col": 9,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-110",
+        "cornerTopRight": "248"
+      }
+    }
+  },
+  {
+    "key": "MT",
+    "symbol": "Mt",
+    "name": "Meitnerium",
+    "atomic": 109,
+    "col": 10,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-109",
+        "cornerTopRight": "247"
+      }
+    }
+  },
+  {
+    "key": "HS",
+    "symbol": "Hs",
+    "name": "Hassium",
+    "atomic": 108,
+    "col": 11,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-108",
+        "cornerTopRight": "246"
+      }
+    }
+  },
+  {
+    "key": "BH",
+    "symbol": "Bh",
+    "name": "Bohrium",
+    "atomic": 107,
+    "col": 12,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-107",
+        "cornerTopRight": "245"
+      }
+    }
+  },
+  {
+    "key": "SG",
+    "symbol": "Sg",
+    "name": "Seaborgium",
+    "atomic": 106,
+    "col": 13,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-106",
+        "cornerTopRight": "244"
+      }
+    }
+  },
+  {
+    "key": "DB",
+    "symbol": "Db",
+    "name": "Dubnium",
+    "atomic": 105,
+    "col": 14,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-105",
+        "cornerTopRight": "243"
+      }
+    }
+  },
+  {
+    "key": "RF",
+    "symbol": "Rf",
+    "name": "Rutherfordium",
+    "atomic": 104,
+    "col": 15,
+    "row": -1,
+    "category": "transition",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-104",
+        "cornerTopRight": "242"
+      }
+    }
+  },
+  {
+    "key": "LR",
+    "symbol": "Lr",
+    "name": "Lawrencium",
+    "atomic": 103,
+    "col": 16,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-103",
+        "cornerTopRight": "241"
+      }
+    }
+  },
+  {
+    "key": "NO",
+    "symbol": "No",
+    "name": "Nobelium",
+    "atomic": 102,
+    "col": 17,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-102",
+        "cornerTopRight": "240"
+      }
+    }
+  },
+  {
+    "key": "MD",
+    "symbol": "Md",
+    "name": "Mendelevium",
+    "atomic": 101,
+    "col": 18,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-101",
+        "cornerTopRight": "239"
+      }
+    }
+  },
+  {
+    "key": "FM",
+    "symbol": "Fm",
+    "name": "Fermium",
+    "atomic": 100,
+    "col": 19,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-100",
+        "cornerTopRight": "238"
+      }
+    }
+  },
+  {
+    "key": "ES",
+    "symbol": "Es",
+    "name": "Einsteinium",
+    "atomic": 99,
+    "col": 20,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-99",
+        "cornerTopRight": "237"
+      }
+    }
+  },
+  {
+    "key": "CF",
+    "symbol": "Cf",
+    "name": "Californium",
+    "atomic": 98,
+    "col": 21,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-98",
+        "cornerTopRight": "236"
+      }
+    }
+  },
+  {
+    "key": "BK",
+    "symbol": "Bk",
+    "name": "Berkelium",
+    "atomic": 97,
+    "col": 22,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-97",
+        "cornerTopRight": "235"
+      }
+    }
+  },
+  {
+    "key": "CM",
+    "symbol": "Cm",
+    "name": "Curium",
+    "atomic": 96,
+    "col": 23,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-96",
+        "cornerTopRight": "234"
+      }
+    }
+  },
+  {
+    "key": "AM",
+    "symbol": "Am",
+    "name": "Americium",
+    "atomic": 95,
+    "col": 24,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-95",
+        "cornerTopRight": "233"
+      }
+    }
+  },
+  {
+    "key": "PU",
+    "symbol": "Pu",
+    "name": "Plutonium",
+    "atomic": 94,
+    "col": 25,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-94",
+        "cornerTopRight": "232"
+      }
+    }
+  },
+  {
+    "key": "NP",
+    "symbol": "Np",
+    "name": "Neptunium",
+    "atomic": 93,
+    "col": 26,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-93",
+        "cornerTopRight": "231"
+      }
+    }
+  },
+  {
+    "key": "U",
+    "symbol": "U",
+    "name": "Uranium",
+    "atomic": 92,
+    "col": 27,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-92",
+        "cornerTopRight": "230"
+      }
+    }
+  },
+  {
+    "key": "PA",
+    "symbol": "Pa",
+    "name": "Protactinium",
+    "atomic": 91,
+    "col": 28,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-91",
+        "cornerTopRight": "229"
+      }
+    }
+  },
+  {
+    "key": "TH",
+    "symbol": "Th",
+    "name": "Thorium",
+    "atomic": 90,
+    "col": 29,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-90",
+        "cornerTopRight": "228"
+      }
+    }
+  },
+  {
+    "key": "AC",
+    "symbol": "Ac",
+    "name": "Actinium",
+    "atomic": 89,
+    "col": 30,
+    "row": -1,
+    "category": "actinide",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-89",
+        "cornerTopRight": "227"
+      }
+    }
+  },
+  {
+    "key": "RA",
+    "symbol": "Ra",
+    "name": "Radium",
+    "atomic": 88,
+    "col": 31,
+    "row": -1,
+    "category": "alkaline",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-88",
+        "cornerTopRight": "226"
+      }
+    }
+  },
+  {
+    "key": "FR",
+    "symbol": "Fr",
+    "name": "Francium",
+    "atomic": 87,
+    "col": 32,
+    "row": -1,
+    "category": "alkali",
+    "display": {
+      "topReverse": {
+        "number": "",
+        "cornerTopLeft": "-87",
+        "cornerTopRight": "225"
+      }
+    }
+  },
+  {
     "key": "H",
     "symbol": "H",
     "name": "Hydrogen",
