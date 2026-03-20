@@ -3390,15 +3390,6 @@ header{
     nodes.push(makeElementNode(item, -1, col, topCategory(col), false));
   }
 
-  const row7Items = window.PERIODIC_DATA
-    .filter(d => d.row === 7)
-    .sort((a,b) => a.col - b.col);
-
-  [8, 9].forEach(logicalRow => {
-    row7Items.forEach(item => {
-      nodes.push(makeElementNode(item, logicalRow, item.col, topCategory(item.col), false));
-    });
-  });
 
   const wrap = document.createElement('div');
   wrap.className = 'pgridWrap';
