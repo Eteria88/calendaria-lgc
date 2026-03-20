@@ -369,7 +369,12 @@ header{
   display:flex;
   align-items:center;
   justify-content:center;
+  width:calc(var(--cell-w) - 2px);
+  height:calc(var(--cell-w) - 2px);
+  margin:calc((var(--cell-h) - var(--cell-w)) / 2) auto 0;
+  box-sizing:border-box;
   border-radius:999px;
+  aspect-ratio:1 / 1;
   background:radial-gradient(circle at 30% 28%, rgba(255,220,244,.96), rgba(245,115,193,.92));
   border-color:rgba(255,235,248,.44);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
