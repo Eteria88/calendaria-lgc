@@ -277,14 +277,18 @@ header{
     0 0 0 1px rgba(124,199,255,.15),
     0 10px 24px rgba(0,0,0,.26);
 }
-.p-el__atomic{
+.p-el__atomic,
+.p-el__corner{
   position:absolute;
   top:4px;
-  left:5px;
   font-size:9px;
   font-weight:700;
+  line-height:1;
   color:rgba(232,241,255,.92);
 }
+.p-el__atomic{ left:5px; }
+.p-el__corner--left{ left:5px; }
+.p-el__corner--right{ right:5px; text-align:right; }
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   font-size:18px;
@@ -3152,7 +3156,7 @@ header{
 <script defer src="/_vercel/speed-insights/script.js"></script>
 
 
-<script src="./periodic-data.js"></script>
+<script src="./periodic-data-fase5.js"></script>
 
 <script>
 (function(){
@@ -3217,7 +3221,15 @@ header{
       (zoneDisplay && zoneDisplay.variant ? zoneDisplay.variant : null) ??
       (item && item.variantLabel ? item.variantLabel : null) ?? '';
 
-    return { number, symbol, name, mass, variant };
+    const cornerTopLeft =
+      (zoneDisplay && zoneDisplay.cornerTopLeft != null ? zoneDisplay.cornerTopLeft : null) ??
+      (item && item.cornerTopLeft != null ? item.cornerTopLeft : null) ?? '';
+
+    const cornerTopRight =
+      (zoneDisplay && zoneDisplay.cornerTopRight != null ? zoneDisplay.cornerTopRight : null) ??
+      (item && item.cornerTopRight != null ? item.cornerTopRight : null) ?? '';
+
+    return { number, symbol, name, mass, variant, cornerTopLeft, cornerTopRight };
   }
 
   window.PERIODIC_LGC = Object.assign({}, window.PERIODIC_LGC || {}, {
@@ -3303,7 +3315,9 @@ header{
       zone,
       className: cls.join(' '),
       html:
-        '<span class="p-el__atomic">' + esc(display.number) + '</span>' +
+        (display.number !== '' ? '<span class="p-el__atomic">' + esc(display.number) + '</span>' : '') +
+        (display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">' + esc(display.cornerTopLeft) + '</span>' : '') +
+        (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">' + esc(display.cornerTopRight) + '</span>' : '') +
         (display.variant ? '<span class="p-el__variant">' + esc(display.variant) + '</span>' : '') +
         '<span class="p-el__symbol">' + esc(display.symbol || item.symbol) + '</span>' +
         '<span class="p-el__name">' + esc(display.name || item.name) + '</span>' +
