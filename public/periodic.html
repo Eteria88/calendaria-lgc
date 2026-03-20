@@ -397,14 +397,16 @@ header{
   font-size:11px;
   line-height:1;
 }
-.p-side.left{left:-14px}
-.p-side.right{right:-14px}
+.p-side.left{left:auto; right:calc(100% + 6px)}
+.p-side.right{right:auto; left:calc(100% + 6px)}
 .p-top{
-  top:-22px;
+  left:50%;
+  top:-24px;
   transform:translateX(-50%);
   font-size:10px;
   text-align:center;
   line-height:1.05;
+  white-space:nowrap;
 }
 .p-top small{
   display:block;
@@ -413,7 +415,7 @@ header{
   font-size:4.2px;
   max-width:96%;
 }
-.p-top.dual{top:-30px}
+.p-top.dual{top:-32px}
 .p-top.dual b{display:block;font-weight:700}
 .p-axis-title{
   position:absolute;
@@ -452,9 +454,9 @@ header{
   .p-el__symbol{font-size:15px}
   .p-el__name{font-size:5px}
   .p-slab,.p-orb{font-size:13px}
-  .p-side.left{left:-14px}
-  .p-side.right{right:-14px}
-  .p-top{font-size:10px}
+  .p-side.left{left:auto; right:calc(100% + 5px)}
+  .p-side.right{right:auto; left:calc(100% + 5px)}
+  .p-top{left:50%; transform:translateX(-50%); font-size:10px}
 }
 
 
@@ -3437,12 +3439,15 @@ header{
     if (!node) return;
 
     if (node.type === 'label' || node.type === 'axisTitle') {
+      const anchor = document.createElement('div');
+      anchor.style.gridColumn = String(node.col);
+      anchor.style.gridRow = String(node.row);
+      anchor.style.position = 'relative';
       const div = document.createElement('div');
       div.className = node.className;
-      div.style.gridColumn = String(node.col);
-      div.style.gridRow = String(node.row);
       div.innerHTML = node.html;
-      grid.appendChild(div);
+      anchor.appendChild(div);
+      grid.appendChild(anchor);
       return;
     }
 
