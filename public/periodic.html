@@ -20,7 +20,7 @@ body{
   color:var(--text);
   font-family:system-ui,-apple-system,Segoe UI,Roboto;
 }
-.wrap{max-width:1240px;margin:0 auto;padding:20px}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
 header{
   display:flex;
   justify-content:space-between;
@@ -289,6 +289,49 @@ header{
 .p-el__atomic{ left:5px; }
 .p-el__corner--left{ left:5px; }
 .p-el__corner--right{ right:5px; text-align:right; }
+
+.p-el--corners .p-el__corner{
+  top:3px;
+  font-size:8px;
+  line-height:1;
+  font-weight:700;
+  letter-spacing:-0.05em;
+  opacity:.96;
+}
+.p-el--corners .p-el__corner--left{ left:4px; }
+.p-el--corners .p-el__corner--right{ right:4px; }
+
+.p-el--corners-dual .p-el__corner--left{ left:3px; }
+.p-el--corners-dual .p-el__corner--right{ right:3px; }
+
+.p-el--band-tight .p-el__corner{
+  top:2px;
+  font-size:7px;
+  letter-spacing:-0.06em;
+}
+.p-el--band-tight .p-el__symbol{
+  margin-top:10px;
+}
+.p-el--band-tight .p-el__name{
+  margin-top:1px;
+}
+
+@media (max-width:839px){
+  .p-el--corners .p-el__corner{
+    font-size:7px;
+    top:2px;
+    letter-spacing:-0.06em;
+  }
+  .p-el--band-tight .p-el__corner{
+    font-size:6px;
+    top:2px;
+    letter-spacing:-0.07em;
+  }
+  .p-el--band-tight .p-el__symbol{
+    margin-top:9px;
+  }
+}
+
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   font-size:18px;
@@ -3301,6 +3344,9 @@ header{
     if (active) cls.push('is-active');
     const zone = zoneForRow(logicalRow);
     const display = readDisplay(item, zone, item.atomic);
+    if (display.cornerTopLeft !== '' || display.cornerTopRight !== '') cls.push('p-el--corners');
+    if (display.cornerTopLeft !== '' && display.cornerTopRight !== '') cls.push('p-el--corners-dual');
+    if (zone === 'topForward' || zone === 'topReverse' || zone === 'bottomB') cls.push('p-el--band-tight');
 
     const titleParts = [display.symbol || item.symbol, display.number, display.name || item.name].filter(Boolean);
 
@@ -3379,6 +3425,7 @@ header{
       nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
     }
   }
+  });
 
   const wrap = document.createElement('div');
   wrap.className = 'pgridWrap';
