@@ -164,7 +164,7 @@ header{
   .mcard{
     display:inline-block;
     width:fit-content;
-    max-width:96%;
+    max-width:100%;
     border:1px solid var(--ol);
     border-radius:12px;
     padding:10px 12px;
@@ -178,7 +178,7 @@ header{
 .wrap{max-width:1380px;margin:0 auto;padding:20px}
 .periodicContainer{
   position:relative;
-  border-radius:16px;
+  border-radius:18px;
   overflow:hidden;
   border:1px solid rgba(214,231,255,.16);
   background:
@@ -186,7 +186,7 @@ header{
     radial-gradient(1200px 560px at 90% 0%, rgba(72,129,255,.08), transparent 45%),
     linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
   min-height:320px;
-  box-shadow:none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
 }
 #periodicGridMount{
   width:100%;
@@ -204,22 +204,30 @@ header{
 #periodicGridMount::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
 
 .pgridWrap{
-  --top-gutter:48px;
-  --side-gutter:40px;
+  --top-gutter:34px;
+  --side-gutter:26px;
   position:relative;
-  min-width:1668px;
+  min-width:1640px;
   padding:var(--top-gutter) var(--side-gutter) 26px;
 }
 .pgrid{
-  --cell-w:45px;
-  --cell-h:53px;
-  --gap:2px;
+  --cell-w:42px;
+  --cell-h:52px;
+  --gap:3px;
   display:grid;
   grid-template-columns:repeat(var(--p-cols), var(--cell-w));
   grid-template-rows:repeat(var(--p-rows), var(--cell-h));
   gap:var(--gap);
   width:max-content;
   position:relative;
+}
+.pgrid::before{
+  content:"";
+  position:absolute;
+  inset:-10px -10px -10px -10px;
+  border-radius:18px;
+  border:1px solid rgba(214,231,255,.10);
+  pointer-events:none;
 }
 .pgrid::after{
   content:"";
@@ -237,15 +245,15 @@ header{
       rgba(255,255,255,.05) calc((var(--cell-h) + var(--gap)) * 7 + 20px),
       transparent calc((var(--cell-h) + var(--gap)) * 7 + 20px)
     );
-  opacity:.18;
+  opacity:.55;
 }
 .p-node{
   position:relative;
-  border-radius:4px;
-  border:1px solid rgba(135,160,188,.22);
+  border-radius:8px;
+  border:1px solid rgba(135,160,188,.28);
   color:#eaf3ff;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.018));
-  box-shadow:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
 }
 .p-node.is-clickable{cursor:pointer}
 .p-node.is-clickable:hover{
@@ -258,8 +266,8 @@ header{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:1px;
-  padding:8px 4px 8px;
+  gap:2px;
+  padding:4px 3px 3px;
   text-align:center;
 }
 .p-el.is-active{
@@ -272,7 +280,7 @@ header{
 .p-el__atomic,
 .p-el__corner{
   position:absolute;
-  top:8px;
+  top:5px;
   font-size:9px;
   font-weight:700;
   line-height:1;
@@ -283,71 +291,68 @@ header{
 .p-el__corner--right{ right:3px; text-align:right; }
 
 .p-el--corners .p-el__corner{
-  top:8px;
-  font-size:8.1px;
+  top:2px;
+  font-size:8.4px;
   line-height:1;
   font-weight:700;
-  letter-spacing:-0.04em;
+  letter-spacing:-0.05em;
   opacity:.96;
 }
-.p-el--corners .p-el__corner--left{ left:4px; }
-.p-el--corners .p-el__corner--right{ right:4px; }
+.p-el--corners .p-el__corner--left{ left:3px; }
+.p-el--corners .p-el__corner--right{ right:3px; }
 
-.p-el--corners-dual .p-el__corner--left{ left:5px; }
-.p-el--corners-dual .p-el__corner--right{ right:5px; }
+.p-el--corners-dual .p-el__corner--left{ left:2px; }
+.p-el--corners-dual .p-el__corner--right{ right:2px; }
 
 .p-el--band-tight .p-el__corner{
-  top:8px;
-  font-size:7.5px;
-  letter-spacing:-0.03em;
+  top:1px;
+  font-size:8px;
+  letter-spacing:-0.05em;
 }
 .p-el--band-tight .p-el__symbol{
-  margin-top:14px;
+  margin-top:12px;
 }
 .p-el--band-tight .p-el__name{
-  margin-top:1px;
-  font-size:4.8px;
-  max-width:98%;
-  letter-spacing:0;
+  margin-top:2px;
 }
 
 @media (max-width:839px){
   .pel--ignore{}
   .p-el--corners .p-el__corner{
-    font-size:7px;
-    top:6px;
-    letter-spacing:-0.04em;
-  }
-  .p-el--band-tight .p-el__corner{
-    font-size:6.0px;
-    top:6px;
+    font-size:7.2px;
+    top:3px;
     letter-spacing:-0.05em;
   }
+  .p-el--band-tight .p-el__corner{
+    font-size:6.6px;
+    top:1px;
+    letter-spacing:-0.06em;
+  }
   .p-el--band-tight .p-el__symbol{
-    margin-top:11px;
+    margin-top:10px;
   }
 }
 
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:16px;
+  font-size:17px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.04em;
 }
 .p-el__name{
-  font-size:5.05px;
-  line-height:1;
+  font-size:5.4px;
+  line-height:1.04;
   letter-spacing:-0.01em;
   color:rgba(230,241,255,.84);
-  max-width:96%;
+  max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
 .p-el__mass{
   position:absolute;
-  bottom:4px;
+  bottom:3px;
   left:3px;
   right:3px;
   font-size:6px;
@@ -369,35 +374,14 @@ header{
   display:flex;
   align-items:center;
   justify-content:center;
-  position:relative;
-  width:100%;
-  height:100%;
-  margin:0;
-  box-sizing:border-box;
-  border-radius:4px;
-  background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));
-  border-color:rgba(255,255,255,.10);
-  box-shadow:none;
+  border-radius:999px;
+  background:radial-gradient(circle at 30% 28%, rgba(255,220,244,.96), rgba(245,115,193,.92));
+  border-color:rgba(255,235,248,.44);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
   color:#fff8fe;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   font-size:15px;
   font-weight:800;
-  overflow:hidden;
-  z-index:0;
-}
-.p-orb::before{
-  content:"";
-  position:absolute;
-  width:calc(var(--cell-w) - 6px);
-  height:calc(var(--cell-w) - 6px);
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  border-radius:999px;
-  background:radial-gradient(circle at 30% 28%, rgba(255,220,244,.96), rgba(245,115,193,.92));
-  border:1px solid rgba(255,235,248,.44);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
-  z-index:-1;
 }
 .p-side,
 .p-top{
@@ -407,34 +391,36 @@ header{
   pointer-events:none;
 }
 .p-side{
-  font-size:12px;
+  font-size:11px;
   line-height:1;
 }
-.p-side.left{left:auto; right:calc(100% + 12px)}
-.p-side.right{right:auto; left:calc(100% + 12px)}
+.p-side.left{left:-18px}
+.p-side.right{right:-18px}
 .p-top{
-  left:50%;
-  top:-23px;
+  top:-26px;
   transform:translateX(-50%);
-  font-size:10.5px;
+  font-size:11px;
   text-align:center;
-  line-height:1.03;
-  white-space:nowrap;
+  line-height:1.05;
 }
 .p-top small{
   display:block;
-  opacity:.84;
-  margin-top:0;
-  font-size:5.8px;
-  letter-spacing:-0.01em;
-  max-width:96%;
+  font-size:8px;
+  opacity:.74;
+  margin-top:1px;
 }
-.p-top.dual{top:-23px}
-.p-top.dual small{transform:none;}
+.p-top.dual{top:-30px}
 .p-top.dual b{display:block;font-weight:700}
 .p-axis-title{
   position:absolute;
-  display:none;
+  top:-14px;
+  left:0;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(226,237,251,.44);
+  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  pointer-events:none;
 }
 .p-node.is-alkali{background:linear-gradient(180deg,rgba(237,104,77,.95),rgba(177,77,53,.88))}
 .p-node.is-alkaline{background:linear-gradient(180deg,rgba(249,185,52,.96),rgba(197,135,20,.90));color:#241a03}
@@ -455,23 +441,23 @@ header{
 @media (min-width:1280px){
   .wrap{max-width:1460px}
   .pgridWrap{min-width:1700px}
-  .pgrid{--cell-w:45px;--cell-h:53px}
+  .pgrid{--cell-w:41px;--cell-h:57px}
 }
 @media (max-width:839px){
   .wrap{padding:14px}
   .pgridWrap{
-    --top-gutter:38px;
-    --side-gutter:28px;
+    --top-gutter:30px;
+    --side-gutter:20px;
     min-width:1360px;
     padding:var(--top-gutter) var(--side-gutter) 20px;
   }
-  .pgrid{--cell-w:41px;--cell-h:46px;--gap:2px}
-  .p-el__symbol{font-size:15px}
-  .p-el__name{font-size:5px}
+  .pgrid{--cell-w:40px;--cell-h:44px;--gap:3px}
+  .p-el__symbol{font-size:16px}
+  .p-el__name{font-size:6px}
   .p-slab,.p-orb{font-size:13px}
-  .p-side.left{left:auto; right:calc(100% + 9px)}
-  .p-side.right{right:auto; left:calc(100% + 9px)}
-  .p-top{left:50%; transform:translateX(-50%); top:-18px; font-size:10px}
+  .p-side.left{left:-14px}
+  .p-side.right{right:-14px}
+  .p-top{font-size:10px}
 }
 
 
@@ -3392,26 +3378,33 @@ header{
   [
     {col:1, html:'<b>1</b><small>IA</small>', cls:'p-top dual'},
     {col:2, html:'<b>2</b><small>IIA</small>', cls:'p-top dual'},
-    {col:17, html:'<b>3</b><small>IIIB</small>', cls:'p-top dual'},
-    {col:18, html:'<b>4</b><small>IVB</small>', cls:'p-top dual'},
-    {col:19, html:'<b>5</b><small>VB</small>', cls:'p-top dual'},
-    {col:20, html:'<b>6</b><small>VIB</small>', cls:'p-top dual'},
-    {col:21, html:'<b>7</b><small>VIIB</small>', cls:'p-top dual'},
-    {col:22, html:'<b>8</b><small>VIII</small>', cls:'p-top dual'},
-    {col:23, html:'<b>9</b><small>VIII</small>', cls:'p-top dual'},
-    {col:24, html:'<b>10</b><small>VIII</small>', cls:'p-top dual'},
-    {col:25, html:'<b>11</b><small>IB</small>', cls:'p-top dual'},
-    {col:26, html:'<b>12</b><small>IIB</small>', cls:'p-top dual'},
-    {col:27, html:'<b>13</b><small>IIIA</small>', cls:'p-top dual'},
-    {col:28, html:'<b>14</b><small>IVA</small>', cls:'p-top dual'},
-    {col:29, html:'<b>15</b><small>VA</small>', cls:'p-top dual'},
-    {col:30, html:'<b>16</b><small>VIA</small>', cls:'p-top dual'},
-    {col:31, html:'<b>17</b><small>VIIA</small>', cls:'p-top dual'},
-    {col:32, html:'<b>18</b><small>VIIIA</small>', cls:'p-top dual'},
+    {col:17, html:'3<small>IIIB</small>', cls:'p-top'},
+    {col:18, html:'4<small>IVB</small>', cls:'p-top'},
+    {col:19, html:'5<small>VB</small>', cls:'p-top'},
+    {col:20, html:'6<small>VIB</small>', cls:'p-top'},
+    {col:21, html:'7<small>VIIB</small>', cls:'p-top'},
+    {col:22, html:'8<small>VIII</small>', cls:'p-top'},
+    {col:23, html:'9<small>VIII</small>', cls:'p-top'},
+    {col:24, html:'10<small>VIII</small>', cls:'p-top'},
+    {col:25, html:'11<small>IB</small>', cls:'p-top'},
+    {col:26, html:'12<small>IIB</small>', cls:'p-top'},
+    {col:27, html:'13<small>IIIA</small>', cls:'p-top'},
+    {col:28, html:'14<small>IVA</small>', cls:'p-top'},
+    {col:29, html:'15<small>VA</small>', cls:'p-top'},
+    {col:30, html:'16<small>VIA</small>', cls:'p-top'},
+    {col:31, html:'17<small>VIIA</small>', cls:'p-top'},
+    {col:32, html:'18<small>VIIIA</small>', cls:'p-top'},
   ].forEach(l => {
     nodes.push({ type:'label', row:1, col:l.col, className:l.cls, html:l.html });
   });
 
+  nodes.push({
+    type:'axisTitle',
+    row:1,
+    col:1,
+    className:'p-axis-title',
+    html:'Arquitectura base'
+  });
 
   logicalRows.forEach(r => {
     const rr = rowMap[String(r)];
@@ -3428,18 +3421,20 @@ header{
     nodes.push({ type:'orb', row:rowMap['1'], col, className:'p-node p-orb', html:String(orb) });
   }
 
-  const slabRows = {
-    2: [221,217,213,209,205,201,197,193,189,185,181,177,173,169,165,161,157,153,151,149,155,159,163,167],
-    3: [222,218,214,210,206,202,198,194,190,186,182,178,174,170,166,162,158,154,152,150,156,160,164,168],
+  const slabValuesByRow = {
+    2: [221,217,213,209,205,201,197,193,189,185,181,177,173,169,167,165,163,161,159,157,155,153,151,149],
+    3: [222,218,214,210,206,202,198,194,190,186,182,178,174,170,168,166,164,162,160,158,156,154,152,150],
     4: [223,219,215,211,207,203,199,195,191,187,183,179,175,171],
-    5: [224,220,216,212,208,204,200,196,192,188,184,180,176,172],
+    5: [224,220,216,212,208,204,200,196,192,188,184,180,176,172]
   };
 
-  Object.entries(slabRows).forEach(([logicalRow, values]) => {
-    values.forEach((value, index) => {
-      const col = 3 + index;
+  for (let logicalRow = 2; logicalRow <= 5; logicalRow += 1) {
+    const rowValues = slabValuesByRow[logicalRow] || [];
+    rowValues.forEach((value, idx) => {
+      const col = 3 + idx;
       nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
     });
+  }
   });
 
   const wrap = document.createElement('div');
@@ -3454,15 +3449,12 @@ header{
     if (!node) return;
 
     if (node.type === 'label' || node.type === 'axisTitle') {
-      const anchor = document.createElement('div');
-      anchor.style.gridColumn = String(node.col);
-      anchor.style.gridRow = String(node.row);
-      anchor.style.position = 'relative';
       const div = document.createElement('div');
       div.className = node.className;
+      div.style.gridColumn = String(node.col);
+      div.style.gridRow = String(node.row);
       div.innerHTML = node.html;
-      anchor.appendChild(div);
-      grid.appendChild(anchor);
+      grid.appendChild(div);
       return;
     }
 
