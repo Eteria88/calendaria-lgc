@@ -207,12 +207,12 @@ header{
   --top-gutter:48px;
   --side-gutter:40px;
   position:relative;
-  min-width:1668px;
+  min-width:1540px;
   padding:var(--top-gutter) var(--side-gutter) 26px;
 }
 .pgrid{
-  --cell-w:46px;
-  --cell-h:58px;
+  --cell-w:50px;
+  --cell-h:52px;
   --gap:2px;
   display:grid;
   grid-template-columns:repeat(var(--p-cols), var(--cell-w));
@@ -259,7 +259,7 @@ header{
   align-items:center;
   justify-content:flex-start;
   gap:1px;
-  padding:14px 4px 10px;
+  padding:11px 3px 7px;
   text-align:center;
 }
 .p-el.is-active{
@@ -272,51 +272,56 @@ header{
 .p-el__atomic,
 .p-el__corner{
   position:absolute;
-  top:6px;
-  font-size:9px;
+  top:4px;
+  font-size:8.4px;
   font-weight:700;
   line-height:1;
   color:rgba(232,241,255,.92);
 }
-.p-el__atomic{ left:5px; }
+.p-el__atomic{ left:4px; }
 .p-el__corner--left{ left:3px; }
 .p-el__corner--right{ right:3px; text-align:right; }
 
 .p-el--corners .p-el__corner{
-  top:6px;
-  font-size:8.1px;
+  top:5px;
+  font-size:7.8px;
   line-height:1;
   font-weight:700;
   letter-spacing:-0.04em;
   opacity:.96;
 }
-.p-el--corners .p-el__corner--left{ left:4px; }
-.p-el--corners .p-el__corner--right{ right:4px; }
+.p-el--corners .p-el__corner--left{ left:3px; }
+.p-el--corners .p-el__corner--right{ right:3px; }
 
-.p-el--corners-dual .p-el__corner--left{ left:5px; }
-.p-el--corners-dual .p-el__corner--right{ right:5px; }
+.p-el--corners-dual .p-el__corner--left{ left:4px; }
+.p-el--corners-dual .p-el__corner--right{ right:4px; }
 
 .p-el--band-tight{
   justify-content:flex-start;
-  padding:7px 4px 13px;
+  padding:6px 3px 12px;
   gap:0;
 }
 .p-el--band-tight .p-el__atomic{
-  top:6px;
+  top:5px;
 }
 .p-el--band-tight .p-el__corner{
-  top:6px;
-  font-size:7.5px;
+  top:5px;
+  font-size:7.2px;
   letter-spacing:-0.03em;
 }
 .p-el--band-tight .p-el__symbol{
-  margin-top:11px;
+  margin-top:9px;
+  font-size:16.2px;
 }
 .p-el--band-tight .p-el__name{
-  margin-top:1px;
-  font-size:4.55px;
+  margin-top:3.2px;
+  font-size:5.8px;
   max-width:98%;
   letter-spacing:0;
+}
+.p-el--band-tight .p-el__mass{
+  bottom:5px;
+  font-size:4.05px;
 }
 
 @media (max-width:839px){
@@ -327,7 +332,7 @@ header{
     letter-spacing:-0.04em;
   }
   .p-el--band-tight{
-    padding:6px 3px 12px;
+    padding:6px 3px 11px;
     gap:0;
   }
   .p-el--band-tight .p-el__atomic{
@@ -339,20 +344,29 @@ header{
     letter-spacing:-0.05em;
   }
   .p-el--band-tight .p-el__symbol{
-    margin-top:10px;
+    margin-top:9px;
+    font-size:14.8px;
+  }
+  .p-el--band-tight .p-el__name{
+    margin-top:2.6px;
+    font-size:5.2px;
+  }
+  .p-el--band-tight .p-el__mass{
+    bottom:4px;
+    font-size:3.8px;
   }
 }
 
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:14px;
+  font-size:15.8px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.04em;
-  margin-top:6px;
+  margin-top:3px;
 }
 .p-el__name{
-  font-size:4.85px;
+  font-size:6.15px;
   line-height:1;
   letter-spacing:-0.01em;
   color:rgba(230,241,255,.84);
@@ -360,16 +374,16 @@ header{
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
-  margin-top:2px;
+  margin-top:2.8px;
 }
 .p-el__mass{
   position:absolute;
-  bottom:5px;
+  bottom:4px;
   left:3px;
   right:3px;
-  font-size:4.9px;
+  font-size:3.95px;
   line-height:1;
-  opacity:.96;
+  opacity:.98;
   color:inherit;
   letter-spacing:0;
 }
@@ -381,7 +395,7 @@ header{
   border-color:rgba(255,255,255,.10);
   color:#ebd061;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:14px;
+  font-size:13px;
   font-weight:700;
 }
 .p-orb{
@@ -399,7 +413,7 @@ header{
   box-shadow:none;
   color:#fff8fe;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:15px;
+  font-size:14px;
   font-weight:800;
   overflow:hidden;
   z-index:0;
@@ -407,8 +421,8 @@ header{
 .p-orb::before{
   content:"";
   position:absolute;
-  width:calc(var(--cell-w) - 6px);
-  height:calc(var(--cell-w) - 6px);
+  width:calc(var(--cell-w) - 7px);
+  height:calc(var(--cell-w) - 7px);
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
@@ -425,11 +439,11 @@ header{
 }
 .p-orb .orb-top{
   position:absolute;
-  top:6px;
+  top:5px;
   left:50%;
   transform:translateX(-50%);
   z-index:1;
-  font-size:9px;
+  font-size:8.2px;
   line-height:1;
   color:rgba(15,15,18,.92);
   font-weight:800;
@@ -491,21 +505,21 @@ header{
 
 @media (min-width:1280px){
   .wrap{max-width:1460px}
-  .pgridWrap{min-width:1700px}
-  .pgrid{--cell-w:45px;--cell-h:53px}
+  .pgridWrap{min-width:1560px}
+  .pgrid{--cell-w:50px;--cell-h:52px}
 }
 @media (max-width:839px){
   .wrap{padding:14px}
   .pgridWrap{
     --top-gutter:38px;
     --side-gutter:28px;
-    min-width:1360px;
+    min-width:1280px;
     padding:var(--top-gutter) var(--side-gutter) 20px;
   }
-  .pgrid{--cell-w:42px;--cell-h:51px;--gap:2px}
-  .p-el__symbol{font-size:13px}
-  .p-el__name{font-size:4.7px}
-  .p-slab,.p-orb{font-size:13px}
+  .pgrid{--cell-w:46px;--cell-h:49px;--gap:2px}
+  .p-el__symbol{font-size:14px}
+  .p-el__name{font-size:5.45px}
+  .p-slab,.p-orb{font-size:12.5px}
   .p-side.left{left:auto; right:calc(100% + 9px)}
   .p-side.right{right:auto; left:calc(100% + 9px)}
   .p-top{left:50%; transform:translateX(-50%); top:-18px; font-size:10px}
@@ -3409,48 +3423,44 @@ header{
   function zoneForRow(logicalRow){
     if (logicalRow === -2) return 'topForward';
     if (logicalRow === -1) return 'topReverse';
+    if (logicalRow === 7) return 'bottomA';
     if (logicalRow === 8) return 'bottomA';
     if (logicalRow === 9) return 'bottomB';
     return 'main';
   }
 
-  function resolveColorClass(item, logicalRow, extraClass){
-    if (!item) return extraClass || '';
-    if (extraClass) return extraClass;
+  function overrideCategory(item, logicalRow){
+    if (!item || !item.symbol) return null;
+    const s = String(item.symbol);
+    const r = Number(logicalRow);
 
-    const symbol = String(item.symbol || '');
+    if (s === 'Og') return 'top-gray';
+    if (s === 'Cn') return 'top-green';
 
-    const specialBandRows = new Set([-2, -1, 7, 8, 9]);
-    const blueActinideBand = new Set(['Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr']);
-    const greenRfBand = new Set(['Rf','Db','Sg','Bh','Hs']);
-    const grayHeavyBand = new Set(['Mt','Ds','Rg','Ts','Lv','Mc','Fl','Nh']);
-    const greenTransitionCore = new Set(['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg']);
-    const blueHalogens = new Set(['F','Cl','Br','I']);
+    if (r === 6 && s === 'At') return 'metalloid';
+    if (r === 6 && s === 'Po') return 'post-transition';
 
-    if (symbol === 'Og') return 'top-gray';
-    if (symbol === 'Cn') return 'top-green';
+    if ((r === -2 || r === -1) && ['Ts','Lv','Mc','Fl','Nh'].includes(s)) return 'top-gray';
+    if (r === 7 && s === 'Ts') return 'top-gray';
 
-    if (logicalRow === 6 && symbol === 'At') return 'halogen';
-    if (logicalRow === 6 && symbol === 'Po') return 'post-transition';
+    if ([-2,-1,7,8,9].includes(r) && ['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].includes(s)) return 'top-blue';
+    if ([-2,-1,7,8,9].includes(r) && ['Rf','Db','Sg','Bh','Hs'].includes(s)) return 'top-green';
+    if ([-2,-1,7,8,9].includes(r) && ['Mt','Ds','Rg'].includes(s)) return 'top-gray';
+    if ([-2,-1,7,8,9].includes(r) && ['Ac','Th','Pa','U','Np'].includes(s)) return 'top-blue';
 
-    if ([4,5,6].includes(logicalRow) && greenTransitionCore.has(symbol)) return 'top-green';
-    if ([2,3,4,5].includes(logicalRow) && blueHalogens.has(symbol)) return 'top-blue';
+    if ([4,5,6].includes(r) && ['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].includes(s)) return 'top-green';
 
-    if (specialBandRows.has(logicalRow)) {
-      if (blueActinideBand.has(symbol)) return 'top-blue';
-      if (greenRfBand.has(symbol)) return 'top-green';
-      if (grayHeavyBand.has(symbol)) return 'top-gray';
-    }
+    if ([2,3,4,5].includes(r) && ['F','Cl','Br','I'].includes(s)) return 'top-blue';
 
-    return item.category;
+    return null;
   }
 
   function makeElementNode(item, logicalRow, col, extraClass, preferred){
     if (!item) return null;
     const key = String(item.key || item.symbol).toUpperCase();
     const active = key === activeKey;
-    const colorClass = resolveColorClass(item, logicalRow, extraClass);
-    const cls = ['p-node', 'p-el', 'is-clickable', 'is-' + colorClass];
+    const forcedCategory = overrideCategory(item, logicalRow);
+    const cls = ['p-node', 'p-el', 'is-clickable', 'is-' + (forcedCategory || extraClass || item.category)];
     if (active) cls.push('is-active');
     const zone = zoneForRow(logicalRow);
     const display = readDisplay(item, zone, item.atomic);
