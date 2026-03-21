@@ -464,6 +464,9 @@ header{
 }
 .p-side.left{left:auto; right:calc(100% + 12px)}
 .p-side.right{right:auto; left:calc(100% + 8px); width:26px; text-align:center}
+.p-side.right .neg-wrap{position:relative; display:inline-block; min-width:14px; text-align:center}
+.p-side.right .neg-num{display:inline-block}
+.p-side.right .neg-sign{position:absolute; right:100%; margin-right:1px; top:0}
 .p-top{
   left:50%;
   top:-23px;
@@ -524,6 +527,8 @@ header{
   .p-slab,.p-orb{font-size:12.5px}
   .p-side.left{left:auto; right:calc(100% + 9px)}
   .p-side.right{right:auto; left:calc(100% + 8px); width:26px; text-align:center}
+  .p-side.right .neg-wrap{min-width:14px}
+  .p-side.right .neg-sign{margin-right:1px}
   .p-top{left:50%; transform:translateX(-50%); top:-18px; font-size:10px}
 }
 
@@ -3584,11 +3589,17 @@ header{
       anchor.style.gridRow = String(node.row);
       anchor.style.position = 'relative';
       const div = document.createElement('div');
-      const isRightNeg = node.side === 'right' && /^-/.test(String(node.html));
+      const sideText = String(node.html);
+      const isRightNeg = node.side === 'right' && /^-/.test(sideText);
       div.className = node.className + (isRightNeg ? ' is-neg' : '');
       div.style.top = '50%';
-      div.style.transform = isRightNeg ? 'translate(2px,-50%)' : 'translateY(-50%)';
-      div.innerHTML = node.html;
+      div.style.transform = 'translateY(-50%)';
+      if (isRightNeg) {
+        const num = sideText.replace(/^-/, '');
+        div.innerHTML = '<span class="neg-wrap"><span class="neg-sign">−</span><span class="neg-num">' + num + '</span></span>';
+      } else {
+        div.innerHTML = sideText;
+      }
       anchor.appendChild(div);
       grid.appendChild(anchor);
       return;
