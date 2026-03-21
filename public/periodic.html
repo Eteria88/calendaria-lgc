@@ -211,8 +211,8 @@ header{
   padding:var(--top-gutter) var(--side-gutter) 26px;
 }
 .pgrid{
-  --cell-w:45px;
-  --cell-h:53px;
+  --cell-w:46px;
+  --cell-h:58px;
   --gap:2px;
   display:grid;
   grid-template-columns:repeat(var(--p-cols), var(--cell-w));
@@ -241,7 +241,7 @@ header{
 }
 .p-node{
   position:relative;
-  border-radius:4px;
+  border-radius:6px;
   border:1px solid rgba(135,160,188,.22);
   color:#eaf3ff;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.018));
@@ -257,9 +257,9 @@ header{
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center;
+  justify-content:flex-start;
   gap:1px;
-  padding:8px 4px 8px;
+  padding:14px 4px 10px;
   text-align:center;
 }
 .p-el.is-active{
@@ -272,7 +272,7 @@ header{
 .p-el__atomic,
 .p-el__corner{
   position:absolute;
-  top:8px;
+  top:6px;
   font-size:9px;
   font-weight:700;
   line-height:1;
@@ -283,7 +283,7 @@ header{
 .p-el__corner--right{ right:3px; text-align:right; }
 
 .p-el--corners .p-el__corner{
-  top:8px;
+  top:6px;
   font-size:8.1px;
   line-height:1;
   font-weight:700;
@@ -298,7 +298,7 @@ header{
 
 .p-el--band-tight{
   justify-content:flex-start;
-  padding:6px 4px 12px;
+  padding:7px 4px 13px;
   gap:0;
 }
 .p-el--band-tight .p-el__atomic{
@@ -310,11 +310,11 @@ header{
   letter-spacing:-0.03em;
 }
 .p-el--band-tight .p-el__symbol{
-  margin-top:10px;
+  margin-top:11px;
 }
 .p-el--band-tight .p-el__name{
   margin-top:1px;
-  font-size:4.8px;
+  font-size:4.55px;
   max-width:98%;
   letter-spacing:0;
 }
@@ -327,7 +327,7 @@ header{
     letter-spacing:-0.04em;
   }
   .p-el--band-tight{
-    padding:5px 3px 11px;
+    padding:6px 3px 12px;
     gap:0;
   }
   .p-el--band-tight .p-el__atomic{
@@ -339,19 +339,20 @@ header{
     letter-spacing:-0.05em;
   }
   .p-el--band-tight .p-el__symbol{
-    margin-top:9px;
+    margin-top:10px;
   }
 }
 
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:16px;
+  font-size:14px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.04em;
+  margin-top:6px;
 }
 .p-el__name{
-  font-size:5.05px;
+  font-size:4.85px;
   line-height:1;
   letter-spacing:-0.01em;
   color:rgba(230,241,255,.84);
@@ -359,13 +360,14 @@ header{
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  margin-top:2px;
 }
 .p-el__mass{
   position:absolute;
-  bottom:4px;
+  bottom:5px;
   left:3px;
   right:3px;
-  font-size:5.2px;
+  font-size:4.9px;
   line-height:1;
   opacity:.96;
   color:inherit;
@@ -391,7 +393,7 @@ header{
   height:100%;
   margin:0;
   box-sizing:border-box;
-  border-radius:4px;
+  border-radius:6px;
   background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));
   border-color:rgba(255,255,255,.10);
   box-shadow:none;
@@ -500,9 +502,9 @@ header{
     min-width:1360px;
     padding:var(--top-gutter) var(--side-gutter) 20px;
   }
-  .pgrid{--cell-w:41px;--cell-h:46px;--gap:2px}
-  .p-el__symbol{font-size:15px}
-  .p-el__name{font-size:5px}
+  .pgrid{--cell-w:42px;--cell-h:51px;--gap:2px}
+  .p-el__symbol{font-size:13px}
+  .p-el__name{font-size:4.7px}
   .p-slab,.p-orb{font-size:13px}
   .p-side.left{left:auto; right:calc(100% + 9px)}
   .p-side.right{right:auto; left:calc(100% + 9px)}
