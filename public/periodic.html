@@ -3440,8 +3440,7 @@ header{
     if (r === 6 && s === 'At') return 'metalloid';
     if (r === 6 && s === 'Po') return 'post-transition';
 
-    if ((r === -2 || r === -1) && ['Ts','Lv','Mc','Fl','Nh'].includes(s)) return 'top-gray';
-    if (r === 7 && s === 'Ts') return 'top-gray';
+    if ([-2,-1,7,8,9].includes(r) && ['Ts','Lv','Mc','Fl','Nh'].includes(s)) return 'top-gray';
 
     if ([-2,-1,7,8,9].includes(r) && ['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].includes(s)) return 'top-blue';
     if ([-2,-1,7,8,9].includes(r) && ['Rf','Db','Sg','Bh','Hs'].includes(s)) return 'top-green';
