@@ -211,8 +211,8 @@ header{
   padding:var(--top-gutter) var(--side-gutter) 26px;
 }
 .pgrid{
-  --cell-w:42px;
-  --cell-h:58px;
+  --cell-w:41px;
+  --cell-h:57px;
   --gap:2px;
   display:grid;
   grid-template-columns:repeat(var(--p-cols), var(--cell-w));
@@ -259,7 +259,7 @@ header{
   align-items:center;
   justify-content:flex-start;
   gap:1px;
-  padding:12px 3px 8px;
+  padding:11px 3px 7px;
   text-align:center;
 }
 .p-el.is-active{
@@ -272,8 +272,8 @@ header{
 .p-el__atomic,
 .p-el__corner{
   position:absolute;
-  top:5px;
-  font-size:8.6px;
+  top:4px;
+  font-size:8.4px;
   font-weight:700;
   line-height:1;
   color:rgba(232,241,255,.92);
@@ -313,7 +313,7 @@ header{
   margin-top:10px;
 }
 .p-el--band-tight .p-el__name{
-  margin-top:1px;
+  margin-top:0.5px;
   font-size:4.45px;
   max-width:98%;
   letter-spacing:0;
@@ -345,14 +345,14 @@ header{
 
 .p-el__symbol{
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:13.5px;
+  font-size:14px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.04em;
-  margin-top:5px;
+  margin-top:4px;
 }
 .p-el__name{
-  font-size:4.7px;
+  font-size:4.55px;
   line-height:1;
   letter-spacing:-0.01em;
   color:rgba(230,241,255,.84);
@@ -360,14 +360,14 @@ header{
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
-  margin-top:1px;
+  margin-top:0.5px;
 }
 .p-el__mass{
   position:absolute;
-  bottom:4px;
+  bottom:3px;
   left:3px;
   right:3px;
-  font-size:4.6px;
+  font-size:4.4px;
   line-height:1;
   opacity:.96;
   color:inherit;
@@ -407,8 +407,8 @@ header{
 .p-orb::before{
   content:"";
   position:absolute;
-  width:calc(var(--cell-w) - 6px);
-  height:calc(var(--cell-w) - 6px);
+  width:calc(var(--cell-w) - 7px);
+  height:calc(var(--cell-w) - 7px);
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
@@ -492,7 +492,7 @@ header{
 @media (min-width:1280px){
   .wrap{max-width:1460px}
   .pgridWrap{min-width:1560px}
-  .pgrid{--cell-w:41px;--cell-h:55px}
+  .pgrid{--cell-w:40px;--cell-h:54px}
 }
 @media (max-width:839px){
   .wrap{padding:14px}
@@ -502,7 +502,7 @@ header{
     min-width:1280px;
     padding:var(--top-gutter) var(--side-gutter) 20px;
   }
-  .pgrid{--cell-w:39px;--cell-h:51px;--gap:2px}
+  .pgrid{--cell-w:38px;--cell-h:50px;--gap:2px}
   .p-el__symbol{font-size:12.5px}
   .p-el__name{font-size:4.45px}
   .p-slab,.p-orb{font-size:12.5px}
