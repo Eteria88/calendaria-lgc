@@ -277,7 +277,14 @@ header{
   font-size:8.4px;
   font-weight:700;
   line-height:1;
-  color:rgba(232,241,255,.92);
+  color:var(--topnum-color, rgba(22,18,20,.94));
+}
+
+.p-node.is-alkali,
+.p-node.is-alkaline,
+.p-node.is-top-red,
+.p-node.is-top-orange{
+  --topnum-color:rgba(255,249,243,.98);
 }
 .p-el__atomic{ left:4px; }
 .p-el__corner--left{ left:3px; }
