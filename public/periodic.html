@@ -399,14 +399,16 @@ header{
 }
 .p-slab{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:center;
+  padding-top:7px;
   background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));
   border-color:rgba(255,255,255,.10);
   color:#ebd061;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   font-size:13px;
   font-weight:700;
+  line-height:1;
 }
 .p-orb{
   display:flex;
@@ -534,6 +536,7 @@ header{
   .p-el__symbol{font-size:14px}
   .p-el__name{font-size:5.45px}
   .p-slab,.p-orb{font-size:12.5px}
+  .p-slab{padding-top:6px}
   .p-side.left{left:auto; right:calc(100% + 9px)}
   .p-side.right{right:auto; left:calc(100% + 8px); width:26px; text-align:center}
   .p-side.right .neg-wrap{min-width:14px}
