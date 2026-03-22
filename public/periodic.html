@@ -394,7 +394,7 @@ header{
   font-size:3.95px;
   line-height:1;
   opacity:.98;
-  color:inherit;
+  color:var(--mass-color, inherit);
   letter-spacing:0;
 }
 .p-slab{
@@ -3488,6 +3488,16 @@ header{
     return null;
   }
 
+
+  function massColorForSymbol(symbol){
+    const s = String(symbol || '').trim();
+
+    if (['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) {
+      return '#f8fbff';
+    }
+    return null;
+  }
+
   function makeElementNode(item, logicalRow, col, extraClass, preferred){
     if (!item) return null;
     const key = String(item.key || item.symbol).toUpperCase();
@@ -3504,9 +3514,11 @@ header{
     const titleParts = [display.symbol || item.symbol, display.number, display.name || item.name].filter(Boolean);
     const nameColor = nameColorForSymbol(display.symbol || item.symbol);
     const symbolColor = symbolColorForSymbol(display.symbol || item.symbol);
+    const massColor = massColorForSymbol(display.symbol || item.symbol);
     const styles = [];
     if (nameColor) styles.push('--name-color:' + nameColor);
     if (symbolColor) styles.push('--symbol-color:' + symbolColor);
+    if (massColor) styles.push('--mass-color:' + massColor);
     const inlineStyle = styles.length ? ' style="' + styles.join(';') + ';"' : '';
 
     return {
@@ -3526,7 +3538,7 @@ header{
         (display.variant ? '<span class="p-el__variant">' + esc(display.variant) + '</span>' : '') +
         '<span class="p-el__symbol"' + inlineStyle + '>' + esc(display.symbol || item.symbol) + '</span>' +
         '<span class="p-el__name"' + inlineStyle + '>' + esc(display.name || item.name) + '</span>' +
-        (display.mass !== '' ? '<span class="p-el__mass">' + esc(display.mass) + '</span>' : '')
+        (display.mass !== '' ? '<span class="p-el__mass"' + inlineStyle + '>' + esc(display.mass) + '</span>' : '')
     };
   }
 
