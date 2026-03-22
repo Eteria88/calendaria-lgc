@@ -373,6 +373,7 @@ header{
   line-height:1;
   letter-spacing:-.04em;
   margin-top:3px;
+  color:var(--symbol-color, inherit);
 }
 .p-el__name{
   font-size:6.15px;
@@ -3478,6 +3479,15 @@ header{
     return null;
   }
 
+  function symbolColorForSymbol(symbol){
+    const s = String(symbol || '').trim();
+
+    if (['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) {
+      return '#f8fbff';
+    }
+    return null;
+  }
+
   function makeElementNode(item, logicalRow, col, extraClass, preferred){
     if (!item) return null;
     const key = String(item.key || item.symbol).toUpperCase();
@@ -3493,7 +3503,11 @@ header{
 
     const titleParts = [display.symbol || item.symbol, display.number, display.name || item.name].filter(Boolean);
     const nameColor = nameColorForSymbol(display.symbol || item.symbol);
-    const nameStyle = nameColor ? ' style="--name-color:' + nameColor + ';"' : '';
+    const symbolColor = symbolColorForSymbol(display.symbol || item.symbol);
+    const styles = [];
+    if (nameColor) styles.push('--name-color:' + nameColor);
+    if (symbolColor) styles.push('--symbol-color:' + symbolColor);
+    const inlineStyle = styles.length ? ' style="' + styles.join(';') + ';"' : '';
 
     return {
       type: 'element',
@@ -3510,8 +3524,8 @@ header{
         (display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">' + esc(display.cornerTopLeft) + '</span>' : '') +
         (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">' + esc(display.cornerTopRight) + '</span>' : '') +
         (display.variant ? '<span class="p-el__variant">' + esc(display.variant) + '</span>' : '') +
-        '<span class="p-el__symbol">' + esc(display.symbol || item.symbol) + '</span>' +
-        '<span class="p-el__name"' + nameStyle + '>' + esc(display.name || item.name) + '</span>' +
+        '<span class="p-el__symbol"' + inlineStyle + '>' + esc(display.symbol || item.symbol) + '</span>' +
+        '<span class="p-el__name"' + inlineStyle + '>' + esc(display.name || item.name) + '</span>' +
         (display.mass !== '' ? '<span class="p-el__mass">' + esc(display.mass) + '</span>' : '')
     };
   }
