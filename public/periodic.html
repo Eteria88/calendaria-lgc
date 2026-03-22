@@ -3556,9 +3556,9 @@ header{
     {col:19, html:'<b>5</b><small>VB</small>', cls:'p-top dual'},
     {col:20, html:'<b>6</b><small>VIB</small>', cls:'p-top dual'},
     {col:21, html:'<b>7</b><small>VIIB</small>', cls:'p-top dual'},
-    {col:22, html:'<b>8</b><small>VIII</small>', cls:'p-top dual'},
-    {col:23, html:'<b>9</b><small>VIII</small>', cls:'p-top dual'},
-    {col:24, html:'<b>10</b><small>VIII</small>', cls:'p-top dual'},
+    {col:22, html:'<b>8</b><small>VIIIB</small>', cls:'p-top dual'},
+    {col:23, html:'<b>9</b><small>VIIIB</small>', cls:'p-top dual'},
+    {col:24, html:'<b>10</b><small>VIIIB</small>', cls:'p-top dual'},
     {col:25, html:'<b>11</b><small>IB</small>', cls:'p-top dual'},
     {col:26, html:'<b>12</b><small>IIB</small>', cls:'p-top dual'},
     {col:27, html:'<b>13</b><small>IIIA</small>', cls:'p-top dual'},
@@ -3641,8 +3641,8 @@ header{
       const sideText = String(node.html);
       const isRightNeg = node.side === 'right' && /^-/.test(sideText);
       div.className = node.className + (isRightNeg ? ' is-neg' : '');
-      div.style.top = '6px';
-      div.style.transform = 'none';
+      div.style.top = '50%';
+      div.style.transform = 'translateY(-50%)';
       if (isRightNeg) {
         const num = sideText.replace(/^-/, '');
         div.innerHTML = '<span class="neg-wrap"><span class="neg-sign">−</span><span class="neg-num">' + num + '</span></span>';
