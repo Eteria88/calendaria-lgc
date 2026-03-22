@@ -568,6 +568,41 @@ header{
   text-transform:uppercase;
 }
 
+
+
+.p-table-title{
+  text-align:center;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-size:11px;
+  line-height:1.15;
+  letter-spacing:.015em;
+  color:rgba(230,241,255,.92);
+  margin:0 0 10px 0;
+  padding:0 6px;
+  white-space:nowrap;
+}
+.p-table-title .fade{
+  opacity:.42;
+}
+.p-table-title .speak{
+  color:rgba(230,241,255,.96);
+}
+.p-table-title .speak strong{
+  font-weight:800;
+  letter-spacing:.01em;
+}
+.p-table-title .main{
+  margin-left:.18em;
+  text-transform:uppercase;
+  font-weight:500;
+}
+@media (max-width:839px){
+  .p-table-title{
+    font-size:9.5px;
+    margin-bottom:8px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -597,6 +632,7 @@ header{
     </section>
 
     <section class="card">
+      <div class="p-table-title"><span class="speak">T<span class="fade">e</span> <span class="fade">H</span><strong>abla</strong></span><span class="main"> TABLA PERIÓDICA DE ELEMENTOS PARA EL DESARROLLO DE LA CONCIENCIA ESPACIO TEMPORAL EN EL MARCO DE LA LOGICA GLOBAL CONVERGENTE</span></div>
       <div class="periodicContainer">
         <div id="periodicGridMount"></div>
       </div>
