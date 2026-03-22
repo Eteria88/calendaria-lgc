@@ -370,7 +370,7 @@ header{
   font-size:6.15px;
   line-height:1;
   letter-spacing:-0.01em;
-  color:rgba(230,241,255,.84);
+  color:var(--name-color, rgba(28,23,25,.92));
   max-width:96%;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -3461,6 +3461,15 @@ header{
     return null;
   }
 
+  function nameColorForSymbol(symbol){
+    const s = String(symbol || '').trim();
+
+    if (['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].includes(s)) return '#009b39';
+    if (['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].includes(s)) return '#ff1f1f';
+    if (s === 'Br') return '#123f9e';
+    return null;
+  }
+
   function makeElementNode(item, logicalRow, col, extraClass, preferred){
     if (!item) return null;
     const key = String(item.key || item.symbol).toUpperCase();
@@ -3475,6 +3484,8 @@ header{
     if (zone === 'topForward' || zone === 'topReverse' || zone === 'bottomB') cls.push('p-el--band-tight');
 
     const titleParts = [display.symbol || item.symbol, display.number, display.name || item.name].filter(Boolean);
+    const nameColor = nameColorForSymbol(display.symbol || item.symbol);
+    const nameStyle = nameColor ? ' style="--name-color:' + nameColor + ';"' : '';
 
     return {
       type: 'element',
@@ -3492,7 +3503,7 @@ header{
         (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">' + esc(display.cornerTopRight) + '</span>' : '') +
         (display.variant ? '<span class="p-el__variant">' + esc(display.variant) + '</span>' : '') +
         '<span class="p-el__symbol">' + esc(display.symbol || item.symbol) + '</span>' +
-        '<span class="p-el__name">' + esc(display.name || item.name) + '</span>' +
+        '<span class="p-el__name"' + nameStyle + '>' + esc(display.name || item.name) + '</span>' +
         (display.mass !== '' ? '<span class="p-el__mass">' + esc(display.mass) + '</span>' : '')
     };
   }
