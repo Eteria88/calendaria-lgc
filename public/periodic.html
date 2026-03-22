@@ -277,15 +277,7 @@ header{
   font-size:8.4px;
   font-weight:700;
   line-height:1;
-  color:var(--topnum-color, rgba(22,18,20,.94));
-}
-
-.p-node.is-alkali,
-.p-node.is-alkaline,
-.p-node.is-top-red,
-.p-node.is-top-orange,
-.p-node.is-lanthanide{
-  --topnum-color:rgba(255,249,243,.98);
+  color:rgba(232,241,255,.92);
 }
 .p-el__atomic{ left:4px; }
 .p-el__corner--left{ left:3px; }
@@ -373,7 +365,6 @@ header{
   line-height:1;
   letter-spacing:-.04em;
   margin-top:3px;
-  color:var(--symbol-color, inherit);
 }
 .p-el__name{
   font-size:6.15px;
@@ -394,21 +385,19 @@ header{
   font-size:3.95px;
   line-height:1;
   opacity:.98;
-  color:var(--mass-color, inherit);
+  color:inherit;
   letter-spacing:0;
 }
 .p-slab{
   display:flex;
-  align-items:flex-start;
+  align-items:center;
   justify-content:center;
-  padding-top:5px;
   background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));
   border-color:rgba(255,255,255,.10);
-  color:#d9cb6b;
+  color:#ebd061;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:12px;
+  font-size:13px;
   font-weight:700;
-  line-height:1;
 }
 .p-orb{
   display:flex;
@@ -473,31 +462,31 @@ header{
   font-size:12px;
   line-height:1;
 }
-.p-side.left{left:auto; right:calc(100% + 10px)}
-.p-side.right{right:auto; left:calc(100% + 10px); width:26px; text-align:center}
+.p-side.left{left:auto; right:calc(100% + 12px)}
+.p-side.right{right:auto; left:calc(100% + 8px); width:28px; text-align:center}
 .p-side.right .neg-wrap{position:relative; display:inline-block; min-width:14px; text-align:center}
 .p-side.right .neg-num{display:inline-block}
 .p-side.right .neg-sign{position:absolute; right:100%; margin-right:1px; top:0}
 .p-top{
   left:50%;
-  top:-23px;
+  top:-25px;
   transform:translateX(-50%);
-  font-size:10.5px;
+  font-size:12px;
   text-align:center;
-  line-height:1.03;
+  line-height:1.02;
   white-space:nowrap;
 }
 .p-top small{
   display:block;
-  opacity:.84;
-  margin-top:0;
-  font-size:5.8px;
-  letter-spacing:-0.01em;
+  opacity:.90;
+  margin-top:1px;
+  font-size:6.9px;
+  letter-spacing:0;
   max-width:96%;
 }
-.p-top.dual{top:-23px}
+.p-top.dual{top:-25px}
 .p-top.dual small{transform:none;}
-.p-top.dual b{display:block;font-weight:700}
+.p-top.dual b{display:block;font-weight:700;font-size:12px}
 .p-axis-title{
   position:absolute;
   display:none;
@@ -535,13 +524,13 @@ header{
   .pgrid{--cell-w:46px;--cell-h:49px;--gap:2px}
   .p-el__symbol{font-size:14px}
   .p-el__name{font-size:5.45px}
-  .p-slab,.p-orb{font-size:12.1px}
-  .p-slab{padding-top:4px}
-  .p-side.left{left:auto; right:calc(100% + 10px)}
-  .p-side.right{right:auto; left:calc(100% + 10px); width:26px; text-align:center}
+  .p-slab,.p-orb{font-size:12.5px}
+  .p-side.left{left:auto; right:calc(100% + 9px)}
+  .p-side.right{right:auto; left:calc(100% + 8px); width:28px; text-align:center}
   .p-side.right .neg-wrap{min-width:14px}
   .p-side.right .neg-sign{margin-right:1px}
-  .p-top{left:50%; transform:translateX(-50%); top:-18px; font-size:10px}
+  .p-top{left:50%; transform:translateX(-50%); top:-21px; font-size:11.5px}
+  .p-top small{font-size:6.4px; margin-top:1px}
 }
 
 
@@ -3482,25 +3471,6 @@ header{
     return null;
   }
 
-  function symbolColorForSymbol(symbol){
-    const s = String(symbol || '').trim();
-
-    if (['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) {
-      return '#f8fbff';
-    }
-    return null;
-  }
-
-
-  function massColorForSymbol(symbol){
-    const s = String(symbol || '').trim();
-
-    if (['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) {
-      return '#f8fbff';
-    }
-    return null;
-  }
-
   function makeElementNode(item, logicalRow, col, extraClass, preferred){
     if (!item) return null;
     const key = String(item.key || item.symbol).toUpperCase();
@@ -3516,13 +3486,7 @@ header{
 
     const titleParts = [display.symbol || item.symbol, display.number, display.name || item.name].filter(Boolean);
     const nameColor = nameColorForSymbol(display.symbol || item.symbol);
-    const symbolColor = symbolColorForSymbol(display.symbol || item.symbol);
-    const massColor = massColorForSymbol(display.symbol || item.symbol);
-    const styles = [];
-    if (nameColor) styles.push('--name-color:' + nameColor);
-    if (symbolColor) styles.push('--symbol-color:' + symbolColor);
-    if (massColor) styles.push('--mass-color:' + massColor);
-    const inlineStyle = styles.length ? ' style="' + styles.join(';') + ';"' : '';
+    const nameStyle = nameColor ? ' style="--name-color:' + nameColor + ';"' : '';
 
     return {
       type: 'element',
@@ -3539,9 +3503,9 @@ header{
         (display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">' + esc(display.cornerTopLeft) + '</span>' : '') +
         (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">' + esc(display.cornerTopRight) + '</span>' : '') +
         (display.variant ? '<span class="p-el__variant">' + esc(display.variant) + '</span>' : '') +
-        '<span class="p-el__symbol"' + inlineStyle + '>' + esc(display.symbol || item.symbol) + '</span>' +
-        '<span class="p-el__name"' + inlineStyle + '>' + esc(display.name || item.name) + '</span>' +
-        (display.mass !== '' ? '<span class="p-el__mass"' + inlineStyle + '>' + esc(display.mass) + '</span>' : '')
+        '<span class="p-el__symbol">' + esc(display.symbol || item.symbol) + '</span>' +
+        '<span class="p-el__name"' + nameStyle + '>' + esc(display.name || item.name) + '</span>' +
+        (display.mass !== '' ? '<span class="p-el__mass">' + esc(display.mass) + '</span>' : '')
     };
   }
 
@@ -3640,8 +3604,8 @@ header{
       const sideText = String(node.html);
       const isRightNeg = node.side === 'right' && /^-/.test(sideText);
       div.className = node.className + (isRightNeg ? ' is-neg' : '');
-      div.style.top = '6px';
-      div.style.transform = 'none';
+      div.style.top = '50%';
+      div.style.transform = 'translateY(-50%)';
       if (isRightNeg) {
         const num = sideText.replace(/^-/, '');
         div.innerHTML = '<span class="neg-wrap"><span class="neg-sign">−</span><span class="neg-num">' + num + '</span></span>';
