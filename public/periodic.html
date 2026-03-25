@@ -789,7 +789,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5, 6, 7 y 8 de la regla base. Ya podés probar hasta la Vuelta 8.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 10 de la regla base. Ya podés probar hasta la Vuelta 10.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -4119,6 +4119,46 @@ header{
           { row:1, key:'P127', symbol:'Promesa 9', number:127, cardinality:'SE' },
           { row:1, key:'P128', symbol:'Promesa 10', number:128, cardinality:'SE' }
         ]
+      },
+      9: {
+        cells: [
+          { row:1, key:'P129', symbol:'Promesa 11', number:129, cardinality:'SO' },
+          { row:1, key:'P130', symbol:'Promesa 12', number:130, cardinality:'SO' },
+          { row:1, key:'P131', symbol:'Promesa 13', number:131, cardinality:'SO' },
+          { row:1, key:'P132', symbol:'Promesa 14', number:132, cardinality:'SO' },
+          { row:1, key:'P133', symbol:'Promesa 15', number:133, cardinality:'NE' },
+          { row:1, key:'P134', symbol:'Promesa 16', number:134, cardinality:'NE' },
+          { row:1, key:'P135', symbol:'Promesa 17', number:135, cardinality:'NE' },
+          { row:1, key:'P136', symbol:'Promesa 18', number:136, cardinality:'NE' },
+          { row:1, key:'P137', symbol:'Promesa 19', number:137, cardinality:'NO' },
+          { row:1, key:'P138', symbol:'Promesa 20', number:138, cardinality:'NO' },
+          { row:1, key:'P139', symbol:'Promesa 21', number:139, cardinality:'NO' },
+          { row:1, key:'P140', symbol:'Promesa 22', number:140, cardinality:'NO' },
+          { row:1, key:'P141', symbol:'Promesa 23', number:141, cardinality:'SE' },
+          { row:1, key:'P142', symbol:'Promesa 24', number:142, cardinality:'SE' },
+          { row:1, key:'P143', symbol:'Promesa 25', number:143, cardinality:'SE' },
+          { row:1, key:'P144', symbol:'Promesa 26', number:144, cardinality:'SE' }
+        ]
+      },
+      10: {
+        cells: [
+          { row:1, key:'P145', symbol:'Promesa 27', number:145, cardinality:'SO' },
+          { row:1, key:'P146', symbol:'Promesa 28', number:146, cardinality:'SO' },
+          { row:1, key:'P147', symbol:'Promesa 29', number:147, cardinality:'SO' },
+          { row:1, key:'P148', symbol:'Promesa 30', number:148, cardinality:'SO' },
+          { row:2, key:'BN149', symbol:'Espacio 149', number:149, cardinality:'NE' },
+          { row:3, key:'BN150', symbol:'Espacio 150', number:150, cardinality:'NE' },
+          { row:2, key:'BN151', symbol:'Espacio 151', number:151, cardinality:'NE' },
+          { row:3, key:'BN152', symbol:'Espacio 152', number:152, cardinality:'NE' },
+          { row:2, key:'BN153', symbol:'Espacio 153', number:153, cardinality:'NO' },
+          { row:3, key:'BN154', symbol:'Espacio 154', number:154, cardinality:'NO' },
+          { row:2, key:'BN155', symbol:'Espacio 155', number:155, cardinality:'NO' },
+          { row:3, key:'BN156', symbol:'Espacio 156', number:156, cardinality:'NO' },
+          { row:2, key:'BN157', symbol:'Espacio 157', number:157, cardinality:'SE' },
+          { row:3, key:'BN158', symbol:'Espacio 158', number:158, cardinality:'SE' },
+          { row:2, key:'BN159', symbol:'Espacio 159', number:159, cardinality:'SE' },
+          { row:3, key:'BN160', symbol:'Espacio 160', number:160, cardinality:'SE' }
+        ]
       }
     },
     decide: {}
@@ -4481,7 +4521,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5, 6, 7 y 8 de la regla base. Ya podés probar hasta la Vuelta 8.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 10 de la regla base. Ya podés probar hasta la Vuelta 10.');
   }
 
   function initTurnExplorer(){
