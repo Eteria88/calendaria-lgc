@@ -3838,7 +3838,18 @@ header{
   Object.entries(slabRows).forEach(([logicalRow, values]) => {
     values.forEach((value, index) => {
       const col = 3 + index;
-      nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
+      nodes.push({
+        type:'slab',
+        row:rowMap[String(logicalRow)],
+        logicalRow:Number(logicalRow),
+        col,
+        key:'BN' + String(value),
+        symbol:'ESPACIO',
+        displayNumber:String(value),
+        title:'Espacio en negro ' + String(value),
+        className:'p-node p-slab is-clickable',
+        html:String(value)
+      });
     });
   });
 
@@ -3888,8 +3899,9 @@ header{
       return;
     }
 
-    const el = document.createElement((node.type === 'element' || node.type === 'orb') ? 'button' : 'div');
-    if (node.type === 'element' || node.type === 'orb') {
+    const interactiveNode = (node.type === 'element' || node.type === 'orb' || node.type === 'slab');
+    const el = document.createElement(interactiveNode ? 'button' : 'div');
+    if (interactiveNode) {
       el.type = 'button';
       if (node.key) el.dataset.key = node.key;
       if (node.symbol) el.dataset.symbol = node.symbol || '';
@@ -3900,6 +3912,7 @@ header{
       if (node.title) el.title = node.title;
       el.addEventListener('click', function(){
         const sourceItem = node.key ? findItemByKey(node.key) : null;
+        if (!sourceItem && node.type === 'slab') return;
         const nextEl = sourceItem ? String(sourceItem.key || sourceItem.symbol) : String(node.key || node.symbol || '');
         const url = new URL(window.location.href);
         url.searchParams.set('el', nextEl);
@@ -4435,7 +4448,7 @@ header{
       const target = quadWrap.querySelector('[data-cardinality="' + card + '"]');
       if (!target) return;
       const html = (groups[card] || []).map(function(cell){
-        return '<span class="turnChip">' + cell.symbol + '</span>';
+        return '<span class="turnChip">' + (cell.numberNorm || cell.number || cell.symbol) + '</span>';
       }).join('');
       target.innerHTML = html || '<span class="turnChip">—</span>';
     });
@@ -4445,7 +4458,7 @@ header{
   function applyTurn(result){
     clearTurnClasses();
     applyTurnColors(result.yearType);
-    const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable, .p-node.p-orb'));
+    const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable, .p-node.p-orb, .p-node.p-slab'));
     if (!result || !result.cells.length) return 0;
     let hits = 0;
     allNodes.forEach(function(node){
@@ -4458,7 +4471,10 @@ header{
         const symbolOk = String(cell.symbolNorm || '') === nodeSymbol;
         const numberOk = !cell.numberNorm || cell.numberNorm === nodeNumber;
         const keyOk = String(cell.key || '').toUpperCase() === nodeKey;
-        return (rowOk && symbolOk && numberOk) || (rowOk && keyOk && numberOk);
+        if (rowOk && keyOk && numberOk) return true;
+        if (rowOk && symbolOk && numberOk) return true;
+        if (rowOk && numberOk && nodeNumber && cell.numberNorm) return true;
+        return false;
       });
       if (match) {
         node.classList.add('is-turn-match');
