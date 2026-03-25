@@ -3742,6 +3742,8 @@ header{
       symbol: item.symbol,
       title: titleParts.join(' · '),
       row: rowMap[String(logicalRow)],
+      logicalRow: logicalRow,
+      displayNumber: display.number,
       col,
       preferred: !!preferred,
       zone,
@@ -3872,6 +3874,8 @@ header{
       el.dataset.symbol = node.symbol || '';
       el.dataset.preferred = node.preferred ? '1' : '0';
       el.dataset.zone = node.zone;
+      if (node.logicalRow != null) el.dataset.logicalRow = String(node.logicalRow);
+      if (node.displayNumber != null && node.displayNumber !== '') el.dataset.displayNumber = String(node.displayNumber);
       el.title = node.title;
       el.addEventListener('click', function(){
         const sourceItem = findItemByKey(node.key);
@@ -4037,22 +4041,22 @@ header{
       },
       6: {
         cells: [
-          { row:6, symbol:'Tl', cardinality:'SO' },
-          { row:6, symbol:'Pb', cardinality:'SO' },
-          { row:6, symbol:'Bi', cardinality:'SO' },
-          { row:6, symbol:'Po', cardinality:'SO' },
-          { row:6, symbol:'At', cardinality:'NE' },
-          { row:6, symbol:'Rn', cardinality:'NE' },
-          { row:8, symbol:'Fr', cardinality:'NE' },
-          { row:8, symbol:'Ra', cardinality:'NE' },
-          { row:8, symbol:'Ac', cardinality:'NO' },
-          { row:8, symbol:'Th', cardinality:'NO' },
-          { row:8, symbol:'Pa', cardinality:'NO' },
-          { row:8, symbol:'U',  cardinality:'NO' },
-          { row:8, symbol:'Np', cardinality:'SE' },
-          { row:8, symbol:'Pu', cardinality:'SE' },
-          { row:8, symbol:'Am', cardinality:'SE' },
-          { row:8, symbol:'Cm', cardinality:'SE' }
+          { row:6, symbol:'Tl', number:81, cardinality:'SO' },
+          { row:6, symbol:'Pb', number:82, cardinality:'SO' },
+          { row:6, symbol:'Bi', number:83, cardinality:'SO' },
+          { row:6, symbol:'Po', number:84, cardinality:'SO' },
+          { row:6, symbol:'At', number:85, cardinality:'NE' },
+          { row:6, symbol:'Rn', number:86, cardinality:'NE' },
+          { row:8, symbol:'Fr', number:87, cardinality:'NE' },
+          { row:8, symbol:'Ra', number:88, cardinality:'NE' },
+          { row:8, symbol:'Ac', number:89, cardinality:'NO' },
+          { row:8, symbol:'Th', number:90, cardinality:'NO' },
+          { row:8, symbol:'Pa', number:91, cardinality:'NO' },
+          { row:8, symbol:'U',  number:92, cardinality:'NO' },
+          { row:8, symbol:'Np', number:93, cardinality:'SE' },
+          { row:8, symbol:'Pu', number:94, cardinality:'SE' },
+          { row:8, symbol:'Am', number:95, cardinality:'SE' },
+          { row:8, symbol:'Cm', number:96, cardinality:'SE' }
         ]
       }
     },
@@ -4290,8 +4294,13 @@ header{
     const cells = source.cells.map(function(cell){
       const derivedKey = rowSymbolToKey(cell);
       const fallbackKey = normalizeSymbol(cell.key || cell.symbol || '');
-      return Object.assign({}, cell, { key: derivedKey || fallbackKey });
-    }).filter(function(cell){ return !!cell.key; });
+      return Object.assign({}, cell, {
+        key: derivedKey || fallbackKey,
+        symbolNorm: normalizeSymbol(cell.symbol),
+        rowNorm: Number(cell.row),
+        numberNorm: cell.number != null ? String(cell.number) : ''
+      });
+    });
     const groups = {};
     CARDINALITY_ORDER.forEach(function(card){ groups[card] = []; });
     cells.forEach(function(cell){
@@ -4337,11 +4346,20 @@ header{
     applyTurnColors(result.yearType);
     const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable'));
     if (!result || !result.cells.length) return 0;
-    const keySet = new Set(result.cells.map(function(cell){ return String(cell.key || '').toUpperCase(); }));
     let hits = 0;
     allNodes.forEach(function(node){
-      const key = String(node.dataset.key || '').toUpperCase();
-      if (keySet.has(key)) {
+      const nodeKey = String(node.dataset.key || '').toUpperCase();
+      const nodeSymbol = normalizeSymbol(node.dataset.symbol || '');
+      const nodeRow = Number(node.dataset.logicalRow || '');
+      const nodeNumber = String(node.dataset.displayNumber || '');
+      const match = result.cells.some(function(cell){
+        const rowOk = Number(cell.rowNorm) === nodeRow;
+        const symbolOk = String(cell.symbolNorm || '') === nodeSymbol;
+        const numberOk = !cell.numberNorm || cell.numberNorm === nodeNumber;
+        const keyOk = String(cell.key || '').toUpperCase() === nodeKey;
+        return (rowOk && symbolOk && numberOk) || (rowOk && keyOk && numberOk);
+      });
+      if (match) {
         node.classList.add('is-turn-match');
         hits += 1;
       } else {
