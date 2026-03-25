@@ -4338,12 +4338,10 @@ header{
     const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable'));
     if (!result || !result.cells.length) return 0;
     const keySet = new Set(result.cells.map(function(cell){ return String(cell.key || '').toUpperCase(); }));
-    const symbolSet = new Set(result.cells.map(function(cell){ return normalizeSymbol(cell.symbol); }));
     let hits = 0;
     allNodes.forEach(function(node){
       const key = String(node.dataset.key || '').toUpperCase();
-      const symbol = normalizeSymbol(node.dataset.symbol || node.textContent || '');
-      if (keySet.has(key) || symbolSet.has(symbol)) {
+      if (keySet.has(key)) {
         node.classList.add('is-turn-match');
         hits += 1;
       } else {
