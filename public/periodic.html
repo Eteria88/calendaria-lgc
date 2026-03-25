@@ -711,6 +711,22 @@ header{
   border-color:var(--turn-accent-border, rgba(255,214,98,.85));
   transform:translateY(-1px);
 }
+.p-orb.is-turn-match{
+  border-color:var(--turn-accent-border, rgba(255,214,98,.92));
+  box-shadow:
+    inset 0 0 0 2px var(--turn-accent-strong, rgba(255,214,98,.98)),
+    0 0 0 3px var(--turn-accent-mid, rgba(255,214,98,.32)),
+    0 0 18px var(--turn-accent-soft, rgba(255,214,98,.28));
+}
+.p-orb.is-turn-match::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:999px;
+  border:2px solid var(--turn-accent-border, rgba(255,214,98,.92));
+  box-shadow:0 0 14px var(--turn-accent-soft, rgba(255,214,98,.28));
+  pointer-events:none;
+}
 .p-node.is-turn-dim{
   opacity:.34;
   filter:saturate(.72);
