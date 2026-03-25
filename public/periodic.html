@@ -3919,6 +3919,9 @@ header{
         window.location.href = url.toString();
       });
     }
+    if (node.key) el.dataset.key = String(node.key).toUpperCase();
+    if (node.logicalRow != null) el.dataset.logicalRow = String(node.logicalRow);
+    if (node.displayNumber != null) el.dataset.displayNumber = String(node.displayNumber);
     el.className = node.className;
     el.style.gridColumn = String(node.col);
     el.style.gridRow = String(node.row);
@@ -3973,286 +3976,220 @@ header{
   };
   const TURN_DATA = {
     base: {
-      1: {
-        cells: [
-          { row:1, symbol:'H',  cardinality:'SO' },
-          { row:1, symbol:'He', cardinality:'SO' },
-          { row:2, symbol:'Li', cardinality:'SO' },
-          { row:2, symbol:'Be', cardinality:'SO' },
-          { row:2, symbol:'B',  cardinality:'NE' },
-          { row:2, symbol:'C',  cardinality:'NE' },
-          { row:2, symbol:'N',  cardinality:'NE' },
-          { row:2, symbol:'O',  cardinality:'NE' },
-          { row:2, symbol:'F',  cardinality:'NO' },
-          { row:2, symbol:'Ne', cardinality:'NO' },
-          { row:3, symbol:'Na', cardinality:'NO' },
-          { row:3, symbol:'Mg', cardinality:'NO' },
-          { row:3, symbol:'Al', cardinality:'SE' },
-          { row:3, symbol:'Si', cardinality:'SE' },
-          { row:3, symbol:'P',  cardinality:'SE' },
-          { row:3, symbol:'S',  cardinality:'SE' }
-        ]
-      },
-      2: {
-        cells: [
-          { row:3, symbol:'Cl', cardinality:'SO' },
-          { row:3, symbol:'Ar', cardinality:'SO' },
-          { row:4, symbol:'K',  cardinality:'SO' },
-          { row:4, symbol:'Ca', cardinality:'SO' },
-          { row:4, symbol:'Sc', cardinality:'NE' },
-          { row:4, symbol:'Ti', cardinality:'NE' },
-          { row:4, symbol:'V',  cardinality:'NE' },
-          { row:4, symbol:'Cr', cardinality:'NE' },
-          { row:4, symbol:'Mn', cardinality:'NO' },
-          { row:4, symbol:'Fe', cardinality:'NO' },
-          { row:4, symbol:'Co', cardinality:'NO' },
-          { row:4, symbol:'Ni', cardinality:'NO' },
-          { row:4, symbol:'Cu', cardinality:'SE' },
-          { row:4, symbol:'Zn', cardinality:'SE' },
-          { row:4, symbol:'Ga', cardinality:'SE' },
-          { row:4, symbol:'Ge', cardinality:'SE' }
-        ]
-      },
-      3: {
-        cells: [
-          { row:4, symbol:'As', cardinality:'SO' },
-          { row:4, symbol:'Se', cardinality:'SO' },
-          { row:4, symbol:'Br', cardinality:'SO' },
-          { row:4, symbol:'Kr', cardinality:'SO' },
-          { row:5, symbol:'Rb', cardinality:'NE' },
-          { row:5, symbol:'Sr', cardinality:'NE' },
-          { row:5, symbol:'Y',  cardinality:'NE' },
-          { row:5, symbol:'Zr', cardinality:'NE' },
-          { row:5, symbol:'Nb', cardinality:'NO' },
-          { row:5, symbol:'Mo', cardinality:'NO' },
-          { row:5, symbol:'Tc', cardinality:'NO' },
-          { row:5, symbol:'Ru', cardinality:'NO' },
-          { row:5, symbol:'Rh', cardinality:'SE' },
-          { row:5, symbol:'Pd', cardinality:'SE' },
-          { row:5, symbol:'Ag', cardinality:'SE' },
-          { row:5, symbol:'Cd', cardinality:'SE' }
-        ]
-      },
-      4: {
-        cells: [
-          { row:5, symbol:'In', cardinality:'SO' },
-          { row:5, symbol:'Sn', cardinality:'SO' },
-          { row:5, symbol:'Sb', cardinality:'SO' },
-          { row:5, symbol:'Te', cardinality:'SO' },
-          { row:5, symbol:'I',  cardinality:'NE' },
-          { row:5, symbol:'Xe', cardinality:'NE' },
-          { row:6, symbol:'Cs', cardinality:'NE' },
-          { row:6, symbol:'Ba', cardinality:'NE' },
-          { row:6, symbol:'La', cardinality:'NO' },
-          { row:6, symbol:'Ce', cardinality:'NO' },
-          { row:6, symbol:'Pr', cardinality:'NO' },
-          { row:6, symbol:'Nd', cardinality:'NO' },
-          { row:6, symbol:'Pm', cardinality:'SE' },
-          { row:6, symbol:'Sm', cardinality:'SE' },
-          { row:6, symbol:'Eu', cardinality:'SE' },
-          { row:6, symbol:'Gd', cardinality:'SE' }
-        ]
-      },
-      5: {
-        cells: [
-          { row:6, symbol:'Tb', cardinality:'SO' },
-          { row:6, symbol:'Dy', cardinality:'SO' },
-          { row:6, symbol:'Ho', cardinality:'SO' },
-          { row:6, symbol:'Er', cardinality:'SO' },
-          { row:6, symbol:'Tm', cardinality:'NE' },
-          { row:6, symbol:'Yb', cardinality:'NE' },
-          { row:6, symbol:'Lu', cardinality:'NE' },
-          { row:6, symbol:'Hf', cardinality:'NE' },
-          { row:6, symbol:'Ta', cardinality:'NO' },
-          { row:6, symbol:'W',  cardinality:'NO' },
-          { row:6, symbol:'Re', cardinality:'NO' },
-          { row:6, symbol:'Os', cardinality:'NO' },
-          { row:6, symbol:'Ir', cardinality:'SE' },
-          { row:6, symbol:'Pt', cardinality:'SE' },
-          { row:6, symbol:'Au', cardinality:'SE' },
-          { row:6, symbol:'Hg', cardinality:'SE' }
-        ]
-      },
-      6: {
-        cells: [
-          { row:6, symbol:'Tl', number:81, cardinality:'SO' },
-          { row:6, symbol:'Pb', number:82, cardinality:'SO' },
-          { row:6, symbol:'Bi', number:83, cardinality:'SO' },
-          { row:6, symbol:'Po', number:84, cardinality:'SO' },
-          { row:6, symbol:'At', number:85, cardinality:'NE' },
-          { row:6, symbol:'Rn', number:86, cardinality:'NE' },
-          { row:8, symbol:'Fr', number:87, cardinality:'NE' },
-          { row:8, symbol:'Ra', number:88, cardinality:'NE' },
-          { row:8, symbol:'Ac', number:89, cardinality:'NO' },
-          { row:8, symbol:'Th', number:90, cardinality:'NO' },
-          { row:8, symbol:'Pa', number:91, cardinality:'NO' },
-          { row:8, symbol:'U',  number:92, cardinality:'NO' },
-          { row:8, symbol:'Np', number:93, cardinality:'SE' },
-          { row:8, symbol:'Pu', number:94, cardinality:'SE' },
-          { row:8, symbol:'Am', number:95, cardinality:'SE' },
-          { row:8, symbol:'Cm', number:96, cardinality:'SE' }
-        ]
-      },
-      7: {
-        cells: [
-          { row:8, symbol:'Bk', number:97,  cardinality:'SO' },
-          { row:8, symbol:'Cf', number:98,  cardinality:'SO' },
-          { row:8, symbol:'Es', number:99,  cardinality:'SO' },
-          { row:8, symbol:'Fm', number:100, cardinality:'SO' },
-          { row:8, symbol:'Md', number:101, cardinality:'NE' },
-          { row:8, symbol:'No', number:102, cardinality:'NE' },
-          { row:8, symbol:'Lr', number:103, cardinality:'NE' },
-          { row:8, symbol:'Rf', number:104, cardinality:'NE' },
-          { row:8, symbol:'Db', number:105, cardinality:'NO' },
-          { row:8, symbol:'Sg', number:106, cardinality:'NO' },
-          { row:8, symbol:'Bh', number:107, cardinality:'NO' },
-          { row:8, symbol:'Hs', number:108, cardinality:'NO' },
-          { row:8, symbol:'Mt', number:109, cardinality:'SE' },
-          { row:8, symbol:'Ds', number:110, cardinality:'SE' },
-          { row:8, symbol:'Rg', number:111, cardinality:'SE' },
-          { row:8, symbol:'Cn', number:112, cardinality:'SE' }
-        ]
-      },
-      8: {
-        cells: [
-          { row:8, symbol:'Nh', number:113, cardinality:'SO' },
-          { row:8, symbol:'Fl', number:114, cardinality:'SO' },
-          { row:8, symbol:'Mc', number:115, cardinality:'SO' },
-          { row:8, symbol:'Lv', number:116, cardinality:'SO' },
-          { row:8, symbol:'Ts', number:117, cardinality:'NE' },
-          { row:8, symbol:'Og', number:118, cardinality:'NE' },
-          { row:1, key:'P119', symbol:'Promesa 1', number:119, cardinality:'NE' },
-          { row:1, key:'P120', symbol:'Promesa 2', number:120, cardinality:'NE' },
-          { row:1, key:'P121', symbol:'Promesa 3', number:121, cardinality:'NO' },
-          { row:1, key:'P122', symbol:'Promesa 4', number:122, cardinality:'NO' },
-          { row:1, key:'P123', symbol:'Promesa 5', number:123, cardinality:'NO' },
-          { row:1, key:'P124', symbol:'Promesa 6', number:124, cardinality:'NO' },
-          { row:1, key:'P125', symbol:'Promesa 7', number:125, cardinality:'SE' },
-          { row:1, key:'P126', symbol:'Promesa 8', number:126, cardinality:'SE' },
-          { row:1, key:'P127', symbol:'Promesa 9', number:127, cardinality:'SE' },
-          { row:1, key:'P128', symbol:'Promesa 10', number:128, cardinality:'SE' }
-        ]
-      },
-      9: {
-        cells: [
-          { row:1, key:'P129', symbol:'Promesa 11', number:129, cardinality:'SO' },
-          { row:1, key:'P130', symbol:'Promesa 12', number:130, cardinality:'SO' },
-          { row:1, key:'P131', symbol:'Promesa 13', number:131, cardinality:'SO' },
-          { row:1, key:'P132', symbol:'Promesa 14', number:132, cardinality:'SO' },
-          { row:1, key:'P133', symbol:'Promesa 15', number:133, cardinality:'NE' },
-          { row:1, key:'P134', symbol:'Promesa 16', number:134, cardinality:'NE' },
-          { row:1, key:'P135', symbol:'Promesa 17', number:135, cardinality:'NE' },
-          { row:1, key:'P136', symbol:'Promesa 18', number:136, cardinality:'NE' },
-          { row:1, key:'P137', symbol:'Promesa 19', number:137, cardinality:'NO' },
-          { row:1, key:'P138', symbol:'Promesa 20', number:138, cardinality:'NO' },
-          { row:1, key:'P139', symbol:'Promesa 21', number:139, cardinality:'NO' },
-          { row:1, key:'P140', symbol:'Promesa 22', number:140, cardinality:'NO' },
-          { row:1, key:'P141', symbol:'Promesa 23', number:141, cardinality:'SE' },
-          { row:1, key:'P142', symbol:'Promesa 24', number:142, cardinality:'SE' },
-          { row:1, key:'P143', symbol:'Promesa 25', number:143, cardinality:'SE' },
-          { row:1, key:'P144', symbol:'Promesa 26', number:144, cardinality:'SE' }
-        ]
-      },
-      10: {
-        cells: [
-          { row:1, key:'P145', symbol:'Promesa 27', number:145, cardinality:'SO' },
-          { row:1, key:'P146', symbol:'Promesa 28', number:146, cardinality:'SO' },
-          { row:1, key:'P147', symbol:'Promesa 29', number:147, cardinality:'SO' },
-          { row:1, key:'P148', symbol:'Promesa 30', number:148, cardinality:'SO' },
-          { row:2, key:'BN149', symbol:'Espacio 149', number:149, cardinality:'NE' },
-          { row:3, key:'BN150', symbol:'Espacio 150', number:150, cardinality:'NE' },
-          { row:2, key:'BN151', symbol:'Espacio 151', number:151, cardinality:'NE' },
-          { row:3, key:'BN152', symbol:'Espacio 152', number:152, cardinality:'NE' },
-          { row:2, key:'BN153', symbol:'Espacio 153', number:153, cardinality:'NO' },
-          { row:3, key:'BN154', symbol:'Espacio 154', number:154, cardinality:'NO' },
-          { row:2, key:'BN155', symbol:'Espacio 155', number:155, cardinality:'NO' },
-          { row:3, key:'BN156', symbol:'Espacio 156', number:156, cardinality:'NO' },
-          { row:2, key:'BN157', symbol:'Espacio 157', number:157, cardinality:'SE' },
-          { row:3, key:'BN158', symbol:'Espacio 158', number:158, cardinality:'SE' },
-          { row:2, key:'BN159', symbol:'Espacio 159', number:159, cardinality:'SE' },
-          { row:3, key:'BN160', symbol:'Espacio 160', number:160, cardinality:'SE' }
-        ]
-      },
-      11: {
-        cells: [
-          { row:2, key:'BN161', symbol:'Espacio 161', number:161, cardinality:'SO' },
-          { row:3, key:'BN162', symbol:'Espacio 162', number:162, cardinality:'SO' },
-          { row:2, key:'BN163', symbol:'Espacio 163', number:163, cardinality:'SO' },
-          { row:3, key:'BN164', symbol:'Espacio 164', number:164, cardinality:'SO' },
-          { row:2, key:'BN165', symbol:'Espacio 165', number:165, cardinality:'NE' },
-          { row:3, key:'BN166', symbol:'Espacio 166', number:166, cardinality:'NE' },
-          { row:2, key:'BN167', symbol:'Espacio 167', number:167, cardinality:'NE' },
-          { row:3, key:'BN168', symbol:'Espacio 168', number:168, cardinality:'NE' },
-          { row:2, key:'BN169', symbol:'Espacio 169', number:169, cardinality:'NO' },
-          { row:3, key:'BN170', symbol:'Espacio 170', number:170, cardinality:'NO' },
-          { row:4, key:'BN171', symbol:'Espacio 171', number:171, cardinality:'NO' },
-          { row:5, key:'BN172', symbol:'Espacio 172', number:172, cardinality:'NO' },
-          { row:2, key:'BN173', symbol:'Espacio 173', number:173, cardinality:'SE' },
-          { row:3, key:'BN174', symbol:'Espacio 174', number:174, cardinality:'SE' },
-          { row:4, key:'BN175', symbol:'Espacio 175', number:175, cardinality:'SE' },
-          { row:5, key:'BN176', symbol:'Espacio 176', number:176, cardinality:'SE' }
-        ]
-      },
-      12: {
-        cells: [
-          { row:2, key:'BN177', symbol:'Espacio 177', number:177, cardinality:'SO' },
-          { row:3, key:'BN178', symbol:'Espacio 178', number:178, cardinality:'SO' },
-          { row:4, key:'BN179', symbol:'Espacio 179', number:179, cardinality:'SO' },
-          { row:5, key:'BN180', symbol:'Espacio 180', number:180, cardinality:'SO' },
-          { row:2, key:'BN181', symbol:'Espacio 181', number:181, cardinality:'NE' },
-          { row:3, key:'BN182', symbol:'Espacio 182', number:182, cardinality:'NE' },
-          { row:4, key:'BN183', symbol:'Espacio 183', number:183, cardinality:'NE' },
-          { row:5, key:'BN184', symbol:'Espacio 184', number:184, cardinality:'NE' },
-          { row:2, key:'BN185', symbol:'Espacio 185', number:185, cardinality:'NO' },
-          { row:3, key:'BN186', symbol:'Espacio 186', number:186, cardinality:'NO' },
-          { row:4, key:'BN187', symbol:'Espacio 187', number:187, cardinality:'NO' },
-          { row:5, key:'BN188', symbol:'Espacio 188', number:188, cardinality:'NO' },
-          { row:2, key:'BN189', symbol:'Espacio 189', number:189, cardinality:'SE' },
-          { row:3, key:'BN190', symbol:'Espacio 190', number:190, cardinality:'SE' },
-          { row:4, key:'BN191', symbol:'Espacio 191', number:191, cardinality:'SE' },
-          { row:5, key:'BN192', symbol:'Espacio 192', number:192, cardinality:'SE' }
-        ]
-      },
-      13: {
-        cells: [
-          { row:2, key:'BN193', symbol:'Espacio 193', number:193, cardinality:'SO' },
-          { row:3, key:'BN194', symbol:'Espacio 194', number:194, cardinality:'SO' },
-          { row:4, key:'BN195', symbol:'Espacio 195', number:195, cardinality:'SO' },
-          { row:5, key:'BN196', symbol:'Espacio 196', number:196, cardinality:'SO' },
-          { row:2, key:'BN197', symbol:'Espacio 197', number:197, cardinality:'NE' },
-          { row:3, key:'BN198', symbol:'Espacio 198', number:198, cardinality:'NE' },
-          { row:4, key:'BN199', symbol:'Espacio 199', number:199, cardinality:'NE' },
-          { row:5, key:'BN200', symbol:'Espacio 200', number:200, cardinality:'NE' },
-          { row:2, key:'BN201', symbol:'Espacio 201', number:201, cardinality:'NO' },
-          { row:3, key:'BN202', symbol:'Espacio 202', number:202, cardinality:'NO' },
-          { row:4, key:'BN203', symbol:'Espacio 203', number:203, cardinality:'NO' },
-          { row:5, key:'BN204', symbol:'Espacio 204', number:204, cardinality:'NO' },
-          { row:2, key:'BN205', symbol:'Espacio 205', number:205, cardinality:'SE' },
-          { row:3, key:'BN206', symbol:'Espacio 206', number:206, cardinality:'SE' },
-          { row:4, key:'BN207', symbol:'Espacio 207', number:207, cardinality:'SE' },
-          { row:5, key:'BN208', symbol:'Espacio 208', number:208, cardinality:'SE' }
-        ]
-      },
-      14: {
-        cells: [
-          { row:2, key:'BN209', symbol:'Espacio 209', number:209, cardinality:'SO' },
-          { row:3, key:'BN210', symbol:'Espacio 210', number:210, cardinality:'SO' },
-          { row:4, key:'BN211', symbol:'Espacio 211', number:211, cardinality:'SO' },
-          { row:5, key:'BN212', symbol:'Espacio 212', number:212, cardinality:'SO' },
-          { row:2, key:'BN213', symbol:'Espacio 213', number:213, cardinality:'NE' },
-          { row:3, key:'BN214', symbol:'Espacio 214', number:214, cardinality:'NE' },
-          { row:4, key:'BN215', symbol:'Espacio 215', number:215, cardinality:'NE' },
-          { row:5, key:'BN216', symbol:'Espacio 216', number:216, cardinality:'NE' },
-          { row:2, key:'BN217', symbol:'Espacio 217', number:217, cardinality:'NO' },
-          { row:3, key:'BN218', symbol:'Espacio 218', number:218, cardinality:'NO' },
-          { row:4, key:'BN219', symbol:'Espacio 219', number:219, cardinality:'NO' },
-          { row:5, key:'BN220', symbol:'Espacio 220', number:220, cardinality:'NO' },
-          { row:2, key:'BN221', symbol:'Espacio 221', number:221, cardinality:'SE' },
-          { row:3, key:'BN222', symbol:'Espacio 222', number:222, cardinality:'SE' },
-          { row:4, key:'BN223', symbol:'Espacio 223', number:223, cardinality:'SE' },
-          { row:5, key:'BN224', symbol:'Espacio 224', number:224, cardinality:'SE' }
-        ]
-      }
+      1: { cells: [
+        { row:1, symbol:'H',  cardinality:'SO' }, { row:1, symbol:'He', cardinality:'SO' },
+        { row:2, symbol:'Li', cardinality:'SO' }, { row:2, symbol:'Be', cardinality:'SO' },
+        { row:2, symbol:'B',  cardinality:'NE' }, { row:2, symbol:'C',  cardinality:'NE' },
+        { row:2, symbol:'N',  cardinality:'NE' }, { row:2, symbol:'O',  cardinality:'NE' },
+        { row:2, symbol:'F',  cardinality:'NO' }, { row:2, symbol:'Ne', cardinality:'NO' },
+        { row:3, symbol:'Na', cardinality:'NO' }, { row:3, symbol:'Mg', cardinality:'NO' },
+        { row:3, symbol:'Al', cardinality:'SE' }, { row:3, symbol:'Si', cardinality:'SE' },
+        { row:3, symbol:'P',  cardinality:'SE' }, { row:3, symbol:'S',  cardinality:'SE' }
+      ]},
+      2: { cells: [
+        { row:3, symbol:'Cl', cardinality:'SO' }, { row:3, symbol:'Ar', cardinality:'SO' },
+        { row:4, symbol:'K',  cardinality:'SO' }, { row:4, symbol:'Ca', cardinality:'SO' },
+        { row:4, symbol:'Sc', cardinality:'NE' }, { row:4, symbol:'Ti', cardinality:'NE' },
+        { row:4, symbol:'V',  cardinality:'NE' }, { row:4, symbol:'Cr', cardinality:'NE' },
+        { row:4, symbol:'Mn', cardinality:'NO' }, { row:4, symbol:'Fe', cardinality:'NO' },
+        { row:4, symbol:'Co', cardinality:'NO' }, { row:4, symbol:'Ni', cardinality:'NO' },
+        { row:4, symbol:'Cu', cardinality:'SE' }, { row:4, symbol:'Zn', cardinality:'SE' },
+        { row:4, symbol:'Ga', cardinality:'SE' }, { row:4, symbol:'Ge', cardinality:'SE' }
+      ]},
+      3: { cells: [
+        { row:4, symbol:'As', cardinality:'SO' }, { row:4, symbol:'Se', cardinality:'SO' },
+        { row:4, symbol:'Br', cardinality:'SO' }, { row:4, symbol:'Kr', cardinality:'SO' },
+        { row:5, symbol:'Rb', cardinality:'NE' }, { row:5, symbol:'Sr', cardinality:'NE' },
+        { row:5, symbol:'Y',  cardinality:'NE' }, { row:5, symbol:'Zr', cardinality:'NE' },
+        { row:5, symbol:'Nb', cardinality:'NO' }, { row:5, symbol:'Mo', cardinality:'NO' },
+        { row:5, symbol:'Tc', cardinality:'NO' }, { row:5, symbol:'Ru', cardinality:'NO' },
+        { row:5, symbol:'Rh', cardinality:'SE' }, { row:5, symbol:'Pd', cardinality:'SE' },
+        { row:5, symbol:'Ag', cardinality:'SE' }, { row:5, symbol:'Cd', cardinality:'SE' }
+      ]},
+      4: { cells: [
+        { row:5, symbol:'In', cardinality:'SO' }, { row:5, symbol:'Sn', cardinality:'SO' },
+        { row:5, symbol:'Sb', cardinality:'SO' }, { row:5, symbol:'Te', cardinality:'SO' },
+        { row:5, symbol:'I',  cardinality:'NE' }, { row:5, symbol:'Xe', cardinality:'NE' },
+        { row:6, symbol:'Cs', cardinality:'NE' }, { row:6, symbol:'Ba', cardinality:'NE' },
+        { row:6, symbol:'La', cardinality:'NO' }, { row:6, symbol:'Ce', cardinality:'NO' },
+        { row:6, symbol:'Pr', cardinality:'NO' }, { row:6, symbol:'Nd', cardinality:'NO' },
+        { row:6, symbol:'Pm', cardinality:'SE' }, { row:6, symbol:'Sm', cardinality:'SE' },
+        { row:6, symbol:'Eu', cardinality:'SE' }, { row:6, symbol:'Gd', cardinality:'SE' }
+      ]},
+      5: { cells: [
+        { row:6, symbol:'Tb', cardinality:'SO' }, { row:6, symbol:'Dy', cardinality:'SO' },
+        { row:6, symbol:'Ho', cardinality:'SO' }, { row:6, symbol:'Er', cardinality:'SO' },
+        { row:6, symbol:'Tm', cardinality:'NE' }, { row:6, symbol:'Yb', cardinality:'NE' },
+        { row:6, symbol:'Lu', cardinality:'NE' }, { row:6, symbol:'Hf', cardinality:'NE' },
+        { row:6, symbol:'Ta', cardinality:'NO' }, { row:6, symbol:'W',  cardinality:'NO' },
+        { row:6, symbol:'Re', cardinality:'NO' }, { row:6, symbol:'Os', cardinality:'NO' },
+        { row:6, symbol:'Ir', cardinality:'SE' }, { row:6, symbol:'Pt', cardinality:'SE' },
+        { row:6, symbol:'Au', cardinality:'SE' }, { row:6, symbol:'Hg', cardinality:'SE' }
+      ]},
+      6: { cells: [
+        { row:6, symbol:'Tl', cardinality:'SO' }, { row:6, symbol:'Pb', cardinality:'SO' },
+        { row:6, symbol:'Bi', cardinality:'SO' }, { row:6, symbol:'Po', cardinality:'SO' },
+        { row:6, symbol:'At', cardinality:'NE' }, { row:6, symbol:'Rn', cardinality:'NE' },
+        { row:8, symbol:'Fr', cardinality:'NE' }, { row:8, symbol:'Ra', cardinality:'NE' },
+        { row:8, symbol:'Ac', cardinality:'NO' }, { row:8, symbol:'Th', cardinality:'NO' },
+        { row:8, symbol:'Pa', cardinality:'NO' }, { row:8, symbol:'U',  cardinality:'NO' },
+        { row:8, symbol:'Np', cardinality:'SE' }, { row:8, symbol:'Pu', cardinality:'SE' },
+        { row:8, symbol:'Am', cardinality:'SE' }, { row:8, symbol:'Cm', cardinality:'SE' }
+      ]},
+      7: { cells: [
+        { row:8, symbol:'Bk', cardinality:'SO' }, { row:8, symbol:'Cf', cardinality:'SO' },
+        { row:8, symbol:'Es', cardinality:'SO' }, { row:8, symbol:'Fm', cardinality:'SO' },
+        { row:8, symbol:'Md', cardinality:'NE' }, { row:8, symbol:'No', cardinality:'NE' },
+        { row:8, symbol:'Lr', cardinality:'NE' }, { row:8, symbol:'Rf', cardinality:'NE' },
+        { row:8, symbol:'Db', cardinality:'NO' }, { row:8, symbol:'Sg', cardinality:'NO' },
+        { row:8, symbol:'Bh', cardinality:'NO' }, { row:8, symbol:'Hs', cardinality:'NO' },
+        { row:8, symbol:'Mt', cardinality:'SE' }, { row:8, symbol:'Ds', cardinality:'SE' },
+        { row:8, symbol:'Rg', cardinality:'SE' }, { row:8, symbol:'Cn', cardinality:'SE' }
+      ]},
+      8: { cells: [
+        { row:8, key:'NH',   symbol:'Nh',        cardinality:'SO' },
+        { row:8, key:'FL',   symbol:'Fl',        cardinality:'SO' },
+        { row:8, key:'MC',   symbol:'Mc',        cardinality:'SO' },
+        { row:8, key:'LV',   symbol:'Lv',        cardinality:'SO' },
+        { row:8, key:'TS',   symbol:'Ts',        cardinality:'NE' },
+        { row:8, key:'OG',   symbol:'Og',        cardinality:'NE' },
+        { row:1, key:'P119', symbol:'Promesa 1', cardinality:'NE' },
+        { row:1, key:'P120', symbol:'Promesa 2', cardinality:'NE' },
+        { row:1, key:'P121', symbol:'Promesa 3', cardinality:'NO' },
+        { row:1, key:'P122', symbol:'Promesa 4', cardinality:'NO' },
+        { row:1, key:'P123', symbol:'Promesa 5', cardinality:'NO' },
+        { row:1, key:'P124', symbol:'Promesa 6', cardinality:'NO' },
+        { row:1, key:'P125', symbol:'Promesa 7', cardinality:'SE' },
+        { row:1, key:'P126', symbol:'Promesa 8', cardinality:'SE' },
+        { row:1, key:'P127', symbol:'Promesa 9', cardinality:'SE' },
+        { row:1, key:'P128', symbol:'Promesa 10', cardinality:'SE' }
+      ]},
+      9: { cells: [
+        { row:1, key:'P129', symbol:'Promesa 11', cardinality:'SO' },
+        { row:1, key:'P130', symbol:'Promesa 12', cardinality:'SO' },
+        { row:1, key:'P131', symbol:'Promesa 13', cardinality:'SO' },
+        { row:1, key:'P132', symbol:'Promesa 14', cardinality:'SO' },
+        { row:1, key:'P133', symbol:'Promesa 15', cardinality:'NE' },
+        { row:1, key:'P134', symbol:'Promesa 16', cardinality:'NE' },
+        { row:1, key:'P135', symbol:'Promesa 17', cardinality:'NE' },
+        { row:1, key:'P136', symbol:'Promesa 18', cardinality:'NE' },
+        { row:1, key:'P137', symbol:'Promesa 19', cardinality:'NO' },
+        { row:1, key:'P138', symbol:'Promesa 20', cardinality:'NO' },
+        { row:1, key:'P139', symbol:'Promesa 21', cardinality:'NO' },
+        { row:1, key:'P140', symbol:'Promesa 22', cardinality:'NO' },
+        { row:1, key:'P141', symbol:'Promesa 23', cardinality:'SE' },
+        { row:1, key:'P142', symbol:'Promesa 24', cardinality:'SE' },
+        { row:1, key:'P143', symbol:'Promesa 25', cardinality:'SE' },
+        { row:1, key:'P144', symbol:'Promesa 26', cardinality:'SE' }
+      ]},
+      10: { cells: [
+        { row:1, key:'P145',   symbol:'Promesa 27',     cardinality:'SO' },
+        { row:1, key:'P146',   symbol:'Promesa 28',     cardinality:'SO' },
+        { row:1, key:'P147',   symbol:'Promesa 29',     cardinality:'SO' },
+        { row:1, key:'P148',   symbol:'Promesa 30',     cardinality:'SO' },
+        { row:2, key:'BN149',  symbol:'Espacio negro',  cardinality:'NE' },
+        { row:3, key:'BN150',  symbol:'Espacio negro',  cardinality:'NE' },
+        { row:2, key:'BN151',  symbol:'Espacio negro',  cardinality:'NE' },
+        { row:3, key:'BN152',  symbol:'Espacio negro',  cardinality:'NE' },
+        { row:2, key:'BN153',  symbol:'Espacio negro',  cardinality:'NO' },
+        { row:3, key:'BN154',  symbol:'Espacio negro',  cardinality:'NO' },
+        { row:2, key:'BN155',  symbol:'Espacio negro',  cardinality:'NO' },
+        { row:3, key:'BN156',  symbol:'Espacio negro',  cardinality:'NO' },
+        { row:2, key:'BN157',  symbol:'Espacio negro',  cardinality:'SE' },
+        { row:3, key:'BN158',  symbol:'Espacio negro',  cardinality:'SE' },
+        { row:2, key:'BN159',  symbol:'Espacio negro',  cardinality:'SE' },
+        { row:3, key:'BN160',  symbol:'Espacio negro',  cardinality:'SE' }
+      ]},
+      11: { cells: [
+        { row:2, key:'BN161', symbol:'Espacio negro', cardinality:'SO' },
+        { row:3, key:'BN162', symbol:'Espacio negro', cardinality:'SO' },
+        { row:2, key:'BN163', symbol:'Espacio negro', cardinality:'SO' },
+        { row:3, key:'BN164', symbol:'Espacio negro', cardinality:'SO' },
+        { row:2, key:'BN165', symbol:'Espacio negro', cardinality:'NE' },
+        { row:3, key:'BN166', symbol:'Espacio negro', cardinality:'NE' },
+        { row:2, key:'BN167', symbol:'Espacio negro', cardinality:'NE' },
+        { row:3, key:'BN168', symbol:'Espacio negro', cardinality:'NE' },
+        { row:2, key:'BN169', symbol:'Espacio negro', cardinality:'NO' },
+        { row:3, key:'BN170', symbol:'Espacio negro', cardinality:'NO' },
+        { row:4, key:'BN171', symbol:'Espacio negro', cardinality:'NO' },
+        { row:5, key:'BN172', symbol:'Espacio negro', cardinality:'NO' },
+        { row:2, key:'BN173', symbol:'Espacio negro', cardinality:'SE' },
+        { row:3, key:'BN174', symbol:'Espacio negro', cardinality:'SE' },
+        { row:4, key:'BN175', symbol:'Espacio negro', cardinality:'SE' },
+        { row:5, key:'BN176', symbol:'Espacio negro', cardinality:'SE' }
+      ]},
+      12: { cells: [
+        { row:2, key:'BN177', symbol:'Espacio negro', cardinality:'SO' },
+        { row:3, key:'BN178', symbol:'Espacio negro', cardinality:'SO' },
+        { row:4, key:'BN179', symbol:'Espacio negro', cardinality:'SO' },
+        { row:5, key:'BN180', symbol:'Espacio negro', cardinality:'SO' },
+        { row:2, key:'BN181', symbol:'Espacio negro', cardinality:'NE' },
+        { row:3, key:'BN182', symbol:'Espacio negro', cardinality:'NE' },
+        { row:4, key:'BN183', symbol:'Espacio negro', cardinality:'NE' },
+        { row:5, key:'BN184', symbol:'Espacio negro', cardinality:'NE' },
+        { row:2, key:'BN185', symbol:'Espacio negro', cardinality:'NO' },
+        { row:3, key:'BN186', symbol:'Espacio negro', cardinality:'NO' },
+        { row:4, key:'BN187', symbol:'Espacio negro', cardinality:'NO' },
+        { row:5, key:'BN188', symbol:'Espacio negro', cardinality:'NO' },
+        { row:2, key:'BN189', symbol:'Espacio negro', cardinality:'SE' },
+        { row:3, key:'BN190', symbol:'Espacio negro', cardinality:'SE' },
+        { row:4, key:'BN191', symbol:'Espacio negro', cardinality:'SE' },
+        { row:5, key:'BN192', symbol:'Espacio negro', cardinality:'SE' }
+      ]},
+      13: { cells: [
+        { row:2, key:'BN193', symbol:'Espacio negro', cardinality:'SO' },
+        { row:3, key:'BN194', symbol:'Espacio negro', cardinality:'SO' },
+        { row:4, key:'BN195', symbol:'Espacio negro', cardinality:'SO' },
+        { row:5, key:'BN196', symbol:'Espacio negro', cardinality:'SO' },
+        { row:2, key:'BN197', symbol:'Espacio negro', cardinality:'NE' },
+        { row:3, key:'BN198', symbol:'Espacio negro', cardinality:'NE' },
+        { row:4, key:'BN199', symbol:'Espacio negro', cardinality:'NE' },
+        { row:5, key:'BN200', symbol:'Espacio negro', cardinality:'NE' },
+        { row:2, key:'BN201', symbol:'Espacio negro', cardinality:'NO' },
+        { row:3, key:'BN202', symbol:'Espacio negro', cardinality:'NO' },
+        { row:4, key:'BN203', symbol:'Espacio negro', cardinality:'NO' },
+        { row:5, key:'BN204', symbol:'Espacio negro', cardinality:'NO' },
+        { row:2, key:'BN205', symbol:'Espacio negro', cardinality:'SE' },
+        { row:3, key:'BN206', symbol:'Espacio negro', cardinality:'SE' },
+        { row:4, key:'BN207', symbol:'Espacio negro', cardinality:'SE' },
+        { row:5, key:'BN208', symbol:'Espacio negro', cardinality:'SE' }
+      ]},
+      14: { cells: [
+        { row:2, key:'BN209', symbol:'Espacio negro', cardinality:'SO' },
+        { row:3, key:'BN210', symbol:'Espacio negro', cardinality:'SO' },
+        { row:4, key:'BN211', symbol:'Espacio negro', cardinality:'SO' },
+        { row:5, key:'BN212', symbol:'Espacio negro', cardinality:'SO' },
+        { row:2, key:'BN213', symbol:'Espacio negro', cardinality:'NE' },
+        { row:3, key:'BN214', symbol:'Espacio negro', cardinality:'NE' },
+        { row:4, key:'BN215', symbol:'Espacio negro', cardinality:'NE' },
+        { row:5, key:'BN216', symbol:'Espacio negro', cardinality:'NE' },
+        { row:2, key:'BN217', symbol:'Espacio negro', cardinality:'NO' },
+        { row:3, key:'BN218', symbol:'Espacio negro', cardinality:'NO' },
+        { row:4, key:'BN219', symbol:'Espacio negro', cardinality:'NO' },
+        { row:5, key:'BN220', symbol:'Espacio negro', cardinality:'NO' },
+        { row:2, key:'BN221', symbol:'Espacio negro', cardinality:'SE' },
+        { row:3, key:'BN222', symbol:'Espacio negro', cardinality:'SE' },
+        { row:4, key:'BN223', symbol:'Espacio negro', cardinality:'SE' },
+        { row:5, key:'BN224', symbol:'Espacio negro', cardinality:'SE' }
+      ]},
+      15: { cells: [
+        { row:-2, symbol:'Fr', cardinality:'SO' },
+        { row:-1, symbol:'Og', cardinality:'SO' },
+        { row:7,  symbol:'Fr', cardinality:'SO' },
+        { row:9,  symbol:'Fr', cardinality:'SO' },
+        { row:-2, symbol:'Ra', cardinality:'NE' },
+        { row:-1, symbol:'Ts', cardinality:'NE' },
+        { row:7,  symbol:'Ra', cardinality:'NE' },
+        { row:9,  symbol:'Ra', cardinality:'NE' },
+        { row:-2, symbol:'Ac', cardinality:'NO' },
+        { row:-1, symbol:'Lv', cardinality:'NO' },
+        { row:7,  symbol:'Ac', cardinality:'NO' },
+        { row:9,  symbol:'Ac', cardinality:'NO' },
+        { row:-2, symbol:'Th', cardinality:'SE' },
+        { row:-1, symbol:'Mc', cardinality:'SE' },
+        { row:7,  symbol:'Th', cardinality:'SE' },
+        { row:9,  symbol:'Th', cardinality:'SE' }
+      ]}
     },
     decide: {}
   };
@@ -4540,23 +4477,20 @@ header{
     applyTurnColors(result.yearType);
     const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable, .p-node.p-orb, .p-node.p-slab'));
     if (!result || !result.cells.length) return 0;
+    const targetKeys = new Set(result.cells.map(function(cell){
+      return String(cell.row) + '|' + String(cell.key || '').toUpperCase();
+    }));
+    const targetSymbols = new Set(result.cells.map(function(cell){
+      return String(cell.row) + '|' + normalizeSymbol(cell.symbol);
+    }));
     let hits = 0;
     allNodes.forEach(function(node){
       const nodeKey = String(node.dataset.key || '').toUpperCase();
       const nodeSymbol = normalizeSymbol(node.dataset.symbol || '');
-      const nodeRow = Number(node.dataset.logicalRow || '');
-      const nodeNumber = String(node.dataset.displayNumber || '');
-      const match = result.cells.some(function(cell){
-        const rowOk = Number(cell.rowNorm) === nodeRow;
-        const symbolOk = String(cell.symbolNorm || '') === nodeSymbol;
-        const numberOk = !cell.numberNorm || cell.numberNorm === nodeNumber;
-        const keyOk = String(cell.key || '').toUpperCase() === nodeKey;
-        if (rowOk && keyOk && numberOk) return true;
-        if (rowOk && symbolOk && numberOk) return true;
-        if (rowOk && numberOk && nodeNumber && cell.numberNorm) return true;
-        return false;
-      });
-      if (match) {
+      const nodeRow = String(node.dataset.logicalRow || '');
+      const byKey = nodeKey && targetKeys.has(nodeRow + '|' + nodeKey);
+      const bySymbol = nodeSymbol && targetSymbols.has(nodeRow + '|' + nodeSymbol);
+      if (byKey || bySymbol) {
         node.classList.add('is-turn-match');
         hits += 1;
       } else {
