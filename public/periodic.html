@@ -711,22 +711,6 @@ header{
   border-color:var(--turn-accent-border, rgba(255,214,98,.85));
   transform:translateY(-1px);
 }
-.p-orb.is-turn-match{
-  border-color:var(--turn-accent-border, rgba(255,214,98,.92));
-  box-shadow:
-    inset 0 0 0 2px var(--turn-accent-strong, rgba(255,214,98,.98)),
-    0 0 0 3px var(--turn-accent-mid, rgba(255,214,98,.32)),
-    0 0 18px var(--turn-accent-soft, rgba(255,214,98,.28));
-}
-.p-orb.is-turn-match::after{
-  content:"";
-  position:absolute;
-  inset:2px;
-  border-radius:999px;
-  border:2px solid var(--turn-accent-border, rgba(255,214,98,.92));
-  box-shadow:0 0 14px var(--turn-accent-soft, rgba(255,214,98,.28));
-  pointer-events:none;
-}
 .p-node.is-turn-dim{
   opacity:.34;
   filter:saturate(.72);
@@ -789,7 +773,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 13 de la regla base. Ya podés probar hasta la Vuelta 13.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5 y 6 de la regla base. Ya podés probar hasta la Vuelta 6.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -3758,8 +3742,6 @@ header{
       symbol: item.symbol,
       title: titleParts.join(' · '),
       row: rowMap[String(logicalRow)],
-      logicalRow: logicalRow,
-      displayNumber: display.number,
       col,
       preferred: !!preferred,
       zone,
@@ -3817,13 +3799,8 @@ header{
     nodes.push({
       type:'orb',
       row:rowMap['1'],
-      logicalRow:1,
       col,
-      key:'P' + orbTop,
-      symbol:'PROMESA',
-      displayNumber:String(orbTop),
-      title:'Promesa ' + orb + ' · ' + orbTop,
-      className:'p-node p-orb is-clickable',
+      className:'p-node p-orb',
       html:`<span class="orb-top">${orbTop}</span><span class="orb-main">${orb}</span>`
     });
   }
@@ -3838,18 +3815,7 @@ header{
   Object.entries(slabRows).forEach(([logicalRow, values]) => {
     values.forEach((value, index) => {
       const col = 3 + index;
-      nodes.push({
-        type:'slab',
-        row:rowMap[String(logicalRow)],
-        logicalRow:Number(logicalRow),
-        col,
-        key:'BN' + String(value),
-        symbol:'ESPACIO',
-        displayNumber:String(value),
-        title:'Espacio en negro ' + String(value),
-        className:'p-node p-slab is-clickable',
-        html:String(value)
-      });
+      nodes.push({ type:'slab', row:rowMap[String(logicalRow)], col, className:'p-node p-slab', html:String(value) });
     });
   });
 
@@ -3899,23 +3865,19 @@ header{
       return;
     }
 
-    const interactiveNode = (node.type === 'element' || node.type === 'orb' || node.type === 'slab');
-    const el = document.createElement(interactiveNode ? 'button' : 'div');
-    if (interactiveNode) {
+    const el = document.createElement(node.type === 'element' ? 'button' : 'div');
+    if (node.type === 'element') {
       el.type = 'button';
-      if (node.key) el.dataset.key = node.key;
-      if (node.symbol) el.dataset.symbol = node.symbol || '';
-      if (node.preferred != null) el.dataset.preferred = node.preferred ? '1' : '0';
-      if (node.zone) el.dataset.zone = node.zone;
-      if (node.logicalRow != null) el.dataset.logicalRow = String(node.logicalRow);
-      if (node.displayNumber != null && node.displayNumber !== '') el.dataset.displayNumber = String(node.displayNumber);
-      if (node.title) el.title = node.title;
+      el.dataset.key = node.key;
+      el.dataset.symbol = node.symbol || '';
+      el.dataset.preferred = node.preferred ? '1' : '0';
+      el.dataset.zone = node.zone;
+      el.title = node.title;
       el.addEventListener('click', function(){
-        const sourceItem = node.key ? findItemByKey(node.key) : null;
-        if (!sourceItem && node.type === 'slab') return;
-        const nextEl = sourceItem ? String(sourceItem.key || sourceItem.symbol) : String(node.key || node.symbol || '');
+        const sourceItem = findItemByKey(node.key);
+        const nextSymbol = sourceItem ? sourceItem.symbol : node.symbol;
         const url = new URL(window.location.href);
-        url.searchParams.set('el', nextEl);
+        url.searchParams.set('el', nextSymbol);
         window.location.href = url.toString();
       });
     }
@@ -4232,6 +4194,26 @@ header{
           { row:4, key:'BN207', symbol:'Espacio 207', number:207, cardinality:'SE' },
           { row:5, key:'BN208', symbol:'Espacio 208', number:208, cardinality:'SE' }
         ]
+      },
+      14: {
+        cells: [
+          { row:2, key:'BN209', symbol:'Espacio 209', number:209, cardinality:'SO' },
+          { row:3, key:'BN210', symbol:'Espacio 210', number:210, cardinality:'SO' },
+          { row:4, key:'BN211', symbol:'Espacio 211', number:211, cardinality:'SO' },
+          { row:5, key:'BN212', symbol:'Espacio 212', number:212, cardinality:'SO' },
+          { row:2, key:'BN213', symbol:'Espacio 213', number:213, cardinality:'NE' },
+          { row:3, key:'BN214', symbol:'Espacio 214', number:214, cardinality:'NE' },
+          { row:4, key:'BN215', symbol:'Espacio 215', number:215, cardinality:'NE' },
+          { row:5, key:'BN216', symbol:'Espacio 216', number:216, cardinality:'NE' },
+          { row:2, key:'BN217', symbol:'Espacio 217', number:217, cardinality:'NO' },
+          { row:3, key:'BN218', symbol:'Espacio 218', number:218, cardinality:'NO' },
+          { row:4, key:'BN219', symbol:'Espacio 219', number:219, cardinality:'NO' },
+          { row:5, key:'BN220', symbol:'Espacio 220', number:220, cardinality:'NO' },
+          { row:2, key:'BN221', symbol:'Espacio 221', number:221, cardinality:'SE' },
+          { row:3, key:'BN222', symbol:'Espacio 222', number:222, cardinality:'SE' },
+          { row:4, key:'BN223', symbol:'Espacio 223', number:223, cardinality:'SE' },
+          { row:5, key:'BN224', symbol:'Espacio 224', number:224, cardinality:'SE' }
+        ]
       }
     },
     decide: {}
@@ -4468,13 +4450,8 @@ header{
     const cells = source.cells.map(function(cell){
       const derivedKey = rowSymbolToKey(cell);
       const fallbackKey = normalizeSymbol(cell.key || cell.symbol || '');
-      return Object.assign({}, cell, {
-        key: fallbackKey || derivedKey,
-        symbolNorm: normalizeSymbol(cell.symbol),
-        rowNorm: Number(cell.row),
-        numberNorm: cell.number != null ? String(cell.number) : ''
-      });
-    });
+      return Object.assign({}, cell, { key: derivedKey || fallbackKey });
+    }).filter(function(cell){ return !!cell.key; });
     const groups = {};
     CARDINALITY_ORDER.forEach(function(card){ groups[card] = []; });
     cells.forEach(function(cell){
@@ -4508,7 +4485,7 @@ header{
       const target = quadWrap.querySelector('[data-cardinality="' + card + '"]');
       if (!target) return;
       const html = (groups[card] || []).map(function(cell){
-        return '<span class="turnChip">' + (cell.numberNorm || cell.number || cell.symbol) + '</span>';
+        return '<span class="turnChip">' + cell.symbol + '</span>';
       }).join('');
       target.innerHTML = html || '<span class="turnChip">—</span>';
     });
@@ -4518,25 +4495,15 @@ header{
   function applyTurn(result){
     clearTurnClasses();
     applyTurnColors(result.yearType);
-    const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable, .p-node.p-orb, .p-node.p-slab'));
+    const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable'));
     if (!result || !result.cells.length) return 0;
+    const keySet = new Set(result.cells.map(function(cell){ return String(cell.key || '').toUpperCase(); }));
+    const symbolSet = new Set(result.cells.map(function(cell){ return normalizeSymbol(cell.symbol); }));
     let hits = 0;
     allNodes.forEach(function(node){
-      const nodeKey = String(node.dataset.key || '').toUpperCase();
-      const nodeSymbol = normalizeSymbol(node.dataset.symbol || '');
-      const nodeRow = Number(node.dataset.logicalRow || '');
-      const nodeNumber = String(node.dataset.displayNumber || '');
-      const match = result.cells.some(function(cell){
-        const rowOk = Number(cell.rowNorm) === nodeRow;
-        const symbolOk = String(cell.symbolNorm || '') === nodeSymbol;
-        const numberOk = !cell.numberNorm || cell.numberNorm === nodeNumber;
-        const keyOk = String(cell.key || '').toUpperCase() === nodeKey;
-        if (rowOk && keyOk && numberOk) return true;
-        if (rowOk && symbolOk && numberOk) return true;
-        if (rowOk && numberOk && nodeNumber && cell.numberNorm) return true;
-        return false;
-      });
-      if (match) {
+      const key = String(node.dataset.key || '').toUpperCase();
+      const symbol = normalizeSymbol(node.dataset.symbol || node.textContent || '');
+      if (keySet.has(key) || symbolSet.has(symbol)) {
         node.classList.add('is-turn-match');
         hits += 1;
       } else {
@@ -4597,7 +4564,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 13 de la regla base. Ya podés probar hasta la Vuelta 13.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5 y 6 de la regla base. Ya podés probar hasta la Vuelta 6.');
   }
 
   function initTurnExplorer(){
