@@ -3823,7 +3823,7 @@ header{
       symbol:'PROMESA',
       displayNumber:String(orbTop),
       title:'Promesa ' + orb + ' · ' + orbTop,
-      className:'p-node p-orb',
+      className:'p-node p-orb is-clickable',
       html:`<span class="orb-top">${orbTop}</span><span class="orb-main">${orb}</span>`
     });
   }
@@ -3888,29 +3888,23 @@ header{
       return;
     }
 
-    const el = document.createElement(node.type === 'element' ? 'button' : 'div');
-    if (node.type === 'element') {
+    const el = document.createElement((node.type === 'element' || node.type === 'orb') ? 'button' : 'div');
+    if (node.type === 'element' || node.type === 'orb') {
       el.type = 'button';
-      el.dataset.key = node.key;
-      el.dataset.symbol = node.symbol || '';
-      el.dataset.preferred = node.preferred ? '1' : '0';
-      el.dataset.zone = node.zone;
+      if (node.key) el.dataset.key = node.key;
+      if (node.symbol) el.dataset.symbol = node.symbol || '';
+      if (node.preferred != null) el.dataset.preferred = node.preferred ? '1' : '0';
+      if (node.zone) el.dataset.zone = node.zone;
       if (node.logicalRow != null) el.dataset.logicalRow = String(node.logicalRow);
       if (node.displayNumber != null && node.displayNumber !== '') el.dataset.displayNumber = String(node.displayNumber);
-      el.title = node.title;
+      if (node.title) el.title = node.title;
       el.addEventListener('click', function(){
-        const sourceItem = findItemByKey(node.key);
-        const nextSymbol = sourceItem ? sourceItem.symbol : node.symbol;
+        const sourceItem = node.key ? findItemByKey(node.key) : null;
+        const nextEl = sourceItem ? String(sourceItem.key || sourceItem.symbol) : String(node.key || node.symbol || '');
         const url = new URL(window.location.href);
-        url.searchParams.set('el', nextSymbol);
+        url.searchParams.set('el', nextEl);
         window.location.href = url.toString();
       });
-    } else if (node.type === 'orb') {
-      if (node.logicalRow != null) el.dataset.logicalRow = String(node.logicalRow);
-      if (node.displayNumber != null && node.displayNumber !== '') el.dataset.displayNumber = String(node.displayNumber);
-      if (node.key) el.dataset.key = node.key;
-      if (node.symbol) el.dataset.symbol = node.symbol;
-      if (node.title) el.title = node.title;
     }
     el.className = node.className;
     el.style.gridColumn = String(node.col);
