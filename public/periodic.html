@@ -603,6 +603,120 @@ header{
   }
 }
 
+
+.turnExplorerCard{
+  display:grid;
+  gap:12px;
+}
+.turnToolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:end;
+}
+.turnField{
+  display:grid;
+  gap:6px;
+  min-width:190px;
+}
+.turnField--small{min-width:110px;max-width:140px}
+.turnField label{
+  font-size:11px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.turnField select,
+.turnField input{
+  height:40px;
+  border-radius:12px;
+  border:1px solid var(--ol);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  padding:0 12px;
+  font:inherit;
+}
+.turnField input::placeholder{color:rgba(230,241,255,.35)}
+.turnActions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.turnBtn{height:40px;font-size:13px;padding:0 14px}
+.turnStatus{
+  font-size:13px;
+  color:var(--muted);
+}
+.turnMeta{
+  display:grid;
+  gap:4px;
+  padding:12px 14px;
+  border:1px solid rgba(124,199,255,.22);
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(124,199,255,.08),rgba(124,199,255,.03));
+}
+.turnMeta__title{
+  font-size:15px;
+  font-weight:700;
+}
+.turnMeta__subtitle{
+  font-size:12px;
+  color:var(--muted);
+}
+.turnQuadrants{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.turnQuadrant{
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  background:rgba(255,255,255,.03);
+  padding:10px;
+  min-height:92px;
+}
+.turnQuadrant__head{
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.06em;
+  margin-bottom:8px;
+}
+.turnQuadrant__list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.turnChip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:34px;
+  padding:6px 8px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+  font-size:12px;
+  line-height:1;
+}
+.turnQuadrant--so .turnQuadrant__head{color:#8fd4ff}
+.turnQuadrant--ne .turnQuadrant__head{color:#ffd86f}
+.turnQuadrant--no .turnQuadrant__head{color:#ffb08b}
+.turnQuadrant--se .turnQuadrant__head{color:#d3b5ff}
+.p-node.is-turn-match{
+  box-shadow:
+    inset 0 0 0 1px rgba(255,214,98,.98),
+    0 0 0 1px rgba(255,214,98,.22),
+    0 8px 22px rgba(255,214,98,.18);
+  border-color:rgba(255,214,98,.85);
+}
+.p-node.is-turn-dim{
+  opacity:.34;
+  filter:saturate(.72);
+}
+@media (max-width:839px){
+  .turnQuadrants{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -631,6 +745,51 @@ header{
       </div>
     </section>
 
+
+    <section class="card turnExplorerCard">
+      <div class="turnToolbar">
+        <div class="turnField">
+          <label for="turnYearType">Año del aparato</label>
+          <select id="turnYearType">
+            <option value="asume">Asume</option>
+            <option value="asimila">Asimila</option>
+            <option value="desafia">Desafía</option>
+            <option value="decide">Decide</option>
+          </select>
+        </div>
+        <div class="turnField turnField--small">
+          <label for="turnNumber">Vuelta</label>
+          <input id="turnNumber" type="number" inputmode="numeric" min="1" max="22" placeholder="1–22">
+        </div>
+        <div class="turnActions">
+          <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
+          <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
+        </div>
+      </div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargada la estructura base de la vuelta 1.</div>
+      <div class="turnMeta" id="turnMeta" hidden>
+        <div class="turnMeta__title" id="turnMetaTitle"></div>
+        <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
+      </div>
+      <div class="turnQuadrants" id="turnQuadrants" hidden>
+        <article class="turnQuadrant turnQuadrant--so">
+          <div class="turnQuadrant__head">SO</div>
+          <div class="turnQuadrant__list" data-cardinality="SO"></div>
+        </article>
+        <article class="turnQuadrant turnQuadrant--ne">
+          <div class="turnQuadrant__head">NE</div>
+          <div class="turnQuadrant__list" data-cardinality="NE"></div>
+        </article>
+        <article class="turnQuadrant turnQuadrant--no">
+          <div class="turnQuadrant__head">NO</div>
+          <div class="turnQuadrant__list" data-cardinality="NO"></div>
+        </article>
+        <article class="turnQuadrant turnQuadrant--se">
+          <div class="turnQuadrant__head">SE</div>
+          <div class="turnQuadrant__list" data-cardinality="SE"></div>
+        </article>
+      </div>
+    </section>
     <section class="card">
       <div class="p-table-title"><span class="speak">T<span class="fade">e</span> <span class="fade">H</span><strong>abla</strong> de la</span><span class="main"> TABLA PERIÓDICA DE ELEMENTOS PARA EL DESARROLLO DE LA CONCIENCIA ESPACIO TEMPORAL EN EL MARCO DE LA LOGICA GLOBAL CONVERGENTE</span></div>
       <div class="periodicContainer">
@@ -3730,6 +3889,191 @@ header{
       activeNode.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
     });
   }
+})();
+</script>
+
+
+<script>
+(function(){
+  const PHASE_LABELS = {1:'asume',2:'asimila',3:'desafia',4:'decide'};
+  const CARDINALITY_ORDER = ['SO','NE','NO','SE'];
+  const TURN_DATA = {
+    base: {
+      1: {
+        cells: [
+          { row:1, symbol:'H',  cardinality:'SO' },
+          { row:1, symbol:'He', cardinality:'SO' },
+          { row:2, symbol:'Li', cardinality:'SO' },
+          { row:2, symbol:'Be', cardinality:'SO' },
+          { row:2, symbol:'B',  cardinality:'NE' },
+          { row:2, symbol:'C',  cardinality:'NE' },
+          { row:2, symbol:'N',  cardinality:'NE' },
+          { row:2, symbol:'O',  cardinality:'NE' },
+          { row:2, symbol:'F',  cardinality:'NO' },
+          { row:2, symbol:'Ne', cardinality:'NO' },
+          { row:3, symbol:'Na', cardinality:'NO' },
+          { row:3, symbol:'Mg', cardinality:'NO' },
+          { row:3, symbol:'Al', cardinality:'SE' },
+          { row:3, symbol:'Si', cardinality:'SE' },
+          { row:3, symbol:'P',  cardinality:'SE' },
+          { row:3, symbol:'S',  cardinality:'SE' }
+        ]
+      }
+    },
+    decide: {}
+  };
+
+  function getPhaseFromYear(refRaw){
+    if(!refRaw) return 'asume';
+    var s = String(refRaw).trim().replace(/\//g,'-');
+    var p = s.split('-');
+    if(p.length !== 3) return 'asume';
+    var y = null;
+    if(/^\d{4}$/.test(p[0])) y = parseInt(p[0],10);
+    else if(/^\d{4}$/.test(p[2])) y = parseInt(p[2],10);
+    if(!(y>=1)) return 'asume';
+    var phase = ((y - 1) % 4) + 1;
+    return PHASE_LABELS[phase] || 'asume';
+  }
+
+  function turnBucket(yearType, turnNumber){
+    const t = Number(turnNumber);
+    if (yearType === 'decide' && t >= 15) return 'decide';
+    return 'base';
+  }
+
+  function normalizeSymbol(symbol){
+    return String(symbol || '').trim().toUpperCase();
+  }
+
+  function rowSymbolToKey(cell){
+    const row = Number(cell.row);
+    const symbol = normalizeSymbol(cell.symbol);
+    const items = (window.PERIODIC_DATA || []).filter(function(item){
+      return Number(item.row) === row && normalizeSymbol(item.symbol) === symbol;
+    });
+    if (!items.length) return null;
+    const direct = items.find(function(item){
+      return normalizeSymbol(item.key || item.symbol) === symbol;
+    });
+    const match = direct || items[0];
+    return String(match.key || match.symbol).toUpperCase();
+  }
+
+  function resolveTurn(yearType, turnNumber){
+    const bucket = turnBucket(yearType, turnNumber);
+    const source = (TURN_DATA[bucket] && TURN_DATA[bucket][turnNumber]) || (TURN_DATA.base && TURN_DATA.base[turnNumber]);
+    if (!source) return null;
+    const cells = source.cells.map(function(cell){
+      return Object.assign({}, cell, { key: rowSymbolToKey(cell) });
+    }).filter(function(cell){ return !!cell.key; });
+    const groups = {};
+    CARDINALITY_ORDER.forEach(function(card){ groups[card] = []; });
+    cells.forEach(function(cell){
+      if (!groups[cell.cardinality]) groups[cell.cardinality] = [];
+      groups[cell.cardinality].push(cell);
+    });
+    return { bucket: bucket, turnNumber: Number(turnNumber), yearType: yearType, cells: cells, groups: groups };
+  }
+
+  function clearTurnClasses(){
+    document.querySelectorAll('.p-node.is-turn-match').forEach(function(el){ el.classList.remove('is-turn-match'); });
+    document.querySelectorAll('.p-node.is-turn-dim').forEach(function(el){ el.classList.remove('is-turn-dim'); });
+  }
+
+  function updateQuadrants(groups){
+    const quadWrap = document.getElementById('turnQuadrants');
+    if (!quadWrap) return;
+    CARDINALITY_ORDER.forEach(function(card){
+      const target = quadWrap.querySelector('[data-cardinality="' + card + '"]');
+      if (!target) return;
+      const html = (groups[card] || []).map(function(cell){
+        return '<span class="turnChip">' + cell.symbol + '</span>';
+      }).join('');
+      target.innerHTML = html || '<span class="turnChip">—</span>';
+    });
+    quadWrap.hidden = false;
+  }
+
+  function applyTurn(result){
+    clearTurnClasses();
+    const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable'));
+    if (!result || !result.cells.length) return;
+    const keySet = new Set(result.cells.map(function(cell){ return cell.key; }));
+    allNodes.forEach(function(node){
+      const key = String(node.dataset.key || '').toUpperCase();
+      if (keySet.has(key)) node.classList.add('is-turn-match');
+      else node.classList.add('is-turn-dim');
+    });
+    const firstMatch = document.querySelector('.p-node.is-turn-match');
+    if (firstMatch) firstMatch.scrollIntoView({ block:'center', inline:'center', behavior:'smooth' });
+  }
+
+  function setStatus(msg){
+    const el = document.getElementById('turnStatus');
+    if (el) el.textContent = msg;
+  }
+
+  function updateMeta(result){
+    const meta = document.getElementById('turnMeta');
+    const title = document.getElementById('turnMetaTitle');
+    const subtitle = document.getElementById('turnMetaSubtitle');
+    if (!meta || !title || !subtitle) return;
+    if (!result) {
+      meta.hidden = true;
+      return;
+    }
+    const phaseLabel = result.yearType === 'desafia' ? 'Desafía' : result.yearType.charAt(0).toUpperCase() + result.yearType.slice(1);
+    title.textContent = 'Vuelta ' + String(result.turnNumber).padStart(2,'0') + ' · ' + phaseLabel;
+    subtitle.textContent = '16 elementos distribuidos en SO, NE, NO y SE. Regla usada: ' + (result.bucket === 'decide' ? 'Decide' : 'Base');
+    meta.hidden = false;
+  }
+
+  function showTurn(){
+    const yearType = (document.getElementById('turnYearType') || {}).value || 'asume';
+    const turnValue = parseInt((document.getElementById('turnNumber') || {}).value, 10);
+    if (!(turnValue >= 1 && turnValue <= 22)) {
+      setStatus('Ingresá una vuelta válida entre 1 y 22.');
+      updateMeta(null);
+      document.getElementById('turnQuadrants').hidden = true;
+      clearTurnClasses();
+      return;
+    }
+    const result = resolveTurn(yearType, turnValue);
+    if (!result) {
+      setStatus('Todavía no está cargada la vuelta ' + String(turnValue).padStart(2,'0') + ' para este modo.');
+      updateMeta(null);
+      document.getElementById('turnQuadrants').hidden = true;
+      clearTurnClasses();
+      return;
+    }
+    applyTurn(result);
+    updateMeta(result);
+    updateQuadrants(result.groups);
+    setStatus('Se resaltó la vuelta ' + String(turnValue).padStart(2,'0') + ' en la Te Habla y quedó preparada la distribución por cardinalidad.');
+  }
+
+  function clearTurn(){
+    const quadrants = document.getElementById('turnQuadrants');
+    clearTurnClasses();
+    updateMeta(null);
+    if (quadrants) quadrants.hidden = true;
+    setStatus('Explorador de vueltas listo. Cargada la estructura base de la vuelta 1.');
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const yearSelect = document.getElementById('turnYearType');
+    const turnInput = document.getElementById('turnNumber');
+    const refMatch = /[?&]ref=([^&]+)/.exec(window.location.search);
+    if (yearSelect) yearSelect.value = getPhaseFromYear(refMatch ? decodeURIComponent(refMatch[1].replace(/\+/g,' ')) : '');
+    if (turnInput) turnInput.value = '1';
+    const showBtn = document.getElementById('showTurnBtn');
+    const clearBtn = document.getElementById('clearTurnBtn');
+    if (showBtn) showBtn.addEventListener('click', showTurn);
+    if (clearBtn) clearBtn.addEventListener('click', clearTurn);
+    if (turnInput) turnInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') showTurn(); });
+    window.PERIODIC_TURNS = { resolveTurn: resolveTurn, data: TURN_DATA, turnBucket: turnBucket };
+  });
 })();
 </script>
 
