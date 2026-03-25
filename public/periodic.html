@@ -789,7 +789,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 10 de la regla base. Ya podés probar hasta la Vuelta 10.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 13 de la regla base. Ya podés probar hasta la Vuelta 13.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -4172,6 +4172,66 @@ header{
           { row:2, key:'BN159', symbol:'Espacio 159', number:159, cardinality:'SE' },
           { row:3, key:'BN160', symbol:'Espacio 160', number:160, cardinality:'SE' }
         ]
+      },
+      11: {
+        cells: [
+          { row:2, key:'BN161', symbol:'Espacio 161', number:161, cardinality:'SO' },
+          { row:3, key:'BN162', symbol:'Espacio 162', number:162, cardinality:'SO' },
+          { row:2, key:'BN163', symbol:'Espacio 163', number:163, cardinality:'SO' },
+          { row:3, key:'BN164', symbol:'Espacio 164', number:164, cardinality:'SO' },
+          { row:2, key:'BN165', symbol:'Espacio 165', number:165, cardinality:'NE' },
+          { row:3, key:'BN166', symbol:'Espacio 166', number:166, cardinality:'NE' },
+          { row:2, key:'BN167', symbol:'Espacio 167', number:167, cardinality:'NE' },
+          { row:3, key:'BN168', symbol:'Espacio 168', number:168, cardinality:'NE' },
+          { row:2, key:'BN169', symbol:'Espacio 169', number:169, cardinality:'NO' },
+          { row:3, key:'BN170', symbol:'Espacio 170', number:170, cardinality:'NO' },
+          { row:4, key:'BN171', symbol:'Espacio 171', number:171, cardinality:'NO' },
+          { row:5, key:'BN172', symbol:'Espacio 172', number:172, cardinality:'NO' },
+          { row:2, key:'BN173', symbol:'Espacio 173', number:173, cardinality:'SE' },
+          { row:3, key:'BN174', symbol:'Espacio 174', number:174, cardinality:'SE' },
+          { row:4, key:'BN175', symbol:'Espacio 175', number:175, cardinality:'SE' },
+          { row:5, key:'BN176', symbol:'Espacio 176', number:176, cardinality:'SE' }
+        ]
+      },
+      12: {
+        cells: [
+          { row:2, key:'BN177', symbol:'Espacio 177', number:177, cardinality:'SO' },
+          { row:3, key:'BN178', symbol:'Espacio 178', number:178, cardinality:'SO' },
+          { row:4, key:'BN179', symbol:'Espacio 179', number:179, cardinality:'SO' },
+          { row:5, key:'BN180', symbol:'Espacio 180', number:180, cardinality:'SO' },
+          { row:2, key:'BN181', symbol:'Espacio 181', number:181, cardinality:'NE' },
+          { row:3, key:'BN182', symbol:'Espacio 182', number:182, cardinality:'NE' },
+          { row:4, key:'BN183', symbol:'Espacio 183', number:183, cardinality:'NE' },
+          { row:5, key:'BN184', symbol:'Espacio 184', number:184, cardinality:'NE' },
+          { row:2, key:'BN185', symbol:'Espacio 185', number:185, cardinality:'NO' },
+          { row:3, key:'BN186', symbol:'Espacio 186', number:186, cardinality:'NO' },
+          { row:4, key:'BN187', symbol:'Espacio 187', number:187, cardinality:'NO' },
+          { row:5, key:'BN188', symbol:'Espacio 188', number:188, cardinality:'NO' },
+          { row:2, key:'BN189', symbol:'Espacio 189', number:189, cardinality:'SE' },
+          { row:3, key:'BN190', symbol:'Espacio 190', number:190, cardinality:'SE' },
+          { row:4, key:'BN191', symbol:'Espacio 191', number:191, cardinality:'SE' },
+          { row:5, key:'BN192', symbol:'Espacio 192', number:192, cardinality:'SE' }
+        ]
+      },
+      13: {
+        cells: [
+          { row:2, key:'BN193', symbol:'Espacio 193', number:193, cardinality:'SO' },
+          { row:3, key:'BN194', symbol:'Espacio 194', number:194, cardinality:'SO' },
+          { row:4, key:'BN195', symbol:'Espacio 195', number:195, cardinality:'SO' },
+          { row:5, key:'BN196', symbol:'Espacio 196', number:196, cardinality:'SO' },
+          { row:2, key:'BN197', symbol:'Espacio 197', number:197, cardinality:'NE' },
+          { row:3, key:'BN198', symbol:'Espacio 198', number:198, cardinality:'NE' },
+          { row:4, key:'BN199', symbol:'Espacio 199', number:199, cardinality:'NE' },
+          { row:5, key:'BN200', symbol:'Espacio 200', number:200, cardinality:'NE' },
+          { row:2, key:'BN201', symbol:'Espacio 201', number:201, cardinality:'NO' },
+          { row:3, key:'BN202', symbol:'Espacio 202', number:202, cardinality:'NO' },
+          { row:4, key:'BN203', symbol:'Espacio 203', number:203, cardinality:'NO' },
+          { row:5, key:'BN204', symbol:'Espacio 204', number:204, cardinality:'NO' },
+          { row:2, key:'BN205', symbol:'Espacio 205', number:205, cardinality:'SE' },
+          { row:3, key:'BN206', symbol:'Espacio 206', number:206, cardinality:'SE' },
+          { row:4, key:'BN207', symbol:'Espacio 207', number:207, cardinality:'SE' },
+          { row:5, key:'BN208', symbol:'Espacio 208', number:208, cardinality:'SE' }
+        ]
       }
     },
     decide: {}
@@ -4537,7 +4597,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 10 de la regla base. Ya podés probar hasta la Vuelta 10.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 13 de la regla base. Ya podés probar hasta la Vuelta 13.');
   }
 
   function initTurnExplorer(){
