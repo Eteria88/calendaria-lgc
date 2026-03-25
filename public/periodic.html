@@ -789,7 +789,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 21 de la regla base. Ya podés probar hasta la Vuelta 21.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -4336,6 +4336,30 @@ header{
           { row:9,  key:'L112', symbol:'Fl', cardinality:'SE' }
         ]
       }
+      ,
+      22: {
+        cells: [
+          { row:-2, key:'L113', symbol:'Mc', cardinality:'SO' },
+          { row:-1, key:'L114', symbol:'Th', cardinality:'SO' },
+          { row:7,  key:'L115', symbol:'Mc', cardinality:'SO' },
+          { row:9,  key:'L116', symbol:'Mc', cardinality:'SO' },
+
+          { row:-2, key:'L117', symbol:'Lv', cardinality:'NE' },
+          { row:-1, key:'L118', symbol:'Ac', cardinality:'NE' },
+          { row:7,  key:'L119', symbol:'Lv', cardinality:'NE' },
+          { row:9,  key:'L120', symbol:'Lv', cardinality:'NE' },
+
+          { row:-2, key:'L121', symbol:'Ts', cardinality:'NO' },
+          { row:-1, key:'L122', symbol:'Ra', cardinality:'NO' },
+          { row:7,  key:'L123', symbol:'Ts', cardinality:'NO' },
+          { row:9,  key:'L124', symbol:'Ts', cardinality:'NO' },
+
+          { row:-2, key:'L125', symbol:'Og', cardinality:'SE' },
+          { row:-1, key:'L126', symbol:'Fr', cardinality:'SE' },
+          { row:7,  key:'L127', symbol:'Og', cardinality:'SE' },
+          { row:9,  key:'L128', symbol:'Og', cardinality:'SE' }
+        ]
+      }
 
     },
     decide: {}
@@ -4698,7 +4722,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 21 de la regla base. Ya podés probar hasta la Vuelta 21.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.');
   }
 
   function initTurnExplorer(){
