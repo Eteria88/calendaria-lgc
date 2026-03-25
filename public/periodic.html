@@ -4330,35 +4330,49 @@ header{
     setStatus('Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3 y 4 de la regla base. Ya podés probar la Vuelta 4.');
   }
 
-  document.addEventListener('DOMContentLoaded', function(){
+  function initTurnExplorer(){
+    if (window.__periodicTurnExplorerInit) return;
     const yearSelect = document.getElementById('turnYearType');
     const turnInput = document.getElementById('turnNumber');
-    const refMatch = /[?&]ref=([^&]+)/.exec(window.location.search);
-    if (yearSelect) yearSelect.value = getPhaseFromYear(refMatch ? decodeURIComponent(refMatch[1].replace(/\+/g,' ')) : '');
-    if (turnInput) turnInput.value = '1';
     const showBtn = document.getElementById('showTurnBtn');
     const locateBtn = document.getElementById('locateDateBtn');
     const clearBtn = document.getElementById('clearTurnBtn');
     const dateInput = document.getElementById('turnRefDate');
-    if (showBtn) showBtn.addEventListener('click', showTurn);
-    if (locateBtn) locateBtn.addEventListener('click', locateDate);
-    if (clearBtn) clearBtn.addEventListener('click', clearTurn);
-    if (turnInput) turnInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') showTurn(); });
-    if (dateInput) {
-      dateInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') locateDate(); });
-      dateInput.value = refMatch ? (function(raw){
-        var parsed = parseFlexibleDate(decodeURIComponent(raw.replace(/\+/g,' ')));
-        return parsed ? formatRefDate(parsed) : '';
-      })(refMatch[1]) : '';
-    }
+    if (!yearSelect || !turnInput || !showBtn || !locateBtn || !clearBtn || !dateInput) return;
+
+    window.__periodicTurnExplorerInit = true;
+
+    const refMatch = /[?&]ref=([^&]+)/.exec(window.location.search);
+    yearSelect.value = getPhaseFromYear(refMatch ? decodeURIComponent(refMatch[1].replace(/\+/g,' ')) : '');
+    if (!turnInput.value) turnInput.value = '1';
+
+    showBtn.addEventListener('click', showTurn);
+    locateBtn.addEventListener('click', locateDate);
+    clearBtn.addEventListener('click', clearTurn);
+    turnInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') showTurn(); });
+    dateInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') locateDate(); });
+    dateInput.value = refMatch ? (function(raw){
+      var parsed = parseFlexibleDate(decodeURIComponent(raw.replace(/\+/g,' ')));
+      return parsed ? formatRefDate(parsed) : '';
+    })(refMatch[1]) : '';
+
     window.PERIODIC_TURNS = {
       resolveTurn: resolveTurn,
       data: TURN_DATA,
       turnBucket: turnBucket,
       applyReferenceDate: applyReferenceDate,
-      locateDate: locateDate
+      locateDate: locateDate,
+      showTurn: showTurn,
+      clearTurn: clearTurn
     };
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTurnExplorer);
+  } else {
+    initTurnExplorer();
+  }
+  window.addEventListener('load', initTurnExplorer);
 })();
 </script>
 
