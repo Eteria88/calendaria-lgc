@@ -773,7 +773,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3 y 4 de la regla base. Ya podés probar la Vuelta 4.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5 y 6 de la regla base. Ya podés probar hasta la Vuelta 6.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -4014,6 +4014,46 @@ header{
           { row:6, symbol:'Eu', cardinality:'SE' },
           { row:6, symbol:'Gd', cardinality:'SE' }
         ]
+      },
+      5: {
+        cells: [
+          { row:6, symbol:'Tb', cardinality:'SO' },
+          { row:6, symbol:'Dy', cardinality:'SO' },
+          { row:6, symbol:'Ho', cardinality:'SO' },
+          { row:6, symbol:'Er', cardinality:'SO' },
+          { row:6, symbol:'Tm', cardinality:'NE' },
+          { row:6, symbol:'Yb', cardinality:'NE' },
+          { row:6, symbol:'Lu', cardinality:'NE' },
+          { row:6, symbol:'Hf', cardinality:'NE' },
+          { row:6, symbol:'Ta', cardinality:'NO' },
+          { row:6, symbol:'W',  cardinality:'NO' },
+          { row:6, symbol:'Re', cardinality:'NO' },
+          { row:6, symbol:'Os', cardinality:'NO' },
+          { row:6, symbol:'Ir', cardinality:'SE' },
+          { row:6, symbol:'Pt', cardinality:'SE' },
+          { row:6, symbol:'Au', cardinality:'SE' },
+          { row:6, symbol:'Hg', cardinality:'SE' }
+        ]
+      },
+      6: {
+        cells: [
+          { row:6, symbol:'Tl', cardinality:'SO' },
+          { row:6, symbol:'Pb', cardinality:'SO' },
+          { row:6, symbol:'Bi', cardinality:'SO' },
+          { row:6, symbol:'Po', cardinality:'SO' },
+          { row:6, symbol:'At', cardinality:'NE' },
+          { row:6, symbol:'Rn', cardinality:'NE' },
+          { row:8, symbol:'Fr', cardinality:'NE' },
+          { row:8, symbol:'Ra', cardinality:'NE' },
+          { row:8, symbol:'Ac', cardinality:'NO' },
+          { row:8, symbol:'Th', cardinality:'NO' },
+          { row:8, symbol:'Pa', cardinality:'NO' },
+          { row:8, symbol:'U',  cardinality:'NO' },
+          { row:8, symbol:'Np', cardinality:'SE' },
+          { row:8, symbol:'Pu', cardinality:'SE' },
+          { row:8, symbol:'Am', cardinality:'SE' },
+          { row:8, symbol:'Cm', cardinality:'SE' }
+        ]
       }
     },
     decide: {}
@@ -4364,7 +4404,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3 y 4 de la regla base. Ya podés probar la Vuelta 4.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5 y 6 de la regla base. Ya podés probar hasta la Vuelta 6.');
   }
 
   function initTurnExplorer(){
