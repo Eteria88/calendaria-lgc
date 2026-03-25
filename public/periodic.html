@@ -4205,15 +4205,31 @@ header{
   function rowSymbolToKey(cell){
     const row = Number(cell.row);
     const symbol = normalizeSymbol(cell.symbol);
-    const items = (window.PERIODIC_DATA || []).filter(function(item){
+    const all = (window.PERIODIC_DATA || []);
+
+    const exactRowItems = all.filter(function(item){
       return Number(item.row) === row && normalizeSymbol(item.symbol) === symbol;
     });
-    if (!items.length) return null;
-    const direct = items.find(function(item){
-      return normalizeSymbol(item.key || item.symbol) === symbol;
+    if (exactRowItems.length) {
+      const direct = exactRowItems.find(function(item){
+        return normalizeSymbol(item.key || item.symbol) === symbol;
+      });
+      const match = direct || exactRowItems[0];
+      return String(match.key || match.symbol).toUpperCase();
+    }
+
+    const anyRowItems = all.filter(function(item){
+      return normalizeSymbol(item.symbol) === symbol;
     });
-    const match = direct || items[0];
-    return String(match.key || match.symbol).toUpperCase();
+    if (anyRowItems.length) {
+      const direct = anyRowItems.find(function(item){
+        return normalizeSymbol(item.key || item.symbol) === symbol;
+      });
+      const match = direct || anyRowItems[0];
+      return String(match.key || match.symbol).toUpperCase();
+    }
+
+    return symbol || null;
   }
 
   function resolveTurn(yearType, turnNumber){
@@ -4221,7 +4237,9 @@ header{
     const source = (TURN_DATA[bucket] && TURN_DATA[bucket][turnNumber]) || (TURN_DATA.base && TURN_DATA.base[turnNumber]);
     if (!source) return null;
     const cells = source.cells.map(function(cell){
-      return Object.assign({}, cell, { key: rowSymbolToKey(cell) });
+      const derivedKey = rowSymbolToKey(cell);
+      const fallbackKey = normalizeSymbol(cell.key || cell.symbol || '');
+      return Object.assign({}, cell, { key: derivedKey || fallbackKey });
     }).filter(function(cell){ return !!cell.key; });
     const groups = {};
     CARDINALITY_ORDER.forEach(function(card){ groups[card] = []; });
@@ -4267,15 +4285,21 @@ header{
     clearTurnClasses();
     applyTurnColors(result.yearType);
     const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable'));
-    if (!result || !result.cells.length) return;
-    const keySet = new Set(result.cells.map(function(cell){ return cell.key; }));
+    if (!result || !result.cells.length) return 0;
+    const keySet = new Set(result.cells.map(function(cell){ return String(cell.key || '').toUpperCase(); }));
+    let hits = 0;
     allNodes.forEach(function(node){
       const key = String(node.dataset.key || '').toUpperCase();
-      if (keySet.has(key)) node.classList.add('is-turn-match');
-      else node.classList.add('is-turn-dim');
+      if (keySet.has(key)) {
+        node.classList.add('is-turn-match');
+        hits += 1;
+      } else {
+        node.classList.add('is-turn-dim');
+      }
     });
     const firstMatch = document.querySelector('.p-node.is-turn-match');
     if (firstMatch) firstMatch.scrollIntoView({ block:'center', inline:'center', behavior:'smooth' });
+    return hits;
   }
 
   function setStatus(msg){
@@ -4319,7 +4343,7 @@ header{
     applyTurn(result);
     updateMeta(result);
     updateQuadrants(result.groups);
-    setStatus('Se resaltó la vuelta ' + String(turnValue).padStart(2,'0') + ' en la Te Habla y quedó preparada la distribución por cardinalidad.');
+    setStatus('Se resaltó la vuelta ' + String(turnValue).padStart(2,'0') + ' en la Te Habla (' + result.cells.length + ' celdas) y quedó preparada la distribución por cardinalidad.');
   }
 
   function clearTurn(){
