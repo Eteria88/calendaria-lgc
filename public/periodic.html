@@ -4356,7 +4356,7 @@ header{
       const derivedKey = rowSymbolToKey(cell);
       const fallbackKey = normalizeSymbol(cell.key || cell.symbol || '');
       return Object.assign({}, cell, {
-        key: derivedKey || fallbackKey,
+        key: fallbackKey || derivedKey,
         symbolNorm: normalizeSymbol(cell.symbol),
         rowNorm: Number(cell.row),
         numberNorm: cell.number != null ? String(cell.number) : ''
