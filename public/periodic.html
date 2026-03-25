@@ -773,7 +773,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5 y 6 de la regla base. Ya podés probar hasta la Vuelta 6.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5, 6, 7 y 8 de la regla base. Ya podés probar hasta la Vuelta 8.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -3801,7 +3801,12 @@ header{
     nodes.push({
       type:'orb',
       row:rowMap['1'],
+      logicalRow:1,
       col,
+      key:'P' + orbTop,
+      symbol:'PROMESA',
+      displayNumber:String(orbTop),
+      title:'Promesa ' + orb + ' · ' + orbTop,
       className:'p-node p-orb',
       html:`<span class="orb-top">${orbTop}</span><span class="orb-main">${orb}</span>`
     });
@@ -3884,6 +3889,12 @@ header{
         url.searchParams.set('el', nextSymbol);
         window.location.href = url.toString();
       });
+    } else if (node.type === 'orb') {
+      if (node.logicalRow != null) el.dataset.logicalRow = String(node.logicalRow);
+      if (node.displayNumber != null && node.displayNumber !== '') el.dataset.displayNumber = String(node.displayNumber);
+      if (node.key) el.dataset.key = node.key;
+      if (node.symbol) el.dataset.symbol = node.symbol;
+      if (node.title) el.title = node.title;
     }
     el.className = node.className;
     el.style.gridColumn = String(node.col);
@@ -4057,6 +4068,46 @@ header{
           { row:8, symbol:'Pu', number:94, cardinality:'SE' },
           { row:8, symbol:'Am', number:95, cardinality:'SE' },
           { row:8, symbol:'Cm', number:96, cardinality:'SE' }
+        ]
+      },
+      7: {
+        cells: [
+          { row:8, symbol:'Bk', number:97,  cardinality:'SO' },
+          { row:8, symbol:'Cf', number:98,  cardinality:'SO' },
+          { row:8, symbol:'Es', number:99,  cardinality:'SO' },
+          { row:8, symbol:'Fm', number:100, cardinality:'SO' },
+          { row:8, symbol:'Md', number:101, cardinality:'NE' },
+          { row:8, symbol:'No', number:102, cardinality:'NE' },
+          { row:8, symbol:'Lr', number:103, cardinality:'NE' },
+          { row:8, symbol:'Rf', number:104, cardinality:'NE' },
+          { row:8, symbol:'Db', number:105, cardinality:'NO' },
+          { row:8, symbol:'Sg', number:106, cardinality:'NO' },
+          { row:8, symbol:'Bh', number:107, cardinality:'NO' },
+          { row:8, symbol:'Hs', number:108, cardinality:'NO' },
+          { row:8, symbol:'Mt', number:109, cardinality:'SE' },
+          { row:8, symbol:'Ds', number:110, cardinality:'SE' },
+          { row:8, symbol:'Rg', number:111, cardinality:'SE' },
+          { row:8, symbol:'Cn', number:112, cardinality:'SE' }
+        ]
+      },
+      8: {
+        cells: [
+          { row:8, symbol:'Nh', number:113, cardinality:'SO' },
+          { row:8, symbol:'Fl', number:114, cardinality:'SO' },
+          { row:8, symbol:'Mc', number:115, cardinality:'SO' },
+          { row:8, symbol:'Lv', number:116, cardinality:'SO' },
+          { row:8, symbol:'Ts', number:117, cardinality:'NE' },
+          { row:8, symbol:'Og', number:118, cardinality:'NE' },
+          { row:1, key:'P119', symbol:'Promesa 1', number:119, cardinality:'NE' },
+          { row:1, key:'P120', symbol:'Promesa 2', number:120, cardinality:'NE' },
+          { row:1, key:'P121', symbol:'Promesa 3', number:121, cardinality:'NO' },
+          { row:1, key:'P122', symbol:'Promesa 4', number:122, cardinality:'NO' },
+          { row:1, key:'P123', symbol:'Promesa 5', number:123, cardinality:'NO' },
+          { row:1, key:'P124', symbol:'Promesa 6', number:124, cardinality:'NO' },
+          { row:1, key:'P125', symbol:'Promesa 7', number:125, cardinality:'SE' },
+          { row:1, key:'P126', symbol:'Promesa 8', number:126, cardinality:'SE' },
+          { row:1, key:'P127', symbol:'Promesa 9', number:127, cardinality:'SE' },
+          { row:1, key:'P128', symbol:'Promesa 10', number:128, cardinality:'SE' }
         ]
       }
     },
@@ -4344,7 +4395,7 @@ header{
   function applyTurn(result){
     clearTurnClasses();
     applyTurnColors(result.yearType);
-    const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable'));
+    const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable, .p-node.p-orb'));
     if (!result || !result.cells.length) return 0;
     let hits = 0;
     allNodes.forEach(function(node){
@@ -4420,7 +4471,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5 y 6 de la regla base. Ya podés probar hasta la Vuelta 6.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1, 2, 3, 4, 5, 6, 7 y 8 de la regla base. Ya podés probar hasta la Vuelta 8.');
   }
 
   function initTurnExplorer(){
