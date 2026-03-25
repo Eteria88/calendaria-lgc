@@ -789,7 +789,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 18 de la regla base. Ya podés probar hasta la Vuelta 18.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 19 de la regla base. Ya podés probar hasta la Vuelta 19.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -4265,6 +4265,30 @@ header{
           { row:9,  key:'L64', symbol:'No', cardinality:'SE' }
         ]
       }
+      ,
+      19: {
+        cells: [
+          { row:-2, key:'L65', symbol:'Lr', cardinality:'SO' },
+          { row:-1, key:'L66', symbol:'No', cardinality:'SO' },
+          { row:7,  key:'L67', symbol:'Lr', cardinality:'SO' },
+          { row:9,  key:'L68', symbol:'Lr', cardinality:'SO' },
+
+          { row:-2, key:'L69', symbol:'Rf', cardinality:'NE' },
+          { row:-1, key:'L70', symbol:'Md', cardinality:'NE' },
+          { row:7,  key:'L71', symbol:'Rf', cardinality:'NE' },
+          { row:9,  key:'L72', symbol:'Rf', cardinality:'NE' },
+
+          { row:-2, key:'L73', symbol:'Db', cardinality:'NO' },
+          { row:-1, key:'L74', symbol:'Fm', cardinality:'NO' },
+          { row:7,  key:'L75', symbol:'Db', cardinality:'NO' },
+          { row:9,  key:'L76', symbol:'Db', cardinality:'NO' },
+
+          { row:-2, key:'L77', symbol:'Sg', cardinality:'SE' },
+          { row:-1, key:'L78', symbol:'Es', cardinality:'SE' },
+          { row:7,  key:'L79', symbol:'Sg', cardinality:'SE' },
+          { row:9,  key:'L80', symbol:'Sg', cardinality:'SE' }
+        ]
+      }
 
     },
     decide: {}
@@ -4627,7 +4651,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 18 de la regla base. Ya podés probar hasta la Vuelta 18.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 19 de la regla base. Ya podés probar hasta la Vuelta 19.');
   }
 
   function initTurnExplorer(){
