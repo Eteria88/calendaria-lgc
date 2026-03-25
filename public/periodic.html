@@ -761,12 +761,17 @@ header{
           <label for="turnNumber">Vuelta</label>
           <input id="turnNumber" type="number" inputmode="numeric" min="1" max="22" placeholder="1–22">
         </div>
+        <div class="turnField">
+          <label for="turnRefDate">Fecha de referencia</label>
+          <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
+        </div>
         <div class="turnActions">
           <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
+          <button type="button" class="btn turnBtn" id="locateDateBtn">Ubicar fecha</button>
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 y 2 de la regla base.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1, 2 y 3 de la regla base.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -3392,6 +3397,8 @@ header{
   };
 
 
+  window.PERIODIC_BADGE_MAP = MAP;
+
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
 
@@ -3964,10 +3971,193 @@ header{
           { row:4, symbol:'Ga', cardinality:'SE' },
           { row:4, symbol:'Ge', cardinality:'SE' }
         ]
+      },
+      3: {
+        cells: [
+          { row:4, symbol:'As', cardinality:'SO' },
+          { row:4, symbol:'Se', cardinality:'SO' },
+          { row:4, symbol:'Br', cardinality:'SO' },
+          { row:4, symbol:'Kr', cardinality:'SO' },
+          { row:5, symbol:'Rb', cardinality:'NE' },
+          { row:5, symbol:'Sr', cardinality:'NE' },
+          { row:5, symbol:'Y',  cardinality:'NE' },
+          { row:5, symbol:'Zr', cardinality:'NE' },
+          { row:5, symbol:'Nb', cardinality:'NO' },
+          { row:5, symbol:'Mo', cardinality:'NO' },
+          { row:5, symbol:'Tc', cardinality:'NO' },
+          { row:5, symbol:'Ru', cardinality:'NO' },
+          { row:5, symbol:'Rh', cardinality:'SE' },
+          { row:5, symbol:'Pd', cardinality:'SE' },
+          { row:5, symbol:'Ag', cardinality:'SE' },
+          { row:5, symbol:'Cd', cardinality:'SE' }
+        ]
       }
     },
     decide: {}
   };
+
+  function parseFlexibleDate(str){
+    if(!str) return null;
+    var s = String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
+    var p = s.split('/');
+    if(p.length !== 3) return null;
+    var y,m,d;
+    if(/^\d{4}$/.test(p[0])){
+      y = parseInt(p[0],10);
+      m = parseInt(p[1],10);
+      d = parseInt(p[2],10);
+    } else if(/^\d{4}$/.test(p[2])) {
+      d = parseInt(p[0],10);
+      m = parseInt(p[1],10);
+      y = parseInt(p[2],10);
+    } else {
+      return null;
+    }
+    if(!(y >= 1 && m >= 1 && m <= 12 && d >= 1 && d <= 31)) return null;
+    var dt = new Date(y, m - 1, d);
+    if (dt.getFullYear() !== y || (dt.getMonth() + 1) !== m || dt.getDate() !== d) return null;
+    return { y:y, m:m, d:d };
+  }
+
+  function pad2turn(n){
+    return String(n).padStart(2,'0');
+  }
+
+  function formatRefDate(obj){
+    return pad2turn(obj.d) + '/' + pad2turn(obj.m) + '/' + String(obj.y).padStart(4,'0');
+  }
+
+  function formatIso(obj){
+    return String(obj.y).padStart(4,'0') + '-' + pad2turn(obj.m) + '-' + pad2turn(obj.d);
+  }
+
+  function isLeapYear(year){
+    return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
+  }
+
+  function shiftDateByOne(obj){
+    var dt = new Date(obj.y, obj.m - 1, obj.d);
+    dt.setDate(dt.getDate() + 1);
+    return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() };
+  }
+
+  function normalizedMonthDayFromRef(refObj){
+    if(!refObj) return null;
+    var y = refObj.y, m = refObj.m, d = refObj.d;
+    if (isLeapYear(y)) {
+      if (m === 12 && d >= 18) return null;
+      var inShiftRange = (m === 2 && d === 29) || (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if (inShiftRange) {
+        var shifted = shiftDateByOne(refObj);
+        m = shifted.m;
+        d = shifted.d;
+      }
+    } else {
+      if (m === 12 && d >= 19) return null;
+    }
+    return pad2turn(m) + '-' + pad2turn(d);
+  }
+
+  function monthDayOrdinal(md){
+    var keys = Object.keys(window.PERIODIC_BADGE_MAP || {});
+    var idx = keys.indexOf(md);
+    return idx >= 0 ? idx + 1 : null;
+  }
+
+  function updateBadgeFromRef(refObj){
+    var badge = document.querySelector('.elementBadge');
+    var tile = document.getElementById('elementTile');
+    if (!badge || !tile) return;
+    var md = normalizedMonthDayFromRef(refObj);
+    var entry = md ? (window.PERIODIC_BADGE_MAP || {})[md] : null;
+    if (!entry) {
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+      return;
+    }
+    tile.src = './' + entry.img;
+    tile.alt = entry.title + ' element tile';
+    badge.title = entry.title;
+    badge.style.display = 'block';
+    badge.setAttribute('aria-hidden','false');
+  }
+
+  function apparatusHeaderText(refObj){
+    var y = refObj.y;
+    var apIndexVal = Math.floor((y-1)/4) + 1;
+    var aStartY = y - ((y-1)%4);
+    var yearPhase = Math.max(1, Math.min(4, y - aStartY + 1));
+    var phases = ['0','Asume','Asimila','Desafía','Decide'];
+    return 'Aparato Nº ' + apIndexVal + ' · Año ' + yearPhase + ' — ' + phases[yearPhase];
+  }
+
+  function solarDaysText(refObj){
+    function jdnG(y,m,d){
+      var a=Math.floor((14-m)/12);
+      var Y=y+4800-a;
+      var M=m+12*a-3;
+      return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-Math.floor(Y/100)+Math.floor(Y/400)-32045;
+    }
+    function jdnJ(y,m,d){
+      var a=Math.floor((14-m)/12);
+      var Y=y+4800-a;
+      var M=m+12*a-3;
+      return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-32083;
+    }
+    var y = refObj.y, m = refObj.m, d = refObj.d;
+    var isGregorian = (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
+    var j = isGregorian ? jdnG(y,m,d) : jdnJ(y,m,d);
+    var jJulEpoch = jdnJ(1,1,1);
+    return 'Días solares ' + (j - jJulEpoch + 1);
+  }
+
+  function applyReferenceDate(refObj){
+    var yearSelect = document.getElementById('turnYearType');
+    var turnInput = document.getElementById('turnNumber');
+    var dateInput = document.getElementById('turnRefDate');
+    var refDateLabel = document.getElementById('refDateLabel');
+    var apHeaderLabel = document.getElementById('apHeaderLabel');
+    var solarDaysLabel = document.getElementById('solarDaysLabel');
+
+    if (dateInput) dateInput.value = formatRefDate(refObj);
+    if (refDateLabel) refDateLabel.textContent = 'Fecha de referencia: ' + formatRefDate(refObj);
+    if (apHeaderLabel) apHeaderLabel.textContent = apparatusHeaderText(refObj);
+    if (solarDaysLabel) solarDaysLabel.textContent = solarDaysText(refObj);
+    updateBadgeFromRef(refObj);
+
+    var phase = getPhaseFromYear(formatIso(refObj));
+    if (yearSelect) yearSelect.value = phase;
+
+    var md = normalizedMonthDayFromRef(refObj);
+    var ordinal = md ? monthDayOrdinal(md) : null;
+    if (ordinal && turnInput) turnInput.value = String(Math.ceil(ordinal / 16));
+
+    var url = new URL(window.location.href);
+    url.searchParams.set('ref', formatIso(refObj));
+    history.replaceState({}, '', url.toString());
+
+    if (!md || !ordinal) {
+      setStatus('La fecha cae en Anillo de Fuego o fuera del tramo activo del año.');
+      updateMeta(null);
+      var quadrants = document.getElementById('turnQuadrants');
+      if (quadrants) quadrants.hidden = true;
+      clearTurnClasses();
+      return;
+    }
+
+    showTurn();
+    setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Se ajustó el año del aparato automáticamente.');
+  }
+
+  function locateDate(){
+    var dateInput = document.getElementById('turnRefDate');
+    var parsed = parseFlexibleDate(dateInput && dateInput.value);
+    if (!parsed) {
+      setStatus('Ingresá una fecha válida en formato dd/mm/aaaa.');
+      return;
+    }
+    applyReferenceDate(parsed);
+  }
 
   function getPhaseFromYear(refRaw){
     if(!refRaw) return 'asume';
@@ -4117,7 +4307,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 y 2 de la regla base.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1, 2 y 3 de la regla base.');
   }
 
   document.addEventListener('DOMContentLoaded', function(){
@@ -4127,11 +4317,27 @@ header{
     if (yearSelect) yearSelect.value = getPhaseFromYear(refMatch ? decodeURIComponent(refMatch[1].replace(/\+/g,' ')) : '');
     if (turnInput) turnInput.value = '1';
     const showBtn = document.getElementById('showTurnBtn');
+    const locateBtn = document.getElementById('locateDateBtn');
     const clearBtn = document.getElementById('clearTurnBtn');
+    const dateInput = document.getElementById('turnRefDate');
     if (showBtn) showBtn.addEventListener('click', showTurn);
+    if (locateBtn) locateBtn.addEventListener('click', locateDate);
     if (clearBtn) clearBtn.addEventListener('click', clearTurn);
     if (turnInput) turnInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') showTurn(); });
-    window.PERIODIC_TURNS = { resolveTurn: resolveTurn, data: TURN_DATA, turnBucket: turnBucket };
+    if (dateInput) {
+      dateInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') locateDate(); });
+      dateInput.value = refMatch ? (function(raw){
+        var parsed = parseFlexibleDate(decodeURIComponent(raw.replace(/\+/g,' ')));
+        return parsed ? formatRefDate(parsed) : '';
+      })(refMatch[1]) : '';
+    }
+    window.PERIODIC_TURNS = {
+      resolveTurn: resolveTurn,
+      data: TURN_DATA,
+      turnBucket: turnBucket,
+      applyReferenceDate: applyReferenceDate,
+      locateDate: locateDate
+    };
   });
 })();
 </script>
