@@ -789,7 +789,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 19 de la regla base. Ya podés probar hasta la Vuelta 19.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 21 de la regla base. Ya podés probar hasta la Vuelta 21.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -4289,6 +4289,53 @@ header{
           { row:9,  key:'L80', symbol:'Sg', cardinality:'SE' }
         ]
       }
+      ,
+      20: {
+        cells: [
+          { row:-2, key:'L81',  symbol:'Bh', cardinality:'SO' },
+          { row:-1, key:'L82',  symbol:'Cf', cardinality:'SO' },
+          { row:7,  key:'L83',  symbol:'Bh', cardinality:'SO' },
+          { row:9,  key:'L84',  symbol:'Bh', cardinality:'SO' },
+
+          { row:-2, key:'L85',  symbol:'Hs', cardinality:'NE' },
+          { row:-1, key:'L86',  symbol:'Bk', cardinality:'NE' },
+          { row:7,  key:'L87',  symbol:'Hs', cardinality:'NE' },
+          { row:9,  key:'L88',  symbol:'Hs', cardinality:'NE' },
+
+          { row:-2, key:'L89',  symbol:'Mt', cardinality:'NO' },
+          { row:-1, key:'L90',  symbol:'Cm', cardinality:'NO' },
+          { row:7,  key:'L91',  symbol:'Mt', cardinality:'NO' },
+          { row:9,  key:'L92',  symbol:'Mt', cardinality:'NO' },
+
+          { row:-2, key:'L93',  symbol:'Ds', cardinality:'SE' },
+          { row:-1, key:'L94',  symbol:'Am', cardinality:'SE' },
+          { row:7,  key:'L95',  symbol:'Ds', cardinality:'SE' },
+          { row:9,  key:'L96',  symbol:'Ds', cardinality:'SE' }
+        ]
+      },
+      21: {
+        cells: [
+          { row:-2, key:'L97',  symbol:'Rg', cardinality:'SO' },
+          { row:-1, key:'L98',  symbol:'Pu', cardinality:'SO' },
+          { row:7,  key:'L99',  symbol:'Rg', cardinality:'SO' },
+          { row:9,  key:'L100', symbol:'Rg', cardinality:'SO' },
+
+          { row:-2, key:'L101', symbol:'Cn', cardinality:'NE' },
+          { row:-1, key:'L102', symbol:'Np', cardinality:'NE' },
+          { row:7,  key:'L103', symbol:'Cn', cardinality:'NE' },
+          { row:9,  key:'L104', symbol:'Cn', cardinality:'NE' },
+
+          { row:-2, key:'L105', symbol:'Nh', cardinality:'NO' },
+          { row:-1, key:'L106', symbol:'U',  cardinality:'NO' },
+          { row:7,  key:'L107', symbol:'Nh', cardinality:'NO' },
+          { row:9,  key:'L108', symbol:'Nh', cardinality:'NO' },
+
+          { row:-2, key:'L109', symbol:'Fl', cardinality:'SE' },
+          { row:-1, key:'L110', symbol:'Pa', cardinality:'SE' },
+          { row:7,  key:'L111', symbol:'Fl', cardinality:'SE' },
+          { row:9,  key:'L112', symbol:'Fl', cardinality:'SE' }
+        ]
+      }
 
     },
     decide: {}
@@ -4651,7 +4698,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 19 de la regla base. Ya podés probar hasta la Vuelta 19.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 21 de la regla base. Ya podés probar hasta la Vuelta 21.');
   }
 
   function initTurnExplorer(){
