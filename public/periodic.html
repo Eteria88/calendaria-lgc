@@ -789,7 +789,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 13 de la regla base. Ya podés probar hasta la Vuelta 13.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 14 de la regla base. Ya podés probar hasta la Vuelta 14.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -4232,6 +4232,26 @@ header{
           { row:4, key:'BN207', symbol:'Espacio 207', number:207, cardinality:'SE' },
           { row:5, key:'BN208', symbol:'Espacio 208', number:208, cardinality:'SE' }
         ]
+      },
+      14: {
+        cells: [
+          { row:2, key:'BN209', symbol:'Espacio 209', number:209, cardinality:'SO' },
+          { row:3, key:'BN210', symbol:'Espacio 210', number:210, cardinality:'SO' },
+          { row:4, key:'BN211', symbol:'Espacio 211', number:211, cardinality:'SO' },
+          { row:5, key:'BN212', symbol:'Espacio 212', number:212, cardinality:'SO' },
+          { row:2, key:'BN213', symbol:'Espacio 213', number:213, cardinality:'NE' },
+          { row:3, key:'BN214', symbol:'Espacio 214', number:214, cardinality:'NE' },
+          { row:4, key:'BN215', symbol:'Espacio 215', number:215, cardinality:'NE' },
+          { row:5, key:'BN216', symbol:'Espacio 216', number:216, cardinality:'NE' },
+          { row:2, key:'BN217', symbol:'Espacio 217', number:217, cardinality:'NO' },
+          { row:3, key:'BN218', symbol:'Espacio 218', number:218, cardinality:'NO' },
+          { row:4, key:'BN219', symbol:'Espacio 219', number:219, cardinality:'NO' },
+          { row:5, key:'BN220', symbol:'Espacio 220', number:220, cardinality:'NO' },
+          { row:2, key:'BN221', symbol:'Espacio 221', number:221, cardinality:'SE' },
+          { row:3, key:'BN222', symbol:'Espacio 222', number:222, cardinality:'SE' },
+          { row:4, key:'BN223', symbol:'Espacio 223', number:223, cardinality:'SE' },
+          { row:5, key:'BN224', symbol:'Espacio 224', number:224, cardinality:'SE' }
+        ]
       }
     },
     decide: {}
@@ -4597,7 +4617,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 13 de la regla base. Ya podés probar hasta la Vuelta 13.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 14 de la regla base. Ya podés probar hasta la Vuelta 14.');
   }
 
   function initTurnExplorer(){
