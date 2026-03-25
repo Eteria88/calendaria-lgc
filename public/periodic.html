@@ -789,7 +789,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 14 de la regla base. Ya podés probar hasta la Vuelta 14.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 16 de la regla base. Ya podés probar hasta la Vuelta 16.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -4189,6 +4189,24 @@ header{
         { row:-1, symbol:'Mc', cardinality:'SE' },
         { row:7,  symbol:'Th', cardinality:'SE' },
         { row:9,  symbol:'Th', cardinality:'SE' }
+      ]},
+      16: { cells: [
+        { row:-2, symbol:'Pa', cardinality:'SO' },
+        { row:-1, symbol:'Fl', cardinality:'SO' },
+        { row:7,  symbol:'Pa', cardinality:'SO' },
+        { row:9,  symbol:'Pa', cardinality:'SO' },
+        { row:-2, symbol:'U',  cardinality:'NE' },
+        { row:-1, symbol:'Nh', cardinality:'NE' },
+        { row:7,  symbol:'U',  cardinality:'NE' },
+        { row:9,  symbol:'U',  cardinality:'NE' },
+        { row:-2, symbol:'Np', cardinality:'NO' },
+        { row:-1, symbol:'Cn', cardinality:'NO' },
+        { row:7,  symbol:'Np', cardinality:'NO' },
+        { row:9,  symbol:'Np', cardinality:'NO' },
+        { row:-2, symbol:'Pu', cardinality:'SE' },
+        { row:-1, symbol:'Rg', cardinality:'SE' },
+        { row:7,  symbol:'Pu', cardinality:'SE' },
+        { row:9,  symbol:'Pu', cardinality:'SE' }
       ]}
     },
     decide: {}
@@ -4420,7 +4438,8 @@ header{
 
   function resolveTurn(yearType, turnNumber){
     const bucket = turnBucket(yearType, turnNumber);
-    const source = (TURN_DATA[bucket] && TURN_DATA[bucket][turnNumber]) || (TURN_DATA.base && TURN_DATA.base[turnNumber]);
+    const source = (TURN_DATA[bucket] && TURN_DATA[bucket][turnNumber]) ||
+      (bucket === 'base' ? (TURN_DATA.base && TURN_DATA.base[turnNumber]) : null);
     if (!source) return null;
     const cells = source.cells.map(function(cell){
       const derivedKey = rowSymbolToKey(cell);
@@ -4551,7 +4570,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 14 de la regla base. Ya podés probar hasta la Vuelta 14.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 16 de la regla base. Ya podés probar hasta la Vuelta 16.');
   }
 
   function initTurnExplorer(){
