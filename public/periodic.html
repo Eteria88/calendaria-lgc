@@ -704,10 +704,10 @@ header{
 .turnQuadrant--se .turnQuadrant__head{color:#d3b5ff}
 .p-node.is-turn-match{
   box-shadow:
-    inset 0 0 0 1px rgba(255,214,98,.98),
-    0 0 0 1px rgba(255,214,98,.22),
-    0 8px 22px rgba(255,214,98,.18);
-  border-color:rgba(255,214,98,.85);
+    inset 0 0 0 1px var(--turn-accent-strong, rgba(255,214,98,.98)),
+    0 0 0 1px var(--turn-accent-mid, rgba(255,214,98,.22)),
+    0 8px 22px var(--turn-accent-soft, rgba(255,214,98,.18));
+  border-color:var(--turn-accent-border, rgba(255,214,98,.85));
 }
 .p-node.is-turn-dim{
   opacity:.34;
@@ -766,7 +766,7 @@ header{
           <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
         </div>
       </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargada la estructura base de la vuelta 1.</div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 y 2 de la regla base.</div>
       <div class="turnMeta" id="turnMeta" hidden>
         <div class="turnMeta__title" id="turnMetaTitle"></div>
         <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
@@ -3897,6 +3897,32 @@ header{
 (function(){
   const PHASE_LABELS = {1:'asume',2:'asimila',3:'desafia',4:'decide'};
   const CARDINALITY_ORDER = ['SO','NE','NO','SE'];
+  const TURN_COLORS = {
+    asume: {
+      strong: 'rgba(124,199,255,.98)',
+      mid: 'rgba(124,199,255,.24)',
+      soft: 'rgba(124,199,255,.18)',
+      border: 'rgba(124,199,255,.88)'
+    },
+    asimila: {
+      strong: 'rgba(255,214,98,.98)',
+      mid: 'rgba(255,214,98,.24)',
+      soft: 'rgba(255,214,98,.18)',
+      border: 'rgba(255,214,98,.88)'
+    },
+    desafia: {
+      strong: 'rgba(255,106,106,.98)',
+      mid: 'rgba(255,106,106,.24)',
+      soft: 'rgba(255,106,106,.18)',
+      border: 'rgba(255,106,106,.88)'
+    },
+    decide: {
+      strong: 'rgba(88,223,145,.98)',
+      mid: 'rgba(88,223,145,.24)',
+      soft: 'rgba(88,223,145,.18)',
+      border: 'rgba(88,223,145,.88)'
+    }
+  };
   const TURN_DATA = {
     base: {
       1: {
@@ -3917,6 +3943,26 @@ header{
           { row:3, symbol:'Si', cardinality:'SE' },
           { row:3, symbol:'P',  cardinality:'SE' },
           { row:3, symbol:'S',  cardinality:'SE' }
+        ]
+      },
+      2: {
+        cells: [
+          { row:3, symbol:'Cl', cardinality:'SO' },
+          { row:3, symbol:'Ar', cardinality:'SO' },
+          { row:4, symbol:'K',  cardinality:'SO' },
+          { row:4, symbol:'Ca', cardinality:'SO' },
+          { row:4, symbol:'Sc', cardinality:'NE' },
+          { row:4, symbol:'Ti', cardinality:'NE' },
+          { row:4, symbol:'V',  cardinality:'NE' },
+          { row:4, symbol:'Cr', cardinality:'NE' },
+          { row:4, symbol:'Mn', cardinality:'NO' },
+          { row:4, symbol:'Fe', cardinality:'NO' },
+          { row:4, symbol:'Co', cardinality:'NO' },
+          { row:4, symbol:'Ni', cardinality:'NO' },
+          { row:4, symbol:'Cu', cardinality:'SE' },
+          { row:4, symbol:'Zn', cardinality:'SE' },
+          { row:4, symbol:'Ga', cardinality:'SE' },
+          { row:4, symbol:'Ge', cardinality:'SE' }
         ]
       }
     },
@@ -3977,8 +4023,20 @@ header{
   }
 
   function clearTurnClasses(){
+    document.documentElement.style.removeProperty('--turn-accent-strong');
+    document.documentElement.style.removeProperty('--turn-accent-mid');
+    document.documentElement.style.removeProperty('--turn-accent-soft');
+    document.documentElement.style.removeProperty('--turn-accent-border');
     document.querySelectorAll('.p-node.is-turn-match').forEach(function(el){ el.classList.remove('is-turn-match'); });
     document.querySelectorAll('.p-node.is-turn-dim').forEach(function(el){ el.classList.remove('is-turn-dim'); });
+  }
+
+  function applyTurnColors(yearType){
+    const palette = TURN_COLORS[yearType] || TURN_COLORS.asimila;
+    document.documentElement.style.setProperty('--turn-accent-strong', palette.strong);
+    document.documentElement.style.setProperty('--turn-accent-mid', palette.mid);
+    document.documentElement.style.setProperty('--turn-accent-soft', palette.soft);
+    document.documentElement.style.setProperty('--turn-accent-border', palette.border);
   }
 
   function updateQuadrants(groups){
@@ -3997,6 +4055,7 @@ header{
 
   function applyTurn(result){
     clearTurnClasses();
+    applyTurnColors(result.yearType);
     const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable'));
     if (!result || !result.cells.length) return;
     const keySet = new Set(result.cells.map(function(cell){ return cell.key; }));
@@ -4058,7 +4117,7 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-    setStatus('Explorador de vueltas listo. Cargada la estructura base de la vuelta 1.');
+    setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 y 2 de la regla base.');
   }
 
   document.addEventListener('DOMContentLoaded', function(){
