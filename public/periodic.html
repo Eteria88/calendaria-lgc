@@ -962,7 +962,14 @@ header{
   }
 
   var refRaw = '';
-  var refDate = getStoredRefDate() || todayRefDate();
+  var refDate = todayRefDate();
+  try{
+    localStorage.setItem('periodicTableRefDate', [
+      String(refDate.y).padStart(4,'0'),
+      pad2(refDate.m),
+      pad2(refDate.d)
+    ].join('-'));
+  }catch(e){}
 
   var refLabel = document.getElementById('refDateLabel');
   if(refLabel && refDate){
@@ -5146,7 +5153,8 @@ header{
   function applyTurn(result){
     clearTurnClasses();
     applyTurnColors(result.yearType);
-    const allNodes = Array.from(document.querySelectorAll('.p-node.is-clickable, .p-node.p-orb'));
+    const gridRoot = document.getElementById('periodicGridMount');
+    const allNodes = gridRoot ? Array.from(gridRoot.querySelectorAll('.p-node.is-clickable, .p-node.p-orb')) : [];
     if (!result || !result.cells.length) return 0;
     let hits = 0;
     allNodes.forEach(function(node){
@@ -5237,8 +5245,13 @@ header{
 
     window.__periodicTurnExplorerInit = true;
 
-    var storedRef = '';
-    try { storedRef = localStorage.getItem('periodicTableRefDate') || ''; } catch(e){}
+    var today = new Date();
+    var storedRef = [
+      String(today.getFullYear()).padStart(4,'0'),
+      String(today.getMonth() + 1).padStart(2,'0'),
+      String(today.getDate()).padStart(2,'0')
+    ].join('-');
+    try { localStorage.setItem('periodicTableRefDate', storedRef); } catch(e){}
     yearSelect.value = getPhaseFromYear(storedRef);
     if (!turnInput.value) turnInput.value = '1';
 
