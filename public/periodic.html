@@ -4663,6 +4663,97 @@ header{
     return idx >= 0 ? idx + 1 : null;
   }
 
+  function apparatusYearPhase(refObj){
+    if (!refObj || !refObj.y) return 1;
+    var y = Number(refObj.y) || 1;
+    var aStartY = y - ((y - 1) % 4);
+    return Math.max(1, Math.min(4, y - aStartY + 1));
+  }
+
+  function getTurnCells(bucket, startTurn, endTurn){
+    var source = (typeof TURN_DATA !== 'undefined' && TURN_DATA && TURN_DATA[bucket]) || null;
+    var out = [];
+    if (!source) return out;
+    for (var t = startTurn; t <= endTurn; t += 1) {
+      var turn = source[t];
+      if (turn && Array.isArray(turn.cells)) out = out.concat(turn.cells);
+    }
+    return out;
+  }
+
+  function selectLKeyByRef(lOrdinal, refObj){
+    var phase = apparatusYearPhase(refObj);
+    if (phase === 4) {
+      var decideCells = getTurnCells('decide', 15, 22);
+      var decideEntry = decideCells[lOrdinal - 1] || null;
+      return decideEntry && decideEntry.key ? String(decideEntry.key) : null;
+    }
+    return 'L' + lOrdinal;
+  }
+
+  function getElementMetaBySymbol(symbol){
+    var rows = window.PERIODIC_DATA || [];
+    for (var i = 0; i < rows.length; i += 1) {
+      if (String(rows[i] && rows[i].symbol || '').toUpperCase() === String(symbol || '').toUpperCase()) return rows[i];
+    }
+    return null;
+  }
+
+  function buildLBadgeModel(key){
+    var m = /^L(\d+)$/.exec(String(key || '').toUpperCase());
+    if (!m) return null;
+    var idx = Number(m[1]);
+    if (!(idx >= 1 && idx <= 128)) return null;
+
+    var source = getTurnCells('base', 15, 22).concat(getTurnCells('decide', 15, 22));
+    var entry = null;
+    for (var i = 0; i < source.length; i += 1) {
+      if (String(source[i] && source[i].key || '').toUpperCase() === 'L' + idx) { entry = source[i]; break; }
+    }
+    if (!entry || !entry.symbol) return null;
+
+    var symbol = String(entry.symbol);
+    var meta = getElementMetaBySymbol(symbol) || {};
+    var atomic = Number(meta.atomic || entry.number || 0) || 0;
+    var row = Number(entry.row || 0);
+    var col;
+    if (row === -1) col = 119 - atomic;
+    else col = atomic - 86;
+    if (!(col >= 1 && col <= 32)) return null;
+    var bandOrdinal = 224 + col;
+
+    var display = {
+      number: '',
+      symbol: symbol,
+      name: meta.name || '',
+      mass: meta.mass != null ? meta.mass : '',
+      cornerTopLeft: '',
+      cornerTopRight: ''
+    };
+
+    if (row === -2) {
+      display.cornerTopLeft = '-' + String(atomic);
+      display.cornerTopRight = String(bandOrdinal);
+    } else if (row === -1) {
+      display.cornerTopLeft = '-' + String(atomic);
+      display.cornerTopRight = String(bandOrdinal);
+    } else if (row === 7) {
+      display.cornerTopLeft = '-' + String(bandOrdinal);
+    } else if (row === 9) {
+      display.cornerTopLeft = String(atomic);
+      display.cornerTopRight = '-' + String(bandOrdinal);
+    }
+
+    return {
+      key: 'L' + idx,
+      row: row,
+      col: col,
+      symbol: symbol,
+      category: meta.category || '',
+      display: display
+    };
+  }
+
   function renderMiniBadgeByRef(refObj){
     var badge = document.querySelector('.elementBadge');
     var mount = document.getElementById('elementBadgeMount');
@@ -4685,7 +4776,7 @@ header{
       return;
     }
 
-    function keyFromOrdinal(n){
+    function keyFromOrdinal(n, refObj){
       if (n >= 1 && n <= 118) {
         var rows = (window.PERIODIC_DATA || []).filter(function(row){ return Number(row.atomic) === n; });
         if (!rows.length) return null;
@@ -4699,7 +4790,7 @@ header{
       }
       if (n >= 119 && n <= 148) return 'P' + n;
       if (n >= 149 && n <= 224) return 'BN' + n;
-      if (n >= 225 && n <= 352) return 'L' + (n - 224);
+      if (n >= 225 && n <= 352) return selectLKeyByRef(n - 224, refObj);
       return null;
     }
 
@@ -4731,7 +4822,7 @@ header{
       return 'p-node p-el miniBadge is-' + (cat || 'nonmetal');
     }
 
-    var key = keyFromOrdinal(ordinal);
+    var key = keyFromOrdinal(ordinal, refObj);
     if (!key) {
       mount.innerHTML = '';
       badge.style.display = 'none';
@@ -4742,12 +4833,22 @@ header{
     var item = window.PERIODIC_LGC && typeof window.PERIODIC_LGC.findItemByKey === 'function'
       ? window.PERIODIC_LGC.findItemByKey(key)
       : null;
+    var lBadgeModel = /^L\d+$/.test(key) ? buildLBadgeModel(key) : null;
 
     var html = '';
     if (/^P\d+$/.test(key)) {
       html = '<div class="p-node p-orb miniBadge" aria-hidden="true"><span class="orb-top">' + esc(ordinal) + '</span><span class="orb-main">' + esc(String(ordinal - 118)) + '</span></div>';
     } else if (/^BN\d+$/.test(key)) {
       html = '<div class="p-node p-slab miniBadge" aria-hidden="true">' + esc(String(ordinal)) + '</div>';
+    } else if (lBadgeModel) {
+      var lClassName = miniCategory({ symbol:lBadgeModel.symbol, row:lBadgeModel.row, category:lBadgeModel.category }, key);
+      html = '<div class="' + lClassName + ' p-el--corners p-el--corners-dual p-el--band-tight" aria-hidden="true">' +
+        (lBadgeModel.display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">' + esc(lBadgeModel.display.cornerTopLeft) + '</span>' : '') +
+        (lBadgeModel.display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">' + esc(lBadgeModel.display.cornerTopRight) + '</span>' : '') +
+        '<span class="p-el__symbol">' + esc(lBadgeModel.display.symbol || lBadgeModel.symbol) + '</span>' +
+        '<span class="p-el__name">' + esc(lBadgeModel.display.name || '') + '</span>' +
+        ((lBadgeModel.display.mass != null && lBadgeModel.display.mass !== '') ? '<span class="p-el__mass">' + esc(lBadgeModel.display.mass) + '</span>' : '') +
+      '</div>';
     } else if (item && window.PERIODIC_LGC && typeof window.PERIODIC_LGC.readDisplay === 'function') {
       var display = window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic);
       var className = miniCategory(item, key);
@@ -4769,7 +4870,8 @@ header{
     }
 
     mount.innerHTML = html;
-    badge.title = entry.title;
+    if (lBadgeModel) badge.title = (lBadgeModel.display.symbol || lBadgeModel.symbol) + ' · Fila ' + lBadgeModel.row + ' · Columna ' + lBadgeModel.col;
+    else badge.title = entry.title;
     badge.style.display = 'block';
     badge.setAttribute('aria-hidden','false');
   }
