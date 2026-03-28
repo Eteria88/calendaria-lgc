@@ -3688,8 +3688,27 @@ header{
       return true;
     }
 
+    function canonicalBadgeItem(rawKey){
+      var upper = String(rawKey || '').trim().toUpperCase();
+      var all = (window.PERIODIC_DATA || []).filter(function(it){
+        return String(it.key || '').toUpperCase() === upper || String(it.symbol || '').toUpperCase() === upper;
+      });
+      if(!all.length) return null;
+      var exact = all.find(function(it){ return String(it.key || '').toUpperCase() === upper; });
+      if(exact) return exact;
+      var preferred = all.find(function(it){
+        var r = Number(it.row);
+        var k = String(it.key || '');
+        return r >= 1 && r <= 8 && !/^L\d+$/i.test(k) && !/^P\d+$/i.test(k) && !/^BN\d+$/i.test(k);
+      });
+      if(preferred) return preferred;
+      var row8 = all.find(function(it){ return Number(it.row) === 8; });
+      if(row8) return row8;
+      return all[0];
+    }
+
     var lModel = /^L\d+$/i.test(String(key || '')) ? buildLBadgeModel(key) : null;
-    var item = lModel || window.PERIODIC_LGC.findItemByKey(key);
+    var item = lModel || canonicalBadgeItem(key) || window.PERIODIC_LGC.findItemByKey(key);
     if(!item) return false;
     var zone = zoneForRow(item.row);
     var display = lModel ? lModel.display : window.PERIODIC_LGC.readDisplay(item, zone, item.atomic);
