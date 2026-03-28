@@ -149,15 +149,62 @@ header{
   box-shadow:0 6px 20px rgba(0,0,0,.35);
   display:none;
 }
-.elementBadge img{
-  display:block;
+.elementBadgeMount{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:76px;
+  min-height:76px;
+}
+.elementBadgeMount .miniBadge{
   width:76px;
-  height:auto;
+  height:76px;
+  margin:0;
+  cursor:default;
   border-radius:10px;
-  border:1px solid var(--ol);
+  overflow:hidden;
+}
+.elementBadgeMount .miniBadge:hover{
+  transform:none;
+  box-shadow:none;
+}
+.elementBadgeMount .miniBadge .p-el__symbol{
+  font-size:25px;
+  margin-top:10px;
+}
+.elementBadgeMount .miniBadge .p-el__name{
+  font-size:7px;
+  margin-top:4px;
+  max-width:90%;
+}
+.elementBadgeMount .miniBadge .p-el__mass{
+  font-size:4.6px;
+  bottom:5px;
+}
+.elementBadgeMount .miniBadge .p-el__atomic,
+.elementBadgeMount .miniBadge .p-el__corner{
+  font-size:9px;
+  top:5px;
+}
+.elementBadgeMount .miniBadge.p-orb{
+  font-size:18px;
+}
+.elementBadgeMount .miniBadge.p-orb::before{
+  width:58px;
+  height:58px;
+}
+.elementBadgeMount .miniBadge.p-slab{
+  padding-top:9px;
+  font-size:18px;
 }
 @media (max-width:599px){
-  .elementBadge img{width:64px;}
+  .elementBadgeMount{min-width:64px;min-height:64px;}
+  .elementBadgeMount .miniBadge{width:64px;height:64px;}
+  .elementBadgeMount .miniBadge .p-el__symbol{font-size:21px;margin-top:9px;}
+  .elementBadgeMount .miniBadge .p-el__name{font-size:6px;}
+  .elementBadgeMount .miniBadge .p-el__mass{font-size:4px;}
+  .elementBadgeMount .miniBadge.p-orb{font-size:16px;}
+  .elementBadgeMount .miniBadge.p-orb::before{width:49px;height:49px;}
 }
 
   /* Aparato header (mismo estilo que en index) */
@@ -758,7 +805,7 @@ header{
       </div>
       <div class="header-badge">
         <div class="elementBadge" title="" aria-hidden="true">
-          <img id="elementTile" src="./hydrogen.png" alt="Elemento actual">
+          <div id="elementBadgeMount" class="elementBadgeMount"></div>
         </div>
       </div>
     </section>
@@ -862,7 +909,22 @@ header{
   }
   function pad2(n){ n=String(n); return n.length<2?('0'+n):n; }
 
-  var refRaw = getParam('ref'); // may be yyyy-mm-dd or dd-mm-yyyy
+  function todayIso(){
+    var now = new Date();
+    return now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+  }
+  function getOwnReferenceRaw(){
+    try {
+      return localStorage.getItem('periodicOwnRefDate') || todayIso();
+    } catch(e) {
+      return todayIso();
+    }
+  }
+
+  var refRaw = getOwnReferenceRaw();
+  try {
+    if (!localStorage.getItem('periodicOwnRefDate')) localStorage.setItem('periodicOwnRefDate', refRaw);
+  } catch(e) {}
   var refDate = parseFlexDate(refRaw);
 
   var refLabel = document.getElementById('refDateLabel');
@@ -3416,92 +3478,24 @@ header{
 
 
   window.PERIODIC_BADGE_MAP = MAP;
-
-  const badge = document.querySelector('.elementBadge');
-  const tile  = document.getElementById('elementTile');
-
-  function isoToMD(iso){
-    if(!iso) return null;
-    var parts = iso.split('-');
-    if(parts.length !== 3) return null;
-
-    var y, m, d;
-    if(parts[0].length === 4){
-      // Formato aaaa-mm-dd
-      y = parseInt(parts[0], 10);
-      m = parseInt(parts[1], 10);
-      d = parseInt(parts[2], 10);
-    } else if(parts[2].length === 4){
-      // Formato dd-mm-aaaa
-      y = parseInt(parts[2], 10);
-      m = parseInt(parts[1], 10);
-      d = parseInt(parts[0], 10);
-    } else {
-      return null;
-    }
-
-    function isLeap(year){
-      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
-    }
-
-    // Fechas de Anillo de Fuego para el badge:
-    // - Bisiestos: 18/12 al 31/12
-    // - No bisiestos: 19/12 al 31/12
-    if(isLeap(y)){
-      if(m === 12 && d >= 18){
-        return null;
-      }
-    } else {
-      if(m === 12 && d >= 19){
-        return null;
-      }
-    }
-
-    // Ajuste bisiesto: del 29/02 al 17/12 inclusive
-    // se corre un día hacia adelante.
-    if(isLeap(y)){
-      var inShiftRange =
-        (m === 2 && d === 29) ||
-        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
-      if(inShiftRange){
-        var date = new Date(y, m - 1, d);
-        date.setDate(date.getDate() + 1);
-        m = date.getMonth() + 1;
-        d = date.getDate();
-      }
-    }
-
-    var mm = String(m).padStart(2, "0");
-    var dd = String(d).padStart(2, "0");
-    return mm + "-" + dd;
-  }
+  window.PERIODIC_BADGE_HELPERS = window.PERIODIC_BADGE_HELPERS || {};
 
   function activeISO(){
-    var refIso = getParam('ref');
-    if(refIso) return refIso;
-    var d = new Date();
-    var y = d.getFullYear();
-    var m = String(d.getMonth()+1).padStart(2,'0');
-    var day = String(d.getDate()).padStart(2,'0');
-    return y + "-" + m + "-" + day;
+    try {
+      return localStorage.getItem('periodicOwnRefDate') || null;
+    } catch(e) {
+      return null;
+    }
   }
 
   function renderBadge(){
-    if(!badge || !tile) return;
-    var md = isoToMD(activeISO());
-    var el = md ? MAP[md] : null;
-    if(el){
-      tile.src = "./" + el.img;
-      badge.title = el.title;
-      badge.style.display = "block";
-      badge.setAttribute("aria-hidden","false");
-      tile.alt = el.title + " element tile";
-    } else {
-      badge.style.display = "none";
-      badge.setAttribute("aria-hidden","true");
+    if (typeof window.renderPeriodicBadgeByIso === 'function') {
+      window.renderPeriodicBadgeByIso(activeISO());
     }
   }
 
+  window.PERIODIC_BADGE_HELPERS.isoToMD = isoToMD;
+  window.PERIODIC_BADGE_HELPERS.activeISO = activeISO;
   document.addEventListener('DOMContentLoaded', renderBadge);
   window.addEventListener('load', function(){ setTimeout(renderBadge, 0); });
 })();
@@ -4669,23 +4663,106 @@ header{
     return idx >= 0 ? idx + 1 : null;
   }
 
-  function updateBadgeFromRef(refObj){
+  function renderMiniBadgeByRef(refObj){
     var badge = document.querySelector('.elementBadge');
-    var tile = document.getElementById('elementTile');
-    if (!badge || !tile) return;
+    var mount = document.getElementById('elementBadgeMount');
+    if (!badge || !mount) return;
+
     var md = normalizedMonthDayFromRef(refObj);
     var entry = md ? (window.PERIODIC_BADGE_MAP || {})[md] : null;
     if (!entry) {
+      mount.innerHTML = '';
       badge.style.display = 'none';
       badge.setAttribute('aria-hidden','true');
       return;
     }
-    tile.src = './' + entry.img;
-    tile.alt = entry.title + ' element tile';
+
+    var ordinal = monthDayOrdinal(md);
+    if (!ordinal) {
+      mount.innerHTML = '';
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+      return;
+    }
+
+    function keyFromOrdinal(n){
+      if (n >= 1 && n <= 118) {
+        var item = (window.PERIODIC_DATA || []).find(function(row){ return Number(row.atomic) === n; });
+        return item ? String(item.key || item.symbol) : null;
+      }
+      if (n >= 119 && n <= 148) return 'P' + n;
+      if (n >= 149 && n <= 224) return 'BN' + n;
+      if (n >= 225 && n <= 352) return 'L' + (n - 224);
+      return null;
+    }
+
+    function esc(str){
+      return String(str == null ? '' : str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function miniCategory(item, key){
+      var k = String(key || '').toUpperCase();
+      var cat = String((item && item.category) || '').toLowerCase();
+      if (/^P\d+$/.test(k)) return 'p-node p-orb miniBadge';
+      if (/^BN\d+$/.test(k)) return 'p-node p-slab miniBadge';
+      return 'p-node p-el miniBadge is-' + (cat || 'nonmetal');
+    }
+
+    var key = keyFromOrdinal(ordinal);
+    if (!key) {
+      mount.innerHTML = '';
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+      return;
+    }
+
+    var item = window.PERIODIC_LGC && typeof window.PERIODIC_LGC.findItemByKey === 'function'
+      ? window.PERIODIC_LGC.findItemByKey(key)
+      : null;
+
+    var html = '';
+    if (/^P\d+$/.test(key)) {
+      html = '<div class="p-node p-orb miniBadge" aria-hidden="true"><span class="orb-top">' + esc(ordinal) + '</span><span class="orb-main">' + esc(String(ordinal - 118)) + '</span></div>';
+    } else if (/^BN\d+$/.test(key)) {
+      html = '<div class="p-node p-slab miniBadge" aria-hidden="true">' + esc(String(ordinal)) + '</div>';
+    } else if (item && window.PERIODIC_LGC && typeof window.PERIODIC_LGC.readDisplay === 'function') {
+      var display = window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic);
+      var className = miniCategory(item, key);
+      html = '<div class="' + className + '" aria-hidden="true">' +
+        (display.number !== '' ? '<span class="p-el__atomic">' + esc(display.number) + '</span>' : '') +
+        (display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">' + esc(display.cornerTopLeft) + '</span>' : '') +
+        (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">' + esc(display.cornerTopRight) + '</span>' : '') +
+        '<span class="p-el__symbol">' + esc(display.symbol || item.symbol) + '</span>' +
+        '<span class="p-el__name">' + esc(display.name || item.name || '') + '</span>' +
+        ((display.mass != null && display.mass !== '') ? '<span class="p-el__mass">' + esc(display.mass) + '</span>' : '') +
+      '</div>';
+    }
+
+    if (!html) {
+      mount.innerHTML = '';
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+      return;
+    }
+
+    mount.innerHTML = html;
     badge.title = entry.title;
     badge.style.display = 'block';
     badge.setAttribute('aria-hidden','false');
   }
+
+  function updateBadgeFromRef(refObj){
+    renderMiniBadgeByRef(refObj);
+  }
+
+  window.renderPeriodicBadgeByIso = function(iso){
+    var parsed = parseFlexibleDate(iso);
+    if (parsed) renderMiniBadgeByRef(parsed);
+  };
 
   function apparatusHeaderText(refObj){
     var y = refObj.y;
@@ -4737,8 +4814,12 @@ header{
     var ordinal = md ? monthDayOrdinal(md) : null;
     if (ordinal && turnInput) turnInput.value = String(Math.ceil(ordinal / 16));
 
+    try {
+      localStorage.setItem('periodicOwnRefDate', formatIso(refObj));
+    } catch(e) {}
+
     var url = new URL(window.location.href);
-    url.searchParams.set('ref', formatIso(refObj));
+    url.searchParams.delete('ref');
     history.replaceState({}, '', url.toString());
 
     if (!md || !ordinal) {
@@ -4973,8 +5054,12 @@ header{
 
     window.__periodicTurnExplorerInit = true;
 
-    const refMatch = /[?&]ref=([^&]+)/.exec(window.location.search);
-    yearSelect.value = getPhaseFromYear(refMatch ? decodeURIComponent(refMatch[1].replace(/\+/g,' ')) : '');
+    var storedRef = '';
+    try {
+      storedRef = localStorage.getItem('periodicOwnRefDate') || '';
+    } catch(e) {}
+
+    yearSelect.value = getPhaseFromYear(storedRef);
     if (!turnInput.value) turnInput.value = '1';
 
     showBtn.addEventListener('click', showTurn);
@@ -4982,10 +5067,15 @@ header{
     clearBtn.addEventListener('click', clearTurn);
     turnInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') showTurn(); });
     dateInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') locateDate(); });
-    dateInput.value = refMatch ? (function(raw){
-      var parsed = parseFlexibleDate(decodeURIComponent(raw.replace(/\+/g,' ')));
+    dateInput.value = storedRef ? (function(raw){
+      var parsed = parseFlexibleDate(raw);
       return parsed ? formatRefDate(parsed) : '';
-    })(refMatch[1]) : '';
+    })(storedRef) : '';
+
+    if (storedRef) {
+      var parsedStored = parseFlexibleDate(storedRef);
+      if (parsedStored) applyReferenceDate(parsedStored);
+    }
 
     window.PERIODIC_TURNS = {
       resolveTurn: resolveTurn,
