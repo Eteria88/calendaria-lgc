@@ -183,28 +183,28 @@ header{
 .elementBadgeMount .mini-badge .p-el__corner--left{left:5px;}
 .elementBadgeMount .mini-badge .p-el__corner--right{right:5px;}
 .elementBadgeMount .mini-badge .p-el__symbol{
-  font-size:27px;
-  margin-top:14px;
+  font-size:25px;
+  margin-top:10px;
 }
 .elementBadgeMount .mini-badge .p-el__name{
-  font-size:8px;
-  margin-top:4px;
-  max-width:92%;
+  font-size:6.5px;
+  margin-top:3px;
+  max-width:90%;
 }
 .elementBadgeMount .mini-badge .p-el__mass{
-  font-size:5px;
-  bottom:6px;
+  font-size:4.6px;
+  bottom:5px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight{
-  padding:9px 4px 14px;
+  padding:7px 4px 10px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight .p-el__symbol{
-  margin-top:15px;
-  font-size:26px;
+  margin-top:11px;
+  font-size:24px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight .p-el__name{
-  font-size:7px;
-  margin-top:4px;
+  font-size:6.5px;
+  margin-top:3px;
 }
 .elementBadgeMount .mini-badge.p-orb{
   font-size:20px;
@@ -225,10 +225,10 @@ header{
   padding-top:10px;
 }
 @media (max-width:599px){
-  .elementBadgeMount{width:64px;height:76px;}
-  .elementBadgeMount .mini-badge{width:64px;height:76px;}
-  .elementBadgeMount .mini-badge .p-el__symbol{font-size:22px;margin-top:12px;}
-  .elementBadgeMount .mini-badge .p-el__name{font-size:7px;}
+  .elementBadgeMount{width:64px;height:64px;}
+  .elementBadgeMount .mini-badge{width:64px;height:64px;}
+  .elementBadgeMount .mini-badge .p-el__symbol{font-size:21px;margin-top:9px;}
+  .elementBadgeMount .mini-badge .p-el__name{font-size:6.2px;}
   .elementBadgeMount .mini-badge.p-orb::before{width:50px;height:50px;}
 }
 
@@ -3642,9 +3642,14 @@ header{
 
   function renderMiniBadge(key, title){
     if(!tile || !window.PERIODIC_DATA || !window.PERIODIC_DATA.length || !window.PERIODIC_LGC) return false;
+    var isPromise = /^P\d+$/i.test(String(key || ''));
+    var isVoid = /^BN\d+$/i.test(String(key || ''));
     var lModel = /^L\d+$/i.test(String(key || '')) ? buildLBadgeModel(key) : null;
-    var item = lModel || window.PERIODIC_LGC.findItemByKey(key);
-    if(!item) return false;
+    var item = null;
+    if(!isPromise && !isVoid){
+      item = lModel || window.PERIODIC_LGC.findItemByKey(key);
+      if(!item) return false;
+    }
     function zoneForRow(r){ if(r===-2) return 'topForward'; if(r===-1) return 'topReverse'; if(r===7||r===8) return 'bottomA'; if(r===9) return 'bottomB'; return 'main'; }
     function overrideCategory(item, r){
       var s = String((item||{}).symbol || '');
@@ -3665,15 +3670,16 @@ header{
     function nameColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return '#009b39'; if(['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].indexOf(s)>=0) return '#ff1f1f'; if(s==='Br') return '#123f9e'; return null; }
     function symbolColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
     function esc(str){ return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-    var zone = lModel ? zoneForRow(item.row) : 'main';
-    var display = lModel ? lModel.display : window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic);
-    var category = overrideCategory(item, item.row) || item.category;
-    if(/^P\d+$/i.test(String(key))){
+    if(isPromise){
       var num = String(key).replace(/^P/i,'');
       tile.innerHTML = '<div class="mini-badge p-node p-orb"><span class="orb-top">'+esc(num)+'</span><span class="orb-main">'+esc(String(Number(num)-118))+'</span></div>';
-    } else if(/^BN\d+$/i.test(String(key))){
-      tile.innerHTML = '<div class="mini-badge p-node p-slab">'+esc(display.number || String(key).replace(/^BN/i,''))+'</div>';
+    } else if(isVoid){
+      var voidNum = String(key).replace(/^BN/i,'');
+      tile.innerHTML = '<div class="mini-badge p-node p-slab">'+esc(voidNum)+'</div>';
     } else {
+      var zone = lModel ? zoneForRow(item.row) : 'main';
+      var display = lModel ? lModel.display : window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic);
+      var category = overrideCategory(item, item.row) || item.category;
       var classes = ['mini-badge','p-node','p-el','is-'+category];
       if (display.cornerTopLeft !== '' || display.cornerTopRight !== '') classes.push('p-el--corners');
       if (display.cornerTopLeft !== '' && display.cornerTopRight !== '') classes.push('p-el--corners-dual');
@@ -3691,7 +3697,13 @@ header{
         + '</div>';
     }
     tile.dataset.key = String(key);
-    tile.setAttribute('aria-label', title || ((display.symbol || item.symbol) + ' · ' + (display.name || item.name)));
+    if(isPromise){
+      tile.setAttribute('aria-label', title || ('Promesa · ' + String(key).replace(/^P/i,'')));
+    } else if(isVoid){
+      tile.setAttribute('aria-label', title || ('Espacio en negro · ' + String(key).replace(/^BN/i,'')));
+    } else {
+      tile.setAttribute('aria-label', title || ((display.symbol || item.symbol) + ' · ' + (display.name || item.name)));
+    }
     return true;
   }
 
