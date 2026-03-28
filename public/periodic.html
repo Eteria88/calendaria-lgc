@@ -3710,7 +3710,7 @@ header{
     var lModel = /^L\d+$/i.test(String(key || '')) ? buildLBadgeModel(key) : null;
     var item = lModel || canonicalBadgeItem(key) || window.PERIODIC_LGC.findItemByKey(key);
     if(!item) return false;
-    var zone = zoneForRow(item.row);
+    var zone = lModel ? zoneForRow(item.row) : 'main';
     var display = lModel ? lModel.display : window.PERIODIC_LGC.readDisplay(item, zone, item.atomic);
     var category = overrideCategory(item, item.row) || item.category;
     var classes = ['mini-badge','p-node','p-el','is-'+category];
