@@ -161,14 +161,14 @@ header{
 }
 .elementBadgeMount{
   width:76px;
-  height:76px;
+  height:90px;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 .elementBadgeMount .mini-badge{
   width:76px;
-  height:76px;
+  height:90px;
   border-radius:10px;
   overflow:hidden;
 }
@@ -183,28 +183,28 @@ header{
 .elementBadgeMount .mini-badge .p-el__corner--left{left:5px;}
 .elementBadgeMount .mini-badge .p-el__corner--right{right:5px;}
 .elementBadgeMount .mini-badge .p-el__symbol{
-  font-size:25px;
-  margin-top:10px;
+  font-size:27px;
+  margin-top:14px;
 }
 .elementBadgeMount .mini-badge .p-el__name{
-  font-size:6.5px;
-  margin-top:3px;
-  max-width:90%;
+  font-size:8px;
+  margin-top:4px;
+  max-width:92%;
 }
 .elementBadgeMount .mini-badge .p-el__mass{
-  font-size:4.6px;
-  bottom:5px;
+  font-size:5px;
+  bottom:6px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight{
-  padding:7px 4px 10px;
+  padding:9px 4px 14px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight .p-el__symbol{
-  margin-top:11px;
-  font-size:24px;
+  margin-top:15px;
+  font-size:26px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight .p-el__name{
-  font-size:6.5px;
-  margin-top:3px;
+  font-size:7px;
+  margin-top:4px;
 }
 .elementBadgeMount .mini-badge.p-orb{
   font-size:20px;
@@ -225,10 +225,10 @@ header{
   padding-top:10px;
 }
 @media (max-width:599px){
-  .elementBadgeMount{width:64px;height:64px;}
-  .elementBadgeMount .mini-badge{width:64px;height:64px;}
-  .elementBadgeMount .mini-badge .p-el__symbol{font-size:21px;margin-top:9px;}
-  .elementBadgeMount .mini-badge .p-el__name{font-size:6.2px;}
+  .elementBadgeMount{width:64px;height:76px;}
+  .elementBadgeMount .mini-badge{width:64px;height:76px;}
+  .elementBadgeMount .mini-badge .p-el__symbol{font-size:22px;margin-top:12px;}
+  .elementBadgeMount .mini-badge .p-el__name{font-size:7px;}
   .elementBadgeMount .mini-badge.p-orb::before{width:50px;height:50px;}
 }
 
@@ -3610,7 +3610,7 @@ header{
       return String(it.symbol || '').toUpperCase() === String(symbol).toUpperCase();
     }) || null;
     var atomic = baseItem && baseItem.atomic != null ? Number(baseItem.atomic) : null;
-    var bandOrdinal = row === -1 ? (257 - col) : (224 + col);
+    var bandOrdinal = 224 + col;
     var display = {
       number: '',
       symbol: symbol,
@@ -3665,8 +3665,8 @@ header{
     function nameColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return '#009b39'; if(['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].indexOf(s)>=0) return '#ff1f1f'; if(s==='Br') return '#123f9e'; return null; }
     function symbolColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
     function esc(str){ return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-    var zone = zoneForRow(item.row);
-    var display = lModel ? lModel.display : window.PERIODIC_LGC.readDisplay(item, zone, item.atomic);
+    var zone = lModel ? zoneForRow(item.row) : 'main';
+    var display = lModel ? lModel.display : window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic);
     var category = overrideCategory(item, item.row) || item.category;
     if(/^P\d+$/i.test(String(key))){
       var num = String(key).replace(/^P/i,'');
