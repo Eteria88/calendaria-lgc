@@ -948,8 +948,14 @@ header{
     }
   }
 
-  var refRaw = '';
-  var refDate = getStoredRefDate() || todayRefDate();
+  var refRaw = getParam('ref');
+  var refDate = parseFlexDate(refRaw) || getStoredRefDate() || todayRefDate();
+
+  if (refDate) {
+    try {
+      localStorage.setItem('periodicTableRefDate', String(refDate.y).padStart(4,'0') + '-' + pad2(refDate.m) + '-' + pad2(refDate.d));
+    } catch(e){}
+  }
 
   var refLabel = document.getElementById('refDateLabel');
   if(refLabel && refDate){
@@ -3519,7 +3525,25 @@ header{
   };
 
   function getStoredIso(){
+    var refParam = getParam('ref');
+    if (refParam) {
+      var parsed = parseFlexibleParamToIso(refParam);
+      if (parsed) return parsed;
+    }
     try{ return localStorage.getItem('periodicTableRefDate') || ''; }catch(e){ return ''; }
+  }
+
+  function parseFlexibleParamToIso(raw){
+    if(!raw) return '';
+    var s = String(raw).trim().replace(/\//g,'-');
+    var p = s.split('-');
+    if(p.length !== 3) return '';
+    var y, m, d;
+    if(/^\d{4}$/.test(p[0])){ y = parseInt(p[0],10); m = parseInt(p[1],10); d = parseInt(p[2],10); }
+    else if(/^\d{4}$/.test(p[2])){ d = parseInt(p[0],10); m = parseInt(p[1],10); y = parseInt(p[2],10); }
+    else return '';
+    if(!(y>=1&&m>=1&&m<=12&&d>=1&&d<=31)) return '';
+    return String(y).padStart(4,'0') + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
   }
 
   function isoToMD(iso){
@@ -3760,6 +3784,10 @@ header{
     findItemByKey,
     readDisplay
   });
+
+  if (typeof window.renderPeriodicBadge === 'function') {
+    window.renderPeriodicBadge();
+  }
 
   const activeItem = findItemByKey(getActiveKey());
   if (!activeItem) return;
@@ -5104,9 +5132,12 @@ header{
 
     window.__periodicTurnExplorerInit = true;
 
+    var refMatch = /[?&]ref=([^&]+)/.exec(window.location.search);
+    var incomingRef = refMatch ? decodeURIComponent(refMatch[1].replace(/\+/g,' ')) : '';
     var storedRef = '';
     try { storedRef = localStorage.getItem('periodicTableRefDate') || ''; } catch(e){}
-    yearSelect.value = getPhaseFromYear(storedRef);
+    var initialRef = incomingRef || storedRef;
+    yearSelect.value = getPhaseFromYear(initialRef);
     if (!turnInput.value) turnInput.value = '1';
 
     showBtn.addEventListener('click', showTurn);
@@ -5114,12 +5145,12 @@ header{
     clearBtn.addEventListener('click', clearTurn);
     turnInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') showTurn(); });
     dateInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') locateDate(); });
-    dateInput.value = storedRef ? (function(raw){
+    dateInput.value = initialRef ? (function(raw){
       var parsed = parseFlexibleDate(raw);
       return parsed ? formatRefDate(parsed) : '';
-    })(storedRef) : '';
-    if (storedRef) {
-      var parsedRef = parseFlexibleDate(storedRef);
+    })(initialRef) : '';
+    if (initialRef) {
+      var parsedRef = parseFlexibleDate(initialRef);
       if (parsedRef) applyReferenceDate(parsedRef);
     }
 
