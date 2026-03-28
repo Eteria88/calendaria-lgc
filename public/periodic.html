@@ -161,14 +161,14 @@ header{
 }
 .elementBadgeMount{
   width:76px;
-  height:90px;
+  height:76px;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 .elementBadgeMount .mini-badge{
   width:76px;
-  height:90px;
+  height:76px;
   border-radius:10px;
   overflow:hidden;
 }
@@ -183,28 +183,28 @@ header{
 .elementBadgeMount .mini-badge .p-el__corner--left{left:5px;}
 .elementBadgeMount .mini-badge .p-el__corner--right{right:5px;}
 .elementBadgeMount .mini-badge .p-el__symbol{
-  font-size:27px;
-  margin-top:14px;
+  font-size:25px;
+  margin-top:10px;
 }
 .elementBadgeMount .mini-badge .p-el__name{
-  font-size:8px;
-  margin-top:4px;
-  max-width:92%;
+  font-size:6.5px;
+  margin-top:3px;
+  max-width:90%;
 }
 .elementBadgeMount .mini-badge .p-el__mass{
-  font-size:5px;
-  bottom:6px;
+  font-size:4.6px;
+  bottom:5px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight{
-  padding:9px 4px 14px;
+  padding:7px 4px 10px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight .p-el__symbol{
-  margin-top:15px;
-  font-size:26px;
+  margin-top:11px;
+  font-size:24px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight .p-el__name{
-  font-size:7px;
-  margin-top:4px;
+  font-size:6.5px;
+  margin-top:3px;
 }
 .elementBadgeMount .mini-badge.p-orb{
   font-size:20px;
@@ -225,10 +225,10 @@ header{
   padding-top:10px;
 }
 @media (max-width:599px){
-  .elementBadgeMount{width:64px;height:76px;}
-  .elementBadgeMount .mini-badge{width:64px;height:76px;}
-  .elementBadgeMount .mini-badge .p-el__symbol{font-size:22px;margin-top:12px;}
-  .elementBadgeMount .mini-badge .p-el__name{font-size:7px;}
+  .elementBadgeMount{width:64px;height:64px;}
+  .elementBadgeMount .mini-badge{width:64px;height:64px;}
+  .elementBadgeMount .mini-badge .p-el__symbol{font-size:21px;margin-top:9px;}
+  .elementBadgeMount .mini-badge .p-el__name{font-size:6.2px;}
   .elementBadgeMount .mini-badge.p-orb::before{width:50px;height:50px;}
 }
 
@@ -3610,7 +3610,7 @@ header{
       return String(it.symbol || '').toUpperCase() === String(symbol).toUpperCase();
     }) || null;
     var atomic = baseItem && baseItem.atomic != null ? Number(baseItem.atomic) : null;
-    var bandOrdinal = 224 + col;
+    var bandOrdinal = row === -1 ? (257 - col) : (224 + col);
     var display = {
       number: '',
       symbol: symbol,
