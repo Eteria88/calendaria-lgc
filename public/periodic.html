@@ -149,87 +149,62 @@ header{
   box-shadow:0 6px 20px rgba(0,0,0,.35);
   display:none;
 }
-.elementBadge img{
-  display:block;
-  width:76px;
-  height:auto;
-  border-radius:10px;
-  border:1px solid var(--ol);
-}
-@media (max-width:599px){
-  .elementBadge img{width:64px;}
-}
 .elementBadgeMount{
-  width:76px;
-  height:90px;
   display:flex;
   align-items:center;
   justify-content:center;
+  min-width:76px;
+  min-height:76px;
 }
-.elementBadgeMount .mini-badge{
+.elementBadgeMount .miniBadge{
   width:76px;
-  height:90px;
+  height:76px;
+  margin:0;
+  cursor:default;
   border-radius:10px;
   overflow:hidden;
 }
-.elementBadgeMount .mini-badge.p-node{
-  border-width:1px;
+.elementBadgeMount .miniBadge:hover{
+  transform:none;
+  box-shadow:none;
 }
-.elementBadgeMount .mini-badge .p-el__atomic,
-.elementBadgeMount .mini-badge .p-el__corner{
-  font-size:9px;
-  top:6px;
+.elementBadgeMount .miniBadge .p-el__symbol{
+  font-size:25px;
+  margin-top:10px;
 }
-.elementBadgeMount .mini-badge .p-el__corner--left{left:5px;}
-.elementBadgeMount .mini-badge .p-el__corner--right{right:5px;}
-.elementBadgeMount .mini-badge .p-el__symbol{
-  font-size:27px;
-  margin-top:14px;
-}
-.elementBadgeMount .mini-badge .p-el__name{
-  font-size:8px;
-  margin-top:4px;
-  max-width:92%;
-}
-.elementBadgeMount .mini-badge .p-el__mass{
-  font-size:5px;
-  bottom:6px;
-}
-.elementBadgeMount .mini-badge.p-el--band-tight{
-  padding:9px 4px 14px;
-}
-.elementBadgeMount .mini-badge.p-el--band-tight .p-el__symbol{
-  margin-top:15px;
-  font-size:26px;
-}
-.elementBadgeMount .mini-badge.p-el--band-tight .p-el__name{
+.elementBadgeMount .miniBadge .p-el__name{
   font-size:7px;
   margin-top:4px;
+  max-width:90%;
 }
-.elementBadgeMount .mini-badge.p-orb{
-  font-size:20px;
+.elementBadgeMount .miniBadge .p-el__mass{
+  font-size:4.6px;
+  bottom:5px;
 }
-.elementBadgeMount .mini-badge.p-orb::before{
+.elementBadgeMount .miniBadge .p-el__atomic,
+.elementBadgeMount .miniBadge .p-el__corner{
+  font-size:9px;
+  top:5px;
+}
+.elementBadgeMount .miniBadge.p-orb{
+  font-size:18px;
+}
+.elementBadgeMount .miniBadge.p-orb::before{
   width:58px;
   height:58px;
 }
-.elementBadgeMount .mini-badge .orb-top{
-  font-size:10px;
-  top:8px;
-}
-.elementBadgeMount .mini-badge .orb-main{
+.elementBadgeMount .miniBadge.p-slab{
+  padding-top:9px;
   font-size:18px;
-}
-.elementBadgeMount .mini-badge.p-slab{
-  font-size:18px;
-  padding-top:10px;
 }
 @media (max-width:599px){
-  .elementBadgeMount{width:64px;height:76px;}
-  .elementBadgeMount .mini-badge{width:64px;height:76px;}
-  .elementBadgeMount .mini-badge .p-el__symbol{font-size:22px;margin-top:12px;}
-  .elementBadgeMount .mini-badge .p-el__name{font-size:7px;}
-  .elementBadgeMount .mini-badge.p-orb::before{width:50px;height:50px;}
+  .elementBadgeMount{min-width:64px;min-height:64px;}
+  .elementBadgeMount .miniBadge{width:64px;height:64px;}
+  .elementBadgeMount .miniBadge .p-el__symbol{font-size:21px;margin-top:9px;}
+  .elementBadgeMount .miniBadge .p-el__name{font-size:6px;}
+  .elementBadgeMount .miniBadge .p-el__mass{font-size:4px;}
+  .elementBadgeMount .miniBadge.p-orb{font-size:16px;}
+  .elementBadgeMount .miniBadge.p-orb::before{width:49px;height:49px;}
 }
 
   /* Aparato header (mismo estilo que en index) */
@@ -830,7 +805,7 @@ header{
       </div>
       <div class="header-badge">
         <div class="elementBadge" title="" aria-hidden="true">
-          <div id="elementTile" class="elementBadgeMount" role="button" tabindex="0" aria-label="Elemento actual"></div>
+          <div id="elementBadgeMount" class="elementBadgeMount"></div>
         </div>
       </div>
     </section>
@@ -934,32 +909,30 @@ header{
   }
   function pad2(n){ n=String(n); return n.length<2?('0'+n):n; }
 
-  function todayRefDate(){
+  function todayIso(){
     var now = new Date();
-    return { y: now.getFullYear(), m: now.getMonth()+1, d: now.getDate() };
+    return now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
   }
-
-  function getStoredRefDate(){
-    try{
-      var saved = localStorage.getItem('periodicTableRefDate');
-      return saved ? parseFlexDate(saved) : null;
-    }catch(e){
-      return null;
+  function getOwnReferenceRaw(){
+    try {
+      return localStorage.getItem('periodicOwnRefDate') || todayIso();
+    } catch(e) {
+      return todayIso();
     }
   }
 
-  var refRaw = getParam('ref');
-  var refDate = parseFlexDate(refRaw) || getStoredRefDate() || todayRefDate();
-
-  if (refDate) {
-    try {
-      localStorage.setItem('periodicTableRefDate', String(refDate.y).padStart(4,'0') + '-' + pad2(refDate.m) + '-' + pad2(refDate.d));
-    } catch(e){}
-  }
+  var refRaw = getOwnReferenceRaw();
+  try {
+    if (!localStorage.getItem('periodicOwnRefDate')) localStorage.setItem('periodicOwnRefDate', refRaw);
+  } catch(e) {}
+  var refDate = parseFlexDate(refRaw);
 
   var refLabel = document.getElementById('refDateLabel');
   if(refLabel && refDate){
     refLabel.textContent = 'Fecha de referencia: ' + pad2(refDate.d) + '/' + pad2(refDate.m) + '/' + String(refDate.y).padStart(4,'0');
+  } else if(refLabel && refRaw){
+    // If parsing fails, at least show the raw string
+    refLabel.textContent = 'Fecha de referencia: ' + refRaw;
   }
 
   // Aparato + días solares para la misma fecha de referencia (mismo cálculo que app.js)
@@ -3505,171 +3478,27 @@ header{
 
 
   window.PERIODIC_BADGE_MAP = MAP;
-
-  const badge = document.querySelector('.elementBadge');
-  const tile  = document.getElementById('elementTile');
-
-  const FILE_TO_KEY = {
-    hydrogen:'H', helium:'HE', lithium:'LI', beryllium:'BE', boron:'B', carbon:'C', nitrogen:'N', oxygen:'O', fluorine:'F', neon:'NE',
-    sodium:'NA', magnesium:'MG', aluminium:'AL', silicon:'SI', phosphorus:'P', sulphur:'S', chlorine:'CL', argon:'AR', potassium:'K', calcium:'CA',
-    scandium:'SC', titanium:'TI', vanadium:'V', chromium:'CR', manganese:'MN', iron:'FE', cobalt:'CO', nickel:'NI', copper:'CU', zinc:'ZN',
-    gallium:'GA', germanium:'GE', arsenic:'AS', selenium:'SE', bromine:'BR', krypton:'KR', rubidium:'RB', strontium:'SR', yttrium:'Y', zirconium:'ZR',
-    niobium:'NB', molybdenum:'MO', technetium:'TC', ruthenium:'RU', rhodium:'RH', palladium:'PD', silver:'AG', cadmium:'CD', indium:'IN', tin:'SN',
-    antimony:'SB', tellurium:'TE', iodine:'I', xenon:'XE', caesium:'CS', barium:'BA', lanthanum:'LA', cerium:'CE', praseodymium:'PR', neodymium:'ND',
-    promethium:'PM', samarium:'SM', europium:'EU', gadolinium:'GD', terbium:'TB', dysprosium:'DY', holmium:'HO', erbium:'ER', thulium:'TM', ytterbium:'YB',
-    lutetium:'LU', hafnium:'HF', tantalum:'TA', tungsten:'W', rhenium:'RE', osmium:'OS', iridium:'IR', platinum:'PT', gold:'AU', mercury:'HG',
-    thallium:'TL', lead:'PB', bismuth:'BI', polonium:'PO', astatine:'AT', radon:'RN', francium:'FR', radium:'RA', actinium:'AC', thorium:'TH',
-    protactinium:'PA', uranium:'U', neptunium:'NP', plutonium:'PU', americium:'AM', curium:'CM', berkelium:'BK', californium:'CF', einsteinium:'ES', fermium:'FM',
-    mendelevium:'MD', nobelium:'NO', lawrencium:'LR', rutherfordium:'RF', dubnium:'DB', seaborgium:'SG', bohrium:'BH', hassium:'HS', meitnerium:'MT', darmstadtium:'DS',
-    roentgenium:'RG', copernicium:'CN', nihonium:'NH', flerovium:'FL', moscovium:'MC', livermorium:'LV', tennessine:'TS', oganesson:'OG'
-  };
-
-  function getStoredIso(){
-    var refParam = getParam('ref');
-    if (refParam) {
-      var parsed = parseFlexibleParamToIso(refParam);
-      if (parsed) return parsed;
-    }
-    try{ return localStorage.getItem('periodicTableRefDate') || ''; }catch(e){ return ''; }
-  }
-
-  function parseFlexibleParamToIso(raw){
-    if(!raw) return '';
-    var s = String(raw).trim().replace(/\//g,'-');
-    var p = s.split('-');
-    if(p.length !== 3) return '';
-    var y, m, d;
-    if(/^\d{4}$/.test(p[0])){ y = parseInt(p[0],10); m = parseInt(p[1],10); d = parseInt(p[2],10); }
-    else if(/^\d{4}$/.test(p[2])){ d = parseInt(p[0],10); m = parseInt(p[1],10); y = parseInt(p[2],10); }
-    else return '';
-    if(!(y>=1&&m>=1&&m<=12&&d>=1&&d<=31)) return '';
-    return String(y).padStart(4,'0') + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-  }
-
-  function isoToMD(iso){
-    if(!iso) return null;
-    var parts = iso.split('-');
-    if(parts.length !== 3) return null;
-    var y, m, d;
-    if(parts[0].length === 4){ y = parseInt(parts[0],10); m = parseInt(parts[1],10); d = parseInt(parts[2],10); }
-    else if(parts[2].length === 4){ y = parseInt(parts[2],10); m = parseInt(parts[1],10); d = parseInt(parts[0],10); }
-    else return null;
-    function isLeap(year){ return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0); }
-    if(isLeap(y)){ if(m === 12 && d >= 18) return null; } else { if(m === 12 && d >= 19) return null; }
-    if(isLeap(y)){
-      var inShiftRange = (m === 2 && d === 29) || (m > 2 && (m < 12 || (m === 12 && d <= 17)));
-      if(inShiftRange){ var date = new Date(y, m - 1, d); date.setDate(date.getDate() + 1); m = date.getMonth() + 1; d = date.getDate(); }
-    }
-    return String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-  }
+  window.PERIODIC_BADGE_HELPERS = window.PERIODIC_BADGE_HELPERS || {};
 
   function activeISO(){
-    var refIso = getStoredIso();
-    if(refIso) return refIso;
-    var d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
-
-  function inferBadgeKey(entry){
-    if(!entry || !entry.img) return null;
-    var base = String(entry.img).replace(/\.png$/i,'');
-    var m;
-    if((m = /^promesa-(\d+)$/i.exec(base))) return 'P' + m[1];
-    if((m = /^vacio-(\d+)$/i.exec(base))) return 'BN' + m[1];
-    if((m = /^Ri-(\d+)$/i.exec(base))) return 'L' + m[1];
-    return FILE_TO_KEY[base.toLowerCase()] || null;
-  }
-
-  function renderMiniBadge(key, title){
-    if(!tile || !window.PERIODIC_DATA || !window.PERIODIC_DATA.length || !window.PERIODIC_LGC) return false;
-    var item = window.PERIODIC_LGC.findItemByKey(key);
-    if(!item) return false;
-    function zoneForRow(r){ if(r===-2) return 'topForward'; if(r===-1) return 'topReverse'; if(r===7||r===8) return 'bottomA'; if(r===9) return 'bottomB'; return 'main'; }
-    function overrideCategory(item, r){
-      var s = String((item||{}).symbol || '');
-      if (!s) return null;
-      if (s === 'Og') return 'top-gray';
-      if (s === 'Cn') return 'top-green';
-      if (r === 6 && s === 'At') return 'metalloid';
-      if (r === 6 && s === 'Po') return 'post-transition';
-      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Ts','Lv','Mc','Fl','Nh'].indexOf(s)>=0) return 'top-gray';
-      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'top-blue';
-      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Rf','Db','Sg','Bh','Hs'].indexOf(s)>=0) return 'top-green';
-      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Mt','Ds','Rg'].indexOf(s)>=0) return 'top-gray';
-      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Ac','Th','Pa','U','Np'].indexOf(s)>=0) return 'top-blue';
-      if ([4,5,6].indexOf(r)>=0 && ['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].indexOf(s)>=0) return 'top-green';
-      if ([2,3,4,5].indexOf(r)>=0 && ['F','Cl','Br','I'].indexOf(s)>=0) return 'nonmetal';
+    try {
+      return localStorage.getItem('periodicOwnRefDate') || null;
+    } catch(e) {
       return null;
     }
-    function nameColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return '#009b39'; if(['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].indexOf(s)>=0) return '#ff1f1f'; if(s==='Br') return '#123f9e'; return null; }
-    function symbolColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
-    function esc(str){ return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-    var zone = zoneForRow(item.row);
-    var display = window.PERIODIC_LGC.readDisplay(item, zone, item.atomic);
-    var category = overrideCategory(item, item.row) || item.category;
-    if(/^P\d+$/i.test(String(key))){
-      var num = String(key).replace(/^P/i,'');
-      tile.innerHTML = '<div class="mini-badge p-node p-orb"><span class="orb-top">'+esc(num)+'</span><span class="orb-main">'+esc(String(Number(num)-118))+'</span></div>';
-    } else if(/^BN\d+$/i.test(String(key))){
-      tile.innerHTML = '<div class="mini-badge p-node p-slab">'+esc(display.number || String(key).replace(/^BN/i,''))+'</div>';
-    } else {
-      var classes = ['mini-badge','p-node','p-el','is-'+category];
-      if (display.cornerTopLeft !== '' || display.cornerTopRight !== '') classes.push('p-el--corners');
-      if (display.cornerTopLeft !== '' && display.cornerTopRight !== '') classes.push('p-el--corners-dual');
-      if (zone === 'topForward' || zone === 'topReverse' || zone === 'bottomB') classes.push('p-el--band-tight');
-      var styles=[]; var nameColor=nameColorForSymbol(display.symbol || item.symbol); var symbolColor=symbolColorForSymbol(display.symbol || item.symbol);
-      if(nameColor) styles.push('--name-color:'+nameColor); if(symbolColor) styles.push('--symbol-color:'+symbolColor+';--mass-color:'+symbolColor);
-      var inlineStyle = styles.length ? ' style="'+styles.join(';')+'"' : '';
-      tile.innerHTML = '<div class="'+classes.join(' ')+'">'
-        + (display.number !== '' ? '<span class="p-el__atomic">'+esc(display.number)+'</span>' : '')
-        + (display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">'+esc(display.cornerTopLeft)+'</span>' : '')
-        + (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">'+esc(display.cornerTopRight)+'</span>' : '')
-        + '<span class="p-el__symbol"'+inlineStyle+'>'+esc(display.symbol || item.symbol)+'</span>'
-        + '<span class="p-el__name"'+inlineStyle+'>'+esc(display.name || item.name)+'</span>'
-        + (display.mass !== '' ? '<span class="p-el__mass"'+inlineStyle+'>'+esc(display.mass)+'</span>' : '')
-        + '</div>';
-    }
-    tile.dataset.key = String(key);
-    tile.setAttribute('aria-label', title || ((display.symbol || item.symbol) + ' · ' + (display.name || item.name)));
-    return true;
   }
 
   function renderBadge(){
-    if(!badge || !tile) return;
-    var md = isoToMD(activeISO());
-    var entry = md ? MAP[md] : null;
-    var key = inferBadgeKey(entry);
-    if(entry && key && renderMiniBadge(key, entry.title)){
-      badge.title = entry.title;
-      badge.style.display = 'block';
-      badge.setAttribute('aria-hidden','false');
-    } else {
-      badge.style.display = 'none';
-      badge.setAttribute('aria-hidden','true');
-      tile.innerHTML = '';
-      delete tile.dataset.key;
+    if (typeof window.renderPeriodicBadgeByIso === 'function') {
+      window.renderPeriodicBadgeByIso(activeISO());
     }
   }
 
-  window.renderPeriodicBadge = renderBadge;
-
+  window.PERIODIC_BADGE_HELPERS.isoToMD = isoToMD;
+  window.PERIODIC_BADGE_HELPERS.activeISO = activeISO;
   document.addEventListener('DOMContentLoaded', renderBadge);
   window.addEventListener('load', function(){ setTimeout(renderBadge, 0); });
-  if (tile) {
-    tile.addEventListener('click', function(){
-      var key = tile.dataset.key;
-      if (!key) return;
-      var url = new URL(window.location.href);
-      url.searchParams.set('el', key);
-      window.location.href = url.toString();
-    });
-    tile.addEventListener('keydown', function(e){
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        tile.click();
-      }
-    });
-  }
+})();
 </script>
 
 <script>
@@ -3784,10 +3613,6 @@ header{
     findItemByKey,
     readDisplay
   });
-
-  if (typeof window.renderPeriodicBadge === 'function') {
-    window.renderPeriodicBadge();
-  }
 
   const activeItem = findItemByKey(getActiveKey());
   if (!activeItem) return;
@@ -4838,13 +4663,125 @@ header{
     return idx >= 0 ? idx + 1 : null;
   }
 
-  function updateBadgeFromRef(refObj){
-    if (!refObj) return;
-    try {
-      localStorage.setItem('periodicTableRefDate', formatIso(refObj));
-    } catch(e){}
-    if (typeof window.renderPeriodicBadge === 'function') window.renderPeriodicBadge();
+  function renderMiniBadgeByRef(refObj){
+    var badge = document.querySelector('.elementBadge');
+    var mount = document.getElementById('elementBadgeMount');
+    if (!badge || !mount) return;
+
+    var md = normalizedMonthDayFromRef(refObj);
+    var entry = md ? (window.PERIODIC_BADGE_MAP || {})[md] : null;
+    if (!entry) {
+      mount.innerHTML = '';
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+      return;
+    }
+
+    var ordinal = monthDayOrdinal(md);
+    if (!ordinal) {
+      mount.innerHTML = '';
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+      return;
+    }
+
+    function keyFromOrdinal(n){
+      if (n >= 1 && n <= 118) {
+        var rows = (window.PERIODIC_DATA || []).filter(function(row){ return Number(row.atomic) === n; });
+        if (!rows.length) return null;
+        var preferred = rows.find(function(row){ return Number(row.row) === 8; })
+          || rows.find(function(row){ return Number(row.row) === 7; })
+          || rows.find(function(row){ return Number(row.row) === 9; })
+          || rows.find(function(row){ return Number(row.row) === -2; })
+          || rows.find(function(row){ return Number(row.row) === -1; })
+          || rows[0];
+        return preferred ? String(preferred.key || preferred.symbol) : null;
+      }
+      if (n >= 119 && n <= 148) return 'P' + n;
+      if (n >= 149 && n <= 224) return 'BN' + n;
+      if (n >= 225 && n <= 352) return 'L' + (n - 224);
+      return null;
+    }
+
+    function esc(str){
+      return String(str == null ? '' : str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function miniCategory(item, key){
+      var k = String(key || '').toUpperCase();
+      var cat = String((item && item.category) || '').toLowerCase();
+      if (/^P\d+$/.test(k)) return 'p-node p-orb miniBadge';
+      if (/^BN\d+$/.test(k)) return 'p-node p-slab miniBadge';
+      if (item) {
+        var s = String(item.symbol || '');
+        var r = Number(item.row);
+        if (s === 'Og') cat = 'top-gray';
+        else if (s === 'Cn') cat = 'top-green';
+        else if (r === 6 && s === 'At') cat = 'metalloid';
+        else if (r === 6 && s === 'Po') cat = 'post-transition';
+        else if ([-2,-1,7,8,9].indexOf(r) >= 0 && ['Ts','Lv','Mc','Fl','Nh'].indexOf(s) >= 0) cat = 'top-gray';
+        else if ([-2,-1,7,8,9].indexOf(r) >= 0 && ['Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s) >= 0) cat = 'top-blue';
+        else if ([-2,-1,7,8,9].indexOf(r) >= 0 && ['Rf','Db','Sg','Bh','Hs'].indexOf(s) >= 0) cat = 'top-green';
+        else if ([-2,-1,7,8,9].indexOf(r) >= 0 && ['Mt','Ds','Rg'].indexOf(s) >= 0) cat = 'top-gray';
+      }
+      return 'p-node p-el miniBadge is-' + (cat || 'nonmetal');
+    }
+
+    var key = keyFromOrdinal(ordinal);
+    if (!key) {
+      mount.innerHTML = '';
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+      return;
+    }
+
+    var item = window.PERIODIC_LGC && typeof window.PERIODIC_LGC.findItemByKey === 'function'
+      ? window.PERIODIC_LGC.findItemByKey(key)
+      : null;
+
+    var html = '';
+    if (/^P\d+$/.test(key)) {
+      html = '<div class="p-node p-orb miniBadge" aria-hidden="true"><span class="orb-top">' + esc(ordinal) + '</span><span class="orb-main">' + esc(String(ordinal - 118)) + '</span></div>';
+    } else if (/^BN\d+$/.test(key)) {
+      html = '<div class="p-node p-slab miniBadge" aria-hidden="true">' + esc(String(ordinal)) + '</div>';
+    } else if (item && window.PERIODIC_LGC && typeof window.PERIODIC_LGC.readDisplay === 'function') {
+      var display = window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic);
+      var className = miniCategory(item, key);
+      html = '<div class="' + className + '" aria-hidden="true">' +
+        (display.number !== '' ? '<span class="p-el__atomic">' + esc(display.number) + '</span>' : '') +
+        (display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">' + esc(display.cornerTopLeft) + '</span>' : '') +
+        (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">' + esc(display.cornerTopRight) + '</span>' : '') +
+        '<span class="p-el__symbol">' + esc(display.symbol || item.symbol) + '</span>' +
+        '<span class="p-el__name">' + esc(display.name || item.name || '') + '</span>' +
+        ((display.mass != null && display.mass !== '') ? '<span class="p-el__mass">' + esc(display.mass) + '</span>' : '') +
+      '</div>';
+    }
+
+    if (!html) {
+      mount.innerHTML = '';
+      badge.style.display = 'none';
+      badge.setAttribute('aria-hidden','true');
+      return;
+    }
+
+    mount.innerHTML = html;
+    badge.title = entry.title;
+    badge.style.display = 'block';
+    badge.setAttribute('aria-hidden','false');
   }
+
+  function updateBadgeFromRef(refObj){
+    renderMiniBadgeByRef(refObj);
+  }
+
+  window.renderPeriodicBadgeByIso = function(iso){
+    var parsed = parseFlexibleDate(iso);
+    if (parsed) renderMiniBadgeByRef(parsed);
+  };
 
   function apparatusHeaderText(refObj){
     var y = refObj.y;
@@ -4897,8 +4834,12 @@ header{
     if (ordinal && turnInput) turnInput.value = String(Math.ceil(ordinal / 16));
 
     try {
-      localStorage.setItem('periodicTableRefDate', formatIso(refObj));
-    } catch(e){}
+      localStorage.setItem('periodicOwnRefDate', formatIso(refObj));
+    } catch(e) {}
+
+    var url = new URL(window.location.href);
+    url.searchParams.delete('ref');
+    history.replaceState({}, '', url.toString());
 
     if (!md || !ordinal) {
       setStatus('La fecha cae en Anillo de Fuego o fuera del tramo activo del año.');
@@ -5132,12 +5073,12 @@ header{
 
     window.__periodicTurnExplorerInit = true;
 
-    var refMatch = /[?&]ref=([^&]+)/.exec(window.location.search);
-    var incomingRef = refMatch ? decodeURIComponent(refMatch[1].replace(/\+/g,' ')) : '';
     var storedRef = '';
-    try { storedRef = localStorage.getItem('periodicTableRefDate') || ''; } catch(e){}
-    var initialRef = incomingRef || storedRef;
-    yearSelect.value = getPhaseFromYear(initialRef);
+    try {
+      storedRef = localStorage.getItem('periodicOwnRefDate') || '';
+    } catch(e) {}
+
+    yearSelect.value = getPhaseFromYear(storedRef);
     if (!turnInput.value) turnInput.value = '1';
 
     showBtn.addEventListener('click', showTurn);
@@ -5145,13 +5086,14 @@ header{
     clearBtn.addEventListener('click', clearTurn);
     turnInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') showTurn(); });
     dateInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') locateDate(); });
-    dateInput.value = initialRef ? (function(raw){
+    dateInput.value = storedRef ? (function(raw){
       var parsed = parseFlexibleDate(raw);
       return parsed ? formatRefDate(parsed) : '';
-    })(initialRef) : '';
-    if (initialRef) {
-      var parsedRef = parseFlexibleDate(initialRef);
-      if (parsedRef) applyReferenceDate(parsedRef);
+    })(storedRef) : '';
+
+    if (storedRef) {
+      var parsedStored = parseFlexibleDate(storedRef);
+      if (parsedStored) applyReferenceDate(parsedStored);
     }
 
     window.PERIODIC_TURNS = {
