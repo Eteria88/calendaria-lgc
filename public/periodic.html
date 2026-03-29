@@ -838,6 +838,159 @@ header{
   .turnQuadrants{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+
+
+.periodicPeekOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(3,7,12,.72);
+  backdrop-filter:blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:9999;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease;
+}
+.periodicPeekOverlay.is-open{
+  opacity:1;
+  pointer-events:auto;
+}
+.periodicPeekDialog{
+  position:relative;
+  width:min(92vw, 360px);
+  border:1px solid rgba(124,199,255,.24);
+  border-radius:20px;
+  background:
+    radial-gradient(120% 120% at 20% 0%, rgba(124,199,255,.08), transparent 46%),
+    linear-gradient(180deg, rgba(12,19,28,.96), rgba(8,13,20,.98));
+  box-shadow:0 22px 70px rgba(0,0,0,.48);
+  padding:18px 18px 16px;
+}
+.periodicPeekClose{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+}
+.periodicPeekClose:hover{background:rgba(255,255,255,.09)}
+.periodicPeekCardWrap{
+  display:flex;
+  justify-content:center;
+  margin:8px 0 14px;
+}
+.periodicPeekCard{
+  width:220px;
+  height:220px;
+}
+.periodicPeekCard .mini-badge{
+  width:220px;
+  height:220px;
+  border-radius:24px;
+  overflow:hidden;
+}
+.periodicPeekCard .mini-badge.p-node{ border-width:1.5px; }
+.periodicPeekCard .mini-badge .p-el__atomic,
+.periodicPeekCard .mini-badge .p-el__corner{
+  font-size:24px;
+  top:16px;
+}
+.periodicPeekCard .mini-badge .p-el__corner--left{ left:14px; }
+.periodicPeekCard .mini-badge .p-el__corner--right{ right:14px; }
+.periodicPeekCard .mini-badge .p-el__symbol{
+  font-size:72px;
+  margin-top:32px;
+}
+.periodicPeekCard .mini-badge .p-el__name{
+  font-size:20px;
+  font-weight:800;
+  line-height:1.05;
+  margin-top:8px;
+  max-width:90%;
+}
+.periodicPeekCard .mini-badge .p-el__mass{
+  font-size:14px;
+  font-weight:800;
+  bottom:14px;
+  letter-spacing:-0.01em;
+}
+.periodicPeekCard .mini-badge.p-el--band-tight{
+  padding:18px 10px 22px;
+}
+.periodicPeekCard .mini-badge.p-el--band-tight .p-el__symbol{
+  margin-top:40px;
+  font-size:68px;
+}
+.periodicPeekCard .mini-badge.p-el--band-tight .p-el__name{
+  font-size:18px;
+  margin-top:7px;
+}
+.periodicPeekCard .mini-badge.p-el--band-tight .p-el__mass{
+  bottom:12px;
+  font-size:13px;
+}
+.periodicPeekCard .mini-badge.p-orb{
+  font-size:54px;
+  background:linear-gradient(180deg,rgba(12,12,16,1),rgba(18,18,23,1));
+}
+.periodicPeekCard .mini-badge.p-orb::before{
+  width:176px;
+  height:176px;
+}
+.periodicPeekCard .mini-badge .orb-top{
+  font-size:24px;
+  top:18px;
+}
+.periodicPeekCard .mini-badge .orb-main{
+  font-size:56px;
+}
+.periodicPeekCard .mini-badge.p-slab{
+  font-size:54px;
+  padding-top:34px;
+}
+.periodicPeekMeta{
+  display:grid;
+  gap:6px;
+  text-align:center;
+}
+.periodicPeekTitle{
+  font-size:18px;
+  font-weight:800;
+  line-height:1.15;
+}
+.periodicPeekSubtitle{
+  font-size:13px;
+  color:var(--muted);
+}
+.periodicPeekHint{
+  font-size:11px;
+  color:rgba(230,241,255,.55);
+}
+@media (max-width:599px){
+  .periodicPeekDialog{ width:min(94vw, 330px); padding:16px 16px 14px; }
+  .periodicPeekCard{ width:190px; height:190px; }
+  .periodicPeekCard .mini-badge{ width:190px; height:190px; border-radius:22px; }
+  .periodicPeekCard .mini-badge .p-el__atomic,
+  .periodicPeekCard .mini-badge .p-el__corner{ font-size:21px; top:14px; }
+  .periodicPeekCard .mini-badge .p-el__symbol{ font-size:62px; margin-top:28px; }
+  .periodicPeekCard .mini-badge .p-el__name{ font-size:17px; }
+  .periodicPeekCard .mini-badge .p-el__mass{ font-size:12px; bottom:12px; }
+  .periodicPeekCard .mini-badge.p-orb::before{ width:150px; height:150px; }
+  .periodicPeekCard .mini-badge .orb-top{ font-size:21px; top:17px; }
+  .periodicPeekCard .mini-badge .orb-main,
+  .periodicPeekCard .mini-badge.p-slab{ font-size:48px; }
+}
+
 </style>
 </head>
 <body>
@@ -4209,11 +4362,9 @@ header{
       if (node.displayNumber != null && node.displayNumber !== '') el.dataset.displayNumber = String(node.displayNumber);
       if (node.title) el.title = node.title;
       el.addEventListener('click', function(){
-        const sourceItem = node.key ? findItemByKey(node.key) : null;
-        const nextEl = sourceItem ? String(sourceItem.key || sourceItem.symbol) : String(node.key || node.symbol || '');
-        const url = new URL(window.location.href);
-        url.searchParams.set('el', nextEl);
-        window.location.href = url.toString();
+        if (typeof window.openPeriodicPeek === 'function') {
+          window.openPeriodicPeek(node);
+        }
       });
     }
     el.className = node.className;
@@ -4237,6 +4388,184 @@ header{
 })();
 </script>
 
+
+
+<script>
+(function(){
+  function esc(str){
+    return String(str == null ? '' : str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  const overlay = document.getElementById('periodicPeekOverlay');
+  const dialog = overlay ? overlay.querySelector('.periodicPeekDialog') : null;
+  const closeBtn = document.getElementById('periodicPeekClose');
+  const card = document.getElementById('periodicPeekCard');
+  const title = document.getElementById('periodicPeekTitle');
+  const subtitle = document.getElementById('periodicPeekSubtitle');
+  if (!overlay || !dialog || !card || !title || !subtitle) return;
+
+  function resolveKey(node){
+    if (!node) return '';
+    return String(node.key || node.dataset && node.dataset.key || node.symbol || '').trim();
+  }
+
+  function subtitleForNode(node, resolvedKey){
+    if (!node) return '';
+    if (node.type === 'orb') return 'Fila 1 · Promesa · ' + String(node.displayNumber || '').trim();
+    if (node.type === 'slab') return 'Espacio en negro · ' + String(node.displayNumber || '').trim();
+    const item = resolvedKey && window.PERIODIC_LGC && typeof window.PERIODIC_LGC.findItemByKey === 'function'
+      ? window.PERIODIC_LGC.findItemByKey(resolvedKey)
+      : null;
+    if (item && item.col != null && item.row != null) return 'Columna ' + item.col + ' · Fila ' + item.row;
+    if (node.col != null && node.logicalRow != null) return 'Columna ' + node.col + ' · Fila ' + node.logicalRow;
+    return '';
+  }
+
+  function renderFromNode(node){
+    const key = resolveKey(node);
+    if (!key) return false;
+    if (/^P\d+$/i.test(key)) {
+      const num = String(key).replace(/^P/i,'');
+      card.innerHTML = '<div class="mini-badge p-node p-orb"><span class="orb-top">'+esc(num)+'</span><span class="orb-main">'+esc(String(Number(num)-118))+'</span></div>';
+      title.textContent = 'Promesa · ' + num;
+      subtitle.textContent = subtitleForNode(node, key);
+      return true;
+    }
+    if (/^BN\d+$/i.test(key)) {
+      const num = String(key).replace(/^BN/i,'');
+      card.innerHTML = '<div class="mini-badge p-node p-slab">'+esc(num)+'</div>';
+      title.textContent = 'Espacio en negro · ' + num;
+      subtitle.textContent = subtitleForNode(node, key);
+      return true;
+    }
+    if (typeof window.renderMiniBadgeToMount === 'function' && window.renderMiniBadgeToMount(card, key, 'ampliado')) {
+      const item = window.PERIODIC_LGC && typeof window.PERIODIC_LGC.findItemByKey === 'function' ? window.PERIODIC_LGC.findItemByKey(key) : null;
+      title.textContent = item ? [item.symbol, item.atomic, item.name].filter(Boolean).join(' · ') : key;
+      subtitle.textContent = subtitleForNode(node, key);
+      return true;
+    }
+    return false;
+  }
+
+  function closePeek(){
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  window.openPeriodicPeek = function(node){
+    if (!renderFromNode(node)) return;
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  };
+
+  overlay.addEventListener('click', function(e){
+    if (e.target === overlay) closePeek();
+  });
+  closeBtn.addEventListener('click', closePeek);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && overlay.classList.contains('is-open')) closePeek();
+  });
+})();
+</script>
+
+<script>
+(function(){
+  function cloneRendererLogic(mount, key, titleText){
+    if (!mount || !window.PERIODIC_DATA || !window.PERIODIC_DATA.length || !window.PERIODIC_LGC) return false;
+    function zoneForRow(r){ if(r===-2) return 'topForward'; if(r===-1) return 'topReverse'; if(r===7||r===8) return 'bottomA'; if(r===9) return 'bottomB'; return 'main'; }
+    function overrideCategory(item, r){
+      var s = String((item||{}).symbol || '');
+      if (!s) return null;
+      if (s === 'Og') return 'top-gray';
+      if (s === 'Cn') return 'top-green';
+      if (r === 6 && s === 'At') return 'metalloid';
+      if (r === 6 && s === 'Po') return 'post-transition';
+      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Ts','Lv','Mc','Fl','Nh'].indexOf(s)>=0) return 'top-gray';
+      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'top-blue';
+      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Rf','Db','Sg','Bh','Hs'].indexOf(s)>=0) return 'top-green';
+      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Mt','Ds','Rg'].indexOf(s)>=0) return 'top-gray';
+      if ([-2,-1,7,8,9].indexOf(r)>=0 && ['Ac','Th','Pa','U','Np'].indexOf(s)>=0) return 'top-blue';
+      if ([4,5,6].indexOf(r)>=0 && ['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].indexOf(s)>=0) return 'top-green';
+      if ([2,3,4,5].indexOf(r)>=0 && ['F','Cl','Br','I'].indexOf(s)>=0) return 'nonmetal';
+      return null;
+    }
+    function nameColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return '#009b39'; if(['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].indexOf(s)>=0) return '#ff1f1f'; if(s==='Br') return '#123f9e'; return null; }
+    function symbolColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
+    function esc(str){ return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function canonicalBadgeItem(rawKey){
+      var upper = String(rawKey || '').trim().toUpperCase();
+      var all = (window.PERIODIC_DATA || []).filter(function(it){
+        return String(it.key || '').toUpperCase() === upper || String(it.symbol || '').toUpperCase() === upper;
+      });
+      if(!all.length) return null;
+      var exact = all.find(function(it){ return String(it.key || '').toUpperCase() === upper; });
+      if(exact) return exact;
+      var preferred = all.find(function(it){
+        var r = Number(it.row);
+        var k = String(it.key || '');
+        return r >= 1 && r <= 8 && !/^L\d+$/i.test(k) && !/^P\d+$/i.test(k) && !/^BN\d+$/i.test(k);
+      });
+      if(preferred) return preferred;
+      var row8 = all.find(function(it){ return Number(it.row) === 8; });
+      if(row8) return row8;
+      return all[0];
+    }
+    function buildLBadgeModel(key){
+      var m = /^L(\d+)$/i.exec(String(key || ''));
+      if(!m) return null;
+      var idx = parseInt(m[1], 10);
+      if(!(idx >= 1 && idx <= 128)) return null;
+      var L_FORWARD_SYMBOLS = ['Fr','Ra','Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'];
+      var L_REVERSE_SYMBOLS = ['Og','Ts','Lv','Mc','Fl','Nh','Cn','Rg','Ds','Mt','Hs','Bh','Sg','Db','Rf','Lr','No','Md','Fm','Es','Cf','Bk','Cm','Am','Pu','Np','U','Pa','Th','Ac','Ra','Fr'];
+      var col = Math.floor((idx - 1) / 4) + 1;
+      var slot = ((idx - 1) % 4) + 1;
+      var row = slot === 1 ? -2 : (slot === 2 ? -1 : (slot === 3 ? 7 : 9));
+      var symbol = row === -1 ? L_REVERSE_SYMBOLS[col - 1] : L_FORWARD_SYMBOLS[col - 1];
+      var baseItem = (window.PERIODIC_DATA || []).find(function(it){ return String(it.symbol || '').toUpperCase() === String(symbol).toUpperCase(); }) || null;
+      var atomic = baseItem && baseItem.atomic != null ? Number(baseItem.atomic) : null;
+      var bandOrdinal = 224 + col;
+      var display = { number:'', symbol:symbol, name:baseItem && baseItem.name ? baseItem.name : '', mass:baseItem && baseItem.mass != null ? baseItem.mass : '', cornerTopLeft:'', cornerTopRight:'' };
+      if(row === -2 || row === -1){ display.cornerTopLeft = atomic != null ? ('-' + String(atomic)) : ''; display.cornerTopRight = String(bandOrdinal); }
+      else if(row === 7){ display.cornerTopLeft = '-' + String(bandOrdinal); }
+      else if(row === 9){ display.cornerTopLeft = atomic != null ? String(atomic) : ''; display.cornerTopRight = '-' + String(bandOrdinal); }
+      return { key:'L'+idx, row:row, col:col, symbol:symbol, category:baseItem && baseItem.category ? baseItem.category : '', name:baseItem && baseItem.name ? baseItem.name : '', mass:baseItem && baseItem.mass != null ? baseItem.mass : '', display:display };
+    }
+
+    var lModel = /^L\d+$/i.test(String(key || '')) ? buildLBadgeModel(key) : null;
+    var item = lModel || canonicalBadgeItem(key) || window.PERIODIC_LGC.findItemByKey(key);
+    if(!item) return false;
+    var zone = lModel ? zoneForRow(item.row) : 'main';
+    var display = lModel ? lModel.display : window.PERIODIC_LGC.readDisplay(item, zone, item.atomic);
+    var category = overrideCategory(item, item.row) || item.category;
+    var classes = ['mini-badge','p-node','p-el','is-'+category];
+    if (display.cornerTopLeft !== '' || display.cornerTopRight !== '') classes.push('p-el--corners');
+    if (display.cornerTopLeft !== '' && display.cornerTopRight !== '') classes.push('p-el--corners-dual');
+    if (zone === 'topForward' || zone === 'topReverse' || zone === 'bottomB') classes.push('p-el--band-tight');
+    var styles=[]; var nameColor=nameColorForSymbol(display.symbol || item.symbol); var symbolColor=symbolColorForSymbol(display.symbol || item.symbol);
+    if(nameColor) styles.push('--name-color:'+nameColor); if(symbolColor) styles.push('--symbol-color:'+symbolColor,'--mass-color:'+symbolColor);
+    var inlineStyle = styles.length ? ' style="'+styles.join(';')+'"' : '';
+    mount.innerHTML = '<div class="'+classes.join(' ')+'">'
+      + (display.number !== '' ? '<span class="p-el__atomic">'+esc(display.number)+'</span>' : '')
+      + (display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">'+esc(display.cornerTopLeft)+'</span>' : '')
+      + (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">'+esc(display.cornerTopRight)+'</span>' : '')
+      + '<span class="p-el__symbol"'+inlineStyle+'>'+esc(display.symbol || item.symbol)+'</span>'
+      + '<span class="p-el__name"'+inlineStyle+'>'+esc(display.name || item.name)+'</span>'
+      + (display.mass !== '' ? '<span class="p-el__mass"'+inlineStyle+'>'+esc(display.mass)+'</span>' : '')
+      + '</div>';
+    mount.dataset.key = String(key);
+    mount.setAttribute('aria-label', titleText || ((display.symbol || item.symbol) + ' · ' + (display.name || item.name)));
+    return true;
+  }
+
+  window.renderMiniBadgeToMount = cloneRendererLogic;
+})();
+</script>
 
 <script>
 (function(){
@@ -5306,6 +5635,21 @@ header{
   window.addEventListener('load', initTurnExplorer);
 })();
 </script>
+
+
+<div class="periodicPeekOverlay" id="periodicPeekOverlay" aria-hidden="true">
+  <div class="periodicPeekDialog" role="dialog" aria-modal="true" aria-labelledby="periodicPeekTitle">
+    <button type="button" class="periodicPeekClose" id="periodicPeekClose" aria-label="Cerrar ampliación">×</button>
+    <div class="periodicPeekCardWrap">
+      <div class="periodicPeekCard" id="periodicPeekCard"></div>
+    </div>
+    <div class="periodicPeekMeta">
+      <div class="periodicPeekTitle" id="periodicPeekTitle">Elemento</div>
+      <div class="periodicPeekSubtitle" id="periodicPeekSubtitle"></div>
+      <div class="periodicPeekHint">Toca afuera para cerrar</div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
