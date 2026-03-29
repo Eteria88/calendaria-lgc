@@ -1058,15 +1058,15 @@ header{
       // sin acción
     }
   }
-  var raw = getParam('el') || 'H';
+  var raw = getParam('el') || '';
   var key = raw.toUpperCase();
   var symbol = raw;
-  document.body.setAttribute('data-el', key);
+  if (key) document.body.setAttribute('data-el', key);
   var label = document.getElementById('periodicElementLabel');
   var colRowLabel = document.getElementById('colRowLabel');
-  var name = 'Elemento';
+  var name = '';
   var atomic = '';
-  var colRow = 'Columna 1 · Fila 1';
+  var colRow = 'Tabla sin selección';
 
   if (key === 'H') {
     name = 'Hydrogen';
@@ -3187,7 +3187,7 @@ header{
   }
 
   if(label){
-    label.textContent = symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '');
+    label.textContent = key ? (symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '')) : 'Sin selección';
   }
   if(colRowLabel){
     colRowLabel.textContent = colRow;
@@ -3868,7 +3868,7 @@ header{
     const bodyKey = (document.body.getAttribute('data-el') || '').trim().toUpperCase();
     if (bodyKey) return bodyKey;
     const m = /[?&]el=([^&]+)/.exec(window.location.search);
-    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : 'H';
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : '';
   }
 
   function findItemByKey(key){
@@ -5054,6 +5054,8 @@ header{
       localStorage.setItem('periodicTableRefDate', formatIso(refObj));
     } catch(e){}
 
+    var shouldHighlight = arguments.length > 1 ? !!arguments[1] : true;
+
     if (!md || !ordinal) {
       setStatus('La fecha cae en Anillo de Fuego o fuera del tramo activo del año.');
       updateMeta(null);
@@ -5063,8 +5065,17 @@ header{
       return;
     }
 
-    showTurn();
-    setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Se ajustó el año del aparato automáticamente.');
+    clearTurnClasses();
+    updateMeta(null);
+    var quadrants = document.getElementById('turnQuadrants');
+    if (quadrants) quadrants.hidden = true;
+
+    if (shouldHighlight) {
+      showTurn();
+      setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Se ajustó el año del aparato automáticamente.');
+    } else {
+      setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Tabla limpia, sin selección ni resaltado.');
+    }
   }
 
   function locateDate(){
@@ -5074,7 +5085,7 @@ header{
       setStatus('Ingresá una fecha válida en formato dd/mm/aaaa.');
       return;
     }
-    applyReferenceDate(parsed);
+    applyReferenceDate(parsed, true);
   }
 
   function getPhaseFromYear(refRaw){
@@ -5272,6 +5283,21 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
+
+    document.querySelectorAll('.p-el.is-active').forEach(function(el){ el.classList.remove('is-active'); });
+    document.body.removeAttribute('data-el');
+
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('el');
+      window.history.replaceState({}, '', url.toString());
+    } catch(e){}
+
+    var colRowLabel = document.getElementById('colRowLabel');
+    var periodicElementLabel = document.getElementById('periodicElementLabel');
+    if (colRowLabel) colRowLabel.textContent = 'Tabla sin selección';
+    if (periodicElementLabel) periodicElementLabel.textContent = 'Sin selección';
+
     setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.');
   }
 
@@ -5308,7 +5334,7 @@ header{
     })(storedRef) : '';
     if (storedRef) {
       var parsedRef = parseFlexibleDate(storedRef);
-      if (parsedRef) applyReferenceDate(parsedRef);
+      if (parsedRef) applyReferenceDate(parsedRef, false);
     }
 
     window.PERIODIC_TURNS = {
