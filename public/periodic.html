@@ -3917,9 +3917,27 @@ header{
     try{ return localStorage.getItem('periodicTableRefDate') || ''; }catch(e){ return ''; }
   }
 
+  function parseBadgeDate(str){
+    if(!str) return null;
+    var s = String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
+    var p = s.split('/');
+    if(p.length !== 3) return null;
+    if(!/^\d{1,4}$/.test(p[0]) || !/^\d{1,2}$/.test(p[1]) || !/^\d{1,4}$/.test(p[2])) return null;
+    var a = parseInt(p[0],10), b = parseInt(p[1],10), c = parseInt(p[2],10);
+    var y,m,d;
+    if(a > 31){ y = a; m = b; d = c; }
+    else { d = a; m = b; y = c; }
+    if(!(y >= 1 && y <= 9999 && m >= 1 && m <= 12 && d >= 1 && d <= 31)) return null;
+    var greg = (y > 1582) || (y === 1582 && (m > 10 || (m === 10 && d >= 15)));
+    var leap = greg ? ((y % 4 === 0) && (y % 100 !== 0 || y % 400 === 0)) : (y % 4 === 0);
+    var dim = m === 2 ? (leap ? 29 : 28) : ([4,6,9,11].indexOf(m) >= 0 ? 30 : 31);
+    if(d > dim) return null;
+    return { y:y, m:m, d:d };
+  }
+
   function isoToMD(iso){
     if(!iso) return null;
-    var parsed = parseFlexibleDate(String(iso).trim().replace(/-/g,'/')) || parseFlexDate(iso);
+    var parsed = parseBadgeDate(iso);
     if(!parsed) return null;
     var y = parsed.y, m = parsed.m, d = parsed.d;
     function isLeap(year){ return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0); }
@@ -3974,7 +3992,7 @@ header{
 
   function phaseNameFromIso(iso){
     if(!iso) return 'asume';
-    var parsed = parseFlexibleDate(String(iso).trim().replace(/-/g,'/')) || parseFlexDate(iso);
+    var parsed = parseBadgeDate(iso);
     var y = parsed ? parsed.y : null;
     if(!(y >= 1)) return 'asume';
     var aStartY = y - ((y - 1) % 4);
