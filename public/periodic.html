@@ -1276,33 +1276,46 @@ header{
   // Parse flexible date formats coming from index:
   // - yyyy-mm-dd (desktop input[type=date])
   // - dd-mm-yyyy / dd/mm/yyyy (mobile patched input[type=text])
+  function isGregorianCalendarDate(y,m,d){
+    return (y > 1582) || (y === 1582 && (m > 10 || (m === 10 && d >= 15)));
+  }
+
+  function isLeapForCalendar(y,m,d){
+    if (isGregorianCalendarDate(y,m,d)) return (y % 4 === 0) && (y % 100 !== 0 || y % 400 === 0);
+    return y % 4 === 0;
+  }
+
+  function daysInMonthCalendar(y,m,d){
+    if (m < 1 || m > 12) return 0;
+    if (m === 2) return isLeapForCalendar(y,m,d) ? 29 : 28;
+    return [4,6,9,11].indexOf(m) >= 0 ? 30 : 31;
+  }
+
   function parseFlexDate(str){
     if(!str) return null;
     var s = String(str).trim().replace(/\//g,'-');
     var p = s.split('-');
     if(p.length !== 3) return null;
 
-    var idxY = -1;
-    for(var i=0;i<3;i++){
-      if(/^\d{4}$/.test(p[i])){ idxY = i; break; }
-    }
-
     var y,m,d;
-    if(idxY >= 0){
-      y = parseInt(p[idxY], 10);
-      var r = [];
-      for(i=0;i<3;i++){ if(i!==idxY) r.push(parseInt(p[i],10)); }
-      if(r.length !== 2 || isNaN(r[0]) || isNaN(r[1])) return null;
-
-      // If the year is first => yyyy-mm-dd. Otherwise => dd-mm-yyyy.
-      if(idxY === 0){ m = r[0]; d = r[1]; }
-      else { d = r[0]; m = r[1]; }
-    }else{
-      // fallback: assume yyyy-mm-dd
-      y = parseInt(p[0],10); m = parseInt(p[1],10); d = parseInt(p[2],10);
+    if(/^\d{4}$/.test(p[0])){
+      y = parseInt(p[0], 10);
+      m = parseInt(p[1], 10);
+      d = parseInt(p[2], 10);
+    } else if(/^\d{1,4}$/.test(p[2])) {
+      d = parseInt(p[0], 10);
+      m = parseInt(p[1], 10);
+      y = parseInt(p[2], 10);
+    } else if(/^\d{1,4}$/.test(p[0]) && parseInt(p[0],10) > 31) {
+      y = parseInt(p[0], 10);
+      m = parseInt(p[1], 10);
+      d = parseInt(p[2], 10);
+    } else {
+      return null;
     }
 
-    if(!(y>=1&&y<=9999&&m>=1&&m<=12&&d>=1&&d<=31)) return null;
+    if(!(y>=1&&y<=9999&&m>=1&&m<=12&&d>=1)) return null;
+    if(d > daysInMonthCalendar(y,m,d)) return null;
     return {y:y,m:m,d:d};
   }
   function pad2(n){ n=String(n); return n.length<2?('0'+n):n; }
@@ -3906,18 +3919,25 @@ header{
 
   function isoToMD(iso){
     if(!iso) return null;
-    var raw = String(iso).trim().replace(/\//g,'-');
-    var parts = raw.split('-');
-    if(parts.length !== 3) return null;
-    var y, m, d;
-    if(parts[0].length === 4){ y = parseInt(parts[0],10); m = parseInt(parts[1],10); d = parseInt(parts[2],10); }
-    else if(parts[2].length === 4){ y = parseInt(parts[2],10); m = parseInt(parts[1],10); d = parseInt(parts[0],10); }
-    else return null;
+    var parsed = parseFlexibleDate(String(iso).trim().replace(/-/g,'/')) || parseFlexDate(iso);
+    if(!parsed) return null;
+    var y = parsed.y, m = parsed.m, d = parsed.d;
     function isLeap(year){ return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0); }
+    function daysInMonth(y,m){
+      if (m === 2) return isLeap(y) ? 29 : 28;
+      return [4,6,9,11].indexOf(m) >= 0 ? 30 : 31;
+    }
     if(isLeap(y)){ if(m === 12 && d >= 18) return null; } else { if(m === 12 && d >= 19) return null; }
     if(isLeap(y)){
       var inShiftRange = (m === 2 && d === 29) || (m > 2 && (m < 12 || (m === 12 && d <= 17)));
-      if(inShiftRange){ var date = new Date(y, m - 1, d); date.setDate(date.getDate() + 1); m = date.getMonth() + 1; d = date.getDate(); }
+      if(inShiftRange){
+        d += 1;
+        if(d > daysInMonth(y,m)){
+          d = 1;
+          m += 1;
+          if(m > 12){ m = 1; y += 1; }
+        }
+      }
     }
     return String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
   }
@@ -3954,9 +3974,8 @@ header{
 
   function phaseNameFromIso(iso){
     if(!iso) return 'asume';
-    var parts = String(iso).split('-');
-    if(parts.length !== 3) return 'asume';
-    var y = parts[0].length === 4 ? parseInt(parts[0],10) : parseInt(parts[2],10);
+    var parsed = parseFlexibleDate(String(iso).trim().replace(/-/g,'/')) || parseFlexDate(iso);
+    var y = parsed ? parsed.y : null;
     if(!(y >= 1)) return 'asume';
     var aStartY = y - ((y - 1) % 4);
     var phase = Math.max(1, Math.min(4, y - aStartY + 1));
@@ -5244,29 +5263,40 @@ header{
     }
   };
 
+  function isGregorianCalendarDateTurn(y,m,d){
+    return (y > 1582) || (y === 1582 && (m > 10 || (m === 10 && d >= 15)));
+  }
+
+  function isLeapForCalendarTurn(y,m,d){
+    if (isGregorianCalendarDateTurn(y,m,d)) return (y % 4 === 0) && (y % 100 !== 0 || y % 400 === 0);
+    return y % 4 === 0;
+  }
+
+  function daysInMonthCalendar(y,m,d){
+    if (m < 1 || m > 12) return 0;
+    if (m === 2) return isLeapForCalendarTurn(y,m,d) ? 29 : 28;
+    return [4,6,9,11].indexOf(m) >= 0 ? 30 : 31;
+  }
+
   function parseFlexibleDate(str){
     if(!str) return null;
     var s = String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
     var p = s.split('/');
     if(p.length !== 3) return null;
+    if(!/^\d{1,4}$/.test(p[0]) || !/^\d{1,2}$/.test(p[1]) || !/^\d{1,4}$/.test(p[2])) return null;
+    var a = parseInt(p[0],10);
+    var b = parseInt(p[1],10);
+    var c = parseInt(p[2],10);
     var y,m,d;
-    if(/^\d{4}$/.test(p[0])){
-      y = parseInt(p[0],10);
-      m = parseInt(p[1],10);
-      d = parseInt(p[2],10);
-    } else if(/^\d{4}$/.test(p[2])) {
-      d = parseInt(p[0],10);
-      m = parseInt(p[1],10);
-      y = parseInt(p[2],10);
+    if(a > 31){
+      y = a; m = b; d = c;
     } else {
-      return null;
+      d = a; m = b; y = c;
     }
-    if(!(y >= 1 && m >= 1 && m <= 12 && d >= 1 && d <= 31)) return null;
-    var dt = new Date(y, m - 1, d);
-    if (dt.getFullYear() !== y || (dt.getMonth() + 1) !== m || dt.getDate() !== d) return null;
+    if(!(y >= 1 && y <= 9999 && m >= 1 && m <= 12 && d >= 1)) return null;
+    if(d > daysInMonthCalendar(y,m,d)) return null;
     return { y:y, m:m, d:d };
   }
-
   function pad2turn(n){
     return String(n).padStart(2,'0');
   }
@@ -5284,9 +5314,17 @@ header{
   }
 
   function shiftDateByOne(obj){
-    var dt = new Date(obj.y, obj.m - 1, obj.d);
-    dt.setDate(dt.getDate() + 1);
-    return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() };
+    var y = obj.y, m = obj.m, d = obj.d + 1;
+    var max = daysInMonthCalendar(y, m, d);
+    if (d > max) {
+      d = 1;
+      m += 1;
+      if (m > 12) {
+        m = 1;
+        y += 1;
+      }
+    }
+    return { y:y, m:m, d:d };
   }
 
   function normalizedMonthDayFromRef(refObj){
@@ -5474,12 +5512,8 @@ header{
 
   function getPhaseFromYear(refRaw){
     if(!refRaw) return 'asume';
-    var s = String(refRaw).trim().replace(/\//g,'-');
-    var p = s.split('-');
-    if(p.length !== 3) return 'asume';
-    var y = null;
-    if(/^\d{4}$/.test(p[0])) y = parseInt(p[0],10);
-    else if(/^\d{4}$/.test(p[2])) y = parseInt(p[2],10);
+    var parsed = parseFlexibleDate(refRaw) || parseFlexDate(refRaw);
+    var y = parsed ? parsed.y : null;
     if(!(y>=1)) return 'asume';
     var phase = ((y - 1) % 4) + 1;
     return PHASE_LABELS[phase] || 'asume';
