@@ -493,6 +493,25 @@ header{
   color:var(--mass-color, inherit);
   letter-spacing:0;
 }
+.p-dateDow{
+  margin-top:4px;
+  min-height:12px;
+  text-align:center;
+  font-size:8px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:-0.01em;
+  color:rgba(230,241,255,.82);
+  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  pointer-events:none;
+}
+.pCellWrap{
+  width:var(--cell-w);
+  display:grid;
+  grid-template-rows:var(--cell-h) auto;
+  gap:4px;
+  align-items:start;
+}
 .p-slab{
   display:flex;
   align-items:flex-start;
@@ -655,6 +674,8 @@ header{
   .p-side.right .neg-sign{margin-right:1px}
   .p-top{left:50%; transform:translateX(-50%); top:-20px; font-size:11.5px; font-weight:700; letter-spacing:-0.01em; color:rgba(228,238,251,.90)}
   .p-top small{font-size:6.8px; font-weight:700; margin-top:1px; letter-spacing:-0.01em}
+  .pCellWrap{gap:3px;}
+  .p-dateDow{font-size:7px; min-height:10px;}
 }
 
 
@@ -907,6 +928,16 @@ header{
   color:rgba(230,241,255,.92);
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
 }
+.turnDateDow{
+  min-height:12px;
+  text-align:center;
+  font-size:8px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:-0.01em;
+  color:rgba(230,241,255,.82);
+  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
 .turnRichCell{
   position:relative;
   width:76px;
@@ -1113,6 +1144,10 @@ header{
   }
   .turnSolarDay{
     min-height:12px;
+    font-size:7px;
+  }
+  .turnDateDow{
+    min-height:10px;
     font-size:7px;
   }
   .turnRichCell{
@@ -4285,6 +4320,9 @@ header{
   }
 
   const activeKey = getActiveKey();
+  const currentRefObj = (typeof parseFlexibleDate === 'function') ? parseFlexibleDate((function(){ try { return localStorage.getItem('periodicTableRefDate') || ''; } catch(e){ return ''; } })()) : null;
+  const currentRefMd = currentRefObj && typeof normalizedMonthDayFromRef === 'function' ? normalizedMonthDayFromRef(currentRefObj) : null;
+  const currentRefOrdinal = currentRefMd && typeof monthDayOrdinal === 'function' ? monthDayOrdinal(currentRefMd) : null;
 
   function topCategory(col){
     if (col === 1) return 'top-red';
@@ -4526,8 +4564,9 @@ header{
       return;
     }
 
-    const el = document.createElement((node.type === 'element' || node.type === 'orb' || node.type === 'slab') ? 'button' : 'div');
-    if (node.type === 'element' || node.type === 'orb' || node.type === 'slab') {
+    const isGridCell = (node.type === 'element' || node.type === 'orb' || node.type === 'slab');
+    const el = document.createElement(isGridCell ? 'button' : 'div');
+    if (isGridCell) {
       el.type = 'button';
       if (node.key) el.dataset.key = node.key;
       if (node.symbol) el.dataset.symbol = node.symbol || '';
@@ -4545,10 +4584,26 @@ header{
       });
     }
     el.className = node.className;
-    el.style.gridColumn = String(node.col);
-    el.style.gridRow = String(node.row);
     el.innerHTML = node.html;
-    grid.appendChild(el);
+    if (isGridCell) {
+      const wrapCell = document.createElement('div');
+      wrapCell.className = 'pCellWrap';
+      wrapCell.style.gridColumn = String(node.col);
+      wrapCell.style.gridRow = String(node.row);
+      const sourceItem = node.key ? findItemByKey(node.key) : null;
+      const targetOrdinal = ordinalForKey(node.key || '', sourceItem);
+      const dateDow = (currentRefObj && currentRefOrdinal && targetOrdinal) ? dateDowLabelForOrdinal(currentRefObj, currentRefOrdinal, targetOrdinal) : '';
+      const footer = document.createElement('div');
+      footer.className = 'p-dateDow';
+      footer.textContent = dateDow;
+      wrapCell.appendChild(el);
+      wrapCell.appendChild(footer);
+      grid.appendChild(wrapCell);
+    } else {
+      el.style.gridColumn = String(node.col);
+      el.style.gridRow = String(node.row);
+      grid.appendChild(el);
+    }
   });
 
   wrap.appendChild(grid);
@@ -5337,6 +5392,81 @@ header{
     return 'Días solares ' + solarDaysNumber(refObj);
   }
 
+  function jdnGregorian(y,m,d){
+    var a=Math.floor((14-m)/12);
+    var Y=y+4800-a;
+    var M=m+12*a-3;
+    return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-Math.floor(Y/100)+Math.floor(Y/400)-32045;
+  }
+
+  function jdnJulian(y,m,d){
+    var a=Math.floor((14-m)/12);
+    var Y=y+4800-a;
+    var M=m+12*a-3;
+    return d+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-32083;
+  }
+
+  function refToJdn(refObj){
+    var y = refObj.y, m = refObj.m, d = refObj.d;
+    var isGregorian = (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
+    return isGregorian ? jdnGregorian(y,m,d) : jdnJulian(y,m,d);
+  }
+
+  function jdnToGregorian(jdn){
+    var a = jdn + 32044;
+    var b = Math.floor((4*a + 3)/146097);
+    var c = a - Math.floor(146097*b/4);
+    var d = Math.floor((4*c + 3)/1461);
+    var e = c - Math.floor(1461*d/4);
+    var m = Math.floor((5*e + 2)/153);
+    var day = e - Math.floor((153*m + 2)/5) + 1;
+    var month = m + 3 - 12*Math.floor(m/10);
+    var year = 100*b + d - 4800 + Math.floor(m/10);
+    return { y: year, m: month, d: day };
+  }
+
+  function jdnToJulian(jdn){
+    var c = jdn + 32082;
+    var d = Math.floor((4*c + 3)/1461);
+    var e = c - Math.floor(1461*d/4);
+    var m = Math.floor((5*e + 2)/153);
+    var day = e - Math.floor((153*m + 2)/5) + 1;
+    var month = m + 3 - 12*Math.floor(m/10);
+    var year = d - 4800 + Math.floor(m/10);
+    return { y: year, m: month, d: day };
+  }
+
+  function jdnToCivilDate(jdn){
+    var gregStart = jdnGregorian(1582,10,15);
+    return jdn >= gregStart ? jdnToGregorian(jdn) : jdnToJulian(jdn);
+  }
+
+  function weekdayShortFromJdn(jdn){
+    var epoch = jdnJulian(1,1,1);
+    var labels = ['Sa','Do','Lu','Ma','Mi','Ju','Vi'];
+    var idx = ((jdn - epoch) % 7 + 7) % 7;
+    return labels[idx];
+  }
+
+  function ordinalForKey(rawKey, item){
+    var key = String(rawKey || '').trim().toUpperCase();
+    if (!key && item) key = String(item.key || item.symbol || '').trim().toUpperCase();
+    var m;
+    if ((m = /^P(\d+)$/i.exec(key))) return parseInt(m[1], 10);
+    if ((m = /^BN(\d+)$/i.exec(key))) return parseInt(m[1], 10);
+    if ((m = /^L(\d+)$/i.exec(key))) return 224 + parseInt(m[1], 10);
+    if (item && item.atomic != null && item.atomic !== '') return Number(item.atomic);
+    return null;
+  }
+
+  function dateDowLabelForOrdinal(refObj, refOrdinal, targetOrdinal){
+    if (!refObj || !refOrdinal || !targetOrdinal) return '';
+    var delta = Number(targetOrdinal) - Number(refOrdinal);
+    var jdn = refToJdn(refObj) + delta;
+    var civil = jdnToCivilDate(jdn);
+    return String(civil.d) + '/' + String(civil.m) + ' ' + weekdayShortFromJdn(jdn);
+  }
+
   function applyReferenceDate(refObj){
     var yearSelect = document.getElementById('turnYearType');
     var turnInput = document.getElementById('turnNumber');
@@ -5639,6 +5769,12 @@ header{
     const keyAttr = escapeHtml(String((item && (item.key || item.symbol)) || rawKey || ''));
     const solarKey = [String(cell.cardinality || ''), String(cell.rowNorm != null ? cell.rowNorm : cell.row || ''), String(cell.key || ''), String(cell.symbolNorm || normalizeSymbol(cell.symbol) || '')].join('|');
     const solarDay = solarMap && solarMap[solarKey] != null ? String(solarMap[solarKey]) : '';
+    const refInput = document.getElementById('turnRefDate');
+    const refObj = parseFlexibleDate(refInput && refInput.value);
+    const refMd = refObj ? normalizedMonthDayFromRef(refObj) : null;
+    const refOrdinal = refMd ? monthDayOrdinal(refMd) : null;
+    const targetOrdinal = cell.number != null ? Number(cell.number) : ordinalForKey(rawKey, item || lModel);
+    const dateDow = (refObj && refOrdinal && targetOrdinal) ? dateDowLabelForOrdinal(refObj, refOrdinal, targetOrdinal) : '';
     let innerHtml = '';
     let extraClass = ' is-' + escapeHtml(category || 'transition');
     if (isPromise) {
@@ -5662,6 +5798,7 @@ header{
       '<button type="button" class="turnRichCell' + extraClass + ' is-clickable" data-turn-key="' + keyAttr + '" title="' + escapeHtml(title) + '">' +
         innerHtml +
       '</button>' +
+      '<div class="turnDateDow">' + escapeHtml(dateDow) + '</div>' +
     '</div>';
   }
 
@@ -5672,7 +5809,7 @@ header{
       const target = quadWrap.querySelector('[data-cardinality="' + card + '"]');
       if (!target) return;
       const html = (groups[card] || []).map(function(cell){ return buildQuadrantCell(cell, solarMap); }).join('');
-      target.innerHTML = html || '<div class="turnRichWrap"><div class="turnSolarDay"></div><div class="turnRichCell turnRichCell--empty">—</div></div>';
+      target.innerHTML = html || '<div class="turnRichWrap"><div class="turnSolarDay"></div><div class="turnRichCell turnRichCell--empty">—</div><div class="turnDateDow"></div></div>';
     });
     quadWrap.hidden = false;
     quadWrap.querySelectorAll('[data-turn-key]').forEach(function(btn){
