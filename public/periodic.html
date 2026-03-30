@@ -787,17 +787,20 @@ header{
 }
 .turnQuadrant__list{
   display:grid;
-  grid-template-columns:repeat(4, minmax(0,1fr));
+  grid-template-columns:repeat(4, 76px);
   gap:8px;
-  align-items:stretch;
+  align-items:start;
+  justify-content:start;
 }
 .turnRichCell{
   position:relative;
-  min-height:74px;
-  border-radius:12px;
+  width:76px;
+  height:76px;
+  min-height:76px;
+  border-radius:10px;
   border:1px solid rgba(255,255,255,.10);
   overflow:hidden;
-  padding:7px 6px 9px;
+  padding:7px 5px 9px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -815,30 +818,30 @@ header{
 .turnRichCell__atomic,
 .turnRichCell__corner{
   position:absolute;
-  top:5px;
+  top:6px;
   font-size:9px;
   line-height:1;
   font-weight:800;
   color:var(--turn-topnum-color, rgba(22,18,20,.94));
 }
-.turnRichCell__atomic{left:6px;}
-.turnRichCell__corner--left{left:6px;}
-.turnRichCell__corner--right{right:6px; text-align:right;}
+.turnRichCell__atomic{left:5px;}
+.turnRichCell__corner--left{left:5px;}
+.turnRichCell__corner--right{right:5px; text-align:right;}
 .turnRichCell__symbol{
-  margin-top:12px;
+  margin-top:10px;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:21px;
+  font-size:25px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.04em;
   color:var(--turn-symbol-color, inherit);
 }
 .turnRichCell__name{
-  margin-top:5px;
-  font-size:8px;
+  margin-top:3px;
+  font-size:7.3px;
   font-weight:800;
   line-height:1.05;
-  max-width:96%;
+  max-width:90%;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -846,10 +849,10 @@ header{
 }
 .turnRichCell__mass{
   position:absolute;
-  left:6px;
-  right:6px;
-  bottom:6px;
-  font-size:5.4px;
+  left:5px;
+  right:5px;
+  bottom:5px;
+  font-size:4.6px;
   line-height:1;
   font-weight:800;
   color:var(--turn-mass-color, inherit);
@@ -857,7 +860,9 @@ header{
 .turnRichCell--empty{
   align-items:center;
   justify-content:center;
-  min-height:74px;
+  min-height:76px;
+  width:76px;
+  height:76px;
   font-size:15px;
   color:rgba(230,241,255,.52);
   background:rgba(255,255,255,.03);
@@ -919,22 +924,25 @@ header{
     gap:10px;
   }
   .turnQuadrant__list{
-    grid-template-columns:repeat(4, minmax(0,1fr));
+    grid-template-columns:repeat(4, 64px);
     gap:6px;
+    justify-content:start;
   }
   .turnRichCell{
+    width:64px;
+    height:64px;
     min-height:64px;
     padding:6px 4px 8px;
     border-radius:10px;
   }
   .turnRichCell__atomic,
-  .turnRichCell__corner{font-size:7.5px; top:4px;}
+  .turnRichCell__corner{font-size:7.5px; top:5px;}
   .turnRichCell__atomic,
   .turnRichCell__corner--left{left:5px;}
   .turnRichCell__corner--right{right:5px;}
-  .turnRichCell__symbol{font-size:16px; margin-top:11px;}
-  .turnRichCell__name{font-size:6.2px; margin-top:4px;}
-  .turnRichCell__mass{font-size:4.3px; bottom:5px; left:5px; right:5px;}
+  .turnRichCell__symbol{font-size:21px; margin-top:9px;}
+  .turnRichCell__name{font-size:6.8px; margin-top:3px;}
+  .turnRichCell__mass{font-size:4.2px; bottom:5px; left:5px; right:5px;}
 }
 
 
