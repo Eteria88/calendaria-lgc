@@ -5882,6 +5882,60 @@ header{
     });
   }
 
+
+  function currentTurnCell(result, refObj){
+    if (!result || !result.cells || !result.cells.length) return null;
+    var sourceRef = refObj || null;
+    if (!sourceRef) {
+      var dateInput = document.getElementById('turnRefDate');
+      sourceRef = parseFlexibleDate(dateInput && dateInput.value);
+    }
+    if (!sourceRef) return result.cells[0] || null;
+    var md = normalizedMonthDayFromRef(sourceRef);
+    var ordinal = md ? monthDayOrdinal(md) : null;
+    if (!ordinal) return result.cells[0] || null;
+    var turnStart = ((Number(result.turnNumber) - 1) * 16) + 1;
+    var currentOffset = ordinal - turnStart;
+    if (!(currentOffset >= 0 && currentOffset < result.cells.length)) currentOffset = 0;
+    return result.cells[currentOffset] || result.cells[0] || null;
+  }
+
+  function updateHeaderFromTurnCell(cell){
+    var colRowLabel = document.getElementById('colRowLabel');
+    var periodicElementLabel = document.getElementById('periodicElementLabel');
+    if (!cell) return;
+
+    var rawKey = String(cell.key || cell.symbol || '');
+    var lModel = buildTurnLModel(rawKey);
+    var item = lModel || ((window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(rawKey) : null);
+    var rowVal = lModel ? Number(lModel.row) : Number(cell.rowNorm != null ? cell.rowNorm : cell.row);
+    var colVal = lModel ? Number(lModel.col) : Number((item && item.col != null) ? item.col : cell.col);
+    var displayZone = zoneForTurnRow(rowVal);
+    var display = lModel
+      ? lModel.display
+      : (item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
+        ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
+        : { number:'', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' });
+
+    if (colRowLabel && colVal && !Number.isNaN(colVal) && !Number.isNaN(rowVal)) {
+      colRowLabel.textContent = 'Columna ' + String(colVal) + ' · Fila ' + String(rowVal);
+    }
+
+    if (periodicElementLabel) {
+      var parts = [display.symbol || (item && item.symbol) || cell.symbol || ''];
+      if (display.number) parts.push(display.number);
+      if (display.cornerTopLeft) parts.push(display.cornerTopLeft);
+      if (display.cornerTopRight) parts.push(display.cornerTopRight);
+      if (display.name) parts.push(display.name);
+      periodicElementLabel.textContent = parts.filter(Boolean).join(' · ');
+    }
+
+    var derivedKey = String((item && (item.key || item.symbol)) || rawKey || '').trim();
+    if (derivedKey) {
+      document.body.setAttribute('data-el', derivedKey.toUpperCase());
+    }
+  }
+
   function applyTurn(result){
     clearTurnClasses();
     applyTurnColors(result.yearType);
@@ -5976,6 +6030,9 @@ header{
       return;
     }
     var hits = applyTurn(result);
+    var dateInput = document.getElementById('turnRefDate');
+    var refObj = parseFlexibleDate(dateInput && dateInput.value);
+    updateHeaderFromTurnCell(currentTurnCell(result, refObj));
     updateMeta(result);
     updateQuadrants(result.groups, currentTurnSolarContext(result));
     setStatus('Se resaltó la vuelta ' + String(turnValue).padStart(2,'0') + ' en la Te Habla (' + hits + ' coincidencias visuales / ' + result.cells.length + ' celdas lógicas) y quedó preparada la distribución por cardinalidad.');
