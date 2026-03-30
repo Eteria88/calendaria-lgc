@@ -412,12 +412,10 @@ header{
   font-size:16.2px;
 }
 .p-el--band-tight .p-el__name{
-  margin-top:2.6px;
-  font-size:5.55px;
-  font-weight:800;
-  line-height:1.0;
-  max-width:94%;
-  letter-spacing:-0.01em;
+  margin-top:3.2px;
+  font-size:5.8px;
+  max-width:98%;
+  letter-spacing:0;
 }
 .p-el--band-tight .p-el__mass{
   bottom:5px;
@@ -448,12 +446,8 @@ header{
     font-size:14.8px;
   }
   .p-el--band-tight .p-el__name{
-    margin-top:2.2px;
-    font-size:5.0px;
-    font-weight:800;
-    line-height:1.0;
-    max-width:93%;
-    letter-spacing:-0.01em;
+    margin-top:2.6px;
+    font-size:5.2px;
   }
   .p-el--band-tight .p-el__mass{
     bottom:4px;
@@ -471,9 +465,8 @@ header{
   color:var(--symbol-color, inherit);
 }
 .p-el__name{
-  font-size:6.65px;
-  font-weight:800;
-  line-height:1.05;
+  font-size:6.15px;
+  line-height:1;
   letter-spacing:-0.01em;
   color:var(--name-color, rgba(28,23,25,.92));
   max-width:96%;
@@ -637,7 +630,7 @@ header{
   }
   .pgrid{--cell-w:46px;--cell-h:49px;--gap:2px}
   .p-el__symbol{font-size:14px}
-  .p-el__name{font-size:5.9px;font-weight:800;line-height:1.05}
+  .p-el__name{font-size:5.45px}
   .p-slab,.p-orb{font-size:12.1px}
   .p-slab{padding-top:4px}
   .p-side.left{left:auto; right:calc(100% + 10px)}
@@ -731,265 +724,104 @@ header{
   color:var(--text);
   padding:0 12px;
   font:inherit;
-  appearance:none;
-  -webkit-appearance:none;
-  color-scheme:dark;
-}
-.turnField select:focus,
-.turnField input:focus{
-  outline:none;
-  border-color:rgba(124,199,255,.68);
-  box-shadow:0 0 0 3px rgba(124,199,255,.12);
-}
-.turnField input:-webkit-autofill,
-.turnField input:-webkit-autofill:hover,
-.turnField input:-webkit-autofill:focus{
-  -webkit-text-fill-color:var(--text);
-  -webkit-box-shadow:0 0 0 1000px rgba(12,18,28,.96) inset;
-  transition:background-color 9999s ease-out 0s;
-  caret-color:var(--text);
 }
 .turnField input::placeholder{color:rgba(230,241,255,.35)}
-
-.turnField select{
-  background-image:linear-gradient(45deg,transparent 50%, rgba(230,241,255,.72) 50%),linear-gradient(135deg, rgba(230,241,255,.72) 50%, transparent 50%);
-  background-position:calc(100% - 18px) calc(50% - 3px), calc(100% - 12px) calc(50% - 3px);
-  background-size:6px 6px, 6px 6px;
-  background-repeat:no-repeat;
-  padding-right:34px;
-}
-.turnField input[type=number]{
-  -moz-appearance:textfield;
-}
-.turnField input[type=number]::-webkit-outer-spin-button,
-.turnField input[type=number]::-webkit-inner-spin-button{
-  -webkit-appearance:none;
-  margin:0;
-}
-@media (max-width:1080px){
-  .turnBtn{min-width:0;}
-}
-
 .turnActions{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
 }
-.turnBtn{height:40px;min-width:112px;justify-content:center;font-size:13px;padding:0 16px}
+.turnBtn{height:40px;font-size:13px;padding:0 14px}
 .turnStatus{
-  display:none;
+  font-size:13px;
+  color:var(--muted);
 }
-.turnQuadrants__title{
-  grid-column:1 / -1;
+.turnMeta{
+  display:grid;
+  gap:4px;
+  padding:12px 14px;
+  border:1px solid rgba(124,199,255,.22);
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(124,199,255,.08),rgba(124,199,255,.03));
+}
+.turnMeta__title{
   font-size:15px;
   font-weight:700;
-  line-height:1.2;
-  color:var(--text);
-  margin:0 0 10px 0;
-  padding:0 2px;
 }
-
-.turnWorkbench{
-  display:grid;
-  grid-template-columns:minmax(320px, 420px) minmax(0, 1fr);
-  gap:16px;
-  align-items:start;
-}
-.turnControlsPanel{
-  display:grid;
-  gap:12px;
-  align-self:start;
-}
-.turnVisualPanel{
-  display:grid;
-  gap:8px;
-  min-width:0;
-  align-content:start;
-  padding-top:0;
-}
-.turnControlsPanel .turnToolbar{
-  display:grid;
-  gap:12px;
-  align-items:start;
-}
-.turnControlsPanel .turnField,
-.turnControlsPanel .turnField--small{
-  min-width:0;
-  max-width:none;
-}
-.turnControlsPanel .turnActions{
-  justify-content:flex-start;
-}
-.turnVisualPanel .turnQuadrants{
-  justify-self:center;
-}
-@media (max-width:1080px){
-  .turnWorkbench{
-    grid-template-columns:1fr;
-  }
-  .turnControlsPanel,
-  .turnVisualPanel{
-    width:100%;
-  }
-  .turnControlsPanel .turnToolbar{
-    display:flex;
-    flex-wrap:wrap;
-    align-items:end;
-  }
-  .turnVisualPanel .turnQuadrants{
-    justify-self:start;
-  }
+.turnMeta__subtitle{
+  font-size:12px;
+  color:var(--muted);
 }
 .turnQuadrants{
   display:grid;
-  grid-template-columns:repeat(2,max-content);
-  grid-template-areas:
-    "title title"
-    "no ne"
-    "so se";
-  gap:12px;
-  align-items:start;
-  justify-content:start;
-  width:max-content;
-  margin-top:-2px;
-  padding:8px 12px 12px;
-  border-radius:18px;
-  border:1px solid var(--turn-frame-border, rgba(255,255,255,.08));
-  background:linear-gradient(180deg, var(--turn-frame-bg-top, rgba(255,255,255,.018)), var(--turn-frame-bg-bottom, rgba(255,255,255,.008)));
-  box-shadow:0 0 0 1px var(--turn-frame-ring, rgba(255,255,255,.015)), 0 10px 22px var(--turn-frame-shadow, rgba(0,0,0,.12));
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
 }
 .turnQuadrant{
-  border:1px solid rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.08);
   border-radius:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
-  padding:9px;
+  background:rgba(255,255,255,.03);
+  padding:10px;
   min-height:92px;
-  width:max-content;
 }
-.turnQuadrant--no{grid-area:no;}
-.turnQuadrant--ne{grid-area:ne;}
-.turnQuadrant--so{grid-area:so;}
-.turnQuadrant--se{grid-area:se;}
 .turnQuadrant__head{
-  display:none;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.06em;
+  margin-bottom:8px;
 }
 .turnQuadrant__list{
-  display:grid;
-  grid-template-columns:repeat(4, 76px);
-  gap:8px;
-  align-items:start;
-  justify-content:start;
-  width:max-content;
-}
-.turnRichWrap{
-  width:76px;
-  display:grid;
-  grid-template-rows:auto 76px;
-  gap:4px;
-  align-items:start;
-}
-.turnSolarDay{
-  min-height:14px;
-  text-align:center;
-  font-size:8px;
-  line-height:1;
-  font-weight:800;
-  letter-spacing:-0.01em;
-  color:rgba(230,241,255,.92);
-  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-}
-.turnRichCell{
-  position:relative;
-  width:76px;
-  height:76px;
-  min-height:76px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.10);
-  overflow:hidden;
-  padding:7px 5px 9px;
   display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  text-align:center;
-  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  box-shadow:none;
-  color:var(--text);
-  font:inherit;
+  flex-wrap:wrap;
+  gap:6px;
 }
-.turnRichCell.is-clickable{cursor:pointer}
-.turnRichCell.is-clickable:hover{
-  transform:translateY(-1px);
-  border-color:rgba(124,199,255,.36);
-  box-shadow:0 8px 18px rgba(0,0,0,.18);
-}
-.turnRichCell__atomic,
-.turnRichCell__corner{
-  position:absolute;
-  top:6px;
-  font-size:9px;
-  line-height:1;
-  font-weight:800;
-  color:var(--turn-topnum-color, rgba(22,18,20,.94));
-}
-.turnRichCell__atomic{left:5px;}
-.turnRichCell__corner--left{left:5px;}
-.turnRichCell__corner--right{right:5px; text-align:right;}
-.turnRichCell__symbol{
-  margin-top:10px;
-  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:25px;
-  font-weight:800;
-  line-height:1;
-  letter-spacing:-.04em;
-  color:var(--turn-symbol-color, inherit);
-}
-.turnRichCell__name{
-  margin-top:3px;
-  font-size:7.3px;
-  font-weight:800;
-  line-height:1.05;
-  max-width:90%;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  color:var(--turn-name-color, rgba(28,23,25,.92));
-}
-.turnRichCell__mass{
-  position:absolute;
-  left:5px;
-  right:5px;
-  bottom:5px;
-  font-size:4.6px;
-  line-height:1;
-  font-weight:800;
-  color:var(--turn-mass-color, inherit);
-}
-.turnRichCell--empty{
+.turnChip{
+  display:inline-flex;
   align-items:center;
   justify-content:center;
-  min-height:76px;
-  width:76px;
-  height:76px;
-  font-size:15px;
-  color:rgba(230,241,255,.52);
-  background:rgba(255,255,255,.03);
+  min-width:34px;
+  padding:6px 8px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+  font-size:12px;
+  line-height:1;
 }
-.turnRichCell.is-alkali{background:linear-gradient(180deg,rgba(237,104,77,.95),rgba(177,77,53,.88));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98);}
-.turnRichCell.is-alkaline{background:linear-gradient(180deg,rgba(249,185,52,.96),rgba(197,135,20,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98);}
-.turnRichCell.is-transition{background:linear-gradient(180deg,rgba(171,211,244,.96),rgba(118,156,192,.90));color:#102032;}
-.turnRichCell.is-post-transition{background:linear-gradient(180deg,rgba(205,163,236,.96),rgba(151,108,190,.90));color:#1f1129;}
-.turnRichCell.is-metalloid{background:linear-gradient(180deg,rgba(253,221,58,.96),rgba(214,170,14,.90));color:#261f03;}
-.turnRichCell.is-nonmetal{background:linear-gradient(180deg,rgba(188,220,255,.96),rgba(141,177,209,.90));color:#112134;}
-.turnRichCell.is-halogen{background:linear-gradient(180deg,rgba(253,222,57,.96),rgba(223,181,12,.90));color:#241f03;}
-.turnRichCell.is-noble{background:linear-gradient(180deg,rgba(247,212,224,.98),rgba(236,188,206,.96));color:#2a1420;}
-.turnRichCell.is-lanthanide{background:linear-gradient(180deg,rgba(109,206,182,.96),rgba(55,138,120,.90));color:#061915;--turn-topnum-color:rgba(255,249,243,.98);}
-.turnRichCell.is-actinide{background:linear-gradient(180deg,rgba(135,229,131,.96),rgba(70,157,66,.91));color:#081b08;}
-.turnRichCell.is-top-red{background:linear-gradient(180deg,rgba(235,92,78,.96),rgba(173,59,50,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98);}
-.turnRichCell.is-top-orange{background:linear-gradient(180deg,rgba(251,186,45,.96),rgba(194,131,16,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98);}
-.turnRichCell.is-top-blue{background:linear-gradient(180deg,rgba(156,201,242,.96),rgba(103,149,191,.90));color:#102033;}
-.turnRichCell.is-top-green{background:linear-gradient(180deg,rgba(186,224,178,.98),rgba(153,199,145,.96));color:#081b09;}
-.turnRichCell.is-top-gray{background:linear-gradient(180deg,rgba(211,211,211,.95),rgba(149,149,149,.90));color:#181818;}
+.turnQuadrant--so .turnQuadrant__head{color:#8fd4ff}
+.turnQuadrant--ne .turnQuadrant__head{color:#ffd86f}
+.turnQuadrant--no .turnQuadrant__head{color:#ffb08b}
+.turnQuadrant--se .turnQuadrant__head{color:#d3b5ff}
+
+.turnRichWrap{width:76px;display:grid;grid-template-rows:76px;gap:4px;align-items:start}
+.turnRichCell{position:relative;width:76px;height:76px;min-height:76px;border-radius:10px;border:1px solid rgba(255,255,255,.10);overflow:hidden;padding:7px 5px 9px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:none;color:var(--text);font:inherit}
+.turnRichCell.is-clickable{cursor:pointer}
+.turnRichCell.is-clickable:hover{transform:translateY(-1px);border-color:rgba(124,199,255,.36);box-shadow:0 8px 18px rgba(0,0,0,.18)}
+.turnRichCell__atomic,.turnRichCell__corner{position:absolute;top:6px;font-size:9px;line-height:1;font-weight:800;color:var(--turn-topnum-color, rgba(22,18,20,.94))}
+.turnRichCell__atomic{left:5px}.turnRichCell__corner--left{left:5px}.turnRichCell__corner--right{right:5px;text-align:right}
+.turnRichCell__symbol{margin-top:10px;font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:25px;font-weight:800;line-height:1;letter-spacing:-.04em;color:var(--turn-symbol-color, inherit)}
+.turnRichCell__name{margin-top:3px;font-size:7.3px;font-weight:800;line-height:1.05;max-width:90%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--turn-name-color, rgba(28,23,25,.92))}
+.turnRichCell__mass{position:absolute;left:5px;right:5px;bottom:5px;font-size:4.6px;line-height:1;font-weight:800;color:var(--turn-mass-color, inherit)}
+.turnRichCell--empty{align-items:center;justify-content:center;font-size:15px;color:rgba(230,241,255,.52);background:rgba(255,255,255,.03)}
+.turnRichCell--orb{background:linear-gradient(180deg,rgba(12,12,16,1),rgba(18,18,23,1));border-color:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);justify-content:center;padding:0;color:#fff8fe}
+.turnRichCell--orb::before{content:"";position:absolute;width:60px;height:60px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:999px;background:radial-gradient(circle at 30% 28%, rgba(255,198,218,1) 0%, rgba(241,143,178,.99) 42%, rgba(214,102,142,.98) 100%);border:1px solid rgba(255,239,247,.62);box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 0 0 1px rgba(255,182,210,.10)}
+.turnRichCell__orbTop{position:absolute;top:7px;left:50%;transform:translateX(-50%);z-index:1;font-size:10px;line-height:1;color:rgba(34,24,31,.98);font-weight:800}
+.turnRichCell__orbMain{position:relative;z-index:1;font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:18px;font-weight:800;line-height:1;color:rgba(233,239,255,.92);transform:translateY(1px)}
+.turnRichCell.is-alkali{background:linear-gradient(180deg,rgba(237,104,77,.95),rgba(177,77,53,.88));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98)}
+.turnRichCell.is-alkaline{background:linear-gradient(180deg,rgba(249,185,52,.96),rgba(197,135,20,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98)}
+.turnRichCell.is-transition{background:linear-gradient(180deg,rgba(171,211,244,.96),rgba(118,156,192,.90));color:#102032}
+.turnRichCell.is-post-transition{background:linear-gradient(180deg,rgba(205,163,236,.96),rgba(151,108,190,.90));color:#1f1129}
+.turnRichCell.is-metalloid{background:linear-gradient(180deg,rgba(253,221,58,.96),rgba(214,170,14,.90));color:#261f03}
+.turnRichCell.is-nonmetal{background:linear-gradient(180deg,rgba(188,220,255,.96),rgba(141,177,209,.90));color:#112134}
+.turnRichCell.is-halogen{background:linear-gradient(180deg,rgba(253,222,57,.96),rgba(223,181,12,.90));color:#241f03}
+.turnRichCell.is-noble{background:linear-gradient(180deg,rgba(247,212,224,.98),rgba(236,188,206,.96));color:#2a1420}
+.turnRichCell.is-lanthanide{background:linear-gradient(180deg,rgba(109,206,182,.96),rgba(55,138,120,.90));color:#061915;--turn-topnum-color:rgba(255,249,243,.98)}
+.turnRichCell.is-actinide{background:linear-gradient(180deg,rgba(135,229,131,.96),rgba(70,157,66,.91));color:#081b08}
+.turnRichCell.is-top-red{background:linear-gradient(180deg,rgba(235,92,78,.96),rgba(173,59,50,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98)}
+.turnRichCell.is-top-orange{background:linear-gradient(180deg,rgba(251,186,45,.96),rgba(194,131,16,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98)}
+.turnRichCell.is-top-blue{background:linear-gradient(180deg,rgba(156,201,242,.96),rgba(103,149,191,.90));color:#102033}
+.turnRichCell.is-top-green{background:linear-gradient(180deg,rgba(186,224,178,.98),rgba(153,199,145,.96));color:#081b09}
+.turnRichCell.is-top-gray{background:linear-gradient(180deg,rgba(211,211,211,.95),rgba(149,149,149,.90));color:#181818}
+@media (max-width:839px){.turnQuadrant__list{display:grid;grid-template-columns:repeat(4,64px);gap:6px}.turnRichWrap{width:64px;grid-template-rows:64px}.turnRichCell{width:64px;height:64px;min-height:64px;padding:6px 4px 8px}.turnRichCell__atomic,.turnRichCell__corner{font-size:7.5px;top:5px}.turnRichCell__symbol{font-size:21px;margin-top:9px}.turnRichCell__name{font-size:6.8px}.turnRichCell__mass{font-size:4.2px}.turnRichCell--orb::before{width:50px;height:50px}.turnRichCell__orbTop{font-size:9px;top:6px}.turnRichCell__orbMain{font-size:16px}}
 
 .p-node.is-turn-match{
   box-shadow:
@@ -1020,77 +852,8 @@ header{
   filter:saturate(.72);
 }
 @media (max-width:839px){
-  .turnQuadrants{
-    grid-template-columns:repeat(2,max-content);
-    grid-template-areas:
-      "no ne"
-      "so se";
-    gap:10px;
-    justify-content:start;
-    align-items:start;
-    padding:10px;
-  }
-  .turnQuadrant__list{
-    grid-template-columns:repeat(4, 64px);
-    gap:6px;
-    justify-content:start;
-  }
-  .turnRichWrap{
-    width:64px;
-    grid-template-rows:auto 64px;
-    gap:3px;
-  }
-  .turnSolarDay{
-    min-height:12px;
-    font-size:7px;
-  }
-  .turnRichCell{
-    width:64px;
-    height:64px;
-    min-height:64px;
-    padding:6px 4px 8px;
-    border-radius:10px;
-  }
-  .turnRichCell__atomic,
-  .turnRichCell__corner{font-size:7.5px; top:5px;}
-  .turnRichCell__atomic,
-  .turnRichCell__corner--left{left:5px;}
-  .turnRichCell__corner--right{right:5px;}
-  .turnRichCell__symbol{font-size:21px; margin-top:9px;}
-  .turnRichCell__name{font-size:6.8px; margin-top:3px;}
-  .turnRichCell__mass{font-size:4.2px; bottom:5px; left:5px; right:5px;}
+  .turnQuadrants{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-
-
-.periodicPeekOverlay{position:fixed;inset:0;background:rgba(3,7,12,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9999;opacity:0;pointer-events:none;transition:opacity .18s ease;}
-.periodicPeekOverlay.is-open{opacity:1;pointer-events:auto;}
-.periodicPeekDialog{position:relative;width:min(92vw,360px);border:1px solid rgba(124,199,255,.24);border-radius:20px;background:radial-gradient(120% 120% at 20% 0%, rgba(124,199,255,.08), transparent 46%),linear-gradient(180deg, rgba(12,19,28,.96), rgba(8,13,20,.98));box-shadow:0 22px 70px rgba(0,0,0,.48);padding:18px 18px 16px;}
-.periodicPeekClose{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--text);font-size:18px;line-height:1;cursor:pointer;}
-.periodicPeekClose:hover{background:rgba(255,255,255,.09)}
-.periodicPeekCardWrap{display:flex;justify-content:center;margin:8px 0 14px;}
-.periodicPeekCard{width:220px;height:220px;display:flex;align-items:center;justify-content:center;}
-.periodicPeekCard .periodicPeekClone{width:220px;height:220px;border-radius:24px;overflow:hidden;cursor:default;transform:none !important;box-shadow:none !important;}
-.periodicPeekCard .periodicPeekClone.p-node{border-width:1.5px;}
-.periodicPeekCard .periodicPeekClone .p-el__atomic,.periodicPeekCard .periodicPeekClone .p-el__corner{font-size:24px;top:16px;}
-.periodicPeekCard .periodicPeekClone .p-el__corner--left{left:14px;}
-.periodicPeekCard .periodicPeekClone .p-el__corner--right{right:14px;}
-.periodicPeekCard .periodicPeekClone .p-el__symbol{font-size:72px;margin-top:32px;}
-.periodicPeekCard .periodicPeekClone .p-el__name{font-size:20px;font-weight:800;line-height:1.05;margin-top:8px;max-width:90%;}
-.periodicPeekCard .periodicPeekClone .p-el__mass{font-size:14px;font-weight:800;bottom:14px;letter-spacing:-0.01em;}
-.periodicPeekCard .periodicPeekClone.p-el--band-tight{padding:18px 10px 22px;}
-.periodicPeekCard .periodicPeekClone.p-el--band-tight .p-el__symbol{margin-top:40px;font-size:68px;}
-.periodicPeekCard .periodicPeekClone.p-el--band-tight .p-el__name{font-size:18px;margin-top:7px;}
-.periodicPeekCard .periodicPeekClone.p-el--band-tight .p-el__mass{bottom:12px;font-size:13px;}
-.periodicPeekCard .periodicPeekClone.p-orb{font-size:54px;background:linear-gradient(180deg,rgba(12,12,16,1),rgba(18,18,23,1));}
-.periodicPeekCard .periodicPeekClone.p-orb::before{width:176px;height:176px;}
-.periodicPeekCard .periodicPeekClone .orb-top{font-size:24px;top:18px;}
-.periodicPeekCard .periodicPeekClone .orb-main{font-size:56px;}
-.periodicPeekCard .periodicPeekClone.p-slab{font-size:54px;padding-top:34px;}
-.periodicPeekMeta{display:grid;gap:6px;text-align:center;}
-.periodicPeekTitle{font-size:18px;font-weight:800;line-height:1.15;}
-.periodicPeekSubtitle{font-size:13px;color:var(--muted);}
-.periodicPeekHint{font-size:11px;color:rgba(230,241,255,.55);}
-@media (max-width:599px){.periodicPeekDialog{width:min(94vw,330px);padding:16px 16px 14px;}.periodicPeekCard{width:190px;height:190px;}.periodicPeekCard .periodicPeekClone{width:190px;height:190px;border-radius:22px;}.periodicPeekCard .periodicPeekClone .p-el__atomic,.periodicPeekCard .periodicPeekClone .p-el__corner{font-size:21px;top:14px;}.periodicPeekCard .periodicPeekClone .p-el__symbol{font-size:62px;margin-top:28px;}.periodicPeekCard .periodicPeekClone .p-el__name{font-size:17px;}.periodicPeekCard .periodicPeekClone .p-el__mass{font-size:12px;bottom:12px;}.periodicPeekCard .periodicPeekClone.p-orb::before{width:150px;height:150px;}.periodicPeekCard .periodicPeekClone .orb-top{font-size:21px;top:17px;}.periodicPeekCard .periodicPeekClone .orb-main,.periodicPeekCard .periodicPeekClone.p-slab{font-size:48px;}}
 
 </style>
 </head>
@@ -1122,51 +885,52 @@ header{
 
 
     <section class="card turnExplorerCard">
-      <div class="turnWorkbench">
-        <div class="turnControlsPanel">
-          <div class="turnToolbar">
-            <div class="turnField">
-              <label for="turnYearType">Año del aparato</label>
-              <select id="turnYearType">
-                <option value="asume">Asume</option>
-                <option value="asimila">Asimila</option>
-                <option value="desafia">Desafía</option>
-                <option value="decide">Decide</option>
-              </select>
-            </div>
-            <div class="turnField turnField--small">
-              <label for="turnNumber">Vuelta</label>
-              <input id="turnNumber" type="number" inputmode="numeric" min="1" max="22" placeholder="1–22">
-            </div>
-            <div class="turnField">
-              <label for="turnRefDate">Fecha de referencia</label>
-              <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
-            </div>
-            <div class="turnActions">
-              <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
-              <button type="button" class="btn turnBtn" id="locateDateBtn">Ubicar fecha</button>
-              <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
-            </div>
-          </div>
-          <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.</div>
+      <div class="turnToolbar">
+        <div class="turnField">
+          <label for="turnYearType">Año del aparato</label>
+          <select id="turnYearType">
+            <option value="asume">Asume</option>
+            <option value="asimila">Asimila</option>
+            <option value="desafia">Desafía</option>
+            <option value="decide">Decide</option>
+          </select>
         </div>
-        <div class="turnVisualPanel">
-          <div class="turnQuadrants" id="turnQuadrants" hidden>
-            <div class="turnQuadrants__title" id="turnMetaTitle"></div>
-            <article class="turnQuadrant turnQuadrant--so">
-              <div class="turnQuadrant__list" data-cardinality="SO"></div>
-            </article>
-            <article class="turnQuadrant turnQuadrant--ne">
-              <div class="turnQuadrant__list" data-cardinality="NE"></div>
-            </article>
-            <article class="turnQuadrant turnQuadrant--no">
-              <div class="turnQuadrant__list" data-cardinality="NO"></div>
-            </article>
-            <article class="turnQuadrant turnQuadrant--se">
-              <div class="turnQuadrant__list" data-cardinality="SE"></div>
-            </article>
-          </div>
+        <div class="turnField turnField--small">
+          <label for="turnNumber">Vuelta</label>
+          <input id="turnNumber" type="number" inputmode="numeric" min="1" max="22" placeholder="1–22">
         </div>
+        <div class="turnField">
+          <label for="turnRefDate">Fecha de referencia</label>
+          <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
+        </div>
+        <div class="turnActions">
+          <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
+          <button type="button" class="btn turnBtn" id="locateDateBtn">Ubicar fecha</button>
+          <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
+        </div>
+      </div>
+      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.</div>
+      <div class="turnMeta" id="turnMeta" hidden>
+        <div class="turnMeta__title" id="turnMetaTitle"></div>
+        <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
+      </div>
+      <div class="turnQuadrants" id="turnQuadrants" hidden>
+        <article class="turnQuadrant turnQuadrant--so">
+          <div class="turnQuadrant__head">SO</div>
+          <div class="turnQuadrant__list" data-cardinality="SO"></div>
+        </article>
+        <article class="turnQuadrant turnQuadrant--ne">
+          <div class="turnQuadrant__head">NE</div>
+          <div class="turnQuadrant__list" data-cardinality="NE"></div>
+        </article>
+        <article class="turnQuadrant turnQuadrant--no">
+          <div class="turnQuadrant__head">NO</div>
+          <div class="turnQuadrant__list" data-cardinality="NO"></div>
+        </article>
+        <article class="turnQuadrant turnQuadrant--se">
+          <div class="turnQuadrant__head">SE</div>
+          <div class="turnQuadrant__list" data-cardinality="SE"></div>
+        </article>
       </div>
     </section>
     <section class="card">
@@ -1287,15 +1051,15 @@ header{
       // sin acción
     }
   }
-  var raw = getParam('el') || '';
+  var raw = getParam('el') || 'H';
   var key = raw.toUpperCase();
   var symbol = raw;
-  if (key) document.body.setAttribute('data-el', key);
+  document.body.setAttribute('data-el', key);
   var label = document.getElementById('periodicElementLabel');
   var colRowLabel = document.getElementById('colRowLabel');
-  var name = '';
+  var name = 'Elemento';
   var atomic = '';
-  var colRow = 'Tabla sin selección';
+  var colRow = 'Columna 1 · Fila 1';
 
   if (key === 'H') {
     name = 'Hydrogen';
@@ -3416,7 +3180,7 @@ header{
   }
 
   if(label){
-    label.textContent = key ? (symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '')) : 'Sin selección';
+    label.textContent = symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '');
   }
   if(colRowLabel){
     colRowLabel.textContent = colRow;
@@ -4097,7 +3861,7 @@ header{
     const bodyKey = (document.body.getAttribute('data-el') || '').trim().toUpperCase();
     if (bodyKey) return bodyKey;
     const m = /[?&]el=([^&]+)/.exec(window.location.search);
-    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : '';
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : 'H';
   }
 
   function findItemByKey(key){
@@ -4497,28 +4261,28 @@ header{
   const CARDINALITY_ORDER = ['SO','NE','NO','SE'];
   const TURN_COLORS = {
     asume: {
-      strong: 'rgba(124,199,255,.72)',
-      mid: 'rgba(124,199,255,.14)',
-      soft: 'rgba(124,199,255,.10)',
-      border: 'rgba(124,199,255,.68)'
+      strong: 'rgba(124,199,255,.98)',
+      mid: 'rgba(124,199,255,.24)',
+      soft: 'rgba(124,199,255,.18)',
+      border: 'rgba(124,199,255,.88)'
     },
     asimila: {
-      strong: 'rgba(255,214,98,.72)',
-      mid: 'rgba(255,214,98,.14)',
-      soft: 'rgba(255,214,98,.10)',
-      border: 'rgba(255,214,98,.68)'
+      strong: 'rgba(255,214,98,.98)',
+      mid: 'rgba(255,214,98,.24)',
+      soft: 'rgba(255,214,98,.18)',
+      border: 'rgba(255,214,98,.88)'
     },
     desafia: {
-      strong: 'rgba(255,106,106,.72)',
-      mid: 'rgba(255,106,106,.14)',
-      soft: 'rgba(255,106,106,.10)',
-      border: 'rgba(255,106,106,.68)'
+      strong: 'rgba(255,106,106,.98)',
+      mid: 'rgba(255,106,106,.24)',
+      soft: 'rgba(255,106,106,.18)',
+      border: 'rgba(255,106,106,.88)'
     },
     decide: {
-      strong: 'rgba(88,223,145,.72)',
-      mid: 'rgba(88,223,145,.14)',
-      soft: 'rgba(88,223,145,.10)',
-      border: 'rgba(88,223,145,.68)'
+      strong: 'rgba(88,223,145,.98)',
+      mid: 'rgba(88,223,145,.24)',
+      soft: 'rgba(88,223,145,.18)',
+      border: 'rgba(88,223,145,.88)'
     }
   };
   const TURN_DATA = {
@@ -5238,7 +5002,7 @@ header{
     return 'Aparato Nº ' + apIndexVal + ' · Año ' + yearPhase + ' — ' + phases[yearPhase];
   }
 
-  function solarDaysNumber(refObj){
+  function solarDaysText(refObj){
     function jdnG(y,m,d){
       var a=Math.floor((14-m)/12);
       var Y=y+4800-a;
@@ -5255,11 +5019,7 @@ header{
     var isGregorian = (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
     var j = isGregorian ? jdnG(y,m,d) : jdnJ(y,m,d);
     var jJulEpoch = jdnJ(1,1,1);
-    return (j - jJulEpoch + 1);
-  }
-
-  function solarDaysText(refObj){
-    return 'Días solares ' + solarDaysNumber(refObj);
+    return 'Días solares ' + (j - jJulEpoch + 1);
   }
 
   function applyReferenceDate(refObj){
@@ -5287,8 +5047,6 @@ header{
       localStorage.setItem('periodicTableRefDate', formatIso(refObj));
     } catch(e){}
 
-    var shouldHighlight = arguments.length > 1 ? !!arguments[1] : true;
-
     if (!md || !ordinal) {
       setStatus('La fecha cae en Anillo de Fuego o fuera del tramo activo del año.');
       updateMeta(null);
@@ -5298,17 +5056,8 @@ header{
       return;
     }
 
-    clearTurnClasses();
-    updateMeta(null);
-    var quadrants = document.getElementById('turnQuadrants');
-    if (quadrants) quadrants.hidden = true;
-
-    if (shouldHighlight) {
-      showTurn();
-      setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Se ajustó el año del aparato automáticamente.');
-    } else {
-      setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Tabla limpia, sin selección ni resaltado.');
-    }
+    showTurn();
+    setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Se ajustó el año del aparato automáticamente.');
   }
 
   function locateDate(){
@@ -5318,7 +5067,7 @@ header{
       setStatus('Ingresá una fecha válida en formato dd/mm/aaaa.');
       return;
     }
-    applyReferenceDate(parsed, true);
+    applyReferenceDate(parsed);
   }
 
   function getPhaseFromYear(refRaw){
@@ -5410,11 +5159,6 @@ header{
     document.documentElement.style.removeProperty('--turn-accent-mid');
     document.documentElement.style.removeProperty('--turn-accent-soft');
     document.documentElement.style.removeProperty('--turn-accent-border');
-    document.documentElement.style.removeProperty('--turn-frame-border');
-    document.documentElement.style.removeProperty('--turn-frame-bg-top');
-    document.documentElement.style.removeProperty('--turn-frame-bg-bottom');
-    document.documentElement.style.removeProperty('--turn-frame-ring');
-    document.documentElement.style.removeProperty('--turn-frame-shadow');
     document.querySelectorAll('.p-node.is-turn-match').forEach(function(el){ el.classList.remove('is-turn-match'); });
     document.querySelectorAll('.p-node.is-turn-dim').forEach(function(el){ el.classList.remove('is-turn-dim'); });
   }
@@ -5425,19 +5169,6 @@ header{
     document.documentElement.style.setProperty('--turn-accent-mid', palette.mid);
     document.documentElement.style.setProperty('--turn-accent-soft', palette.soft);
     document.documentElement.style.setProperty('--turn-accent-border', palette.border);
-    document.documentElement.style.setProperty('--turn-frame-border', palette.border);
-    document.documentElement.style.setProperty('--turn-frame-bg-top', palette.mid);
-    document.documentElement.style.setProperty('--turn-frame-bg-bottom', 'rgba(255,255,255,.015)');
-    document.documentElement.style.setProperty('--turn-frame-ring', palette.soft);
-    document.documentElement.style.setProperty('--turn-frame-shadow', palette.soft);
-  }
-
-  function escapeHtml(str){
-    return String(str == null ? '' : str)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;');
   }
 
   function quadrantCategory(item, row){
@@ -5457,89 +5188,48 @@ header{
     if ([2,3,4,5].includes(r) && ['F','Cl','Br','I'].includes(s)) return 'nonmetal';
     return item.category || '';
   }
-
   function quadrantNameColor(symbol){
     const s = String(symbol || '').trim();
-    if (['Fr','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) return '#f8fbff';
     if (['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].includes(s)) return '#009b39';
     if (['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].includes(s)) return '#ff1f1f';
     if (s === 'Br') return '#123f9e';
+    if (['Li','Na','K','Rb','Cs','Fr','Be','Mg','Ca','Sr','Ba','Ra','La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu'].includes(s)) return '#f8fbff';
     return '';
   }
-
   function quadrantSymbolColor(symbol){
     const s = String(symbol || '').trim();
-    if (['Fr','La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) return '#f8fbff';
+    if (['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba','Fr','Li','Na','K','Rb','Cs'].includes(s)) return '#f8fbff';
     return '';
   }
-
-  function currentTurnSolarContext(result){
-    var dateInput = document.getElementById('turnRefDate');
-    var parsed = parseFlexibleDate(dateInput && dateInput.value);
-    if (!parsed || !result || !result.cells || !result.cells.length) return null;
-    var total = solarDaysNumber(parsed);
-    var md = normalizedMonthDayFromRef(parsed);
-    var ordinal = md ? monthDayOrdinal(md) : null;
-    if (!ordinal) return null;
-    var turnStart = ((Number(result.turnNumber) - 1) * 16) + 1;
-    var currentOffset = ordinal - turnStart;
-    if (!(currentOffset >= 0 && currentOffset < result.cells.length)) currentOffset = 0;
-    var map = {};
-    result.cells.forEach(function(entry, idx){
-      var solar = total + (idx - currentOffset);
-      var mapKey = [String(entry.cardinality || ''), String(entry.rowNorm != null ? entry.rowNorm : entry.row || ''), String(entry.key || ''), String(entry.symbolNorm || normalizeSymbol(entry.symbol) || '')].join('|');
-      map[mapKey] = solar;
-    });
-    return map;
+  function escapeHtml(str){
+    return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-
-  function zoneForTurnRow(row){
-    const r = Number(row);
-    if (r === -2) return 'topForward';
-    if (r === -1) return 'topReverse';
-    if (r === 7 || r === 8) return 'bottomA';
-    if (r === 9) return 'bottomB';
-    return 'main';
-  }
-
-  function buildQuadrantCell(cell, solarMap){
-    const item = (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(cell.key || cell.symbol) : null;
-    const displayZone = zoneForTurnRow(cell.row);
-    const display = item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
-      ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
-      : { number: cell.number != null ? String(cell.number) : '', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' };
-    const category = quadrantCategory(item || { symbol: cell.symbol, category:'' }, cell.row);
+  function buildQuadrantCell(cell){
+    const keyRaw = String(cell.key || cell.symbol || '');
+    const item = window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey ? window.PERIODIC_LGC.findItemByKey(keyRaw) : null;
+    const isPromise = /^P\d+$/i.test(keyRaw);
+    const zone = Number(cell.row) === 9 ? 'bottomB' : ((Number(cell.row) === 7 || Number(cell.row) === 8) ? 'bottomA' : ((Number(cell.row) === -2) ? 'topForward' : ((Number(cell.row) === -1) ? 'topReverse' : 'main')));
+    const display = isPromise ? { number: String(cell.number || ''), symbol: String(Number(cell.number || 118) - 118), name:'', mass:'', cornerTopLeft:'', cornerTopRight:'' } : (item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay ? window.PERIODIC_LGC.readDisplay(item, zone, item.atomic) : { number: cell.number != null ? String(cell.number) : '', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' });
+    const category = isPromise ? 'orb' : quadrantCategory(item || { symbol: cell.symbol, category:'' }, cell.row);
     const nameColor = quadrantNameColor(display.symbol || (item && item.symbol) || cell.symbol);
     const symbolColor = quadrantSymbolColor(display.symbol || (item && item.symbol) || cell.symbol);
     const styles = [];
     if (nameColor) styles.push('--turn-name-color:' + nameColor);
     if (symbolColor) styles.push('--turn-symbol-color:' + symbolColor, '--turn-mass-color:' + symbolColor);
     const styleAttr = styles.length ? ' style="' + styles.join(';') + '"' : '';
-    const title = [display.symbol || cell.symbol || '', display.number || '', display.name || ''].filter(Boolean).join(' · ');
+    const title = isPromise ? ['Promesa', display.number].filter(Boolean).join(' · ') : [display.symbol || cell.symbol || '', display.number || '', display.name || ''].filter(Boolean).join(' · ');
     const keyAttr = escapeHtml(String((item && (item.key || item.symbol)) || cell.key || cell.symbol || ''));
-    const solarKey = [String(cell.cardinality || ''), String(cell.rowNorm != null ? cell.rowNorm : cell.row || ''), String(cell.key || ''), String(cell.symbolNorm || normalizeSymbol(cell.symbol) || '')].join('|');
-    const solarDay = solarMap && solarMap[solarKey] != null ? String(solarMap[solarKey]) : '';
-    return '<div class="turnRichWrap">' +
-      '<div class="turnSolarDay">' + escapeHtml(solarDay) + '</div>' +
-      '<button type="button" class="turnRichCell is-' + escapeHtml(category || 'transition') + ' is-clickable" data-turn-key="' + keyAttr + '" title="' + escapeHtml(title) + '">' +
-        (display.number !== '' ? '<span class="turnRichCell__atomic">' + escapeHtml(display.number) + '</span>' : '') +
-        (display.cornerTopLeft !== '' ? '<span class="turnRichCell__corner turnRichCell__corner--left">' + escapeHtml(display.cornerTopLeft) + '</span>' : '') +
-        (display.cornerTopRight !== '' ? '<span class="turnRichCell__corner turnRichCell__corner--right">' + escapeHtml(display.cornerTopRight) + '</span>' : '') +
-        '<span class="turnRichCell__symbol"' + styleAttr + '>' + escapeHtml(display.symbol || cell.symbol || '') + '</span>' +
-        '<span class="turnRichCell__name"' + styleAttr + '>' + escapeHtml(display.name || '') + '</span>' +
-        ((display.mass != null && display.mass !== '') ? '<span class="turnRichCell__mass"' + styleAttr + '>' + escapeHtml(display.mass) + '</span>' : '') +
-      '</button>' +
-    '</div>';
+    const inner = isPromise ? '<span class="turnRichCell__orbTop">' + escapeHtml(display.number) + '</span><span class="turnRichCell__orbMain">' + escapeHtml(display.symbol) + '</span>' : ((display.number !== '' ? '<span class="turnRichCell__atomic">' + escapeHtml(display.number) + '</span>' : '') + (display.cornerTopLeft !== '' ? '<span class="turnRichCell__corner turnRichCell__corner--left">' + escapeHtml(display.cornerTopLeft) + '</span>' : '') + (display.cornerTopRight !== '' ? '<span class="turnRichCell__corner turnRichCell__corner--right">' + escapeHtml(display.cornerTopRight) + '</span>' : '') + '<span class="turnRichCell__symbol"' + styleAttr + '>' + escapeHtml(display.symbol || cell.symbol || '') + '</span>' + '<span class="turnRichCell__name"' + styleAttr + '>' + escapeHtml(display.name || '') + '</span>' + ((display.mass != null && display.mass !== '') ? '<span class="turnRichCell__mass"' + styleAttr + '>' + escapeHtml(display.mass) + '</span>' : ''));
+    return '<div class="turnRichWrap"><button type="button" class="turnRichCell ' + (isPromise ? 'turnRichCell--orb ' : '') + 'is-' + escapeHtml(category || 'transition') + ' is-clickable" data-turn-key="' + keyAttr + '" title="' + escapeHtml(title) + '">' + inner + '</button></div>';
   }
-
-  function updateQuadrants(groups, solarMap){
+  function updateQuadrants(groups){
     const quadWrap = document.getElementById('turnQuadrants');
     if (!quadWrap) return;
     CARDINALITY_ORDER.forEach(function(card){
       const target = quadWrap.querySelector('[data-cardinality="' + card + '"]');
       if (!target) return;
-      const html = (groups[card] || []).map(function(cell){ return buildQuadrantCell(cell, solarMap); }).join('');
-      target.innerHTML = html || '<div class="turnRichWrap"><div class="turnSolarDay"></div><div class="turnRichCell turnRichCell--empty">—</div></div>';
+      const html = (groups[card] || []).map(buildQuadrantCell).join('');
+      target.innerHTML = html || '<div class="turnRichWrap"><div class="turnRichCell turnRichCell--empty">—</div></div>';
     });
     quadWrap.hidden = false;
     quadWrap.querySelectorAll('[data-turn-key]').forEach(function(btn){
@@ -5590,15 +5280,18 @@ header{
   }
 
   function updateMeta(result){
-    const quadrants = document.getElementById('turnQuadrants');
+    const meta = document.getElementById('turnMeta');
     const title = document.getElementById('turnMetaTitle');
-    if (!quadrants || !title) return;
+    const subtitle = document.getElementById('turnMetaSubtitle');
+    if (!meta || !title || !subtitle) return;
     if (!result) {
-      title.textContent = '';
+      meta.hidden = true;
       return;
     }
     const phaseLabel = result.yearType === 'desafia' ? 'Desafía' : result.yearType.charAt(0).toUpperCase() + result.yearType.slice(1);
     title.textContent = 'Vuelta ' + String(result.turnNumber) + ' · ' + phaseLabel;
+    subtitle.textContent = '16 elementos distribuidos en SO, NE, NO y SE. Regla usada: ' + (result.bucket === 'decide' ? 'Decide' : 'Base');
+    meta.hidden = false;
   }
 
   function showTurn(){
@@ -5613,7 +5306,7 @@ header{
     }
     const result = resolveTurn(yearType, turnValue);
     if (!result) {
-      setStatus('Todavía no está cargada la vuelta ' + String(turnValue).padStart(2,'0') + ' para este modo.');
+      setStatus('Todavía no está cargada la vuelta ' + String(turnValue) + ' para este modo.');
       updateMeta(null);
       document.getElementById('turnQuadrants').hidden = true;
       clearTurnClasses();
@@ -5621,8 +5314,8 @@ header{
     }
     var hits = applyTurn(result);
     updateMeta(result);
-    updateQuadrants(result.groups, currentTurnSolarContext(result));
-    setStatus('Se resaltó la vuelta ' + String(turnValue).padStart(2,'0') + ' en la Te Habla (' + hits + ' coincidencias visuales / ' + result.cells.length + ' celdas lógicas) y quedó preparada la distribución por cardinalidad.');
+    updateQuadrants(result.groups);
+    setStatus('Se resaltó la vuelta ' + String(turnValue) + ' en la Te Habla (' + hits + ' coincidencias visuales / ' + result.cells.length + ' celdas lógicas) y quedó preparada la distribución por cardinalidad.');
   }
 
   function clearTurn(){
@@ -5630,21 +5323,6 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
-
-    document.querySelectorAll('.p-el.is-active').forEach(function(el){ el.classList.remove('is-active'); });
-    document.body.removeAttribute('data-el');
-
-    try {
-      var url = new URL(window.location.href);
-      url.searchParams.delete('el');
-      window.history.replaceState({}, '', url.toString());
-    } catch(e){}
-
-    var colRowLabel = document.getElementById('colRowLabel');
-    var periodicElementLabel = document.getElementById('periodicElementLabel');
-    if (colRowLabel) colRowLabel.textContent = 'Tabla sin selección';
-    if (periodicElementLabel) periodicElementLabel.textContent = 'Sin selección';
-
     setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.');
   }
 
@@ -5681,7 +5359,7 @@ header{
     })(storedRef) : '';
     if (storedRef) {
       var parsedRef = parseFlexibleDate(storedRef);
-      if (parsedRef) applyReferenceDate(parsedRef, false);
+      if (parsedRef) applyReferenceDate(parsedRef);
     }
 
     window.PERIODIC_TURNS = {
@@ -5704,65 +5382,5 @@ header{
 })();
 </script>
 
-<div class="periodicPeekOverlay" id="periodicPeekOverlay" aria-hidden="true">
-  <div class="periodicPeekDialog" role="dialog" aria-modal="true" aria-labelledby="periodicPeekTitle">
-    <button type="button" class="periodicPeekClose" id="periodicPeekClose" aria-label="Cerrar">×</button>
-    <div class="periodicPeekCardWrap">
-      <div class="periodicPeekCard" id="periodicPeekCard"></div>
-    </div>
-    <div class="periodicPeekMeta">
-      <div class="periodicPeekTitle" id="periodicPeekTitle"></div>
-      <div class="periodicPeekSubtitle" id="periodicPeekSubtitle"></div>
-      <div class="periodicPeekHint">Toca afuera para cerrar</div>
-    </div>
-  </div>
-</div>
-
-<script>
-(function(){
-  var mount=document.getElementById("periodicGridMount");
-  var overlay=document.getElementById("periodicPeekOverlay");
-  var closeBtn=document.getElementById("periodicPeekClose");
-  var card=document.getElementById("periodicPeekCard");
-  var title=document.getElementById("periodicPeekTitle");
-  var subtitle=document.getElementById("periodicPeekSubtitle");
-  if(!mount||!overlay||!closeBtn||!card||!title||!subtitle) return;
-  function openFromButton(btn){
-    var clone=btn.cloneNode(true);
-    clone.classList.add("periodicPeekClone");
-    clone.removeAttribute("title");
-    clone.removeAttribute("type");
-    clone.disabled=true;
-    clone.setAttribute("aria-hidden","true");
-    card.innerHTML="";
-    card.appendChild(clone);
-    title.textContent=(btn.getAttribute("title")||btn.dataset.symbol||btn.dataset.key||"Elemento").replace(/ · /g," · ");
-    var bits=[];
-    if(btn.dataset.logicalRow) bits.push("Fila "+btn.dataset.logicalRow);
-    if(btn.dataset.displayNumber) bits.push("Nº "+btn.dataset.displayNumber);
-    if(btn.dataset.key && /^P\d+$/i.test(btn.dataset.key)) bits.unshift("Promesa");
-    if(btn.dataset.key && /^BN\d+$/i.test(btn.dataset.key)) bits.unshift("Espacio en negro");
-    subtitle.textContent=bits.join(" · ");
-    overlay.classList.add("is-open");
-    overlay.setAttribute("aria-hidden","false");
-    document.body.style.overflow="hidden";
-  }
-  function closePeek(){
-    overlay.classList.remove("is-open");
-    overlay.setAttribute("aria-hidden","true");
-    document.body.style.overflow="";
-  }
-  mount.addEventListener("click", function(e){
-    var btn=e.target.closest("button.p-node.is-clickable");
-    if(!btn) return;
-    e.preventDefault();
-    e.stopPropagation();
-    openFromButton(btn);
-  }, true);
-  overlay.addEventListener("click", function(e){ if(e.target===overlay) closePeek(); });
-  closeBtn.addEventListener("click", closePeek);
-  document.addEventListener("keydown", function(e){ if(e.key==="Escape" && overlay.classList.contains("is-open")) closePeek(); });
-})();
-</script>
 </body>
 </html>
