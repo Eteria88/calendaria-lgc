@@ -5577,15 +5577,56 @@ header{
     return 'main';
   }
 
+  function buildTurnLModel(rawKey){
+    const match = /^L(\d+)$/i.exec(String(rawKey || ''));
+    if (!match) return null;
+    const idx = parseInt(match[1], 10);
+    if (!(idx >= 1 && idx <= 128)) return null;
+    const col = Math.floor((idx - 1) / 4) + 1;
+    const slot = ((idx - 1) % 4) + 1;
+    const row = slot === 1 ? -2 : (slot === 2 ? -1 : (slot === 3 ? 7 : 9));
+    const forward = ['Fr','Ra','Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'];
+    const reverse = ['Og','Ts','Lv','Mc','Fl','Nh','Cn','Rg','Ds','Mt','Hs','Bh','Sg','Db','Rf','Lr','No','Md','Fm','Es','Cf','Bk','Cm','Am','Pu','Np','U','Pa','Th','Ac','Ra','Fr'];
+    const symbol = row === -1 ? reverse[col - 1] : forward[col - 1];
+    const baseItem = (window.PERIODIC_DATA || []).find(function(it){
+      return String(it.symbol || '').toUpperCase() === String(symbol).toUpperCase() && Number(it.row) >= 1 && Number(it.row) <= 8;
+    }) || (window.PERIODIC_DATA || []).find(function(it){
+      return String(it.symbol || '').toUpperCase() === String(symbol).toUpperCase();
+    }) || null;
+    const atomic = baseItem && baseItem.atomic != null ? Number(baseItem.atomic) : null;
+    const bandOrdinal = 224 + col;
+    return {
+      key: 'L' + idx,
+      row: row,
+      col: col,
+      symbol: symbol,
+      category: baseItem && baseItem.category ? baseItem.category : '',
+      name: baseItem && baseItem.name ? baseItem.name : '',
+      mass: baseItem && baseItem.mass != null ? baseItem.mass : '',
+      atomic: atomic,
+      display: {
+        number: '',
+        symbol: symbol,
+        name: baseItem && baseItem.name ? baseItem.name : '',
+        mass: baseItem && baseItem.mass != null ? baseItem.mass : '',
+        cornerTopLeft: row === -2 || row === -1 ? (atomic != null ? ('-' + String(atomic)) : '') : (row === 7 ? ('-' + String(bandOrdinal)) : (atomic != null ? String(atomic) : '')),
+        cornerTopRight: row === -2 || row === -1 ? String(bandOrdinal) : (row === 9 ? ('-' + String(bandOrdinal)) : '')
+      }
+    };
+  }
+
   function buildQuadrantCell(cell, solarMap){
     const rawKey = String(cell.key || cell.symbol || '');
-    const item = (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(rawKey) : null;
+    const lModel = buildTurnLModel(rawKey);
+    const item = lModel || ((window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(rawKey) : null);
     const displayZone = zoneForTurnRow(cell.row);
     const isPromise = /^P\d+$/i.test(rawKey);
     const isBlackSpace = /^BN\d+$/i.test(rawKey);
-    const display = item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
-      ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
-      : { number: cell.number != null ? String(cell.number) : '', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' };
+    const display = lModel
+      ? lModel.display
+      : (item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
+        ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
+        : { number: cell.number != null ? String(cell.number) : '', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' });
     const category = quadrantCategory(item || { symbol: cell.symbol, category:'' }, cell.row);
     const nameColor = quadrantNameColor(display.symbol || (item && item.symbol) || cell.symbol);
     const symbolColor = quadrantSymbolColor(display.symbol || (item && item.symbol) || cell.symbol);
