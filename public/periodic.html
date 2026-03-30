@@ -786,22 +786,97 @@ header{
   margin-bottom:8px;
 }
 .turnQuadrant__list{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  gap:8px;
+  align-items:stretch;
 }
-.turnChip{
-  display:inline-flex;
+.turnRichCell{
+  position:relative;
+  min-height:74px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  overflow:hidden;
+  padding:7px 6px 9px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  text-align:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  box-shadow:none;
+}
+.turnRichCell.is-clickable{cursor:pointer}
+.turnRichCell.is-clickable:hover{
+  transform:translateY(-1px);
+  border-color:rgba(124,199,255,.36);
+  box-shadow:0 8px 18px rgba(0,0,0,.18);
+}
+.turnRichCell__atomic,
+.turnRichCell__corner{
+  position:absolute;
+  top:5px;
+  font-size:9px;
+  line-height:1;
+  font-weight:800;
+  color:var(--turn-topnum-color, rgba(22,18,20,.94));
+}
+.turnRichCell__atomic{left:6px;}
+.turnRichCell__corner--left{left:6px;}
+.turnRichCell__corner--right{right:6px; text-align:right;}
+.turnRichCell__symbol{
+  margin-top:12px;
+  font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:21px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:-.04em;
+  color:var(--turn-symbol-color, inherit);
+}
+.turnRichCell__name{
+  margin-top:5px;
+  font-size:8px;
+  font-weight:800;
+  line-height:1.05;
+  max-width:96%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  color:var(--turn-name-color, rgba(28,23,25,.92));
+}
+.turnRichCell__mass{
+  position:absolute;
+  left:6px;
+  right:6px;
+  bottom:6px;
+  font-size:5.4px;
+  line-height:1;
+  font-weight:800;
+  color:var(--turn-mass-color, inherit);
+}
+.turnRichCell--empty{
   align-items:center;
   justify-content:center;
-  min-width:34px;
-  padding:6px 8px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.04);
-  font-size:12px;
-  line-height:1;
+  min-height:74px;
+  font-size:15px;
+  color:rgba(230,241,255,.52);
+  background:rgba(255,255,255,.03);
 }
+.turnRichCell.is-alkali{background:linear-gradient(180deg,rgba(237,104,77,.95),rgba(177,77,53,.88));}
+.turnRichCell.is-alkaline{background:linear-gradient(180deg,rgba(249,185,52,.96),rgba(197,135,20,.90));color:#241a03;--turn-topnum-color:rgba(255,249,243,.98);}
+.turnRichCell.is-transition{background:linear-gradient(180deg,rgba(171,211,244,.96),rgba(118,156,192,.90));color:#102032;}
+.turnRichCell.is-post-transition{background:linear-gradient(180deg,rgba(205,163,236,.96),rgba(151,108,190,.90));color:#1f1129;}
+.turnRichCell.is-metalloid{background:linear-gradient(180deg,rgba(253,221,58,.96),rgba(214,170,14,.90));color:#261f03;}
+.turnRichCell.is-nonmetal{background:linear-gradient(180deg,rgba(188,220,255,.96),rgba(141,177,209,.90));color:#112134;}
+.turnRichCell.is-halogen{background:linear-gradient(180deg,rgba(253,222,57,.96),rgba(223,181,12,.90));color:#241f03;}
+.turnRichCell.is-noble{background:linear-gradient(180deg,rgba(247,212,224,.98),rgba(236,188,206,.96));color:#2a1420;}
+.turnRichCell.is-lanthanide{background:linear-gradient(180deg,rgba(109,206,182,.96),rgba(55,138,120,.90));color:#061915;--turn-topnum-color:rgba(255,249,243,.98);}
+.turnRichCell.is-actinide{background:linear-gradient(180deg,rgba(135,229,131,.96),rgba(70,157,66,.91));color:#081b08;}
+.turnRichCell.is-top-red{background:linear-gradient(180deg,rgba(235,92,78,.96),rgba(173,59,50,.90));--turn-topnum-color:rgba(255,249,243,.98);}
+.turnRichCell.is-top-orange{background:linear-gradient(180deg,rgba(251,186,45,.96),rgba(194,131,16,.90));color:#291d03;--turn-topnum-color:rgba(255,249,243,.98);}
+.turnRichCell.is-top-blue{background:linear-gradient(180deg,rgba(156,201,242,.96),rgba(103,149,191,.90));color:#102033;}
+.turnRichCell.is-top-green{background:linear-gradient(180deg,rgba(186,224,178,.98),rgba(153,199,145,.96));color:#081b09;}
+.turnRichCell.is-top-gray{background:linear-gradient(180deg,rgba(211,211,211,.95),rgba(149,149,149,.90));color:#181818;}
 .turnQuadrant--so .turnQuadrant__head{color:#8fd4ff}
 .turnQuadrant--ne .turnQuadrant__head{color:#ffd86f}
 .turnQuadrant--no .turnQuadrant__head{color:#ffb08b}
@@ -843,6 +918,23 @@ header{
       "so se";
     gap:10px;
   }
+  .turnQuadrant__list{
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:6px;
+  }
+  .turnRichCell{
+    min-height:64px;
+    padding:6px 4px 8px;
+    border-radius:10px;
+  }
+  .turnRichCell__atomic,
+  .turnRichCell__corner{font-size:7.5px; top:4px;}
+  .turnRichCell__atomic,
+  .turnRichCell__corner--left{left:5px;}
+  .turnRichCell__corner--right{right:5px;}
+  .turnRichCell__symbol{font-size:16px; margin-top:11px;}
+  .turnRichCell__name{font-size:6.2px; margin-top:4px;}
+  .turnRichCell__mass{font-size:4.3px; bottom:5px; left:5px; right:5px;}
 }
 
 
@@ -5203,18 +5295,89 @@ header{
     document.documentElement.style.setProperty('--turn-accent-border', palette.border);
   }
 
+  function escapeHtml(str){
+    return String(str == null ? '' : str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  function quadrantCategory(item, row){
+    if (!item || !item.symbol) return '';
+    const s = String(item.symbol);
+    const r = Number(row);
+    if (s === 'Og') return 'top-gray';
+    if (s === 'Cn') return 'top-green';
+    if (r === 6 && s === 'At') return 'metalloid';
+    if (r === 6 && s === 'Po') return 'post-transition';
+    if ([-2,-1,7,8,9].includes(r) && ['Ts','Lv','Mc','Fl','Nh'].includes(s)) return 'top-gray';
+    if ([-2,-1,7,8,9].includes(r) && ['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].includes(s)) return 'top-blue';
+    if ([-2,-1,7,8,9].includes(r) && ['Rf','Db','Sg','Bh','Hs'].includes(s)) return 'top-green';
+    if ([-2,-1,7,8,9].includes(r) && ['Mt','Ds','Rg'].includes(s)) return 'top-gray';
+    if ([-2,-1,7,8,9].includes(r) && ['Ac','Th','Pa','U','Np'].includes(s)) return 'top-blue';
+    if ([4,5,6].includes(r) && ['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].includes(s)) return 'top-green';
+    if ([2,3,4,5].includes(r) && ['F','Cl','Br','I'].includes(s)) return 'nonmetal';
+    return item.category || '';
+  }
+
+  function quadrantNameColor(symbol){
+    const s = String(symbol || '').trim();
+    if (['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].includes(s)) return '#009b39';
+    if (['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].includes(s)) return '#ff1f1f';
+    if (s === 'Br') return '#123f9e';
+    return '';
+  }
+
+  function quadrantSymbolColor(symbol){
+    const s = String(symbol || '').trim();
+    if (['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) return '#f8fbff';
+    return '';
+  }
+
+  function buildQuadrantCell(cell){
+    const item = (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(cell.key || cell.symbol) : null;
+    const display = item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
+      ? window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic)
+      : { number: cell.number != null ? String(cell.number) : '', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' };
+    const category = quadrantCategory(item || { symbol: cell.symbol, category:'' }, cell.row);
+    const nameColor = quadrantNameColor(display.symbol || (item && item.symbol) || cell.symbol);
+    const symbolColor = quadrantSymbolColor(display.symbol || (item && item.symbol) || cell.symbol);
+    const styles = [];
+    if (nameColor) styles.push('--turn-name-color:' + nameColor);
+    if (symbolColor) styles.push('--turn-symbol-color:' + symbolColor, '--turn-mass-color:' + symbolColor);
+    const styleAttr = styles.length ? ' style="' + styles.join(';') + '"' : '';
+    const title = [display.symbol || cell.symbol || '', display.number || '', display.name || ''].filter(Boolean).join(' · ');
+    const keyAttr = escapeHtml(String((item && (item.key || item.symbol)) || cell.key || cell.symbol || ''));
+    return '<button type="button" class="turnRichCell is-' + escapeHtml(category || 'transition') + ' is-clickable" data-turn-key="' + keyAttr + '" title="' + escapeHtml(title) + '">' +
+      (display.number !== '' ? '<span class="turnRichCell__atomic">' + escapeHtml(display.number) + '</span>' : '') +
+      (display.cornerTopLeft !== '' ? '<span class="turnRichCell__corner turnRichCell__corner--left">' + escapeHtml(display.cornerTopLeft) + '</span>' : '') +
+      (display.cornerTopRight !== '' ? '<span class="turnRichCell__corner turnRichCell__corner--right">' + escapeHtml(display.cornerTopRight) + '</span>' : '') +
+      '<span class="turnRichCell__symbol"' + styleAttr + '>' + escapeHtml(display.symbol || cell.symbol || '') + '</span>' +
+      '<span class="turnRichCell__name"' + styleAttr + '>' + escapeHtml(display.name || '') + '</span>' +
+      ((display.mass != null && display.mass !== '') ? '<span class="turnRichCell__mass"' + styleAttr + '>' + escapeHtml(display.mass) + '</span>' : '') +
+    '</button>';
+  }
+
   function updateQuadrants(groups){
     const quadWrap = document.getElementById('turnQuadrants');
     if (!quadWrap) return;
     CARDINALITY_ORDER.forEach(function(card){
       const target = quadWrap.querySelector('[data-cardinality="' + card + '"]');
       if (!target) return;
-      const html = (groups[card] || []).map(function(cell){
-        return '<span class="turnChip">' + cell.symbol + '</span>';
-      }).join('');
-      target.innerHTML = html || '<span class="turnChip">—</span>';
+      const html = (groups[card] || []).map(buildQuadrantCell).join('');
+      target.innerHTML = html || '<div class="turnRichCell turnRichCell--empty">—</div>';
     });
     quadWrap.hidden = false;
+    quadWrap.querySelectorAll('[data-turn-key]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        const nextEl = String(btn.getAttribute('data-turn-key') || '').trim();
+        if (!nextEl) return;
+        const url = new URL(window.location.href);
+        url.searchParams.set('el', nextEl);
+        window.location.href = url.toString();
+      });
+    });
   }
 
   function applyTurn(result){
