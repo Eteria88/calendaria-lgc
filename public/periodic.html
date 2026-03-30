@@ -761,13 +761,12 @@ header{
 }
 .turnQuadrants{
   display:grid;
-  grid-template-columns:repeat(2,max-content);
+  grid-template-columns:repeat(2,minmax(0,1fr));
   grid-template-areas:
     "no ne"
     "so se";
   gap:12px;
-  align-items:start;
-  justify-content:start;
+  align-items:stretch;
 }
 .turnQuadrant{
   border:1px solid rgba(255,255,255,.08);
@@ -775,7 +774,6 @@ header{
   background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
   padding:10px;
   min-height:92px;
-  width:max-content;
 }
 .turnQuadrant--no{grid-area:no;}
 .turnQuadrant--ne{grid-area:ne;}
@@ -789,21 +787,17 @@ header{
 }
 .turnQuadrant__list{
   display:grid;
-  grid-template-columns:repeat(4, 76px);
+  grid-template-columns:repeat(4, minmax(0,1fr));
   gap:8px;
-  align-items:start;
-  justify-content:start;
-  width:max-content;
+  align-items:stretch;
 }
 .turnRichCell{
   position:relative;
-  width:76px;
-  height:76px;
-  min-height:76px;
-  border-radius:10px;
+  min-height:74px;
+  border-radius:12px;
   border:1px solid rgba(255,255,255,.10);
   overflow:hidden;
-  padding:7px 5px 9px;
+  padding:7px 6px 9px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -821,30 +815,30 @@ header{
 .turnRichCell__atomic,
 .turnRichCell__corner{
   position:absolute;
-  top:6px;
+  top:5px;
   font-size:9px;
   line-height:1;
   font-weight:800;
   color:var(--turn-topnum-color, rgba(22,18,20,.94));
 }
-.turnRichCell__atomic{left:5px;}
-.turnRichCell__corner--left{left:5px;}
-.turnRichCell__corner--right{right:5px; text-align:right;}
+.turnRichCell__atomic{left:6px;}
+.turnRichCell__corner--left{left:6px;}
+.turnRichCell__corner--right{right:6px; text-align:right;}
 .turnRichCell__symbol{
-  margin-top:10px;
+  margin-top:12px;
   font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:25px;
+  font-size:21px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.04em;
   color:var(--turn-symbol-color, inherit);
 }
 .turnRichCell__name{
-  margin-top:3px;
-  font-size:7.3px;
+  margin-top:5px;
+  font-size:8px;
   font-weight:800;
   line-height:1.05;
-  max-width:90%;
+  max-width:96%;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -852,10 +846,10 @@ header{
 }
 .turnRichCell__mass{
   position:absolute;
-  left:5px;
-  right:5px;
-  bottom:5px;
-  font-size:4.6px;
+  left:6px;
+  right:6px;
+  bottom:6px;
+  font-size:5.4px;
   line-height:1;
   font-weight:800;
   color:var(--turn-mass-color, inherit);
@@ -863,9 +857,7 @@ header{
 .turnRichCell--empty{
   align-items:center;
   justify-content:center;
-  min-height:76px;
-  width:76px;
-  height:76px;
+  min-height:74px;
   font-size:15px;
   color:rgba(230,241,255,.52);
   background:rgba(255,255,255,.03);
@@ -920,34 +912,29 @@ header{
 }
 @media (max-width:839px){
   .turnQuadrants{
-    grid-template-columns:repeat(2,max-content);
+    grid-template-columns:repeat(2,minmax(0,1fr));
     grid-template-areas:
       "no ne"
       "so se";
     gap:10px;
-    justify-content:start;
-    align-items:start;
   }
   .turnQuadrant__list{
-    grid-template-columns:repeat(4, 64px);
+    grid-template-columns:repeat(4, minmax(0,1fr));
     gap:6px;
-    justify-content:start;
   }
   .turnRichCell{
-    width:64px;
-    height:64px;
     min-height:64px;
     padding:6px 4px 8px;
     border-radius:10px;
   }
   .turnRichCell__atomic,
-  .turnRichCell__corner{font-size:7.5px; top:5px;}
+  .turnRichCell__corner{font-size:7.5px; top:4px;}
   .turnRichCell__atomic,
   .turnRichCell__corner--left{left:5px;}
   .turnRichCell__corner--right{right:5px;}
-  .turnRichCell__symbol{font-size:21px; margin-top:9px;}
-  .turnRichCell__name{font-size:6.8px; margin-top:3px;}
-  .turnRichCell__mass{font-size:4.2px; bottom:5px; left:5px; right:5px;}
+  .turnRichCell__symbol{font-size:16px; margin-top:11px;}
+  .turnRichCell__name{font-size:6.2px; margin-top:4px;}
+  .turnRichCell__mass{font-size:4.3px; bottom:5px; left:5px; right:5px;}
 }
 
 
@@ -5128,7 +5115,7 @@ header{
     return 'Aparato Nº ' + apIndexVal + ' · Año ' + yearPhase + ' — ' + phases[yearPhase];
   }
 
-  function solarDaysText(refObj){
+  function totalSolarDayValue(refObj){
     function jdnG(y,m,d){
       var a=Math.floor((14-m)/12);
       var Y=y+4800-a;
@@ -5145,7 +5132,11 @@ header{
     var isGregorian = (y>1582) || (y===1582 && (m>10 || (m===10 && d>=15)));
     var j = isGregorian ? jdnG(y,m,d) : jdnJ(y,m,d);
     var jJulEpoch = jdnJ(1,1,1);
-    return 'Días solares ' + (j - jJulEpoch + 1);
+    return j - jJulEpoch + 1;
+  }
+
+  function solarDaysText(refObj){
+    return 'Días solares ' + totalSolarDayValue(refObj);
   }
 
   function applyReferenceDate(refObj){
@@ -5272,14 +5263,15 @@ header{
     const bucket = turnBucket(yearType, turnNumber);
     const source = (TURN_DATA[bucket] && TURN_DATA[bucket][turnNumber]) || (TURN_DATA.base && TURN_DATA.base[turnNumber]);
     if (!source) return null;
-    const cells = source.cells.map(function(cell){
+    const cells = source.cells.map(function(cell, index){
       const derivedKey = rowSymbolToKey(cell);
       const fallbackKey = normalizeSymbol(cell.key || cell.symbol || '');
       return Object.assign({}, cell, {
         key: fallbackKey || derivedKey,
         symbolNorm: normalizeSymbol(cell.symbol),
         rowNorm: Number(cell.row),
-        numberNorm: cell.number != null ? String(cell.number) : ''
+        numberNorm: cell.number != null ? String(cell.number) : '',
+        turnIndex: index
       });
     });
     const groups = {};
@@ -5348,7 +5340,22 @@ header{
     return '';
   }
 
-  function buildQuadrantCell(cell){
+  function readTurnSolarContext(turnNumber){
+    var dateInput = document.getElementById('turnRefDate');
+    var parsedRef = parseFlexibleDate(dateInput && dateInput.value);
+    if (!parsedRef) return null;
+    var currentSolarDay = totalSolarDayValue(parsedRef);
+    var currentMd = normalizedMonthDayFromRef(parsedRef);
+    var currentOrdinal = currentMd ? monthDayOrdinal(currentMd) : null;
+    if (!currentOrdinal) return null;
+    return {
+      currentSolarDay: currentSolarDay,
+      currentOrdinal: currentOrdinal,
+      turnStartOrdinal: ((Number(turnNumber) - 1) * 16) + 1
+    };
+  }
+
+  function buildQuadrantCell(cell, solarCtx){
     const item = (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(cell.key || cell.symbol) : null;
     const display = item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
       ? window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic)
@@ -5361,9 +5368,11 @@ header{
     if (symbolColor) styles.push('--turn-symbol-color:' + symbolColor, '--turn-mass-color:' + symbolColor);
     const styleAttr = styles.length ? ' style="' + styles.join(';') + '"' : '';
     const title = [display.symbol || cell.symbol || '', display.number || '', display.name || ''].filter(Boolean).join(' · ');
+    const solarDay = solarCtx ? (solarCtx.currentSolarDay + (((solarCtx.turnStartOrdinal + Number(cell.turnIndex || 0)) - solarCtx.currentOrdinal))) : null;
     const keyAttr = escapeHtml(String((item && (item.key || item.symbol)) || cell.key || cell.symbol || ''));
     return '<button type="button" class="turnRichCell is-' + escapeHtml(category || 'transition') + ' is-clickable" data-turn-key="' + keyAttr + '" title="' + escapeHtml(title) + '">' +
       (display.number !== '' ? '<span class="turnRichCell__atomic">' + escapeHtml(display.number) + '</span>' : '') +
+      (solarDay != null ? '<span class="turnRichCell__solar">DS ' + escapeHtml(String(solarDay)) + '</span>' : '') +
       (display.cornerTopLeft !== '' ? '<span class="turnRichCell__corner turnRichCell__corner--left">' + escapeHtml(display.cornerTopLeft) + '</span>' : '') +
       (display.cornerTopRight !== '' ? '<span class="turnRichCell__corner turnRichCell__corner--right">' + escapeHtml(display.cornerTopRight) + '</span>' : '') +
       '<span class="turnRichCell__symbol"' + styleAttr + '>' + escapeHtml(display.symbol || cell.symbol || '') + '</span>' +
@@ -5372,13 +5381,14 @@ header{
     '</button>';
   }
 
-  function updateQuadrants(groups){
+  function updateQuadrants(groups, result){
     const quadWrap = document.getElementById('turnQuadrants');
     if (!quadWrap) return;
     CARDINALITY_ORDER.forEach(function(card){
       const target = quadWrap.querySelector('[data-cardinality="' + card + '"]');
       if (!target) return;
-      const html = (groups[card] || []).map(buildQuadrantCell).join('');
+      const solarCtx = result ? readTurnSolarContext(result.turnNumber) : null;
+      const html = (groups[card] || []).map(function(cell){ return buildQuadrantCell(cell, solarCtx); }).join('');
       target.innerHTML = html || '<div class="turnRichCell turnRichCell--empty">—</div>';
     });
     quadWrap.hidden = false;
@@ -5464,7 +5474,7 @@ header{
     }
     var hits = applyTurn(result);
     updateMeta(result);
-    updateQuadrants(result.groups);
+    updateQuadrants(result.groups, result);
     setStatus('Se resaltó la vuelta ' + String(turnValue).padStart(2,'0') + ' en la Te Habla (' + hits + ' coincidencias visuales / ' + result.cells.length + ' celdas lógicas) y quedó preparada la distribución por cardinalidad.');
   }
 
