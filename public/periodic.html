@@ -768,6 +768,12 @@ header{
   gap:12px;
   align-items:start;
   justify-content:start;
+  width:max-content;
+  padding:12px;
+  border-radius:18px;
+  border:1px solid var(--turn-frame-border, rgba(255,255,255,.08));
+  background:linear-gradient(180deg, var(--turn-frame-bg-top, rgba(255,255,255,.025)), var(--turn-frame-bg-bottom, rgba(255,255,255,.012)));
+  box-shadow:0 0 0 1px var(--turn-frame-ring, rgba(255,255,255,.02)), 0 14px 30px var(--turn-frame-shadow, rgba(0,0,0,.16));
 }
 .turnQuadrant{
   border:1px solid rgba(255,255,255,.08);
@@ -944,6 +950,7 @@ header{
     gap:10px;
     justify-content:start;
     align-items:start;
+    padding:10px;
   }
   .turnQuadrant__list{
     grid-template-columns:repeat(4, 64px);
@@ -5326,6 +5333,11 @@ header{
     document.documentElement.style.removeProperty('--turn-accent-mid');
     document.documentElement.style.removeProperty('--turn-accent-soft');
     document.documentElement.style.removeProperty('--turn-accent-border');
+    document.documentElement.style.removeProperty('--turn-frame-border');
+    document.documentElement.style.removeProperty('--turn-frame-bg-top');
+    document.documentElement.style.removeProperty('--turn-frame-bg-bottom');
+    document.documentElement.style.removeProperty('--turn-frame-ring');
+    document.documentElement.style.removeProperty('--turn-frame-shadow');
     document.querySelectorAll('.p-node.is-turn-match').forEach(function(el){ el.classList.remove('is-turn-match'); });
     document.querySelectorAll('.p-node.is-turn-dim').forEach(function(el){ el.classList.remove('is-turn-dim'); });
   }
@@ -5336,6 +5348,11 @@ header{
     document.documentElement.style.setProperty('--turn-accent-mid', palette.mid);
     document.documentElement.style.setProperty('--turn-accent-soft', palette.soft);
     document.documentElement.style.setProperty('--turn-accent-border', palette.border);
+    document.documentElement.style.setProperty('--turn-frame-border', palette.border);
+    document.documentElement.style.setProperty('--turn-frame-bg-top', palette.mid);
+    document.documentElement.style.setProperty('--turn-frame-bg-bottom', 'rgba(255,255,255,.015)');
+    document.documentElement.style.setProperty('--turn-frame-ring', palette.soft);
+    document.documentElement.style.setProperty('--turn-frame-shadow', palette.soft);
   }
 
   function escapeHtml(str){
