@@ -914,6 +914,8 @@ header{
   text-align:center;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
   box-shadow:none;
+  color:var(--text);
+  font:inherit;
 }
 .turnRichCell.is-clickable{cursor:pointer}
 .turnRichCell.is-clickable:hover{
@@ -973,8 +975,8 @@ header{
   color:rgba(230,241,255,.52);
   background:rgba(255,255,255,.03);
 }
-.turnRichCell.is-alkali{background:linear-gradient(180deg,rgba(237,104,77,.95),rgba(177,77,53,.88));}
-.turnRichCell.is-alkaline{background:linear-gradient(180deg,rgba(249,185,52,.96),rgba(197,135,20,.90));color:#241a03;--turn-topnum-color:rgba(255,249,243,.98);}
+.turnRichCell.is-alkali{background:linear-gradient(180deg,rgba(237,104,77,.95),rgba(177,77,53,.88));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98);}
+.turnRichCell.is-alkaline{background:linear-gradient(180deg,rgba(249,185,52,.96),rgba(197,135,20,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98);}
 .turnRichCell.is-transition{background:linear-gradient(180deg,rgba(171,211,244,.96),rgba(118,156,192,.90));color:#102032;}
 .turnRichCell.is-post-transition{background:linear-gradient(180deg,rgba(205,163,236,.96),rgba(151,108,190,.90));color:#1f1129;}
 .turnRichCell.is-metalloid{background:linear-gradient(180deg,rgba(253,221,58,.96),rgba(214,170,14,.90));color:#261f03;}
@@ -983,8 +985,8 @@ header{
 .turnRichCell.is-noble{background:linear-gradient(180deg,rgba(247,212,224,.98),rgba(236,188,206,.96));color:#2a1420;}
 .turnRichCell.is-lanthanide{background:linear-gradient(180deg,rgba(109,206,182,.96),rgba(55,138,120,.90));color:#061915;--turn-topnum-color:rgba(255,249,243,.98);}
 .turnRichCell.is-actinide{background:linear-gradient(180deg,rgba(135,229,131,.96),rgba(70,157,66,.91));color:#081b08;}
-.turnRichCell.is-top-red{background:linear-gradient(180deg,rgba(235,92,78,.96),rgba(173,59,50,.90));--turn-topnum-color:rgba(255,249,243,.98);}
-.turnRichCell.is-top-orange{background:linear-gradient(180deg,rgba(251,186,45,.96),rgba(194,131,16,.90));color:#291d03;--turn-topnum-color:rgba(255,249,243,.98);}
+.turnRichCell.is-top-red{background:linear-gradient(180deg,rgba(235,92,78,.96),rgba(173,59,50,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98);}
+.turnRichCell.is-top-orange{background:linear-gradient(180deg,rgba(251,186,45,.96),rgba(194,131,16,.90));color:#f8fbff;--turn-topnum-color:rgba(255,249,243,.98);}
 .turnRichCell.is-top-blue{background:linear-gradient(180deg,rgba(156,201,242,.96),rgba(103,149,191,.90));color:#102033;}
 .turnRichCell.is-top-green{background:linear-gradient(180deg,rgba(186,224,178,.98),rgba(153,199,145,.96));color:#081b09;}
 .turnRichCell.is-top-gray{background:linear-gradient(180deg,rgba(211,211,211,.95),rgba(149,149,149,.90));color:#181818;}
@@ -5458,6 +5460,7 @@ header{
 
   function quadrantNameColor(symbol){
     const s = String(symbol || '').trim();
+    if (['Fr','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) return '#f8fbff';
     if (['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].includes(s)) return '#009b39';
     if (['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].includes(s)) return '#ff1f1f';
     if (s === 'Br') return '#123f9e';
@@ -5466,7 +5469,7 @@ header{
 
   function quadrantSymbolColor(symbol){
     const s = String(symbol || '').trim();
-    if (['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) return '#f8fbff';
+    if (['Fr','La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) return '#f8fbff';
     return '';
   }
 
@@ -5490,10 +5493,20 @@ header{
     return map;
   }
 
+  function zoneForTurnRow(row){
+    const r = Number(row);
+    if (r === -2) return 'topForward';
+    if (r === -1) return 'topReverse';
+    if (r === 7 || r === 8) return 'bottomA';
+    if (r === 9) return 'bottomB';
+    return 'main';
+  }
+
   function buildQuadrantCell(cell, solarMap){
     const item = (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(cell.key || cell.symbol) : null;
+    const displayZone = zoneForTurnRow(cell.row);
     const display = item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
-      ? window.PERIODIC_LGC.readDisplay(item, 'main', item.atomic)
+      ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
       : { number: cell.number != null ? String(cell.number) : '', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' };
     const category = quadrantCategory(item || { symbol: cell.symbol, category:'' }, cell.row);
     const nameColor = quadrantNameColor(display.symbol || (item && item.symbol) || cell.symbol);
@@ -5585,7 +5598,7 @@ header{
       return;
     }
     const phaseLabel = result.yearType === 'desafia' ? 'Desafía' : result.yearType.charAt(0).toUpperCase() + result.yearType.slice(1);
-    title.textContent = 'Vuelta ' + String(result.turnNumber).padStart(2,'0') + ' · ' + phaseLabel;
+    title.textContent = 'Vuelta ' + String(result.turnNumber) + ' · ' + phaseLabel;
   }
 
   function showTurn(){
