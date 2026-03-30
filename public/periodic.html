@@ -5936,8 +5936,8 @@ header{
       .replace(/^Aparato\s*Nº\s*/, 'Aparato ')
       .replace(/\s*·\s*Año\s*/, ' - Año ')
       .replace(/\s*[—–-]\s*/, ' ');
-    title.innerHTML = '<span class="turnQuadrants__metaLeft">' + esc(apparatusCompact) + '</span>' +
-      '<span class="turnQuadrants__metaRight">Vuelta ' + esc(String(result.turnNumber)) + '</span>';
+    title.innerHTML = '<span class="turnQuadrants__metaLeft">' + escapeHtml(apparatusCompact) + '</span>' +
+      '<span class="turnQuadrants__metaRight">Vuelta ' + escapeHtml(String(result.turnNumber)) + '</span>';
   }
 
   function showTurn(){
