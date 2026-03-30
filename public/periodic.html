@@ -761,19 +761,21 @@ header{
 }
 .turnQuadrants{
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:repeat(2,max-content);
   grid-template-areas:
     "no ne"
     "so se";
   gap:12px;
-  align-items:stretch;
+  align-items:start;
+  justify-content:start;
 }
 .turnQuadrant{
   border:1px solid rgba(255,255,255,.08);
   border-radius:14px;
   background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
-  padding:10px 12px 10px 10px;
+  padding:10px;
   min-height:92px;
+  width:max-content;
 }
 .turnQuadrant--no{grid-area:no;}
 .turnQuadrant--ne{grid-area:ne;}
@@ -791,6 +793,7 @@ header{
   gap:8px;
   align-items:start;
   justify-content:start;
+  width:max-content;
 }
 .turnRichCell{
   position:relative;
@@ -923,6 +926,7 @@ header{
       "so se";
     gap:10px;
     justify-content:start;
+    align-items:start;
   }
   .turnQuadrant__list{
     grid-template-columns:repeat(4, 64px);
