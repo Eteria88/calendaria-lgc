@@ -942,6 +942,32 @@ header{
   border-color:rgba(124,199,255,.36);
   box-shadow:0 8px 18px rgba(0,0,0,.18);
 }
+.turnRichCell.is-current-day{
+  border-color:var(--turn-accent-border, rgba(255,214,98,.92));
+  box-shadow:
+    inset 0 0 0 2px var(--turn-accent-strong, rgba(255,214,98,.98)),
+    0 0 0 2px var(--turn-accent-mid, rgba(255,214,98,.24)),
+    0 10px 24px var(--turn-accent-soft, rgba(255,214,98,.18));
+  transform:translateY(-1px);
+}
+.turnRichCell--orb.is-current-day::after{
+  content:"";
+  position:absolute;
+  inset:3px;
+  border-radius:999px;
+  border:2px solid var(--turn-accent-border, rgba(255,214,98,.92));
+  box-shadow:0 0 12px var(--turn-accent-soft, rgba(255,214,98,.24));
+  pointer-events:none;
+}
+.turnRichCell--slab.is-current-day::after{
+  content:"";
+  position:absolute;
+  inset:3px;
+  border-radius:8px;
+  border:2px solid var(--turn-accent-border, rgba(255,214,98,.92));
+  box-shadow:0 0 12px var(--turn-accent-soft, rgba(255,214,98,.24));
+  pointer-events:none;
+}
 .turnRichCell__atomic,
 .turnRichCell__corner{
   position:absolute;
@@ -5691,6 +5717,7 @@ header{
       var mapKey = [String(entry.cardinality || ''), String(entry.rowNorm != null ? entry.rowNorm : entry.row || ''), String(entry.key || ''), String(entry.symbolNorm || normalizeSymbol(entry.symbol) || '')].join('|');
       map[mapKey] = solar;
     });
+    map.__currentSolarDay = String(total);
     return map;
   }
 
@@ -5766,8 +5793,9 @@ header{
     const solarKey = [String(cell.cardinality || ''), String(cell.rowNorm != null ? cell.rowNorm : cell.row || ''), String(cell.key || ''), String(cell.symbolNorm || normalizeSymbol(cell.symbol) || '')].join('|');
     const solarDay = solarMap && solarMap[solarKey] != null ? String(solarMap[solarKey]) : '';
     const dateDow = solarDay ? dateDowLabelFromSolarDay(solarDay) : '';
+    const isCurrentDay = !!(solarDay && solarMap && String(solarMap.__currentSolarDay || '') === String(solarDay));
     let innerHtml = '';
-    let extraClass = ' is-' + escapeHtml(category || 'transition');
+    let extraClass = ' is-' + escapeHtml(category || 'transition') + (isCurrentDay ? ' is-current-day' : '');
     if (isPromise) {
       extraClass = ' turnRichCell--orb';
       innerHtml = '<span class="turnRichCell__orbTop">' + escapeHtml(String(cell.number || '')) + '</span>' +
