@@ -740,8 +740,10 @@ header{
 }
 .turnBtn{height:40px;font-size:13px;padding:0 14px}
 .turnStatus{
-  font-size:13px;
-  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+  color:rgba(159,179,200,.78);
+  max-width:36ch;
 }
 .turnQuadrants__title{
   grid-column:1 / -1;
@@ -749,7 +751,7 @@ header{
   font-weight:700;
   line-height:1.2;
   color:var(--text);
-  margin:0 0 2px 0;
+  margin:0 0 8px 0;
   padding:0 2px;
 }
 
@@ -766,8 +768,10 @@ header{
 }
 .turnVisualPanel{
   display:grid;
-  gap:12px;
+  gap:8px;
   min-width:0;
+  align-content:start;
+  padding-top:2px;
 }
 .turnControlsPanel .turnToolbar{
   display:grid;
@@ -810,17 +814,17 @@ header{
   align-items:start;
   justify-content:start;
   width:max-content;
-  padding:12px;
+  padding:10px 12px 12px;
   border-radius:18px;
   border:1px solid var(--turn-frame-border, rgba(255,255,255,.08));
-  background:linear-gradient(180deg, var(--turn-frame-bg-top, rgba(255,255,255,.025)), var(--turn-frame-bg-bottom, rgba(255,255,255,.012)));
-  box-shadow:0 0 0 1px var(--turn-frame-ring, rgba(255,255,255,.02)), 0 14px 30px var(--turn-frame-shadow, rgba(0,0,0,.16));
+  background:linear-gradient(180deg, var(--turn-frame-bg-top, rgba(255,255,255,.018)), var(--turn-frame-bg-bottom, rgba(255,255,255,.008)));
+  box-shadow:0 0 0 1px var(--turn-frame-ring, rgba(255,255,255,.015)), 0 10px 22px var(--turn-frame-shadow, rgba(0,0,0,.12));
 }
 .turnQuadrant{
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.07);
   border-radius:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
-  padding:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+  padding:9px;
   min-height:92px;
   width:max-content;
 }
@@ -4453,28 +4457,28 @@ header{
   const CARDINALITY_ORDER = ['SO','NE','NO','SE'];
   const TURN_COLORS = {
     asume: {
-      strong: 'rgba(124,199,255,.98)',
-      mid: 'rgba(124,199,255,.24)',
-      soft: 'rgba(124,199,255,.18)',
-      border: 'rgba(124,199,255,.88)'
+      strong: 'rgba(124,199,255,.72)',
+      mid: 'rgba(124,199,255,.14)',
+      soft: 'rgba(124,199,255,.10)',
+      border: 'rgba(124,199,255,.68)'
     },
     asimila: {
-      strong: 'rgba(255,214,98,.98)',
-      mid: 'rgba(255,214,98,.24)',
-      soft: 'rgba(255,214,98,.18)',
-      border: 'rgba(255,214,98,.88)'
+      strong: 'rgba(255,214,98,.72)',
+      mid: 'rgba(255,214,98,.14)',
+      soft: 'rgba(255,214,98,.10)',
+      border: 'rgba(255,214,98,.68)'
     },
     desafia: {
-      strong: 'rgba(255,106,106,.98)',
-      mid: 'rgba(255,106,106,.24)',
-      soft: 'rgba(255,106,106,.18)',
-      border: 'rgba(255,106,106,.88)'
+      strong: 'rgba(255,106,106,.72)',
+      mid: 'rgba(255,106,106,.14)',
+      soft: 'rgba(255,106,106,.10)',
+      border: 'rgba(255,106,106,.68)'
     },
     decide: {
-      strong: 'rgba(88,223,145,.98)',
-      mid: 'rgba(88,223,145,.24)',
-      soft: 'rgba(88,223,145,.18)',
-      border: 'rgba(88,223,145,.88)'
+      strong: 'rgba(88,223,145,.72)',
+      mid: 'rgba(88,223,145,.14)',
+      soft: 'rgba(88,223,145,.10)',
+      border: 'rgba(88,223,145,.68)'
     }
   };
   const TURN_DATA = {
