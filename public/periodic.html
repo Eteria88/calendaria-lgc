@@ -5922,22 +5922,39 @@ header{
     const quadrants = document.getElementById('turnQuadrants');
     const title = document.getElementById('turnMetaTitle');
     if (!quadrants || !title) return;
-    if (!result) {
-      title.innerHTML = '';
-      return;
-    }
-    const phaseLabel = result.yearType === 'desafia' ? 'Desafía' : result.yearType.charAt(0).toUpperCase() + result.yearType.slice(1);
+    title.innerHTML = '';
+    if (!result) return;
+
     let refObj = null;
     const dateInput = document.getElementById('turnRefDate');
-    if (dateInput && typeof parseRefDate === 'function') refObj = parseRefDate(dateInput.value);
+    if (dateInput && typeof parseFlexibleDate === 'function') refObj = parseFlexibleDate(dateInput.value);
+    if (!refObj && dateInput && typeof parseFlexDate === 'function') refObj = parseFlexDate(dateInput.value);
     if (!refObj) refObj = todayRefDate();
-    const apparatusText = typeof apparatusHeaderText === 'function' ? apparatusHeaderText(refObj) : '';
-    const apparatusCompact = apparatusText
-      .replace(/^Aparato\s*Nº\s*/, 'Aparato ')
-      .replace(/\s*·\s*Año\s*/, ' - Año ')
-      .replace(/\s*[—–-]\s*/, ' ');
-    title.innerHTML = '<span class="turnQuadrants__metaLeft">' + escapeHtml(apparatusCompact) + '</span>' +
-      '<span class="turnQuadrants__metaRight">Vuelta ' + escapeHtml(String(result.turnNumber)) + '</span>';
+
+    let apparatusCompact = '';
+    if (typeof apparatusHeaderText === 'function') {
+      apparatusCompact = String(apparatusHeaderText(refObj) || '')
+        .replace(/^Aparato\s*Nº\s*/i, 'Aparato ')
+        .replace(/\s*·\s*Año\s*/i, ' - Año ')
+        .replace(/\s*[—–-]\s*/i, ' ');
+    }
+    if (!apparatusCompact) {
+      const phaseMap = { asume:'Asume', asimila:'Asimila', desafia:'Desafía', decide:'Decide' };
+      const yearNum = ((Number(refObj.y) - 1) % 4) + 1;
+      const apparatusNum = Math.floor((Number(refObj.y) - 1) / 4) + 1;
+      apparatusCompact = 'Aparato ' + apparatusNum + ' ' + (phaseMap[result.yearType] || 'Asume') + ' - Año ' + yearNum;
+    }
+
+    const left = document.createElement('span');
+    left.className = 'turnQuadrants__metaLeft';
+    left.textContent = apparatusCompact;
+
+    const right = document.createElement('span');
+    right.className = 'turnQuadrants__metaRight';
+    right.textContent = 'Vuelta ' + String(result.turnNumber);
+
+    title.appendChild(left);
+    title.appendChild(right);
   }
 
   function showTurn(){
