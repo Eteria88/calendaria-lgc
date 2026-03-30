@@ -790,12 +790,26 @@ header{
 }
 .turnQuadrants__title{
   grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 10px 0;
+  padding:0 2px;
+}
+.turnQuadrants__metaLeft,
+.turnQuadrants__metaRight{
   font-size:15px;
   font-weight:700;
   line-height:1.2;
   color:var(--text);
-  margin:0 0 10px 0;
-  padding:0 2px;
+}
+.turnQuadrants__metaLeft{
+  text-align:left;
+}
+.turnQuadrants__metaRight{
+  text-align:right;
+  white-space:nowrap;
 }
 
 .turnWorkbench{
@@ -1127,6 +1141,13 @@ header{
   filter:saturate(.72);
 }
 @media (max-width:839px){
+  .turnQuadrants__title{
+    gap:10px;
+  }
+  .turnQuadrants__metaLeft,
+  .turnQuadrants__metaRight{
+    font-size:13px;
+  }
   .turnQuadrants{
     grid-template-columns:repeat(2,max-content);
     grid-template-areas:
@@ -1223,8 +1244,7 @@ header{
     <section class="card header-card">
       <div class="header-main">
         <div class="small mono" id="refDateLabel"></div>
-        <div class="mcard"><div class="small mono" id="apHeaderLabel"></div></div>
-        <div class="small mono" id="solarDaysLabel"></div>
+                <div class="small mono" id="solarDaysLabel"></div>
         <div class="mono elementLabel" id="colRowLabel">Columna 1 · Fila 1</div>
         <div class="small mono" id="periodicElementLabel">H · 1 · Hydrogen</div>
       </div>
@@ -5903,11 +5923,21 @@ header{
     const title = document.getElementById('turnMetaTitle');
     if (!quadrants || !title) return;
     if (!result) {
-      title.textContent = '';
+      title.innerHTML = '';
       return;
     }
     const phaseLabel = result.yearType === 'desafia' ? 'Desafía' : result.yearType.charAt(0).toUpperCase() + result.yearType.slice(1);
-    title.textContent = 'Vuelta ' + String(result.turnNumber) + ' · ' + phaseLabel;
+    let refObj = null;
+    const dateInput = document.getElementById('turnRefDate');
+    if (dateInput && typeof parseRefDate === 'function') refObj = parseRefDate(dateInput.value);
+    if (!refObj) refObj = todayRefDate();
+    const apparatusText = typeof apparatusHeaderText === 'function' ? apparatusHeaderText(refObj) : '';
+    const apparatusCompact = apparatusText
+      .replace(/^Aparato\s*Nº\s*/, 'Aparato ')
+      .replace(/\s*·\s*Año\s*/, ' - Año ')
+      .replace(/\s*[—–-]\s*/, ' ');
+    title.innerHTML = '<span class="turnQuadrants__metaLeft">' + esc(apparatusCompact) + '</span>' +
+      '<span class="turnQuadrants__metaRight">Vuelta ' + esc(String(result.turnNumber)) + '</span>';
   }
 
   function showTurn(){
