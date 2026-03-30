@@ -761,16 +761,24 @@ header{
 }
 .turnQuadrants{
   display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:10px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-areas:
+    "no ne"
+    "so se";
+  gap:12px;
+  align-items:stretch;
 }
 .turnQuadrant{
   border:1px solid rgba(255,255,255,.08);
   border-radius:14px;
-  background:rgba(255,255,255,.03);
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
   padding:10px;
   min-height:92px;
 }
+.turnQuadrant--no{grid-area:no;}
+.turnQuadrant--ne{grid-area:ne;}
+.turnQuadrant--so{grid-area:so;}
+.turnQuadrant--se{grid-area:se;}
 .turnQuadrant__head{
   font-size:12px;
   font-weight:800;
@@ -778,99 +786,21 @@ header{
   margin-bottom:8px;
 }
 .turnQuadrant__list{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:8px;
-}
-.turnMini{
-  position:relative;
-  min-height:86px;
-  border-radius:12px;
-  overflow:hidden;
-  padding:8px 4px 7px;
-  transform:none !important;
-  box-shadow:none !important;
-}
-.turnMini.p-node{
-  border-width:1px;
-}
-.turnMini .p-el__atomic,
-.turnMini .p-el__corner{
-  font-size:10px;
-  top:6px;
-}
-.turnMini .p-el__corner--left{left:5px;}
-.turnMini .p-el__corner--right{right:5px;}
-.turnMini .p-el__symbol{
-  font-size:26px;
-  margin-top:12px;
-}
-.turnMini .p-el__name{
-  font-size:8px;
-  font-weight:800;
-  line-height:1.04;
-  margin-top:3px;
-  max-width:92%;
-}
-.turnMini .p-el__mass{
-  font-size:5px;
-  font-weight:800;
-  bottom:5px;
-}
-.turnMini.p-el--band-tight{
-  padding:8px 4px 9px;
-}
-.turnMini.p-el--band-tight .p-el__symbol{
-  margin-top:13px;
-  font-size:24px;
-}
-.turnMini.p-el--band-tight .p-el__name{
-  font-size:7.6px;
-}
-.turnMini.p-el--band-tight .p-el__mass{
-  font-size:4.7px;
-}
-.turnMini.p-orb{
-  font-size:22px;
-  background:linear-gradient(180deg,rgba(12,12,16,1),rgba(18,18,23,1));
-}
-.turnMini.p-orb::before{
-  width:68px;
-  height:68px;
-}
-.turnMini .orb-top{
-  font-size:11px;
-  top:8px;
-}
-.turnMini .orb-main{
-  font-size:22px;
-}
-.turnMini.p-slab{
-  font-size:20px;
-  padding-top:14px;
-}
-.turnMiniPlaceholder{
   display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.turnChip{
+  display:inline-flex;
   align-items:center;
   justify-content:center;
-  min-height:86px;
-  border-radius:12px;
-  border:1px dashed rgba(255,255,255,.10);
-  color:rgba(230,241,255,.45);
-  font-size:18px;
-}
-@media (max-width:839px){
-  .turnQuadrant__list{gap:6px;}
-  .turnMini{min-height:76px;}
-  .turnMini .p-el__atomic,
-  .turnMini .p-el__corner{font-size:9px;top:5px;}
-  .turnMini .p-el__symbol{font-size:22px;margin-top:11px;}
-  .turnMini .p-el__name{font-size:7px;}
-  .turnMini .p-el__mass{font-size:4.6px;bottom:4px;}
-  .turnMini.p-orb::before{width:60px;height:60px;}
-  .turnMini .orb-top{font-size:10px;top:7px;}
-  .turnMini .orb-main{font-size:20px;}
-  .turnMini.p-slab{font-size:18px;padding-top:12px;}
+  min-width:34px;
+  padding:6px 8px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+  font-size:12px;
+  line-height:1;
 }
 .turnQuadrant--so .turnQuadrant__head{color:#8fd4ff}
 .turnQuadrant--ne .turnQuadrant__head{color:#ffd86f}
@@ -906,7 +836,13 @@ header{
   filter:saturate(.72);
 }
 @media (max-width:839px){
-  .turnQuadrants{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .turnQuadrants{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-areas:
+      "no ne"
+      "so se";
+    gap:10px;
+  }
 }
 
 
@@ -1136,15 +1072,15 @@ header{
       // sin acción
     }
   }
-  var raw = getParam('el') || 'H';
+  var raw = getParam('el') || '';
   var key = raw.toUpperCase();
   var symbol = raw;
-  document.body.setAttribute('data-el', key);
+  if (key) document.body.setAttribute('data-el', key);
   var label = document.getElementById('periodicElementLabel');
   var colRowLabel = document.getElementById('colRowLabel');
-  var name = 'Elemento';
+  var name = '';
   var atomic = '';
-  var colRow = 'Columna 1 · Fila 1';
+  var colRow = 'Tabla sin selección';
 
   if (key === 'H') {
     name = 'Hydrogen';
@@ -3265,7 +3201,7 @@ header{
   }
 
   if(label){
-    label.textContent = symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '');
+    label.textContent = key ? (symbol + (atomic ? ' · ' + atomic : '') + (name ? ' · ' + name : '')) : 'Sin selección';
   }
   if(colRowLabel){
     colRowLabel.textContent = colRow;
@@ -3946,7 +3882,7 @@ header{
     const bodyKey = (document.body.getAttribute('data-el') || '').trim().toUpperCase();
     if (bodyKey) return bodyKey;
     const m = /[?&]el=([^&]+)/.exec(window.location.search);
-    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : 'H';
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim().toUpperCase() : '';
   }
 
   function findItemByKey(key){
@@ -5132,6 +5068,8 @@ header{
       localStorage.setItem('periodicTableRefDate', formatIso(refObj));
     } catch(e){}
 
+    var shouldHighlight = arguments.length > 1 ? !!arguments[1] : true;
+
     if (!md || !ordinal) {
       setStatus('La fecha cae en Anillo de Fuego o fuera del tramo activo del año.');
       updateMeta(null);
@@ -5141,8 +5079,17 @@ header{
       return;
     }
 
-    showTurn();
-    setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Se ajustó el año del aparato automáticamente.');
+    clearTurnClasses();
+    updateMeta(null);
+    var quadrants = document.getElementById('turnQuadrants');
+    if (quadrants) quadrants.hidden = true;
+
+    if (shouldHighlight) {
+      showTurn();
+      setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Se ajustó el año del aparato automáticamente.');
+    } else {
+      setStatus('Fecha ubicada: ' + formatRefDate(refObj) + ' → vuelta ' + String(Math.ceil(ordinal / 16)).padStart(2,'0') + '. Tabla limpia, sin selección ni resaltado.');
+    }
   }
 
   function locateDate(){
@@ -5152,7 +5099,7 @@ header{
       setStatus('Ingresá una fecha válida en formato dd/mm/aaaa.');
       return;
     }
-    applyReferenceDate(parsed);
+    applyReferenceDate(parsed, true);
   }
 
   function getPhaseFromYear(refRaw){
@@ -5258,108 +5205,15 @@ header{
 
   function updateQuadrants(groups){
     const quadWrap = document.getElementById('turnQuadrants');
-    if (!quadWrap || !window.PERIODIC_DATA || !window.PERIODIC_LGC) return;
-
-    function esc(str){
-      return String(str == null ? '' : str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-    function normalizeKey(raw){
-      return String(raw || '').trim().toUpperCase();
-    }
-    function zoneForRow(logicalRow){
-      if (logicalRow === -2) return 'topForward';
-      if (logicalRow === -1) return 'topReverse';
-      if (logicalRow === 7 || logicalRow === 8) return 'bottomA';
-      if (logicalRow === 9) return 'bottomB';
-      return 'main';
-    }
-    function overrideCategory(item, logicalRow){
-      if (!item || !item.symbol) return null;
-      const s = String(item.symbol);
-      const r = Number(logicalRow);
-      if (s === 'Og') return 'top-gray';
-      if (s === 'Cn') return 'top-green';
-      if (r === 6 && s === 'At') return 'metalloid';
-      if (r === 6 && s === 'Po') return 'post-transition';
-      if ([-2,-1,7,8,9].includes(r) && ['Ts','Lv','Mc','Fl','Nh'].includes(s)) return 'top-gray';
-      if ([-2,-1,7,8,9].includes(r) && ['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].includes(s)) return 'top-blue';
-      if ([-2,-1,7,8,9].includes(r) && ['Rf','Db','Sg','Bh','Hs'].includes(s)) return 'top-green';
-      if ([-2,-1,7,8,9].includes(r) && ['Mt','Ds','Rg'].includes(s)) return 'top-gray';
-      if ([-2,-1,7,8,9].includes(r) && ['Ac','Th','Pa','U','Np'].includes(s)) return 'top-blue';
-      if ([4,5,6].includes(r) && ['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].includes(s)) return 'top-green';
-      if ([2,3,4,5].includes(r) && ['F','Cl','Br','I'].includes(s)) return 'nonmetal';
-      return null;
-    }
-    function nameColorForSymbol(symbol){
-      const s = String(symbol || '').trim();
-      if (['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].includes(s)) return '#009b39';
-      if (['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].includes(s)) return '#ff1f1f';
-      if (s === 'Br') return '#123f9e';
-      return null;
-    }
-    function symbolColorForSymbol(symbol){
-      const s = String(symbol || '').trim();
-      if (['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].includes(s)) return '#f8fbff';
-      return null;
-    }
-    function makeMiniCell(cell){
-      const key = normalizeKey(cell.key || rowSymbolToKey(cell) || cell.symbol);
-      if (!key) return '';
-      if (/^P\d+$/i.test(key)) {
-        const num = key.replace(/^P/i, '');
-        return '<button type="button" class="p-node p-orb turnMini is-clickable" data-key="' + esc(key) + '" title="Promesa · ' + esc(num) + '"><span class="orb-top">' + esc(num) + '</span><span class="orb-main">' + esc(String(Number(num) - 118)) + '</span></button>';
-      }
-      if (/^BN\d+$/i.test(key)) {
-        const num = key.replace(/^BN/i, '');
-        return '<button type="button" class="p-node p-slab turnMini is-clickable" data-key="' + esc(key) + '" title="Espacio en negro · ' + esc(num) + '">' + esc(num) + '</button>';
-      }
-      const item = window.PERIODIC_LGC.findItemByKey(key);
-      if (!item) return '';
-      const zone = zoneForRow(Number(cell.row));
-      const display = window.PERIODIC_LGC.readDisplay(item, zone, item.atomic);
-      const category = overrideCategory(item, Number(cell.row)) || item.category;
-      const cls = ['p-node','p-el','turnMini','is-clickable','is-' + category];
-      if (display.cornerTopLeft !== '' || display.cornerTopRight !== '') cls.push('p-el--corners');
-      if (display.cornerTopLeft !== '' && display.cornerTopRight !== '') cls.push('p-el--corners-dual');
-      if (zone === 'topForward' || zone === 'topReverse' || zone === 'bottomB') cls.push('p-el--band-tight');
-      const styles = [];
-      const nameColor = nameColorForSymbol(display.symbol || item.symbol);
-      const symbolColor = symbolColorForSymbol(display.symbol || item.symbol);
-      if (nameColor) styles.push('--name-color:' + nameColor);
-      if (symbolColor) styles.push('--symbol-color:' + symbolColor, '--mass-color:' + symbolColor);
-      const inlineStyle = styles.length ? ' style="' + styles.join(';') + '"' : '';
-      const title = [display.symbol || item.symbol, display.number, display.name || item.name].filter(Boolean).join(' · ');
-      return '<button type="button" class="' + cls.join(' ') + '" data-key="' + esc(key) + '" title="' + esc(title) + '">'
-        + (display.number !== '' ? '<span class="p-el__atomic">' + esc(display.number) + '</span>' : '')
-        + (display.cornerTopLeft !== '' ? '<span class="p-el__corner p-el__corner--left">' + esc(display.cornerTopLeft) + '</span>' : '')
-        + (display.cornerTopRight !== '' ? '<span class="p-el__corner p-el__corner--right">' + esc(display.cornerTopRight) + '</span>' : '')
-        + '<span class="p-el__symbol"' + inlineStyle + '>' + esc(display.symbol || item.symbol) + '</span>'
-        + '<span class="p-el__name"' + inlineStyle + '>' + esc(display.name || item.name) + '</span>'
-        + (display.mass !== '' ? '<span class="p-el__mass"' + inlineStyle + '>' + esc(display.mass) + '</span>' : '')
-        + '</button>';
-    }
-
+    if (!quadWrap) return;
     CARDINALITY_ORDER.forEach(function(card){
       const target = quadWrap.querySelector('[data-cardinality="' + card + '"]');
       if (!target) return;
-      const html = (groups[card] || []).map(makeMiniCell).filter(Boolean).join('');
-      target.innerHTML = html || '<div class="turnMiniPlaceholder">—</div>';
+      const html = (groups[card] || []).map(function(cell){
+        return '<span class="turnChip">' + cell.symbol + '</span>';
+      }).join('');
+      target.innerHTML = html || '<span class="turnChip">—</span>';
     });
-
-    quadWrap.querySelectorAll('.turnMini[data-key]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        const key = String(btn.dataset.key || '').trim();
-        if (!key) return;
-        const url = new URL(window.location.href);
-        url.searchParams.set('el', key);
-        window.location.href = url.toString();
-      });
-    });
-
     quadWrap.hidden = false;
   }
 
@@ -5443,6 +5297,21 @@ header{
     clearTurnClasses();
     updateMeta(null);
     if (quadrants) quadrants.hidden = true;
+
+    document.querySelectorAll('.p-el.is-active').forEach(function(el){ el.classList.remove('is-active'); });
+    document.body.removeAttribute('data-el');
+
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('el');
+      window.history.replaceState({}, '', url.toString());
+    } catch(e){}
+
+    var colRowLabel = document.getElementById('colRowLabel');
+    var periodicElementLabel = document.getElementById('periodicElementLabel');
+    if (colRowLabel) colRowLabel.textContent = 'Tabla sin selección';
+    if (periodicElementLabel) periodicElementLabel.textContent = 'Sin selección';
+
     setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.');
   }
 
@@ -5479,7 +5348,7 @@ header{
     })(storedRef) : '';
     if (storedRef) {
       var parsedRef = parseFlexibleDate(storedRef);
-      if (parsedRef) applyReferenceDate(parsedRef);
+      if (parsedRef) applyReferenceDate(parsedRef, false);
     }
 
     window.PERIODIC_TURNS = {
