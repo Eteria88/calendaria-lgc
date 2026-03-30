@@ -1258,6 +1258,9 @@ header{
               <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
             </div>
             <div class="turnActions">
+              <button type="button" class="btn turnBtn" id="prevDateBtn">Anterior</button>
+              <button type="button" class="btn turnBtn" id="todayDateBtn">Hoy</button>
+              <button type="button" class="btn turnBtn" id="nextDateBtn">Siguiente</button>
               <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
               <button type="button" class="btn turnBtn" id="locateDateBtn">Ubicar fecha</button>
               <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
@@ -5552,6 +5555,23 @@ header{
     applyReferenceDate(parsed, true);
   }
 
+  function stepReferenceDate(delta){
+    var dateInput = document.getElementById('turnRefDate');
+    var current = parseFlexibleDate(dateInput && dateInput.value);
+    if (!current) current = todayRefDate();
+    var solar = solarDaysNumber(current);
+    var next = calendarFromSolarDay(solar + Number(delta || 0));
+    if (!next) {
+      setStatus('No se pudo mover la fecha de referencia.');
+      return;
+    }
+    applyReferenceDate(next, true);
+  }
+
+  function goToTodayReferenceDate(){
+    applyReferenceDate(todayRefDate(), true);
+  }
+
   function getPhaseFromYear(refRaw){
     if(!refRaw) return 'asume';
     var parsed = parseFlexibleDate(refRaw) || parseFlexDate(refRaw);
@@ -5941,11 +5961,14 @@ header{
     if (window.__periodicTurnExplorerInit) return;
     const yearSelect = document.getElementById('turnYearType');
     const turnInput = document.getElementById('turnNumber');
+    const prevDateBtn = document.getElementById('prevDateBtn');
+    const todayDateBtn = document.getElementById('todayDateBtn');
+    const nextDateBtn = document.getElementById('nextDateBtn');
     const showBtn = document.getElementById('showTurnBtn');
     const locateBtn = document.getElementById('locateDateBtn');
     const clearBtn = document.getElementById('clearTurnBtn');
     const dateInput = document.getElementById('turnRefDate');
-    if (!yearSelect || !turnInput || !showBtn || !locateBtn || !clearBtn || !dateInput) return;
+    if (!yearSelect || !turnInput || !showBtn || !locateBtn || !clearBtn || !dateInput || !prevDateBtn || !todayDateBtn || !nextDateBtn) return;
 
     window.__periodicTurnExplorerInit = true;
 
@@ -5959,6 +5982,9 @@ header{
     try { localStorage.setItem('periodicTableRefDate', storedRef); } catch(e){}
     yearSelect.value = getPhaseFromYear(storedRef);
 
+    prevDateBtn.addEventListener('click', function(){ stepReferenceDate(-1); });
+    todayDateBtn.addEventListener('click', goToTodayReferenceDate);
+    nextDateBtn.addEventListener('click', function(){ stepReferenceDate(1); });
     showBtn.addEventListener('click', showTurn);
     locateBtn.addEventListener('click', locateDate);
     clearBtn.addEventListener('click', clearTurn);
@@ -5980,7 +6006,9 @@ header{
       applyReferenceDate: applyReferenceDate,
       locateDate: locateDate,
       showTurn: showTurn,
-      clearTurn: clearTurn
+      clearTurn: clearTurn,
+      stepReferenceDate: stepReferenceDate,
+      goToTodayReferenceDate: goToTodayReferenceDate
     };
   }
 
