@@ -759,6 +759,56 @@ header{
   font-size:12px;
   color:var(--muted);
 }
+
+.turnWorkbench{
+  display:grid;
+  grid-template-columns:minmax(320px, 420px) minmax(0, 1fr);
+  gap:16px;
+  align-items:start;
+}
+.turnControlsPanel{
+  display:grid;
+  gap:12px;
+  align-self:start;
+}
+.turnVisualPanel{
+  display:grid;
+  gap:12px;
+  min-width:0;
+}
+.turnControlsPanel .turnToolbar{
+  display:grid;
+  gap:12px;
+  align-items:start;
+}
+.turnControlsPanel .turnField,
+.turnControlsPanel .turnField--small{
+  min-width:0;
+  max-width:none;
+}
+.turnControlsPanel .turnActions{
+  justify-content:flex-start;
+}
+.turnVisualPanel .turnMeta{
+  margin:0;
+}
+.turnVisualPanel .turnQuadrants{
+  justify-self:start;
+}
+@media (max-width:1080px){
+  .turnWorkbench{
+    grid-template-columns:1fr;
+  }
+  .turnControlsPanel,
+  .turnVisualPanel{
+    width:100%;
+  }
+  .turnControlsPanel .turnToolbar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:end;
+  }
+}
 .turnQuadrants{
   display:grid;
   grid-template-columns:repeat(2,max-content);
@@ -1044,52 +1094,58 @@ header{
 
 
     <section class="card turnExplorerCard">
-      <div class="turnToolbar">
-        <div class="turnField">
-          <label for="turnYearType">Año del aparato</label>
-          <select id="turnYearType">
-            <option value="asume">Asume</option>
-            <option value="asimila">Asimila</option>
-            <option value="desafia">Desafía</option>
-            <option value="decide">Decide</option>
-          </select>
+      <div class="turnWorkbench">
+        <div class="turnControlsPanel">
+          <div class="turnToolbar">
+            <div class="turnField">
+              <label for="turnYearType">Año del aparato</label>
+              <select id="turnYearType">
+                <option value="asume">Asume</option>
+                <option value="asimila">Asimila</option>
+                <option value="desafia">Desafía</option>
+                <option value="decide">Decide</option>
+              </select>
+            </div>
+            <div class="turnField turnField--small">
+              <label for="turnNumber">Vuelta</label>
+              <input id="turnNumber" type="number" inputmode="numeric" min="1" max="22" placeholder="1–22">
+            </div>
+            <div class="turnField">
+              <label for="turnRefDate">Fecha de referencia</label>
+              <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
+            </div>
+            <div class="turnActions">
+              <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
+              <button type="button" class="btn turnBtn" id="locateDateBtn">Ubicar fecha</button>
+              <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
+            </div>
+          </div>
+          <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.</div>
         </div>
-        <div class="turnField turnField--small">
-          <label for="turnNumber">Vuelta</label>
-          <input id="turnNumber" type="number" inputmode="numeric" min="1" max="22" placeholder="1–22">
+        <div class="turnVisualPanel">
+          <div class="turnMeta" id="turnMeta" hidden>
+            <div class="turnMeta__title" id="turnMetaTitle"></div>
+            <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
+          </div>
+          <div class="turnQuadrants" id="turnQuadrants" hidden>
+            <article class="turnQuadrant turnQuadrant--so">
+              <div class="turnQuadrant__head">SO</div>
+              <div class="turnQuadrant__list" data-cardinality="SO"></div>
+            </article>
+            <article class="turnQuadrant turnQuadrant--ne">
+              <div class="turnQuadrant__head">NE</div>
+              <div class="turnQuadrant__list" data-cardinality="NE"></div>
+            </article>
+            <article class="turnQuadrant turnQuadrant--no">
+              <div class="turnQuadrant__head">NO</div>
+              <div class="turnQuadrant__list" data-cardinality="NO"></div>
+            </article>
+            <article class="turnQuadrant turnQuadrant--se">
+              <div class="turnQuadrant__head">SE</div>
+              <div class="turnQuadrant__list" data-cardinality="SE"></div>
+            </article>
+          </div>
         </div>
-        <div class="turnField">
-          <label for="turnRefDate">Fecha de referencia</label>
-          <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
-        </div>
-        <div class="turnActions">
-          <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
-          <button type="button" class="btn turnBtn" id="locateDateBtn">Ubicar fecha</button>
-          <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
-        </div>
-      </div>
-      <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.</div>
-      <div class="turnMeta" id="turnMeta" hidden>
-        <div class="turnMeta__title" id="turnMetaTitle"></div>
-        <div class="turnMeta__subtitle" id="turnMetaSubtitle"></div>
-      </div>
-      <div class="turnQuadrants" id="turnQuadrants" hidden>
-        <article class="turnQuadrant turnQuadrant--so">
-          <div class="turnQuadrant__head">SO</div>
-          <div class="turnQuadrant__list" data-cardinality="SO"></div>
-        </article>
-        <article class="turnQuadrant turnQuadrant--ne">
-          <div class="turnQuadrant__head">NE</div>
-          <div class="turnQuadrant__list" data-cardinality="NE"></div>
-        </article>
-        <article class="turnQuadrant turnQuadrant--no">
-          <div class="turnQuadrant__head">NO</div>
-          <div class="turnQuadrant__list" data-cardinality="NO"></div>
-        </article>
-        <article class="turnQuadrant turnQuadrant--se">
-          <div class="turnQuadrant__head">SE</div>
-          <div class="turnQuadrant__list" data-cardinality="SE"></div>
-        </article>
       </div>
     </section>
     <section class="card">
