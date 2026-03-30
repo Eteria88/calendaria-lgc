@@ -497,7 +497,7 @@ header{
   display:flex;
   align-items:flex-start;
   justify-content:center;
-  padding-top:5px;
+  padding-top:0;
   background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));
   border-color:rgba(255,255,255,.10);
   color:#d9cb6b;
@@ -505,6 +505,15 @@ header{
   font-size:12px;
   font-weight:700;
   line-height:1;
+}
+.p-slab .slab-top{
+  position:absolute;
+  top:5px;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  text-align:center;
+  pointer-events:none;
 }
 .p-orb{
   display:flex;
@@ -1034,7 +1043,7 @@ header{
 .turnRichCell--slab{
   align-items:flex-start;
   justify-content:center;
-  padding-top:10px;
+  padding-top:0;
   background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));
   border-color:rgba(255,255,255,.10);
   color:#d9cb6b;
@@ -1042,6 +1051,15 @@ header{
   font-size:18px;
   font-weight:700;
   line-height:1;
+}
+.turnRichCell--slab .turnRichCell__slabTop{
+  position:absolute;
+  top:7px;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  text-align:center;
+  pointer-events:none;
 }
 
 .p-node.is-turn-match{
@@ -1114,7 +1132,8 @@ header{
   .turnRichCell__mass{font-size:4.2px; bottom:5px; left:5px; right:5px;}  .turnRichCell--orb::before{width:calc(64px - 8px);height:calc(64px - 8px);}
   .turnRichCell--orb .turnRichCell__orbTop{font-size:8px;top:6px;}
   .turnRichCell--orb .turnRichCell__orbMain{font-size:16px;}
-  .turnRichCell--slab{font-size:15px;padding-top:9px;}
+  .turnRichCell--slab{font-size:15px;padding-top:0;}
+  .turnRichCell--slab .turnRichCell__slabTop{top:6px;}
 }
 
 
@@ -4456,7 +4475,7 @@ header{
         displayNumber:String(value),
         title:'Espacio en negro · ' + value,
         className:'p-node p-slab is-clickable',
-        html:String(value)
+        html:'<span class="slab-top">' + String(value) + '</span>'
       });
     });
   });
@@ -5587,7 +5606,7 @@ header{
         '<span class="turnRichCell__orbMain">' + escapeHtml(promiseMain) + '</span>';
     } else if (isBlackSpace) {
       extraClass = ' turnRichCell--slab';
-      innerHtml = escapeHtml(String(cell.number || ''));
+      innerHtml = '<span class="turnRichCell__slabTop">' + escapeHtml(String(cell.number || '')) + '</span>';
     } else {
       innerHtml =
         (display.number !== '' ? '<span class="turnRichCell__atomic">' + escapeHtml(display.number) + '</span>' : '') +
