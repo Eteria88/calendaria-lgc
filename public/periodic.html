@@ -3977,7 +3977,7 @@ header{
       return String(it.symbol || '').toUpperCase() === String(symbol).toUpperCase();
     }) || null;
     var atomic = baseItem && baseItem.atomic != null ? Number(baseItem.atomic) : null;
-    var bandOrdinal = 224 + col;
+    var bandOrdinal = row === -1 ? (257 - col) : (224 + col);
     var display = {
       number: '',
       symbol: symbol,
