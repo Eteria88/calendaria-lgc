@@ -750,12 +750,32 @@ header{
   caret-color:var(--text);
 }
 .turnField input::placeholder{color:rgba(230,241,255,.35)}
+
+.turnField select{
+  background-image:linear-gradient(45deg,transparent 50%, rgba(230,241,255,.72) 50%),linear-gradient(135deg, rgba(230,241,255,.72) 50%, transparent 50%);
+  background-position:calc(100% - 18px) calc(50% - 3px), calc(100% - 12px) calc(50% - 3px);
+  background-size:6px 6px, 6px 6px;
+  background-repeat:no-repeat;
+  padding-right:34px;
+}
+.turnField input[type=number]{
+  -moz-appearance:textfield;
+}
+.turnField input[type=number]::-webkit-outer-spin-button,
+.turnField input[type=number]::-webkit-inner-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+@media (max-width:1080px){
+  .turnBtn{min-width:0;}
+}
+
 .turnActions{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
 }
-.turnBtn{height:40px;font-size:13px;padding:0 14px}
+.turnBtn{height:40px;min-width:112px;justify-content:center;font-size:13px;padding:0 16px}
 .turnStatus{
   display:none;
 }
@@ -765,7 +785,7 @@ header{
   font-weight:700;
   line-height:1.2;
   color:var(--text);
-  margin:0 0 8px 0;
+  margin:0 0 10px 0;
   padding:0 2px;
 }
 
@@ -777,7 +797,7 @@ header{
 }
 .turnControlsPanel{
   display:grid;
-  gap:10px;
+  gap:12px;
   align-self:start;
 }
 .turnVisualPanel{
@@ -785,7 +805,7 @@ header{
   gap:8px;
   min-width:0;
   align-content:start;
-  padding-top:2px;
+  padding-top:0;
 }
 .turnControlsPanel .turnToolbar{
   display:grid;
@@ -831,7 +851,8 @@ header{
   align-items:start;
   justify-content:start;
   width:max-content;
-  padding:10px 12px 12px;
+  margin-top:-2px;
+  padding:8px 12px 12px;
   border-radius:18px;
   border:1px solid var(--turn-frame-border, rgba(255,255,255,.08));
   background:linear-gradient(180deg, var(--turn-frame-bg-top, rgba(255,255,255,.018)), var(--turn-frame-bg-bottom, rgba(255,255,255,.008)));
