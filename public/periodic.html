@@ -731,6 +731,23 @@ header{
   color:var(--text);
   padding:0 12px;
   font:inherit;
+  appearance:none;
+  -webkit-appearance:none;
+  color-scheme:dark;
+}
+.turnField select:focus,
+.turnField input:focus{
+  outline:none;
+  border-color:rgba(124,199,255,.68);
+  box-shadow:0 0 0 3px rgba(124,199,255,.12);
+}
+.turnField input:-webkit-autofill,
+.turnField input:-webkit-autofill:hover,
+.turnField input:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--text);
+  -webkit-box-shadow:0 0 0 1000px rgba(12,18,28,.96) inset;
+  transition:background-color 9999s ease-out 0s;
+  caret-color:var(--text);
 }
 .turnField input::placeholder{color:rgba(230,241,255,.35)}
 .turnActions{
@@ -740,10 +757,7 @@ header{
 }
 .turnBtn{height:40px;font-size:13px;padding:0 14px}
 .turnStatus{
-  font-size:12px;
-  line-height:1.45;
-  color:rgba(159,179,200,.78);
-  max-width:36ch;
+  display:none;
 }
 .turnQuadrants__title{
   grid-column:1 / -1;
@@ -763,7 +777,7 @@ header{
 }
 .turnControlsPanel{
   display:grid;
-  gap:12px;
+  gap:10px;
   align-self:start;
 }
 .turnVisualPanel{
@@ -787,7 +801,7 @@ header{
   justify-content:flex-start;
 }
 .turnVisualPanel .turnQuadrants{
-  justify-self:start;
+  justify-self:center;
 }
 @media (max-width:1080px){
   .turnWorkbench{
@@ -801,6 +815,9 @@ header{
     display:flex;
     flex-wrap:wrap;
     align-items:end;
+  }
+  .turnVisualPanel .turnQuadrants{
+    justify-self:start;
   }
 }
 .turnQuadrants{
