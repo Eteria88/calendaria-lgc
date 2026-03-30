@@ -5594,7 +5594,7 @@ header{
       return String(it.symbol || '').toUpperCase() === String(symbol).toUpperCase();
     }) || null;
     const atomic = baseItem && baseItem.atomic != null ? Number(baseItem.atomic) : null;
-    const bandOrdinal = 224 + col;
+    const bandOrdinal = row === -1 ? (257 - col) : (224 + col);
     return {
       key: 'L' + idx,
       row: row,
