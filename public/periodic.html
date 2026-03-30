@@ -1322,13 +1322,15 @@ header{
   }
 
   var refRaw = '';
-  var refDate = todayRefDate();
+  var refDate = getStoredRefDate() || todayRefDate();
   try{
-    localStorage.setItem('periodicTableRefDate', [
-      String(refDate.y).padStart(4,'0'),
-      pad2(refDate.m),
-      pad2(refDate.d)
-    ].join('-'));
+    if (!getStoredRefDate()) {
+      localStorage.setItem('periodicTableRefDate', [
+        String(refDate.y).padStart(4,'0'),
+        pad2(refDate.m),
+        pad2(refDate.d)
+      ].join('-'));
+    }
   }catch(e){}
 
   var refLabel = document.getElementById('refDateLabel');
@@ -5870,12 +5872,17 @@ header{
     window.__periodicTurnExplorerInit = true;
 
     var today = new Date();
-    var storedRef = [
+    var fallbackRef = [
       String(today.getFullYear()).padStart(4,'0'),
       String(today.getMonth() + 1).padStart(2,'0'),
       String(today.getDate()).padStart(2,'0')
     ].join('-');
-    try { localStorage.setItem('periodicTableRefDate', storedRef); } catch(e){}
+    var storedRef = '';
+    try { storedRef = localStorage.getItem('periodicTableRefDate') || ''; } catch(e){}
+    if (!storedRef) {
+      storedRef = fallbackRef;
+      try { localStorage.setItem('periodicTableRefDate', storedRef); } catch(e){}
+    }
     yearSelect.value = getPhaseFromYear(storedRef);
     if (!turnInput.value) turnInput.value = '1';
 
