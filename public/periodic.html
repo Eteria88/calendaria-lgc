@@ -772,7 +772,7 @@ header{
   border:1px solid rgba(255,255,255,.08);
   border-radius:14px;
   background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
-  padding:10px;
+  padding:10px 12px 10px 10px;
   min-height:92px;
 }
 .turnQuadrant--no{grid-area:no;}
@@ -917,11 +917,12 @@ header{
 }
 @media (max-width:839px){
   .turnQuadrants{
-    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-columns:repeat(2,max-content);
     grid-template-areas:
       "no ne"
       "so se";
     gap:10px;
+    justify-content:start;
   }
   .turnQuadrant__list{
     grid-template-columns:repeat(4, 64px);
