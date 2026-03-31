@@ -4480,10 +4480,30 @@ header{
 
   function findItemByKey(key){
     key = String(key || '').trim().toUpperCase();
-    return window.PERIODIC_DATA.find(function(item){
-      return String(item.key || item.symbol).toUpperCase() === key ||
+    if (!key) return null;
+
+    var all = window.PERIODIC_DATA.filter(function(item){
+      return String(item.key || '').toUpperCase() === key ||
              String(item.symbol || '').toUpperCase() === key;
-    }) || null;
+    });
+    if (!all.length) return null;
+
+    var exactKey = all.find(function(item){
+      return String(item.key || '').toUpperCase() === key;
+    });
+    if (exactKey) return exactKey;
+
+    var preferredMain = all.find(function(item){
+      var row = Number(item.row);
+      var itemKey = String(item.key || '').toUpperCase();
+      return row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
+    });
+    if (preferredMain) return preferredMain;
+
+    var row8 = all.find(function(item){ return Number(item.row) === 8; });
+    if (row8) return row8;
+
+    return all[0] || null;
   }
 
   function readDisplay(item, zone, fallbackAtomic){
