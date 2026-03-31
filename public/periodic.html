@@ -45,7 +45,7 @@ header{
 }
 .brandTitle{
   margin:0;
-  font-size:20px !important;
+  font-size:22px !important;
   line-height:1.1 !important;
   letter-spacing:.2px;
   color:var(--text);
@@ -55,7 +55,7 @@ header{
   text-overflow:ellipsis;
 }
 @media(min-width:900px){
-  .brandTitle{font-size:24px !important;}
+  .brandTitle{font-size:26px !important;}
 }
 .small{font-size:12px;color:var(--muted)}
 .mono{font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
@@ -725,6 +725,20 @@ header{
   .p-table-title{
     font-size:9.5px;
     margin-bottom:8px;
+    white-space:normal;
+    line-height:1.22;
+    text-wrap:balance;
+    max-width:100%;
+  }
+  .p-table-title .speak,
+  .p-table-title .main{
+    display:block;
+  }
+  .p-table-title .speak{
+    margin-bottom:4px;
+  }
+  .p-table-title .main{
+    margin-left:0;
   }
 }
 
@@ -839,10 +853,10 @@ header{
 }
 .turnBtn{
   height:40px;
-  min-width:96px;
+  min-width:104px;
   justify-content:center;
   font-size:13px;
-  padding:0 14px;
+  padding:0 16px;
   cursor:pointer;
   border:1px solid rgba(114,154,196,.34);
   background:linear-gradient(180deg,rgba(24,34,48,.92),rgba(10,16,25,.96));
@@ -946,7 +960,7 @@ header{
 }
 .turnControlsPanel .turnActions--nav{
   display:grid;
-  grid-template-columns:repeat(3,96px);
+  grid-template-columns:repeat(3,104px);
   gap:8px;
 }
 .turnControlsPanel .turnActions--secondary{
@@ -1263,6 +1277,11 @@ header{
   filter:saturate(.72);
 }
 @media (max-width:839px){
+  .turnVisualPanel{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:4px;
+  }
   .turnQuadrants__title{
     gap:10px;
   }
@@ -1273,12 +1292,14 @@ header{
   .turnQuadrants{
     grid-template-columns:repeat(2,max-content);
     grid-template-areas:
+      "title title"
       "no ne"
       "so se";
     gap:10px;
     justify-content:start;
     align-items:start;
     padding:10px;
+    min-width:max-content;
   }
   .turnQuadrant__list{
     grid-template-columns:repeat(4, 64px);
@@ -1312,7 +1333,8 @@ header{
   .turnRichCell__corner--right{right:5px;}
   .turnRichCell__symbol{font-size:21px; margin-top:9px;}
   .turnRichCell__name{font-size:6.8px; margin-top:3px;}
-  .turnRichCell__mass{font-size:5.1px; bottom:5px; left:5px; right:5px; font-weight:900;}  .turnRichCell--orb::before{width:calc(64px - 8px);height:calc(64px - 8px);}
+  .turnRichCell__mass{font-size:5.1px; bottom:5px; left:5px; right:5px; font-weight:900;}
+  .turnRichCell--orb::before{width:calc(64px - 8px);height:calc(64px - 8px);}
   .turnRichCell--orb .turnRichCell__orbTop{font-size:8px;top:6px;}
   .turnRichCell--orb .turnRichCell__orbMain{font-size:16px;}
   .turnRichCell--slab{font-size:15px;padding-top:0;}
@@ -1320,7 +1342,13 @@ header{
 }
 @media (max-width:599px){
   .turnControlsPanel .turnActions--nav{
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+  }
+  .turnControlsPanel .turnActions--nav .turnBtn{
+    min-width:0;
+    padding-inline:10px;
+    font-size:12px;
   }
   .turnFieldRow,
   .turnField--small .turnFieldRow{
@@ -4509,35 +4537,10 @@ header{
     return { number, symbol, name, mass, variant, cornerTopLeft, cornerTopRight };
   }
 
-  function specialGridPositionFromKey(rawKey){
-    var key = String(rawKey || '').trim().toUpperCase();
-    var pm = /^P(\d+)$/.exec(key);
-    if (pm) {
-      var pNum = parseInt(pm[1], 10);
-      if (pNum >= 119 && pNum <= 148) {
-        return { col: 150 - pNum, row: 1 };
-      }
-    }
-    var bm = /^BN(\d+)$/.exec(key);
-    if (bm) {
-      var bNum = parseInt(bm[1], 10);
-      if (bNum >= 149 && bNum <= 168) {
-        var offA = bNum - 149;
-        return { col: 26 - Math.floor(offA / 2), row: 2 + (offA % 2) };
-      }
-      if (bNum >= 169 && bNum <= 224) {
-        var offB = bNum - 169;
-        return { col: 16 - Math.floor(offB / 4), row: 2 + (offB % 4) };
-      }
-    }
-    return null;
-  }
-
   window.PERIODIC_LGC = Object.assign({}, window.PERIODIC_LGC || {}, {
     getActiveKey,
     findItemByKey,
-    readDisplay,
-    specialGridPositionFromKey
+    readDisplay
   });
 
   const activeItem = findItemByKey(getActiveKey());
@@ -4550,11 +4553,8 @@ header{
   if (label) {
     label.textContent = [display.symbol, display.number, display.name].filter(Boolean).join(' · ');
   }
-  var specialPos = specialGridPositionFromKey(getActiveKey());
-  var activeCol = specialPos && specialPos.col != null ? specialPos.col : activeItem.col;
-  var activeRow = specialPos && specialPos.row != null ? specialPos.row : activeItem.row;
-  if (colRowLabel && activeCol != null && activeRow != null) {
-    colRowLabel.textContent = 'Columna ' + activeCol + ' · Fila ' + activeRow;
+  if (colRowLabel && activeItem.col && activeItem.row) {
+    colRowLabel.textContent = 'Columna ' + activeItem.col + ' · Fila ' + activeItem.row;
   }
   if (typeof window.renderPeriodicBadge === 'function') {
     try { window.renderPeriodicBadge(); } catch(e) {}
@@ -6044,11 +6044,11 @@ header{
     let innerHtml = '';
     let extraClass = ' is-' + escapeHtml(category || 'transition') + (isCurrentDay ? ' is-current-day' : '');
     if (isPromise) {
-      extraClass = ' turnRichCell--orb' + (isCurrentDay ? ' is-current-day' : '');
+      extraClass = ' turnRichCell--orb';
       innerHtml = '<span class="turnRichCell__orbTop">' + escapeHtml(String(cell.number || '')) + '</span>' +
         '<span class="turnRichCell__orbMain">' + escapeHtml(promiseMain) + '</span>';
     } else if (isBlackSpace) {
-      extraClass = ' turnRichCell--slab' + (isCurrentDay ? ' is-current-day' : '');
+      extraClass = ' turnRichCell--slab';
       innerHtml = '<span class="turnRichCell__slabTop">' + escapeHtml(String(cell.number || '')) + '</span>';
     } else {
       innerHtml =
@@ -6115,9 +6115,8 @@ header{
     var rawKey = String(cell.key || cell.symbol || '');
     var lModel = buildTurnLModel(rawKey);
     var item = lModel || ((window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(rawKey) : null);
-    var specialPos = (window.PERIODIC_LGC && window.PERIODIC_LGC.specialGridPositionFromKey) ? window.PERIODIC_LGC.specialGridPositionFromKey(rawKey) : null;
-    var rowVal = lModel ? Number(lModel.row) : Number(specialPos && specialPos.row != null ? specialPos.row : (cell.rowNorm != null ? cell.rowNorm : cell.row));
-    var colVal = lModel ? Number(lModel.col) : Number(specialPos && specialPos.col != null ? specialPos.col : ((item && item.col != null) ? item.col : cell.col));
+    var rowVal = lModel ? Number(lModel.row) : Number(cell.rowNorm != null ? cell.rowNorm : cell.row);
+    var colVal = lModel ? Number(lModel.col) : Number((item && item.col != null) ? item.col : cell.col);
     var displayZone = zoneForTurnRow(rowVal);
     var display = lModel
       ? lModel.display
