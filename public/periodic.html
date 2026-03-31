@@ -726,10 +726,13 @@ header{
 .turnField--small{max-width:none}
 .turnFieldAction{
   display:flex;
+  justify-content:flex-start;
   margin-top:2px;
 }
 .turnFieldAction .turnBtn{
-  width:100%;
+  width:auto;
+  min-width:172px;
+  padding-inline:22px;
 }
 .turnField label{
   font-size:11px;
@@ -1239,6 +1242,7 @@ header{
   .turnControlsPanel .turnActions--nav{
     grid-template-columns:1fr;
   }
+  .turnFieldAction .turnBtn,
   .turnActions--secondary .turnBtn{
     width:100%;
     min-width:0;
