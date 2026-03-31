@@ -714,34 +714,17 @@ header{
   gap:12px;
 }
 .turnToolbar{
-  display:grid;
-  gap:16px;
-  align-items:start;
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:end;
 }
 .turnField{
   display:grid;
   gap:6px;
-  min-width:0;
+  min-width:190px;
 }
-.turnField--year{
-  width:min(100%, 320px);
-}
-.turnField--small{
-  width:min(100%, 188px);
-}
-.turnField--date{
-  width:min(100%, 320px);
-}
-.turnFieldAction{
-  display:flex;
-  justify-content:flex-start;
-  margin-top:2px;
-}
-.turnFieldAction .turnBtn{
-  width:auto;
-  min-width:172px;
-  padding-inline:22px;
-}
+.turnField--small{min-width:110px;max-width:140px}
 .turnField label{
   font-size:11px;
   letter-spacing:.04em;
@@ -799,27 +782,9 @@ header{
 .turnActions{
   display:flex;
   flex-wrap:wrap;
-  gap:10px;
+  gap:8px;
 }
-.turnActions--nav{
-  padding-top:6px;
-}
-.turnActions--secondary{
-  padding-top:4px;
-}
-.turnBtn{height:38px;min-width:112px;justify-content:center;font-size:13px;padding:0 16px}
-.turnBtn--field{
-  min-width:0;
-  height:36px;
-  font-size:12px;
-  background:rgba(255,255,255,.028);
-  border-color:rgba(159,179,200,.22);
-}
-.turnBtn--subtle{
-  opacity:.72;
-  background:rgba(255,255,255,.022);
-  border-color:rgba(159,179,200,.18);
-}
+.turnBtn{height:40px;min-width:112px;justify-content:center;font-size:13px;padding:0 16px}
 .turnStatus{
   display:none;
 }
@@ -867,27 +832,16 @@ header{
 }
 .turnControlsPanel .turnToolbar{
   display:grid;
-  gap:16px;
+  gap:12px;
   align-items:start;
 }
 .turnControlsPanel .turnField,
 .turnControlsPanel .turnField--small{
   min-width:0;
+  max-width:none;
 }
 .turnControlsPanel .turnActions{
   justify-content:flex-start;
-}
-.turnControlsPanel .turnActions--nav{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-}
-.turnControlsPanel .turnActions--secondary{
-  justify-content:flex-start;
-}
-.turnControlsPanel .turnActions--secondary .turnBtn{
-  min-width:0;
-  width:auto;
-  padding-inline:22px;
 }
 .turnVisualPanel .turnQuadrants{
   justify-self:center;
@@ -901,17 +855,9 @@ header{
     width:100%;
   }
   .turnControlsPanel .turnToolbar{
-    display:grid;
-    gap:14px;
-    align-items:start;
-  }
-  .turnField--year,
-  .turnField--small,
-  .turnField--date{
-    width:100%;
-  }
-  .turnControlsPanel .turnActions--nav{
-    grid-template-columns:repeat(3,minmax(0,1fr));
+    display:flex;
+    flex-wrap:wrap;
+    align-items:end;
   }
   .turnVisualPanel .turnQuadrants{
     justify-self:start;
@@ -1250,16 +1196,6 @@ header{
   .turnRichCell--slab{font-size:15px;padding-top:0;}
   .turnRichCell--slab .turnRichCell__slabTop{top:6px;}
 }
-@media (max-width:599px){
-  .turnControlsPanel .turnActions--nav{
-    grid-template-columns:1fr;
-  }
-  .turnFieldAction .turnBtn,
-  .turnActions--secondary .turnBtn{
-    width:100%;
-    min-width:0;
-  }
-}
 
 
 .periodicPeekOverlay{position:fixed;inset:0;background:rgba(3,7,12,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9999;opacity:0;pointer-events:none;transition:opacity .18s ease;}
@@ -1324,7 +1260,7 @@ header{
       <div class="turnWorkbench">
         <div class="turnControlsPanel">
           <div class="turnToolbar">
-            <div class="turnField turnField--year">
+            <div class="turnField">
               <label for="turnYearType">Año del aparato</label>
               <select id="turnYearType">
                 <option value="asume">Asume</option>
@@ -1335,25 +1271,19 @@ header{
             </div>
             <div class="turnField turnField--small">
               <label for="turnNumber">Vuelta</label>
-              <input id="turnNumber" type="number" inputmode="numeric" min="1" max="22" placeholder="1–22">
-              <div class="turnFieldAction">
-                <button type="button" class="btn turnBtn turnBtn--field" id="showTurnBtn">Mostrar vuelta</button>
-              </div>
+              <select id="turnNumber"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option></select>
             </div>
-            <div class="turnField turnField--date">
+            <div class="turnField">
               <label for="turnRefDate">Fecha de referencia</label>
               <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
-              <div class="turnFieldAction">
-                <button type="button" class="btn turnBtn turnBtn--field" id="locateDateBtn">Ubicar fecha</button>
-              </div>
             </div>
-            <div class="turnActions turnActions--nav">
+            <div class="turnActions">
               <button type="button" class="btn turnBtn" id="prevDateBtn">Anterior</button>
               <button type="button" class="btn turnBtn" id="todayDateBtn">Hoy</button>
               <button type="button" class="btn turnBtn" id="nextDateBtn">Siguiente</button>
-            </div>
-            <div class="turnActions turnActions--secondary">
-              <button type="button" class="btn turnBtn turnBtn--subtle" id="clearTurnBtn">Limpiar</button>
+              <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
+              <button type="button" class="btn turnBtn" id="locateDateBtn">Ubicar fecha</button>
+              <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
             </div>
           </div>
           <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.</div>
@@ -5586,6 +5516,11 @@ header{
     return 'Días solares ' + solarDaysNumber(refObj);
   }
 
+  function getTodayReferenceDate(){
+    var now = new Date();
+    return { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
+  }
+
   function applyReferenceDate(refObj){
     var yearSelect = document.getElementById('turnYearType');
     var turnInput = document.getElementById('turnNumber');
@@ -5648,7 +5583,7 @@ header{
   function stepReferenceDate(delta){
     var dateInput = document.getElementById('turnRefDate');
     var current = parseFlexibleDate(dateInput && dateInput.value);
-    if (!current) current = todayRefDate();
+    if (!current) current = getTodayReferenceDate();
     var solar = solarDaysNumber(current);
     var next = calendarFromSolarDay(solar + Number(delta || 0));
     if (!next) {
@@ -5659,7 +5594,7 @@ header{
   }
 
   function goToTodayReferenceDate(){
-    applyReferenceDate(todayRefDate(), true);
+    applyReferenceDate(getTodayReferenceDate(), true);
   }
 
   function getPhaseFromYear(refRaw){
@@ -6153,7 +6088,10 @@ header{
       String(today.getDate()).padStart(2,'0')
     ].join('-');
     var storedRef = fallbackRef;
-    try { localStorage.setItem('periodicTableRefDate', storedRef); } catch(e){}
+    try {
+      storedRef = localStorage.getItem('periodicTableRefDate') || fallbackRef;
+      localStorage.setItem('periodicTableRefDate', storedRef);
+    } catch(e){}
     yearSelect.value = getPhaseFromYear(storedRef);
 
     prevDateBtn.addEventListener('click', function(){ stepReferenceDate(-1); });
