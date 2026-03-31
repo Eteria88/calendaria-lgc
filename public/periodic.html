@@ -727,16 +727,19 @@ header{
   width:min(100%, 320px);
 }
 .turnField--small{
-  width:min(100%, 188px);
+  width:min(100%, 336px);
 }
 .turnField--date{
-  width:min(100%, 320px);
+  width:min(100%, 336px);
 }
 .turnFieldRow{
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto;
-  gap:10px;
+  grid-template-columns:minmax(0,1fr) 156px;
+  gap:12px;
   align-items:center;
+}
+.turnField--small .turnFieldRow{
+  grid-template-columns:minmax(124px,1fr) 156px;
 }
 .turnFieldAction{
   display:flex;
@@ -744,8 +747,8 @@ header{
   margin-top:0;
 }
 .turnFieldAction .turnBtn{
-  width:auto;
-  min-width:148px;
+  width:156px;
+  min-width:156px;
   padding-inline:20px;
   white-space:nowrap;
 }
@@ -814,18 +817,55 @@ header{
 .turnActions--secondary{
   padding-top:4px;
 }
-.turnBtn{height:38px;min-width:112px;justify-content:center;font-size:13px;padding:0 16px}
+.turnBtn{
+  height:40px;
+  min-width:112px;
+  justify-content:center;
+  font-size:13px;
+  padding:0 18px;
+  cursor:pointer;
+  border:1px solid rgba(114,154,196,.34);
+  background:linear-gradient(180deg,rgba(24,34,48,.92),rgba(10,16,25,.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 8px 18px rgba(0,0,0,.24),
+    0 0 0 1px rgba(255,255,255,.02);
+  transition:transform .14s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.turnBtn:hover{
+  transform:translateY(-1px);
+  border-color:rgba(124,199,255,.52);
+  background:linear-gradient(180deg,rgba(29,42,60,.96),rgba(12,20,31,.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 12px 22px rgba(0,0,0,.28),
+    0 0 0 1px rgba(124,199,255,.08);
+}
+.turnBtn:active{
+  transform:translateY(0);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 5px 12px rgba(0,0,0,.22);
+}
+.turnBtn:focus-visible{
+  outline:none;
+  border-color:rgba(124,199,255,.78);
+  box-shadow:
+    0 0 0 3px rgba(124,199,255,.16),
+    0 10px 22px rgba(0,0,0,.24);
+}
 .turnBtn--field{
   min-width:0;
-  height:36px;
+  height:40px;
   font-size:12px;
-  background:rgba(255,255,255,.028);
-  border-color:rgba(159,179,200,.22);
 }
 .turnBtn--subtle{
-  opacity:.72;
-  background:rgba(255,255,255,.022);
-  border-color:rgba(159,179,200,.18);
+  border-color:rgba(95,121,150,.28);
+  background:linear-gradient(180deg,rgba(18,26,37,.78),rgba(9,14,22,.90));
+  color:rgba(230,241,255,.86);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 6px 14px rgba(0,0,0,.18);
 }
 .turnStatus{
   display:none;
@@ -893,7 +933,7 @@ header{
 }
 .turnControlsPanel .turnActions--secondary .turnBtn{
   min-width:0;
-  width:auto;
+  width:156px;
   padding-inline:22px;
 }
 .turnVisualPanel .turnQuadrants{
@@ -1261,7 +1301,8 @@ header{
   .turnControlsPanel .turnActions--nav{
     grid-template-columns:1fr;
   }
-  .turnFieldRow{
+  .turnFieldRow,
+  .turnField--small .turnFieldRow{
     grid-template-columns:1fr;
     gap:8px;
   }
