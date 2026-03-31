@@ -28,14 +28,34 @@ header{
   gap:12px;
   padding:8px 0 14px 0;
 }
+.headerBrand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
 .sun{
   width:18px;
   height:18px;
   border-radius:50%;
-  background:radial-gradient(circle at 30% 20%,#fff6d6,#ffb347);
+  background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);
   box-shadow:0 0 18px #ffb347;
   display:inline-block;
-  margin-right:8px;
+  flex:0 0 auto;
+}
+.brandTitle{
+  margin:0;
+  font-size:20px !important;
+  line-height:1.1 !important;
+  letter-spacing:.2px;
+  color:var(--text);
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+@media(min-width:900px){
+  .brandTitle{font-size:24px !important;}
 }
 .small{font-size:12px;color:var(--muted)}
 .mono{font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
@@ -1349,9 +1369,9 @@ header{
 <body>
 <div class="wrap">
   <header>
-    <div>
-      <div class="small"><span class="sun"></span>Calendaria-LGC · Tabla periódica</div>
-      <div class="small">Vista de elementos</div>
+    <div class="headerBrand">
+      <span class="sun" aria-hidden="true"></span>
+      <h1 class="brandTitle">Calendaria-LGC</h1>
     </div>
     <a href="./index.html" class="btn"><span>←</span><span>Volver a Calendaria</span></a>
   </header>
