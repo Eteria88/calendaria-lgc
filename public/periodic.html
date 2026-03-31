@@ -6284,7 +6284,11 @@ header{
     var hits = applyTurn(result);
     var dateInput = document.getElementById('turnRefDate');
     var refObj = parseFlexibleDate(dateInput && dateInput.value);
-    updateHeaderFromTurnCell(currentTurnCell(result, refObj));
+    if (refObj) {
+      syncSelectionFromReferenceDate(refObj);
+    } else {
+      updateHeaderFromTurnCell(currentTurnCell(result, refObj));
+    }
     updateMeta(result);
     updateQuadrants(result.groups, currentTurnSolarContext(result));
     setStatus('Se resaltó la vuelta ' + String(turnValue).padStart(2,'0') + ' en la Te Habla (' + hits + ' coincidencias visuales / ' + result.cells.length + ' celdas lógicas) y quedó preparada la distribución por cardinalidad.');
