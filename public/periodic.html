@@ -6943,6 +6943,75 @@ header{
   var input=document.getElementById('turnRefDate'); if(input){ input.addEventListener('input', schedule); input.addEventListener('change', schedule); }
 })();
 </script>
+
+<script>
+(function(){
+  function parseRef(str){
+    if(!str) return null;
+    var s=String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
+    var parts=s.split('/');
+    if(parts.length!==3) return null;
+    var a=parseInt(parts[0],10), b=parseInt(parts[1],10), c=parseInt(parts[2],10);
+    if([a,b,c].some(function(v){ return Number.isNaN(v); })) return null;
+    if(a>31 || String(parts[0]).length===4) return {y:a,m:b,d:c};
+    return {d:a,m:b,y:c};
+  }
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function getRefObj(){
+    var input=document.getElementById('turnRefDate');
+    var parsed=parseRef(input && input.value);
+    if(parsed) return parsed;
+    try{ parsed=parseRef(localStorage.getItem('periodicTableRefDate')||''); if(parsed) return parsed; }catch(e){}
+    var now=new Date();
+    return {y:now.getFullYear(),m:now.getMonth()+1,d:now.getDate()};
+  }
+  var MAIN_ROW8_SYMBOLS = ['Fr','Ra','Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'];
+  function explicitMainRow8Item(ref){
+    if(!window.PERIODIC_DATA || !window.PERIODIC_DATA.length || !ref) return null;
+    var md = pad2(ref.m)+'-'+pad2(ref.d);
+    var start = '03-28', end = '04-28';
+    if(md < start || md > end) return null;
+    var month = ref.m, day = ref.d;
+    var idx = (month===3 ? (day-28) : (4 + day));
+    if(idx < 0 || idx >= MAIN_ROW8_SYMBOLS.length) return null;
+    var symbol = MAIN_ROW8_SYMBOLS[idx];
+    var all = window.PERIODIC_DATA.filter(function(item){
+      return String(item.symbol||'').toUpperCase() === symbol.toUpperCase();
+    });
+    var row8 = all.find(function(item){ return Number(item.row) === 8; });
+    return row8 || all[0] || null;
+  }
+  function applyRow8PriorityHeader(){
+    try{
+      var ref = getRefObj();
+      var item = explicitMainRow8Item(ref);
+      if(!item) return;
+      var colRowLabel=document.getElementById('colRowLabel');
+      var periodicElementLabel=document.getElementById('periodicElementLabel');
+      if(colRowLabel) colRowLabel.textContent='Columna '+String(item.col)+' · Fila '+String(item.row);
+      if(periodicElementLabel){
+        var parts=[String(item.symbol||'')];
+        if(item.atomic!=null && item.atomic!=='') parts.push(String(item.atomic));
+        if(item.name) parts.push(String(item.name));
+        periodicElementLabel.textContent=parts.filter(Boolean).join(' · ');
+      }
+      document.body.setAttribute('data-el', String(item.key || item.symbol || '').toUpperCase());
+    }catch(e){}
+  }
+  function schedule(){
+    applyRow8PriorityHeader();
+    setTimeout(applyRow8PriorityHeader,0);
+    setTimeout(applyRow8PriorityHeader,80);
+    setTimeout(applyRow8PriorityHeader,220);
+    requestAnimationFrame(function(){ applyRow8PriorityHeader(); requestAnimationFrame(applyRow8PriorityHeader); });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', schedule); else schedule();
+  window.addEventListener('load', schedule);
+  ['showTurnBtn','locateDateBtn','prevDateBtn','todayDateBtn','nextDateBtn','clearTurnBtn'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click', schedule); });
+  var input=document.getElementById('turnRefDate'); if(input){ input.addEventListener('input', schedule); input.addEventListener('change', schedule); }
+})();
+</script>
+
 </body>
 </html>
 
