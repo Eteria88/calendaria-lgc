@@ -6786,11 +6786,28 @@ header{
       }catch(e){}
     }catch(e){}
   }
+  var headerObserver = null;
+  function ensureObserver(){
+    if(headerObserver) return;
+    var colRowLabel=document.getElementById('colRowLabel');
+    var periodicElementLabel=document.getElementById('periodicElementLabel');
+    if(!colRowLabel && !periodicElementLabel) return;
+    headerObserver = new MutationObserver(function(){
+      if(headerObserver && headerObserver._locked) return;
+      schedule();
+    });
+    [colRowLabel, periodicElementLabel].forEach(function(node){
+      if(node) headerObserver.observe(node, { childList:true, characterData:true, subtree:true });
+    });
+  }
   function schedule(){
+    ensureObserver();
+    if(headerObserver) headerObserver._locked = true;
     applyLockedHeader();
     setTimeout(applyLockedHeader,0);
     setTimeout(applyLockedHeader,50);
     setTimeout(applyLockedHeader,150);
+    setTimeout(function(){ if(headerObserver) headerObserver._locked = false; }, 220);
     requestAnimationFrame(function(){ applyLockedHeader(); requestAnimationFrame(applyLockedHeader); });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', schedule); else schedule();
