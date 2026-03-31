@@ -714,17 +714,22 @@ header{
   gap:12px;
 }
 .turnToolbar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  align-items:end;
+  display:grid;
+  gap:14px;
+  align-items:start;
 }
 .turnField{
   display:grid;
   gap:6px;
-  min-width:190px;
+  min-width:0;
 }
-.turnField--small{min-width:110px;max-width:140px}
+.turnField--small{max-width:none}
+.turnFieldAction{
+  display:flex;
+}
+.turnFieldAction .turnBtn{
+  width:100%;
+}
 .turnField label{
   font-size:11px;
   letter-spacing:.04em;
@@ -784,7 +789,19 @@ header{
   flex-wrap:wrap;
   gap:8px;
 }
+.turnActions--nav{
+  padding-top:2px;
+}
+.turnActions--secondary{
+  padding-top:2px;
+}
 .turnBtn{height:40px;min-width:112px;justify-content:center;font-size:13px;padding:0 16px}
+.turnBtn--field{
+  min-width:0;
+}
+.turnBtn--subtle{
+  opacity:.86;
+}
 .turnStatus{
   display:none;
 }
@@ -832,7 +849,7 @@ header{
 }
 .turnControlsPanel .turnToolbar{
   display:grid;
-  gap:12px;
+  gap:14px;
   align-items:start;
 }
 .turnControlsPanel .turnField,
@@ -841,6 +858,13 @@ header{
   max-width:none;
 }
 .turnControlsPanel .turnActions{
+  justify-content:flex-start;
+}
+.turnControlsPanel .turnActions--nav{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.turnControlsPanel .turnActions--secondary{
   justify-content:flex-start;
 }
 .turnVisualPanel .turnQuadrants{
@@ -855,9 +879,12 @@ header{
     width:100%;
   }
   .turnControlsPanel .turnToolbar{
-    display:flex;
-    flex-wrap:wrap;
-    align-items:end;
+    display:grid;
+    gap:12px;
+    align-items:start;
+  }
+  .turnControlsPanel .turnActions--nav{
+    grid-template-columns:repeat(3,minmax(0,1fr));
   }
   .turnVisualPanel .turnQuadrants{
     justify-self:start;
@@ -1196,6 +1223,15 @@ header{
   .turnRichCell--slab{font-size:15px;padding-top:0;}
   .turnRichCell--slab .turnRichCell__slabTop{top:6px;}
 }
+@media (max-width:599px){
+  .turnControlsPanel .turnActions--nav{
+    grid-template-columns:1fr;
+  }
+  .turnActions--secondary .turnBtn{
+    width:100%;
+    min-width:0;
+  }
+}
 
 
 .periodicPeekOverlay{position:fixed;inset:0;background:rgba(3,7,12,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9999;opacity:0;pointer-events:none;transition:opacity .18s ease;}
@@ -1272,18 +1308,24 @@ header{
             <div class="turnField turnField--small">
               <label for="turnNumber">Vuelta</label>
               <input id="turnNumber" type="number" inputmode="numeric" min="1" max="22" placeholder="1–22">
+              <div class="turnFieldAction">
+                <button type="button" class="btn turnBtn turnBtn--field" id="showTurnBtn">Mostrar vuelta</button>
+              </div>
             </div>
             <div class="turnField">
               <label for="turnRefDate">Fecha de referencia</label>
               <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
+              <div class="turnFieldAction">
+                <button type="button" class="btn turnBtn turnBtn--field" id="locateDateBtn">Ubicar fecha</button>
+              </div>
             </div>
-            <div class="turnActions">
+            <div class="turnActions turnActions--nav">
               <button type="button" class="btn turnBtn" id="prevDateBtn">Anterior</button>
               <button type="button" class="btn turnBtn" id="todayDateBtn">Hoy</button>
               <button type="button" class="btn turnBtn" id="nextDateBtn">Siguiente</button>
-              <button type="button" class="btn turnBtn" id="showTurnBtn">Mostrar vuelta</button>
-              <button type="button" class="btn turnBtn" id="locateDateBtn">Ubicar fecha</button>
-              <button type="button" class="btn turnBtn" id="clearTurnBtn">Limpiar</button>
+            </div>
+            <div class="turnActions turnActions--secondary">
+              <button type="button" class="btn turnBtn turnBtn--subtle" id="clearTurnBtn">Limpiar</button>
             </div>
           </div>
           <div class="turnStatus" id="turnStatus">Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.</div>
