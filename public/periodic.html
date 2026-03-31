@@ -6565,5 +6565,122 @@ header{
   document.addEventListener("keydown", function(e){ if(e.key==="Escape" && overlay.classList.contains("is-open")) closePeek(); });
 })();
 </script>
+
+<script>
+(function(){
+  function parseFlexDate(str){
+    if(!str) return null;
+    var s = String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
+    var p = s.split('/');
+    if(p.length !== 3) return null;
+    var a = parseInt(p[0],10), b = parseInt(p[1],10), c = parseInt(p[2],10);
+    if([a,b,c].some(function(v){ return Number.isNaN(v); })) return null;
+    var y,m,d;
+    if (a > 31) { y=a; m=b; d=c; } else { d=a; m=b; y=c; }
+    if(!(y>=1 && y<=9999 && m>=1 && m<=12 && d>=1 && d<=31)) return null;
+    return { y:y, m:m, d:d };
+  }
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function formatIso(ref){ return String(ref.y).padStart(4,'0') + '-' + pad2(ref.m) + '-' + pad2(ref.d); }
+  function getRefObj(){
+    var input = document.getElementById('turnRefDate');
+    var raw = (input && input.value) || '';
+    var parsed = parseFlexDate(raw);
+    if(parsed) return parsed;
+    try {
+      var stored = localStorage.getItem('periodicTableRefDate') || '';
+      parsed = parseFlexDate(stored);
+      if(parsed) return parsed;
+    } catch(e){}
+    var now = new Date();
+    return { y: now.getFullYear(), m: now.getMonth()+1, d: now.getDate() };
+  }
+  function normalizedMonthDayFromRef(refObj){
+    if(!refObj) return null;
+    var y = refObj.y, m = refObj.m, d = refObj.d;
+    function isLeap(year){ return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0); }
+    function daysInMonth(year, month){ return month === 2 ? (isLeap(year) ? 29 : 28) : ([4,6,9,11].indexOf(month)>=0 ? 30 : 31); }
+    if(isLeap(y)){ if(m === 12 && d >= 18) return null; } else { if(m === 12 && d >= 19) return null; }
+    if(isLeap(y)){
+      var inShiftRange = (m === 2 && d === 29) || (m > 2 && (m < 12 || (m === 12 && d <= 17)));
+      if(inShiftRange){
+        d += 1;
+        if(d > daysInMonth(y,m)){
+          d = 1; m += 1;
+          if(m > 12){ m = 1; y += 1; }
+        }
+      }
+    }
+    return pad2(m) + '-' + pad2(d);
+  }
+  function deriveKeyFromRef(refObj){
+    var md = normalizedMonthDayFromRef(refObj);
+    var map = window.PERIODIC_BADGE_MAP || null;
+    var resolve = window.PERIODIC_RESOLVE_BADGE_KEY;
+    if(!md || !map || typeof resolve !== 'function') return '';
+    var entry = map[md] || null;
+    return String(resolve(entry, formatIso(refObj)) || '').toUpperCase();
+  }
+  function findPreferredItem(key){
+    key = String(key || '').toUpperCase();
+    if(!key || !window.PERIODIC_DATA) return null;
+    var all = window.PERIODIC_DATA.filter(function(item){
+      return String(item.key || '').toUpperCase() === key || String(item.symbol || '').toUpperCase() === key;
+    });
+    if(!all.length) return null;
+    var exact = all.find(function(item){ return String(item.key || '').toUpperCase() === key; });
+    if(exact && !/^L\d+$/i.test(key)) return exact;
+    var preferred = all.find(function(item){
+      var row = Number(item.row);
+      var itemKey = String(item.key || '').toUpperCase();
+      return row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
+    });
+    return preferred || exact || all[0];
+  }
+  function applyHeaderFromDate(){
+    var refObj = getRefObj();
+    var key = deriveKeyFromRef(refObj);
+    if(!key) return;
+    var colRowLabel = document.getElementById('colRowLabel');
+    var periodicElementLabel = document.getElementById('periodicElementLabel');
+    var item = findPreferredItem(key);
+    if(!item) return;
+    if(colRowLabel && item.col != null && item.row != null){
+      colRowLabel.textContent = 'Columna ' + String(item.col) + ' · Fila ' + String(item.row);
+    }
+    if(periodicElementLabel){
+      var parts = [String(item.symbol || '')];
+      if(item.atomic != null && item.atomic !== '') parts.push(String(item.atomic));
+      if(item.name) parts.push(String(item.name));
+      periodicElementLabel.textContent = parts.filter(Boolean).join(' · ');
+    }
+    document.body.setAttribute('data-el', key);
+    try{
+      var url = new URL(window.location.href);
+      if(url.searchParams.get('el') !== key){
+        url.searchParams.set('el', key);
+        window.history.replaceState({}, '', url.toString());
+      }
+    }catch(e){}
+    if(typeof window.renderPeriodicBadge === 'function'){
+      try { window.renderPeriodicBadge(); } catch(e){}
+    }
+  }
+  function scheduleFix(){ setTimeout(applyHeaderFromDate, 0); setTimeout(applyHeaderFromDate, 80); setTimeout(applyHeaderFromDate, 220); }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', scheduleFix);
+  } else {
+    scheduleFix();
+  }
+  window.addEventListener('load', scheduleFix);
+  ['showTurnBtn','locateDateBtn','prevDateBtn','todayDateBtn','nextDateBtn','clearTurnBtn'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('click', function(){ setTimeout(applyHeaderFromDate, 0); setTimeout(applyHeaderFromDate, 120); });
+  });
+  var dateInput = document.getElementById('turnRefDate');
+  if(dateInput) dateInput.addEventListener('change', function(){ setTimeout(applyHeaderFromDate, 0); });
+})();
+</script>
+
 </body>
 </html>
