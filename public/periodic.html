@@ -28,14 +28,34 @@ header{
   gap:12px;
   padding:8px 0 14px 0;
 }
+.headerBrand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
 .sun{
   width:18px;
   height:18px;
   border-radius:50%;
-  background:radial-gradient(circle at 30% 20%,#fff6d6,#ffb347);
+  background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);
   box-shadow:0 0 18px #ffb347;
   display:inline-block;
-  margin-right:8px;
+  flex:0 0 auto;
+}
+.brandTitle{
+  margin:0;
+  font-size:22px !important;
+  line-height:1.1 !important;
+  letter-spacing:.2px;
+  color:var(--text);
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+@media(min-width:900px){
+  .brandTitle{font-size:26px !important;}
 }
 .small{font-size:12px;color:var(--muted)}
 .mono{font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
@@ -705,6 +725,20 @@ header{
   .p-table-title{
     font-size:9.5px;
     margin-bottom:8px;
+    white-space:normal;
+    line-height:1.22;
+    text-wrap:balance;
+    max-width:100%;
+  }
+  .p-table-title .speak,
+  .p-table-title .main{
+    display:block;
+  }
+  .p-table-title .speak{
+    margin-bottom:4px;
+  }
+  .p-table-title .main{
+    margin-left:0;
   }
 }
 
@@ -819,10 +853,10 @@ header{
 }
 .turnBtn{
   height:40px;
-  min-width:112px;
+  min-width:104px;
   justify-content:center;
   font-size:13px;
-  padding:0 18px;
+  padding:0 16px;
   cursor:pointer;
   border:1px solid rgba(114,154,196,.34);
   background:linear-gradient(180deg,rgba(24,34,48,.92),rgba(10,16,25,.96));
@@ -926,7 +960,8 @@ header{
 }
 .turnControlsPanel .turnActions--nav{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(3,104px);
+  gap:8px;
 }
 .turnControlsPanel .turnActions--secondary{
   justify-content:flex-start;
@@ -1242,6 +1277,13 @@ header{
   filter:saturate(.72);
 }
 @media (max-width:839px){
+  .turnVisualPanel{
+    overflow-x:auto;
+    overflow-y:visible;
+    -webkit-overflow-scrolling:touch;
+    padding-top:4px;
+    padding-bottom:4px;
+  }
   .turnQuadrants__title{
     gap:10px;
   }
@@ -1252,12 +1294,15 @@ header{
   .turnQuadrants{
     grid-template-columns:repeat(2,max-content);
     grid-template-areas:
+      "title title"
       "no ne"
       "so se";
     gap:10px;
     justify-content:start;
     align-items:start;
+    margin-top:0;
     padding:10px;
+    min-width:max-content;
   }
   .turnQuadrant__list{
     grid-template-columns:repeat(4, 64px);
@@ -1291,7 +1336,8 @@ header{
   .turnRichCell__corner--right{right:5px;}
   .turnRichCell__symbol{font-size:21px; margin-top:9px;}
   .turnRichCell__name{font-size:6.8px; margin-top:3px;}
-  .turnRichCell__mass{font-size:5.1px; bottom:5px; left:5px; right:5px; font-weight:900;}  .turnRichCell--orb::before{width:calc(64px - 8px);height:calc(64px - 8px);}
+  .turnRichCell__mass{font-size:5.1px; bottom:5px; left:5px; right:5px; font-weight:900;}
+  .turnRichCell--orb::before{width:calc(64px - 8px);height:calc(64px - 8px);}
   .turnRichCell--orb .turnRichCell__orbTop{font-size:8px;top:6px;}
   .turnRichCell--orb .turnRichCell__orbMain{font-size:16px;}
   .turnRichCell--slab{font-size:15px;padding-top:0;}
@@ -1299,7 +1345,13 @@ header{
 }
 @media (max-width:599px){
   .turnControlsPanel .turnActions--nav{
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+  }
+  .turnControlsPanel .turnActions--nav .turnBtn{
+    min-width:0;
+    padding-inline:10px;
+    font-size:12px;
   }
   .turnFieldRow,
   .turnField--small .turnFieldRow{
@@ -1349,11 +1401,11 @@ header{
 <body>
 <div class="wrap">
   <header>
-    <div>
-      <div class="small"><span class="sun"></span>Calendaria-LGC · Tabla periódica</div>
-      <div class="small">Vista de elementos</div>
+    <div class="headerBrand">
+      <span class="sun" aria-hidden="true"></span>
+      <h1 class="brandTitle">Calendaria-LGC</h1>
     </div>
-    <a href="./index.html" class="btn"><span>←</span><span>Volver a Calendaria</span></a>
+    <a href="./index.html" class="btn"><span>Volver</span></a>
   </header>
 
   <main>
@@ -1534,7 +1586,7 @@ header{
   }
 
   var refRaw = '';
-  var refDate = todayRefDate();
+  var refDate = getStoredRefDate() || todayRefDate();
   try{
     localStorage.setItem('periodicTableRefDate', [
       String(refDate.y).padStart(4,'0'),
@@ -5671,6 +5723,47 @@ header{
     return 'Días solares ' + solarDaysNumber(refObj);
   }
 
+
+  function syncSelectionFromReferenceDate(refObj){
+    if (!refObj || !window.PERIODIC_BADGE_MAP || typeof resolveBadgeKey !== 'function') return null;
+    var md = normalizedMonthDayFromRef(refObj);
+    var entry = md ? window.PERIODIC_BADGE_MAP[md] : null;
+    var derivedKey = resolveBadgeKey(entry, formatIso(refObj));
+    if (!derivedKey) return null;
+
+    var item = buildTurnLModel(derivedKey) || (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey ? window.PERIODIC_LGC.findItemByKey(derivedKey) : null);
+    if (!item) return derivedKey;
+
+    var rowVal = Number(item.row);
+    var colVal = Number(item.col);
+    var displayZone = zoneForTurnRow(rowVal);
+    var display = item.display || (window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
+      ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
+      : { number:'', symbol:item.symbol || '', name:item.name || '', mass:item.mass || '', cornerTopLeft:'', cornerTopRight:'' });
+
+    var colRowLabel = document.getElementById('colRowLabel');
+    var periodicElementLabel = document.getElementById('periodicElementLabel');
+    if (colRowLabel && !Number.isNaN(colVal) && !Number.isNaN(rowVal)) {
+      colRowLabel.textContent = 'Columna ' + String(colVal) + ' · Fila ' + String(rowVal);
+    }
+    if (periodicElementLabel) {
+      var parts = [display.symbol || item.symbol || ''];
+      if (display.number) parts.push(display.number);
+      if (display.cornerTopLeft) parts.push(display.cornerTopLeft);
+      if (display.cornerTopRight) parts.push(display.cornerTopRight);
+      if (display.name) parts.push(display.name);
+      periodicElementLabel.textContent = parts.filter(Boolean).join(' · ');
+    }
+
+    document.body.setAttribute('data-el', String(derivedKey).toUpperCase());
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.set('el', String(derivedKey).toUpperCase());
+      window.history.replaceState({}, '', url.toString());
+    } catch(e){}
+    return derivedKey;
+  }
+
   function applyReferenceDate(refObj){
     var yearSelect = document.getElementById('turnYearType');
     var turnInput = document.getElementById('turnNumber');
@@ -5711,6 +5804,7 @@ header{
     updateMeta(null);
     var quadrants = document.getElementById('turnQuadrants');
     if (quadrants) quadrants.hidden = true;
+    syncSelectionFromReferenceDate(refObj);
 
     if (shouldHighlight) {
       showTurn();
@@ -6211,10 +6305,16 @@ header{
       window.history.replaceState({}, '', url.toString());
     } catch(e){}
 
-    var colRowLabel = document.getElementById('colRowLabel');
-    var periodicElementLabel = document.getElementById('periodicElementLabel');
-    if (colRowLabel) colRowLabel.textContent = 'Tabla sin selección';
-    if (periodicElementLabel) periodicElementLabel.textContent = 'Sin selección';
+    var dateInput = document.getElementById('turnRefDate');
+    var parsedRef = parseFlexibleDate(dateInput && dateInput.value);
+    if (parsedRef) {
+      syncSelectionFromReferenceDate(parsedRef);
+    } else {
+      var colRowLabel = document.getElementById('colRowLabel');
+      var periodicElementLabel = document.getElementById('periodicElementLabel');
+      if (colRowLabel) colRowLabel.textContent = 'Tabla sin selección';
+      if (periodicElementLabel) periodicElementLabel.textContent = 'Sin selección';
+    }
 
     setStatus('Explorador de vueltas listo. Cargadas las vueltas 1 a 22 de la regla base. Ya podés probar hasta la Vuelta 22.');
   }
