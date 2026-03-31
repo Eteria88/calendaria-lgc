@@ -732,15 +732,22 @@ header{
 .turnField--date{
   width:min(100%, 320px);
 }
+.turnFieldRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+}
 .turnFieldAction{
   display:flex;
   justify-content:flex-start;
-  margin-top:2px;
+  margin-top:0;
 }
 .turnFieldAction .turnBtn{
   width:auto;
-  min-width:172px;
-  padding-inline:22px;
+  min-width:148px;
+  padding-inline:20px;
+  white-space:nowrap;
 }
 .turnField label{
   font-size:11px;
@@ -1254,6 +1261,10 @@ header{
   .turnControlsPanel .turnActions--nav{
     grid-template-columns:1fr;
   }
+  .turnFieldRow{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
   .turnFieldAction .turnBtn,
   .turnActions--secondary .turnBtn{
     width:100%;
@@ -1335,40 +1346,44 @@ header{
             </div>
             <div class="turnField turnField--small">
               <label for="turnNumber">Vuelta</label>
-              <select id="turnNumber" aria-label="Vuelta">
-                <option value="">Seleccionar</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-                <option value="22">22</option>
-              </select>
-              <div class="turnFieldAction">
-                <button type="button" class="btn turnBtn turnBtn--field" id="showTurnBtn">Mostrar vuelta</button>
+              <div class="turnFieldRow">
+                <select id="turnNumber" aria-label="Vuelta">
+                  <option value="">Seleccionar</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                  <option value="18">18</option>
+                  <option value="19">19</option>
+                  <option value="20">20</option>
+                  <option value="21">21</option>
+                  <option value="22">22</option>
+                </select>
+                <div class="turnFieldAction">
+                  <button type="button" class="btn turnBtn turnBtn--field" id="showTurnBtn">Mostrar vuelta</button>
+                </div>
               </div>
             </div>
             <div class="turnField turnField--date">
               <label for="turnRefDate">Fecha de referencia</label>
-              <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
-              <div class="turnFieldAction">
-                <button type="button" class="btn turnBtn turnBtn--field" id="locateDateBtn">Ubicar fecha</button>
+              <div class="turnFieldRow">
+                <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
+                <div class="turnFieldAction">
+                  <button type="button" class="btn turnBtn turnBtn--field" id="locateDateBtn">Ubicar fecha</button>
+                </div>
               </div>
             </div>
             <div class="turnActions turnActions--nav">
@@ -5466,6 +5481,11 @@ header{
 
   function formatIso(obj){
     return String(obj.y).padStart(4,'0') + '-' + pad2turn(obj.m) + '-' + pad2turn(obj.d);
+  }
+
+  function todayRefDate(){
+    var now = new Date();
+    return { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
   }
 
   function isLeapYear(year){
