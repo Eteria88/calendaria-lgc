@@ -5724,6 +5724,62 @@ header{
   }
 
 
+  function deriveSpecialBandModel(rawKey){
+    var key = String(rawKey || '').trim().toUpperCase();
+    var promesa = /^P(\d+)$/i.exec(key);
+    if (promesa) {
+      var pNum = parseInt(promesa[1], 10);
+      if (pNum >= 119 && pNum <= 148) {
+        return {
+          key: key,
+          row: 1,
+          col: 150 - pNum,
+          display: {
+            symbol: 'Promesa',
+            number: String(pNum),
+            name: String(pNum - 118),
+            mass: '',
+            cornerTopLeft: '',
+            cornerTopRight: ''
+          }
+        };
+      }
+    }
+
+    var black = /^BN(\d+)$/i.exec(key);
+    if (black) {
+      var bnNum = parseInt(black[1], 10);
+      var rowVal = NaN;
+      var colVal = NaN;
+      if (bnNum >= 149 && bnNum <= 168) {
+        var idxA = bnNum - 149;
+        colVal = 26 - Math.floor(idxA / 2);
+        rowVal = 2 + (idxA % 2);
+      } else if (bnNum >= 169 && bnNum <= 224) {
+        var idxB = bnNum - 169;
+        colVal = 16 - Math.floor(idxB / 4);
+        rowVal = 2 + (idxB % 4);
+      }
+      if (!Number.isNaN(colVal) && !Number.isNaN(rowVal)) {
+        return {
+          key: key,
+          row: rowVal,
+          col: colVal,
+          display: {
+            symbol: 'Espacio en negro',
+            number: String(bnNum),
+            name: '',
+            mass: '',
+            cornerTopLeft: '',
+            cornerTopRight: ''
+          }
+        };
+      }
+    }
+
+    return null;
+  }
+
   function syncSelectionFromReferenceDate(refObj){
     if (!refObj || !window.PERIODIC_BADGE_MAP || typeof resolveBadgeKey !== 'function') return null;
     var md = normalizedMonthDayFromRef(refObj);
@@ -5731,28 +5787,32 @@ header{
     var derivedKey = resolveBadgeKey(entry, formatIso(refObj));
     if (!derivedKey) return null;
 
-    var item = buildTurnLModel(derivedKey) || (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey ? window.PERIODIC_LGC.findItemByKey(derivedKey) : null);
-    if (!item) return derivedKey;
-
-    var rowVal = Number(item.row);
-    var colVal = Number(item.col);
-    var displayZone = zoneForTurnRow(rowVal);
-    var display = item.display || (window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
-      ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
-      : { number:'', symbol:item.symbol || '', name:item.name || '', mass:item.mass || '', cornerTopLeft:'', cornerTopRight:'' });
+    var item = buildTurnLModel(derivedKey)
+      || deriveSpecialBandModel(derivedKey)
+      || (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey ? window.PERIODIC_LGC.findItemByKey(derivedKey) : null);
 
     var colRowLabel = document.getElementById('colRowLabel');
     var periodicElementLabel = document.getElementById('periodicElementLabel');
-    if (colRowLabel && !Number.isNaN(colVal) && !Number.isNaN(rowVal)) {
-      colRowLabel.textContent = 'Columna ' + String(colVal) + ' · Fila ' + String(rowVal);
-    }
-    if (periodicElementLabel) {
-      var parts = [display.symbol || item.symbol || ''];
-      if (display.number) parts.push(display.number);
-      if (display.cornerTopLeft) parts.push(display.cornerTopLeft);
-      if (display.cornerTopRight) parts.push(display.cornerTopRight);
-      if (display.name) parts.push(display.name);
-      periodicElementLabel.textContent = parts.filter(Boolean).join(' · ');
+
+    if (item) {
+      var rowVal = Number(item.row);
+      var colVal = Number(item.col);
+      var displayZone = zoneForTurnRow(rowVal);
+      var display = item.display || (window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
+        ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
+        : { number:'', symbol:item.symbol || '', name:item.name || '', mass:item.mass || '', cornerTopLeft:'', cornerTopRight:'' });
+
+      if (colRowLabel && !Number.isNaN(colVal) && !Number.isNaN(rowVal)) {
+        colRowLabel.textContent = 'Columna ' + String(colVal) + ' · Fila ' + String(rowVal);
+      }
+      if (periodicElementLabel) {
+        var parts = [display.symbol || item.symbol || ''];
+        if (display.number) parts.push(display.number);
+        if (display.cornerTopLeft) parts.push(display.cornerTopLeft);
+        if (display.cornerTopRight) parts.push(display.cornerTopRight);
+        if (display.name) parts.push(display.name);
+        periodicElementLabel.textContent = parts.filter(Boolean).join(' · ');
+      }
     }
 
     document.body.setAttribute('data-el', String(derivedKey).toUpperCase());
