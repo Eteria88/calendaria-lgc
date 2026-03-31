@@ -715,7 +715,7 @@ header{
 }
 .turnToolbar{
   display:grid;
-  gap:14px;
+  gap:16px;
   align-items:start;
 }
 .turnField{
@@ -726,6 +726,7 @@ header{
 .turnField--small{max-width:none}
 .turnFieldAction{
   display:flex;
+  margin-top:2px;
 }
 .turnFieldAction .turnBtn{
   width:100%;
@@ -787,20 +788,26 @@ header{
 .turnActions{
   display:flex;
   flex-wrap:wrap;
-  gap:8px;
+  gap:10px;
 }
 .turnActions--nav{
-  padding-top:2px;
+  padding-top:6px;
 }
 .turnActions--secondary{
-  padding-top:2px;
+  padding-top:4px;
 }
-.turnBtn{height:40px;min-width:112px;justify-content:center;font-size:13px;padding:0 16px}
+.turnBtn{height:38px;min-width:112px;justify-content:center;font-size:13px;padding:0 16px}
 .turnBtn--field{
   min-width:0;
+  height:36px;
+  font-size:12px;
+  background:rgba(255,255,255,.028);
+  border-color:rgba(159,179,200,.22);
 }
 .turnBtn--subtle{
-  opacity:.86;
+  opacity:.72;
+  background:rgba(255,255,255,.022);
+  border-color:rgba(159,179,200,.18);
 }
 .turnStatus{
   display:none;
@@ -849,7 +856,7 @@ header{
 }
 .turnControlsPanel .turnToolbar{
   display:grid;
-  gap:14px;
+  gap:16px;
   align-items:start;
 }
 .turnControlsPanel .turnField,
@@ -867,6 +874,11 @@ header{
 .turnControlsPanel .turnActions--secondary{
   justify-content:flex-start;
 }
+.turnControlsPanel .turnActions--secondary .turnBtn{
+  min-width:0;
+  width:auto;
+  padding-inline:22px;
+}
 .turnVisualPanel .turnQuadrants{
   justify-self:center;
 }
@@ -880,7 +892,7 @@ header{
   }
   .turnControlsPanel .turnToolbar{
     display:grid;
-    gap:12px;
+    gap:14px;
     align-items:start;
   }
   .turnControlsPanel .turnActions--nav{
