@@ -723,7 +723,15 @@ header{
   gap:6px;
   min-width:0;
 }
-.turnField--small{max-width:none}
+.turnField--year{
+  width:min(100%, 320px);
+}
+.turnField--small{
+  width:min(100%, 188px);
+}
+.turnField--date{
+  width:min(100%, 320px);
+}
 .turnFieldAction{
   display:flex;
   justify-content:flex-start;
@@ -865,7 +873,6 @@ header{
 .turnControlsPanel .turnField,
 .turnControlsPanel .turnField--small{
   min-width:0;
-  max-width:none;
 }
 .turnControlsPanel .turnActions{
   justify-content:flex-start;
@@ -897,6 +904,11 @@ header{
     display:grid;
     gap:14px;
     align-items:start;
+  }
+  .turnField--year,
+  .turnField--small,
+  .turnField--date{
+    width:100%;
   }
   .turnControlsPanel .turnActions--nav{
     grid-template-columns:repeat(3,minmax(0,1fr));
@@ -1312,7 +1324,7 @@ header{
       <div class="turnWorkbench">
         <div class="turnControlsPanel">
           <div class="turnToolbar">
-            <div class="turnField">
+            <div class="turnField turnField--year">
               <label for="turnYearType">Año del aparato</label>
               <select id="turnYearType">
                 <option value="asume">Asume</option>
@@ -1328,7 +1340,7 @@ header{
                 <button type="button" class="btn turnBtn turnBtn--field" id="showTurnBtn">Mostrar vuelta</button>
               </div>
             </div>
-            <div class="turnField">
+            <div class="turnField turnField--date">
               <label for="turnRefDate">Fecha de referencia</label>
               <input id="turnRefDate" type="text" inputmode="numeric" placeholder="dd/mm/aaaa">
               <div class="turnFieldAction">
