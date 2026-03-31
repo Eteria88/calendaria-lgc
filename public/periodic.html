@@ -4509,10 +4509,35 @@ header{
     return { number, symbol, name, mass, variant, cornerTopLeft, cornerTopRight };
   }
 
+  function specialGridPositionFromKey(rawKey){
+    var key = String(rawKey || '').trim().toUpperCase();
+    var pm = /^P(\d+)$/.exec(key);
+    if (pm) {
+      var pNum = parseInt(pm[1], 10);
+      if (pNum >= 119 && pNum <= 148) {
+        return { col: 150 - pNum, row: 1 };
+      }
+    }
+    var bm = /^BN(\d+)$/.exec(key);
+    if (bm) {
+      var bNum = parseInt(bm[1], 10);
+      if (bNum >= 149 && bNum <= 168) {
+        var offA = bNum - 149;
+        return { col: 26 - Math.floor(offA / 2), row: 2 + (offA % 2) };
+      }
+      if (bNum >= 169 && bNum <= 224) {
+        var offB = bNum - 169;
+        return { col: 16 - Math.floor(offB / 4), row: 2 + (offB % 4) };
+      }
+    }
+    return null;
+  }
+
   window.PERIODIC_LGC = Object.assign({}, window.PERIODIC_LGC || {}, {
     getActiveKey,
     findItemByKey,
-    readDisplay
+    readDisplay,
+    specialGridPositionFromKey
   });
 
   const activeItem = findItemByKey(getActiveKey());
@@ -4525,8 +4550,11 @@ header{
   if (label) {
     label.textContent = [display.symbol, display.number, display.name].filter(Boolean).join(' · ');
   }
-  if (colRowLabel && activeItem.col && activeItem.row) {
-    colRowLabel.textContent = 'Columna ' + activeItem.col + ' · Fila ' + activeItem.row;
+  var specialPos = specialGridPositionFromKey(getActiveKey());
+  var activeCol = specialPos && specialPos.col != null ? specialPos.col : activeItem.col;
+  var activeRow = specialPos && specialPos.row != null ? specialPos.row : activeItem.row;
+  if (colRowLabel && activeCol != null && activeRow != null) {
+    colRowLabel.textContent = 'Columna ' + activeCol + ' · Fila ' + activeRow;
   }
   if (typeof window.renderPeriodicBadge === 'function') {
     try { window.renderPeriodicBadge(); } catch(e) {}
@@ -6087,8 +6115,9 @@ header{
     var rawKey = String(cell.key || cell.symbol || '');
     var lModel = buildTurnLModel(rawKey);
     var item = lModel || ((window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(rawKey) : null);
-    var rowVal = lModel ? Number(lModel.row) : Number(cell.rowNorm != null ? cell.rowNorm : cell.row);
-    var colVal = lModel ? Number(lModel.col) : Number((item && item.col != null) ? item.col : cell.col);
+    var specialPos = (window.PERIODIC_LGC && window.PERIODIC_LGC.specialGridPositionFromKey) ? window.PERIODIC_LGC.specialGridPositionFromKey(rawKey) : null;
+    var rowVal = lModel ? Number(lModel.row) : Number(specialPos && specialPos.row != null ? specialPos.row : (cell.rowNorm != null ? cell.rowNorm : cell.row));
+    var colVal = lModel ? Number(lModel.col) : Number(specialPos && specialPos.col != null ? specialPos.col : ((item && item.col != null) ? item.col : cell.col));
     var displayZone = zoneForTurnRow(rowVal);
     var display = lModel
       ? lModel.display
