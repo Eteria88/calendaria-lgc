@@ -1586,7 +1586,7 @@ header{
   }
 
   var refRaw = '';
-  var refDate = getStoredRefDate() || todayRefDate();
+  var refDate = todayRefDate();
   try{
     localStorage.setItem('periodicTableRefDate', [
       String(refDate.y).padStart(4,'0'),
@@ -6151,11 +6151,11 @@ header{
     let innerHtml = '';
     let extraClass = ' is-' + escapeHtml(category || 'transition') + (isCurrentDay ? ' is-current-day' : '');
     if (isPromise) {
-      extraClass = ' turnRichCell--orb';
+      extraClass = ' turnRichCell--orb' + (isCurrentDay ? ' is-current-day' : '');
       innerHtml = '<span class="turnRichCell__orbTop">' + escapeHtml(String(cell.number || '')) + '</span>' +
         '<span class="turnRichCell__orbMain">' + escapeHtml(promiseMain) + '</span>';
     } else if (isBlackSpace) {
-      extraClass = ' turnRichCell--slab';
+      extraClass = ' turnRichCell--slab' + (isCurrentDay ? ' is-current-day' : '');
       innerHtml = '<span class="turnRichCell__slabTop">' + escapeHtml(String(cell.number || '')) + '</span>';
     } else {
       innerHtml =
@@ -6407,11 +6407,6 @@ header{
       String(today.getDate()).padStart(2,'0')
     ].join('-');
     var storedRef = fallbackRef;
-    try {
-      storedRef = localStorage.getItem('periodicTableRefDate') || fallbackRef;
-    } catch(e) {
-      storedRef = fallbackRef;
-    }
     yearSelect.value = getPhaseFromYear(storedRef);
 
     prevDateBtn.addEventListener('click', function(){ stepReferenceDate(-1); });
