@@ -6821,5 +6821,128 @@ header{
 })();
 </script>
 
+<script>
+(function(){
+  function parseRef(str){
+    if(!str) return null;
+    var s=String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
+    var p=s.split('/');
+    if(p.length!==3) return null;
+    var a=parseInt(p[0],10), b=parseInt(p[1],10), c=parseInt(p[2],10);
+    if([a,b,c].some(function(v){ return Number.isNaN(v); })) return null;
+    var y,m,d;
+    if(a>31 || String(p[0]).length===4){ y=a; m=b; d=c; } else { d=a; m=b; y=c; }
+    if(!(y>=1 && y<=9999 && m>=1 && m<=12 && d>=1 && d<=31)) return null;
+    return {y:y,m:m,d:d};
+  }
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function formatIso(ref){ return String(ref.y).padStart(4,'0')+'-'+pad2(ref.m)+'-'+pad2(ref.d); }
+  function getRef(){
+    var input=document.getElementById('turnRefDate');
+    var parsed=parseRef(input && input.value);
+    if(parsed) return parsed;
+    try{ parsed=parseRef(localStorage.getItem('periodicTableRefDate')||''); if(parsed) return parsed; }catch(e){}
+    var now=new Date();
+    return {y:now.getFullYear(),m:now.getMonth()+1,d:now.getDate()};
+  }
+  function normalizedMD(ref){
+    if(!ref) return null;
+    var y=ref.y,m=ref.m,d=ref.d;
+    function isLeap(year){ return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0); }
+    function dim(year, month){ return month===2 ? (isLeap(year)?29:28) : ([4,6,9,11].indexOf(month)>=0?30:31); }
+    if(isLeap(y)){ if(m===12 && d>=18) return null; } else { if(m===12 && d>=19) return null; }
+    if(isLeap(y)){
+      var shift=(m===2 && d===29) || (m>2 && (m<12 || (m===12 && d<=17)));
+      if(shift){ d += 1; if(d>dim(y,m)){ d=1; m += 1; if(m>12){ m=1; y += 1; } } }
+    }
+    return pad2(m)+'-'+pad2(d);
+  }
+  function deriveKey(){
+    var ref=getRef();
+    var map=window.PERIODIC_BADGE_MAP||{};
+    var resolve=window.PERIODIC_RESOLVE_BADGE_KEY;
+    if(typeof resolve!=='function') return '';
+    var md=normalizedMD(ref);
+    var entry=md ? map[md] : null;
+    return String(resolve(entry, formatIso(ref)) || '').toUpperCase();
+  }
+  function preferredMainItem(key){
+    key=String(key||'').toUpperCase();
+    var all=(window.PERIODIC_DATA||[]).filter(function(item){
+      return String(item.key||'').toUpperCase()===key || String(item.symbol||'').toUpperCase()===key;
+    });
+    if(!all.length) return null;
+    if(/^P\d+$/i.test(key)){
+      var n=parseInt(key.slice(1),10);
+      return {key:key,symbol:'Promesa',name:String(n-118),atomic:String(n),col:150-n,row:1};
+    }
+    if(/^BN\d+$/i.test(key)){
+      var bn=parseInt(key.slice(2),10), col,row;
+      if(bn>=149 && bn<=168){ var idx=bn-149; col=26-Math.floor(idx/2); row=2+(idx%2); }
+      else if(bn>=169 && bn<=224){ var idx2=bn-169; col=16-Math.floor(idx2/4); row=2+(idx2%4); }
+      return {key:key,symbol:'Espacio en negro',name:'',atomic:String(bn),col:col,row:row};
+    }
+    var exactMain=all.find(function(item){
+      var row=Number(item.row), itemKey=String(item.key||'').toUpperCase();
+      return String(item.key||'').toUpperCase()===key && row>=1 && row<=8 && !/^L\d+$/i.test(itemKey);
+    });
+    if(exactMain) return exactMain;
+    var preferred=all.find(function(item){
+      var row=Number(item.row), itemKey=String(item.key||'').toUpperCase();
+      return row>=1 && row<=8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
+    });
+    if(preferred) return preferred;
+    return all[0];
+  }
+  function applyAuthoritativeHeader(){
+    var key=deriveKey();
+    if(!key) return;
+    var item=preferredMainItem(key);
+    if(!item) return;
+    var colRowLabel=document.getElementById('colRowLabel');
+    var periodicElementLabel=document.getElementById('periodicElementLabel');
+    var targetCol='Columna '+String(item.col)+' · Fila '+String(item.row);
+    var targetEl=[String(item.symbol||''), item.atomic!=null&&item.atomic!==''?String(item.atomic):'', String(item.name||'')].filter(Boolean).join(' · ');
+    if(colRowLabel) colRowLabel.textContent=targetCol;
+    if(periodicElementLabel) periodicElementLabel.textContent=targetEl || String(item.symbol||'');
+    document.body.setAttribute('data-el', key);
+    try{
+      var url=new URL(window.location.href);
+      if(url.searchParams.get('el')!==key){
+        url.searchParams.set('el', key);
+        window.history.replaceState({},'',url.toString());
+      }
+    }catch(e){}
+  }
+  function schedule(){
+    applyAuthoritativeHeader();
+    setTimeout(applyAuthoritativeHeader,0);
+    setTimeout(applyAuthoritativeHeader,60);
+    setTimeout(applyAuthoritativeHeader,180);
+    requestAnimationFrame(function(){ applyAuthoritativeHeader(); requestAnimationFrame(applyAuthoritativeHeader); });
+  }
+  function patchTurnsWhenReady(){
+    if(!window.PERIODIC_TURNS || window.__headerPatchApplied) return;
+    window.__headerPatchApplied=true;
+    ['showTurn','applyReferenceDate','locateDate','stepReferenceDate','goToTodayReferenceDate','clearTurn'].forEach(function(name){
+      var orig=window.PERIODIC_TURNS[name];
+      if(typeof orig!=='function') return;
+      window.PERIODIC_TURNS[name]=function(){
+        var out=orig.apply(this, arguments);
+        schedule();
+        return out;
+      };
+    });
+    schedule();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', schedule); else schedule();
+  window.addEventListener('load', function(){ schedule(); patchTurnsWhenReady(); setTimeout(patchTurnsWhenReady, 100); setTimeout(patchTurnsWhenReady, 400); });
+  setTimeout(patchTurnsWhenReady, 0);
+  setTimeout(patchTurnsWhenReady, 250);
+  ['showTurnBtn','locateDateBtn','prevDateBtn','todayDateBtn','nextDateBtn','clearTurnBtn'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click', schedule); });
+  var input=document.getElementById('turnRefDate'); if(input){ input.addEventListener('input', schedule); input.addEventListener('change', schedule); }
+})();
+</script>
 </body>
 </html>
+
