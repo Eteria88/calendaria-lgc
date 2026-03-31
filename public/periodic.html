@@ -4265,6 +4265,7 @@ header{
     }
     return 'L' + (ordinal - 224);
   }
+  window.PERIODIC_RESOLVE_BADGE_KEY = resolveBadgeKey;
 
   function buildLBadgeModel(key){
     var m = /^L(\d+)$/i.exec(String(key || ''));
@@ -5781,10 +5782,11 @@ header{
   }
 
   function syncSelectionFromReferenceDate(refObj){
-    if (!refObj || !window.PERIODIC_BADGE_MAP || typeof resolveBadgeKey !== 'function') return null;
+    var resolveKey = window.PERIODIC_RESOLVE_BADGE_KEY;
+    if (!refObj || !window.PERIODIC_BADGE_MAP || typeof resolveKey !== 'function') return null;
     var md = normalizedMonthDayFromRef(refObj);
     var entry = md ? window.PERIODIC_BADGE_MAP[md] : null;
-    var derivedKey = resolveBadgeKey(entry, formatIso(refObj));
+    var derivedKey = resolveKey(entry, formatIso(refObj));
     if (!derivedKey) return null;
 
     var item = buildTurnLModel(derivedKey)
