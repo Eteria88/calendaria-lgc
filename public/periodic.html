@@ -1285,6 +1285,21 @@ header .btn span{font-size:13px;font-weight:700;}
   filter:saturate(.72);
 }
 @media (max-width:839px){
+  .turnVisualPanel{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:4px;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(124,199,255,.34) rgba(255,255,255,.04);
+  }
+  .turnVisualPanel::-webkit-scrollbar{height:8px;}
+  .turnVisualPanel::-webkit-scrollbar-thumb{
+    background:rgba(124,199,255,.24);
+    border-radius:999px;
+  }
+  .turnVisualPanel::-webkit-scrollbar-track{background:rgba(255,255,255,.04);}
   .turnQuadrants__title{
     gap:10px;
   }
@@ -1295,12 +1310,16 @@ header .btn span{font-size:13px;font-weight:700;}
   .turnQuadrants{
     grid-template-columns:repeat(2,max-content);
     grid-template-areas:
+      "title title"
       "no ne"
       "so se";
     gap:10px;
     justify-content:start;
     align-items:start;
     padding:10px;
+    min-width:max-content;
+    width:max-content;
+    margin-right:2px;
   }
   .turnQuadrant__list{
     grid-template-columns:repeat(4, 64px);
@@ -1334,11 +1353,28 @@ header .btn span{font-size:13px;font-weight:700;}
   .turnRichCell__corner--right{right:5px;}
   .turnRichCell__symbol{font-size:21px; margin-top:9px;}
   .turnRichCell__name{font-size:6.8px; margin-top:3px;}
-  .turnRichCell__mass{font-size:5.1px; bottom:5px; left:5px; right:5px; font-weight:900;}  .turnRichCell--orb::before{width:calc(64px - 8px);height:calc(64px - 8px);}
+  .turnRichCell__mass{font-size:5.1px; bottom:5px; left:5px; right:5px; font-weight:900;}
+  .turnRichCell--orb::before{width:calc(64px - 8px);height:calc(64px - 8px);}
   .turnRichCell--orb .turnRichCell__orbTop{font-size:8px;top:6px;}
   .turnRichCell--orb .turnRichCell__orbMain{font-size:16px;}
   .turnRichCell--slab{font-size:15px;padding-top:0;}
   .turnRichCell--slab .turnRichCell__slabTop{top:6px;}
+  .p-table-title{
+    white-space:normal;
+    text-wrap:balance;
+    line-height:1.28;
+    font-size:9.4px;
+    max-width:100%;
+    padding:0 4px;
+  }
+  .p-table-title .speak,
+  .p-table-title .main{
+    display:block;
+    margin-left:0;
+  }
+  .p-table-title .main{
+    margin-top:3px;
+  }
 }
 @media (max-width:599px){
   .turnControlsPanel .turnActions--nav{
@@ -1353,6 +1389,10 @@ header .btn span{font-size:13px;font-weight:700;}
   .turnActions--secondary .turnBtn{
     width:100%;
     min-width:0;
+  }
+  .turnVisualPanel{
+    margin-inline:-2px;
+    padding-inline:2px;
   }
 }
 
