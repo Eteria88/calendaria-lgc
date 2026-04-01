@@ -2349,10 +2349,32 @@ header{
 
   function findItemByKey(key){
     key = String(key || '').trim().toUpperCase();
-    return window.PERIODIC_DATA.find(function(item){
+    if (!key) return null;
+
+    var matches = window.PERIODIC_DATA.filter(function(item){
       return String(item.key || item.symbol).toUpperCase() === key ||
              String(item.symbol || '').toUpperCase() === key;
-    }) || null;
+    });
+    if (!matches.length) return null;
+
+    var exactKey = matches.find(function(item){
+      return String(item.key || '').toUpperCase() === key;
+    });
+    if (exactKey) return exactKey;
+
+    var preferredBase = matches.find(function(item){
+      var row = Number(item.row);
+      var rawKey = String(item.key || '').toUpperCase();
+      return row >= 1 && row <= 8 && !/^L\d+$/i.test(rawKey) && !/^P\d+$/i.test(rawKey) && !/^BN\d+$/i.test(rawKey);
+    });
+    if (preferredBase) return preferredBase;
+
+    var row8 = matches.find(function(item){
+      return Number(item.row) === 8;
+    });
+    if (row8) return row8;
+
+    return matches[0] || null;
   }
 
   function readDisplay(item, zone, fallbackAtomic){
