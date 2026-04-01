@@ -3560,6 +3560,83 @@ header{
     return idx >= 0 ? idx + 1 : null;
   }
 
+  function monthDayForOrdinal(ordinal){
+    var idx = Number(ordinal) - 1;
+    var keys = Object.keys(window.PERIODIC_BADGE_MAP || {});
+    return (idx >= 0 && idx < keys.length) ? keys[idx] : null;
+  }
+
+  function refDateFromNormalizedMonthDay(year, md){
+    if (!(year >= 1) || !/^\d{2}-\d{2}$/.test(String(md || ''))) return null;
+    var parts = String(md).split('-');
+    var m = parseInt(parts[0], 10);
+    var d = parseInt(parts[1], 10);
+    if (!(m >= 1 && m <= 12 && d >= 1 && d <= 31)) return null;
+
+    if (!isLeapYear(year)) {
+      if (m === 12 && d >= 19) return null;
+      if (d > daysInMonthCalendar(year, m, d)) return null;
+      return { y: year, m: m, d: d };
+    }
+
+    if (m === 1 || (m === 2 && d <= 28)) {
+      if (d > daysInMonthCalendar(year, m, d)) return null;
+      return { y: year, m: m, d: d };
+    }
+
+    if (m === 12 && d === 31) return null;
+
+    var prevD = d - 1;
+    var prevM = m;
+    var prevY = year;
+    if (prevD < 1) {
+      prevM -= 1;
+      if (prevM < 1) {
+        prevM = 12;
+        prevY -= 1;
+      }
+      prevD = daysInMonthCalendar(prevY, prevM, 1);
+    }
+    return { y: year, m: prevM, d: prevD };
+  }
+
+  function startReferenceDateForTurn(turnValue, refYear){
+    var turn = Number(turnValue);
+    var year = Number(refYear);
+    if (!(turn >= 1 && turn <= 22) || !(year >= 1)) return null;
+    var startOrdinal = ((turn - 1) * 16) + 1;
+    var md = monthDayForOrdinal(startOrdinal);
+    if (!md) return null;
+    return refDateFromNormalizedMonthDay(year, md);
+  }
+
+  function currentReferenceYear(){
+    var dateInput = document.getElementById('turnRefDate');
+    var parsed = parseFlexibleDate(dateInput && dateInput.value);
+    if (parsed && parsed.y >= 1) return parsed.y;
+    try {
+      var stored = localStorage.getItem('periodicTableRefDate');
+      var storedParsed = parseFlexibleDate(stored);
+      if (storedParsed && storedParsed.y >= 1) return storedParsed.y;
+    } catch(e){}
+    return todayRefDate().y;
+  }
+
+  function syncTurnStartDateFromSelector(){
+    var turnInput = document.getElementById('turnNumber');
+    if (!turnInput) return;
+    var turnValue = parseInt(turnInput.value, 10);
+    if (!(turnValue >= 1 && turnValue <= 22)) return;
+    var startRef = startReferenceDateForTurn(turnValue, currentReferenceYear());
+    if (!startRef) return;
+    applyReferenceDate(startRef, false);
+    var yearSelect = document.getElementById('turnYearType');
+    if (yearSelect && turnValue >= 15 && yearSelect.value === 'decide') {
+      yearSelect.value = 'decide';
+    }
+    setStatus('Vuelta ' + String(turnValue).padStart(2,'0') + ' posicionada en su fecha inicial: ' + formatRefDate(startRef) + '.');
+  }
+
   function jdnGregorian(y,m,d){
     var a = Math.floor((14 - m) / 12);
     var Y = y + 4800 - a;
@@ -4373,6 +4450,7 @@ header{
     prevDateBtn.addEventListener('click', function(){ stepReferenceDate(-1); });
     todayDateBtn.addEventListener('click', goToTodayReferenceDate);
     nextDateBtn.addEventListener('click', function(){ stepReferenceDate(1); });
+    turnInput.addEventListener('change', syncTurnStartDateFromSelector);
     showBtn.addEventListener('click', showTurn);
     locateBtn.addEventListener('click', locateDate);
     clearBtn.addEventListener('click', clearTurn);
