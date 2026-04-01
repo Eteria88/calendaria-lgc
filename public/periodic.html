@@ -3722,41 +3722,55 @@ header{
     var resolveKey = window.PERIODIC_RESOLVE_BADGE_KEY;
     if (!refObj || !window.PERIODIC_BADGE_MAP || typeof resolveKey !== 'function') return null;
     var md = normalizedMonthDayFromRef(refObj);
+    var ordinal = md ? monthDayOrdinal(md) : null;
     var entry = md ? window.PERIODIC_BADGE_MAP[md] : null;
     var derivedKey = resolveKey(entry, formatIso(refObj));
     if (!derivedKey) return null;
 
-    var item = buildTurnLModel(derivedKey)
-      || deriveSpecialBandModel(derivedKey)
-      || (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey ? window.PERIODIC_LGC.findItemByKey(derivedKey) : null);
+    var selectedKey = String(derivedKey).toUpperCase();
 
-    if (item) {
-      var rowVal = Number(item.row);
-      var colVal = Number(item.col);
-      var displayZone = zoneForTurnRow(rowVal);
-      var display = item.display || (window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
-        ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
-        : { number:'', symbol:item.symbol || '', name:item.name || '', mass:item.mass || '', cornerTopLeft:'', cornerTopRight:'' });
+    var phase = typeof getPhaseFromYear === 'function' ? getPhaseFromYear(formatIso(refObj)) : null;
+    var turnNumber = ordinal ? Math.ceil(ordinal / 16) : null;
+    var turnResult = (phase && turnNumber && typeof resolveTurn === 'function') ? resolveTurn(phase, turnNumber) : null;
+    var turnCell = turnResult ? currentTurnCell(turnResult, refObj) : null;
 
-      if (window.PERIODIC_LGC && typeof window.PERIODIC_LGC.renderHeaderSelection === 'function') {
-        window.PERIODIC_LGC.renderHeaderSelection({
-          key: derivedKey,
-          item: item,
-          row: rowVal,
-          col: colVal,
-          display: display,
-          symbol: item.symbol || ''
-        });
+    if (turnCell) {
+      updateHeaderFromTurnCell(turnCell);
+      selectedKey = String(turnCell.key || turnCell.symbol || derivedKey).trim().toUpperCase();
+    } else {
+      var item = deriveSpecialBandModel(derivedKey)
+        || (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey ? window.PERIODIC_LGC.findItemByKey(derivedKey) : null)
+        || buildTurnLModel(derivedKey);
+
+      if (item) {
+        var rowVal = Number(item.row);
+        var colVal = Number(item.col);
+        var displayZone = zoneForTurnRow(rowVal);
+        var display = item.display || (window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
+          ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
+          : { number:'', symbol:item.symbol || '', name:item.name || '', mass:item.mass || '', cornerTopLeft:'', cornerTopRight:'' });
+
+        if (window.PERIODIC_LGC && typeof window.PERIODIC_LGC.renderHeaderSelection === 'function') {
+          window.PERIODIC_LGC.renderHeaderSelection({
+            key: String(item.key || item.symbol || derivedKey).toUpperCase(),
+            item: item,
+            row: rowVal,
+            col: colVal,
+            display: display,
+            symbol: item.symbol || ''
+          });
+        }
+        selectedKey = String(item.key || item.symbol || derivedKey).toUpperCase();
       }
     }
 
-    document.body.setAttribute('data-el', String(derivedKey).toUpperCase());
+    document.body.setAttribute('data-el', selectedKey);
     try {
       var url = new URL(window.location.href);
-      url.searchParams.set('el', String(derivedKey).toUpperCase());
+      url.searchParams.set('el', selectedKey);
       window.history.replaceState({}, '', url.toString());
     } catch(e){}
-    return derivedKey;
+    return selectedKey;
   }
 
   function applyReferenceDate(refObj){
