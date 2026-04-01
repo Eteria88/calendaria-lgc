@@ -1413,8 +1413,8 @@ header{
       <div class="header-main">
         <div class="small mono" id="refDateLabel"></div>
                 <div class="small mono" id="solarDaysLabel"></div>
-        <div class="mono elementLabel" id="colRowLabel">Columna 1 · Fila 1</div>
-        <div class="small mono" id="periodicElementLabel">H · 1 · Hydrogen</div>
+        <div class="mono elementLabel" id="colRowLabel">Cargando selección…</div>
+        <div class="small mono" id="periodicElementLabel">Sin selección</div>
       </div>
       <div class="header-badge">
         <div class="elementBadge" title="" aria-hidden="true">
@@ -1586,7 +1586,7 @@ header{
   }
 
   var refRaw = '';
-  var refDate = todayRefDate();
+  var refDate = getStoredRefDate() || todayRefDate();
   try{
     localStorage.setItem('periodicTableRefDate', [
       String(refDate.y).padStart(4,'0'),
@@ -2349,10 +2349,32 @@ header{
 
   function findItemByKey(key){
     key = String(key || '').trim().toUpperCase();
-    return window.PERIODIC_DATA.find(function(item){
+    if (!key) return null;
+
+    var matches = window.PERIODIC_DATA.filter(function(item){
       return String(item.key || item.symbol).toUpperCase() === key ||
              String(item.symbol || '').toUpperCase() === key;
-    }) || null;
+    });
+    if (!matches.length) return null;
+
+    var exactKey = matches.find(function(item){
+      return String(item.key || '').toUpperCase() === key;
+    });
+    if (exactKey) return exactKey;
+
+    var preferredBase = matches.find(function(item){
+      var row = Number(item.row);
+      var rawKey = String(item.key || '').toUpperCase();
+      return row >= 1 && row <= 8 && !/^L\d+$/i.test(rawKey) && !/^P\d+$/i.test(rawKey) && !/^BN\d+$/i.test(rawKey);
+    });
+    if (preferredBase) return preferredBase;
+
+    var row8 = matches.find(function(item){
+      return Number(item.row) === 8;
+    });
+    if (row8) return row8;
+
+    return matches[0] || null;
   }
 
   function readDisplay(item, zone, fallbackAtomic){
@@ -4129,21 +4151,13 @@ header{
     if (!cell) return;
 
     var rawKey = String(cell.key || cell.symbol || '');
-    var explicitRow = Number(cell.rowNorm != null ? cell.rowNorm : cell.row);
-    var explicitCol = Number(cell.colNorm != null ? cell.colNorm : cell.col);
-
-    var item = ((window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(rawKey) : null)
-      || buildTurnLModel(rawKey);
-
-    var fallbackModel = (!item && /^L\d+$/i.test(rawKey)) ? buildTurnLModel(rawKey) : null;
-    if (!item && !fallbackModel) return;
-    if (!item && fallbackModel) item = fallbackModel;
-
-    var rowVal = Number.isNaN(explicitRow) ? Number(item.row) : explicitRow;
-    var colVal = Number.isNaN(explicitCol) ? Number((item && item.col != null) ? item.col : cell.col) : explicitCol;
+    var lModel = buildTurnLModel(rawKey);
+    var item = lModel || ((window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(rawKey) : null);
+    var rowVal = lModel ? Number(lModel.row) : Number(cell.rowNorm != null ? cell.rowNorm : cell.row);
+    var colVal = lModel ? Number(lModel.col) : Number((item && item.col != null) ? item.col : cell.col);
     var displayZone = zoneForTurnRow(rowVal);
-    var display = (fallbackModel || (!window.PERIODIC_LGC || !window.PERIODIC_LGC.readDisplay))
-      ? (item.display || { number:'', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' })
+    var display = lModel
+      ? lModel.display
       : (item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
         ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
         : { number:'', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' });
@@ -4317,6 +4331,9 @@ header{
       String(today.getDate()).padStart(2,'0')
     ].join('-');
     var storedRef = fallbackRef;
+    try {
+      storedRef = localStorage.getItem('periodicTableRefDate') || fallbackRef;
+    } catch(e) {}
     yearSelect.value = getPhaseFromYear(storedRef);
 
     prevDateBtn.addEventListener('click', function(){ stepReferenceDate(-1); });
@@ -4332,7 +4349,7 @@ header{
     })(storedRef) : '';
     if (storedRef) {
       var parsedRef = parseFlexibleDate(storedRef);
-      if (parsedRef) applyReferenceDate(parsedRef, true);
+      if (parsedRef) applyReferenceDate(parsedRef, false);
     }
 
     window.PERIODIC_TURNS = {
