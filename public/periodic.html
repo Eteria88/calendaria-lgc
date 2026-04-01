@@ -4151,18 +4151,38 @@ header{
     if (!cell) return;
 
     var rawKey = String(cell.key || cell.symbol || '');
+    var explicitRow = Number(cell.rowNorm != null ? cell.rowNorm : cell.row);
+    var hasExplicitRow = !Number.isNaN(explicitRow);
     var lModel = buildTurnLModel(rawKey);
-    var item = lModel || ((window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey(rawKey) : null);
-    var rowVal = lModel ? Number(lModel.row) : Number(cell.rowNorm != null ? cell.rowNorm : cell.row);
-    var colVal = lModel ? Number(lModel.col) : Number((item && item.col != null) ? item.col : cell.col);
-    var displayZone = zoneForTurnRow(rowVal);
-    var display = lModel
-      ? lModel.display
-      : (item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
-        ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
-        : { number:'', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' });
+    var finder = (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey) ? window.PERIODIC_LGC.findItemByKey : null;
+    var baseItem = (finder && rawKey ? finder(rawKey) : null) || (finder && cell.symbol ? finder(cell.symbol) : null);
 
-    var derivedKey = String((item && (item.key || item.symbol)) || rawKey || '').trim();
+    var item = null;
+    var rowVal = NaN;
+    var colVal = NaN;
+    var display = null;
+
+    if (hasExplicitRow) {
+      item = baseItem || lModel;
+      rowVal = explicitRow;
+      colVal = Number(cell.col != null ? cell.col : ((lModel && lModel.col != null) ? lModel.col : ((baseItem && baseItem.col != null) ? baseItem.col : NaN)));
+      var explicitZone = zoneForTurnRow(rowVal);
+      display = (baseItem && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay)
+        ? window.PERIODIC_LGC.readDisplay(baseItem, explicitZone, baseItem.atomic)
+        : (lModel ? lModel.display : { number:'', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' });
+    } else {
+      item = lModel || baseItem;
+      rowVal = lModel ? Number(lModel.row) : Number(cell.rowNorm != null ? cell.rowNorm : cell.row);
+      colVal = lModel ? Number(lModel.col) : Number((item && item.col != null) ? item.col : cell.col);
+      var displayZone = zoneForTurnRow(rowVal);
+      display = lModel
+        ? lModel.display
+        : (item && window.PERIODIC_LGC && window.PERIODIC_LGC.readDisplay
+          ? window.PERIODIC_LGC.readDisplay(item, displayZone, item.atomic)
+          : { number:'', symbol: cell.symbol || '', name: item && item.name ? item.name : '', mass: item && item.mass != null ? item.mass : '', cornerTopLeft:'', cornerTopRight:'' });
+    }
+
+    var derivedKey = String((baseItem && (baseItem.key || baseItem.symbol)) || (item && (item.key || item.symbol)) || rawKey || '').trim();
     if (window.PERIODIC_LGC && typeof window.PERIODIC_LGC.renderHeaderSelection === 'function') {
       window.PERIODIC_LGC.renderHeaderSelection({
         key: derivedKey,
@@ -4170,7 +4190,7 @@ header{
         row: rowVal,
         col: colVal,
         display: display,
-        symbol: (item && item.symbol) || cell.symbol || ''
+        symbol: (baseItem && baseItem.symbol) || (item && item.symbol) || cell.symbol || ''
       });
     } else if (derivedKey) {
       document.body.setAttribute('data-el', derivedKey.toUpperCase());
