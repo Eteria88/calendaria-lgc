@@ -1576,17 +1576,8 @@ header{
     return { y: now.getFullYear(), m: now.getMonth()+1, d: now.getDate() };
   }
 
-  function getStoredRefDate(){
-    try{
-      var saved = localStorage.getItem('periodicTableRefDate');
-      return saved ? parseFlexDate(saved) : null;
-    }catch(e){
-      return null;
-    }
-  }
-
   var refRaw = '';
-  var refDate = getStoredRefDate() || todayRefDate();
+  var refDate = todayRefDate();
   try{
     localStorage.setItem('periodicTableRefDate', [
       String(refDate.y).padStart(4,'0'),
