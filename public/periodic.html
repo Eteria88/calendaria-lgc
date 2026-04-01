@@ -5804,14 +5804,57 @@ header{
   function syncSelectionFromReferenceDate(refObj){
     var resolveKey = window.PERIODIC_RESOLVE_BADGE_KEY;
     if (!refObj || !window.PERIODIC_BADGE_MAP || typeof resolveKey !== 'function') return null;
-    var md = normalizedMonthDayFromRef(refObj);
-    var entry = md ? window.PERIODIC_BADGE_MAP[md] : null;
-    var derivedKey = resolveKey(entry, formatIso(refObj));
-    if (!derivedKey) return null;
 
-    var item = buildTurnLModel(derivedKey)
-      || deriveSpecialBandModel(derivedKey)
-      || (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey ? window.PERIODIC_LGC.findItemByKey(derivedKey) : null);
+    var explicitRow8Symbols = ['FR','RA','AC','TH','PA','U','NP','PU','AM','CM','BK','CF','ES','FM','MD','NO','LR','RF','DB','SG','BH','HS','MT','DS','RG','CN','NH','FL','MC','LV','TS','OG'];
+    var row8Start = { m:3, d:28 };
+    var row8End = { m:4, d:28 };
+    function inRow8Range(obj){
+      if (!obj) return false;
+      if (obj.m === 3 && obj.d >= 28) return true;
+      if (obj.m === 4 && obj.d <= 28) return true;
+      return false;
+    }
+    function mainItemForKey(key){
+      key = String(key || '').trim().toUpperCase();
+      if (!key) return null;
+      if (/^P\d+$/i.test(key)) return deriveSpecialBandModel(key);
+      if (/^BN\d+$/i.test(key)) return deriveSpecialBandModel(key);
+      var all = (window.PERIODIC_DATA || []).filter(function(item){
+        return String(item.key || '').toUpperCase() === key || String(item.symbol || '').toUpperCase() === key;
+      });
+      if (!all.length) return null;
+      var exactMain = all.find(function(item){
+        var itemKey = String(item.key || '').toUpperCase();
+        var row = Number(item.row);
+        return itemKey === key && row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
+      });
+      if (exactMain) return exactMain;
+      var preferred = all.find(function(item){
+        var row = Number(item.row);
+        var itemKey = String(item.key || '').toUpperCase();
+        return row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
+      });
+      if (preferred) return preferred;
+      return all[0] || null;
+    }
+
+    var derivedKey = null;
+    var item = null;
+
+    if (inRow8Range(refObj)) {
+      var idx = (refObj.m === 3) ? (refObj.d - 28) : (4 + refObj.d - 1);
+      var row8Symbol = explicitRow8Symbols[idx] || '';
+      item = mainItemForKey(row8Symbol);
+      derivedKey = item ? String(item.key || item.symbol || row8Symbol).toUpperCase() : row8Symbol;
+    }
+
+    if (!item) {
+      var md = normalizedMonthDayFromRef(refObj);
+      var entry = md ? window.PERIODIC_BADGE_MAP[md] : null;
+      derivedKey = resolveKey(entry, formatIso(refObj));
+      if (!derivedKey) return null;
+      item = mainItemForKey(derivedKey);
+    }
 
     var colRowLabel = document.getElementById('colRowLabel');
     var periodicElementLabel = document.getElementById('periodicElementLabel');
@@ -5835,14 +5878,17 @@ header{
         if (display.name) parts.push(display.name);
         periodicElementLabel.textContent = parts.filter(Boolean).join(' · ');
       }
+      derivedKey = String(item.key || item.symbol || derivedKey || '').toUpperCase();
     }
 
-    document.body.setAttribute('data-el', String(derivedKey).toUpperCase());
-    try {
-      var url = new URL(window.location.href);
-      url.searchParams.set('el', String(derivedKey).toUpperCase());
-      window.history.replaceState({}, '', url.toString());
-    } catch(e){}
+    if (derivedKey) {
+      document.body.setAttribute('data-el', String(derivedKey).toUpperCase());
+      try {
+        var url = new URL(window.location.href);
+        url.searchParams.set('el', String(derivedKey).toUpperCase());
+        window.history.replaceState({}, '', url.toString());
+      } catch(e){}
+    }
     return derivedKey;
   }
 
@@ -6457,7 +6503,8 @@ header{
       showTurn: showTurn,
       clearTurn: clearTurn,
       stepReferenceDate: stepReferenceDate,
-      goToTodayReferenceDate: goToTodayReferenceDate
+      goToTodayReferenceDate: goToTodayReferenceDate,
+      syncSelectionFromReferenceDate: syncSelectionFromReferenceDate
     };
   }
 
@@ -6575,14 +6622,9 @@ header{
     if(p.length !== 3) return null;
     var a = parseInt(p[0],10), b = parseInt(p[1],10), c = parseInt(p[2],10);
     if([a,b,c].some(function(v){ return Number.isNaN(v); })) return null;
-    var y,m,d;
-    if(a > 31 || String(p[0]).length === 4){ y = a; m = b; d = c; }
-    else { d = a; m = b; y = c; }
-    if(!(y >= 1 && y <= 9999 && m >= 1 && m <= 12 && d >= 1 && d <= 31)) return null;
-    return { y:y, m:m, d:d };
+    if(a > 31 || String(p[0]).length === 4) return { y:a, m:b, d:c };
+    return { y:c, m:b, d:a };
   }
-  function pad2(n){ return String(n).padStart(2,'0'); }
-  function formatIso(ref){ return String(ref.y).padStart(4,'0') + '-' + pad2(ref.m) + '-' + pad2(ref.d); }
 
   function getReferenceDate(){
     var input = document.getElementById('turnRefDate');
@@ -6596,148 +6638,12 @@ header{
     return { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
   }
 
-  function isLeap(year){
-    return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
-  }
-  function daysInMonth(year, month){
-    if(month === 2) return isLeap(year) ? 29 : 28;
-    return [4,6,9,11].indexOf(month) >= 0 ? 30 : 31;
-  }
-  function normalizedMonthDay(ref){
-    if(!ref) return null;
-    var y = ref.y, m = ref.m, d = ref.d;
-    if(isLeap(y)){ if(m === 12 && d >= 18) return null; }
-    else { if(m === 12 && d >= 19) return null; }
-    if(isLeap(y)){
-      var inShiftRange = (m === 2 && d === 29) || (m > 2 && (m < 12 || (m === 12 && d <= 17)));
-      if(inShiftRange){
-        d += 1;
-        if(d > daysInMonth(y,m)){
-          d = 1;
-          m += 1;
-          if(m > 12){ m = 1; y += 1; }
-        }
-      }
-    }
-    return pad2(m) + '-' + pad2(d);
-  }
-
-  var ROW8_SYMBOLS = ['Fr','Ra','Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'];
-
-  function explicitRow8Item(ref){
-    if(!window.PERIODIC_DATA || !window.PERIODIC_DATA.length || !ref) return null;
-    var md = pad2(ref.m) + '-' + pad2(ref.d);
-    if(md < '03-28' || md > '04-28') return null;
-    var idx = ref.m === 3 ? (ref.d - 28) : (4 + ref.d);
-    if(idx < 0 || idx >= ROW8_SYMBOLS.length) return null;
-    var symbol = ROW8_SYMBOLS[idx];
-    var all = window.PERIODIC_DATA.filter(function(item){
-      return String(item.symbol || '').toUpperCase() === symbol.toUpperCase();
-    });
-    var row8 = all.find(function(item){ return Number(item.row) === 8; });
-    return row8 || all[0] || null;
-  }
-
-  function blackSpaceItem(n){
-    var col = null, row = null;
-    if(n >= 149 && n <= 168){
-      var idx = n - 149;
-      col = 26 - Math.floor(idx / 2);
-      row = 2 + (idx % 2);
-    } else if(n >= 169 && n <= 224){
-      var idx2 = n - 169;
-      col = 16 - Math.floor(idx2 / 4);
-      row = 2 + (idx2 % 4);
-    }
-    if(col == null || row == null) return null;
-    return { key:'BN' + n, symbol:'Espacio en negro', name:'', atomic:String(n), col:col, row:row };
-  }
-
-  function promiseItem(n){
-    return { key:'P' + n, symbol:'Promesa', name:String(n - 118), atomic:String(n), col:150 - n, row:1 };
-  }
-
-  function preferredMainItemForKey(key){
-    key = String(key || '').toUpperCase();
-    if(!key) return null;
-    if(/^P\d+$/i.test(key)) return promiseItem(parseInt(key.slice(1),10));
-    if(/^BN\d+$/i.test(key)) return blackSpaceItem(parseInt(key.slice(2),10));
-
-    var all = (window.PERIODIC_DATA || []).filter(function(item){
-      return String(item.key || '').toUpperCase() === key || String(item.symbol || '').toUpperCase() === key;
-    });
-    if(!all.length) return null;
-
-    var exactMain = all.find(function(item){
-      var itemKey = String(item.key || '').toUpperCase();
-      var row = Number(item.row);
-      return itemKey === key && row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey);
-    });
-    if(exactMain) return exactMain;
-
-    var preferred = all.find(function(item){
-      var itemKey = String(item.key || '').toUpperCase();
-      var row = Number(item.row);
-      return row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
-    });
-    if(preferred) return preferred;
-
-    var row8 = all.find(function(item){ return Number(item.row) === 8; });
-    if(row8) return row8;
-
-    return all[0] || null;
-  }
-
-  function deriveItemFromDate(ref){
-    if(!ref || !window.PERIODIC_BADGE_MAP || typeof window.PERIODIC_RESOLVE_BADGE_KEY !== 'function') return null;
-
-    var row8 = explicitRow8Item(ref);
-    if(row8) return row8;
-
-    var md = normalizedMonthDay(ref);
-    if(!md) return null;
-    var entry = window.PERIODIC_BADGE_MAP[md] || null;
-    var key = String(window.PERIODIC_RESOLVE_BADGE_KEY(entry, formatIso(ref)) || '').toUpperCase();
-    if(!key) return null;
-
-    return preferredMainItemForKey(key);
-  }
-
-  function updateHeaderFromDate(){
+  function syncHeaderClean(){
     try{
       var ref = getReferenceDate();
-      var item = deriveItemFromDate(ref);
-      if(!item) return;
-
-      var refDateLabel = document.getElementById('refDateLabel');
-      var colRowLabel = document.getElementById('colRowLabel');
-      var periodicElementLabel = document.getElementById('periodicElementLabel');
-
-      if(refDateLabel){
-        refDateLabel.textContent = 'Fecha de referencia: ' + pad2(ref.d) + '/' + pad2(ref.m) + '/' + String(ref.y).padStart(4,'0');
+      if(window.PERIODIC_TURNS && typeof window.PERIODIC_TURNS.syncSelectionFromReferenceDate === 'function'){
+        window.PERIODIC_TURNS.syncSelectionFromReferenceDate(ref);
       }
-      if(colRowLabel && item.col != null && item.row != null){
-        colRowLabel.textContent = 'Columna ' + String(item.col) + ' · Fila ' + String(item.row);
-      }
-      if(periodicElementLabel){
-        var parts = [String(item.symbol || '')];
-        if(item.atomic != null && item.atomic !== '') parts.push(String(item.atomic));
-        if(item.name) parts.push(String(item.name));
-        periodicElementLabel.textContent = parts.filter(Boolean).join(' · ');
-      }
-
-      var resolvedKey = String(item.key || item.symbol || '').toUpperCase();
-      if(resolvedKey){
-        document.body.setAttribute('data-el', resolvedKey);
-        try{
-          var url = new URL(window.location.href);
-          if(url.searchParams.get('el') !== resolvedKey){
-            url.searchParams.set('el', resolvedKey);
-            window.history.replaceState({}, '', url.toString());
-          }
-        }catch(e){}
-      }
-
       if(typeof window.renderPeriodicBadge === 'function'){
         try { window.renderPeriodicBadge(); } catch(e){}
       }
@@ -6745,9 +6651,7 @@ header{
   }
 
   function scheduleHeaderSync(){
-    setTimeout(updateHeaderFromDate, 0);
-    setTimeout(updateHeaderFromDate, 80);
-    setTimeout(updateHeaderFromDate, 180);
+    requestAnimationFrame(syncHeaderClean);
   }
 
   if(document.readyState === 'loading'){
