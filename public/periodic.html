@@ -4480,30 +4480,10 @@ header{
 
   function findItemByKey(key){
     key = String(key || '').trim().toUpperCase();
-    if (!key) return null;
-
-    var all = window.PERIODIC_DATA.filter(function(item){
-      return String(item.key || '').toUpperCase() === key ||
+    return window.PERIODIC_DATA.find(function(item){
+      return String(item.key || item.symbol).toUpperCase() === key ||
              String(item.symbol || '').toUpperCase() === key;
-    });
-    if (!all.length) return null;
-
-    var exactKey = all.find(function(item){
-      return String(item.key || '').toUpperCase() === key;
-    });
-    if (exactKey) return exactKey;
-
-    var preferredMain = all.find(function(item){
-      var row = Number(item.row);
-      var itemKey = String(item.key || '').toUpperCase();
-      return row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
-    });
-    if (preferredMain) return preferredMain;
-
-    var row8 = all.find(function(item){ return Number(item.row) === 8; });
-    if (row8) return row8;
-
-    return all[0] || null;
+    }) || null;
   }
 
   function readDisplay(item, zone, fallbackAtomic){
@@ -5804,57 +5784,14 @@ header{
   function syncSelectionFromReferenceDate(refObj){
     var resolveKey = window.PERIODIC_RESOLVE_BADGE_KEY;
     if (!refObj || !window.PERIODIC_BADGE_MAP || typeof resolveKey !== 'function') return null;
+    var md = normalizedMonthDayFromRef(refObj);
+    var entry = md ? window.PERIODIC_BADGE_MAP[md] : null;
+    var derivedKey = resolveKey(entry, formatIso(refObj));
+    if (!derivedKey) return null;
 
-    var explicitRow8Symbols = ['FR','RA','AC','TH','PA','U','NP','PU','AM','CM','BK','CF','ES','FM','MD','NO','LR','RF','DB','SG','BH','HS','MT','DS','RG','CN','NH','FL','MC','LV','TS','OG'];
-    var row8Start = { m:3, d:28 };
-    var row8End = { m:4, d:28 };
-    function inRow8Range(obj){
-      if (!obj) return false;
-      if (obj.m === 3 && obj.d >= 28) return true;
-      if (obj.m === 4 && obj.d <= 28) return true;
-      return false;
-    }
-    function mainItemForKey(key){
-      key = String(key || '').trim().toUpperCase();
-      if (!key) return null;
-      if (/^P\d+$/i.test(key)) return deriveSpecialBandModel(key);
-      if (/^BN\d+$/i.test(key)) return deriveSpecialBandModel(key);
-      var all = (window.PERIODIC_DATA || []).filter(function(item){
-        return String(item.key || '').toUpperCase() === key || String(item.symbol || '').toUpperCase() === key;
-      });
-      if (!all.length) return null;
-      var exactMain = all.find(function(item){
-        var itemKey = String(item.key || '').toUpperCase();
-        var row = Number(item.row);
-        return itemKey === key && row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
-      });
-      if (exactMain) return exactMain;
-      var preferred = all.find(function(item){
-        var row = Number(item.row);
-        var itemKey = String(item.key || '').toUpperCase();
-        return row >= 1 && row <= 8 && !/^L\d+$/i.test(itemKey) && !/^P\d+$/i.test(itemKey) && !/^BN\d+$/i.test(itemKey);
-      });
-      if (preferred) return preferred;
-      return all[0] || null;
-    }
-
-    var derivedKey = null;
-    var item = null;
-
-    if (inRow8Range(refObj)) {
-      var idx = (refObj.m === 3) ? (refObj.d - 28) : (4 + refObj.d - 1);
-      var row8Symbol = explicitRow8Symbols[idx] || '';
-      item = mainItemForKey(row8Symbol);
-      derivedKey = item ? String(item.key || item.symbol || row8Symbol).toUpperCase() : row8Symbol;
-    }
-
-    if (!item) {
-      var md = normalizedMonthDayFromRef(refObj);
-      var entry = md ? window.PERIODIC_BADGE_MAP[md] : null;
-      derivedKey = resolveKey(entry, formatIso(refObj));
-      if (!derivedKey) return null;
-      item = mainItemForKey(derivedKey);
-    }
+    var item = buildTurnLModel(derivedKey)
+      || deriveSpecialBandModel(derivedKey)
+      || (window.PERIODIC_LGC && window.PERIODIC_LGC.findItemByKey ? window.PERIODIC_LGC.findItemByKey(derivedKey) : null);
 
     var colRowLabel = document.getElementById('colRowLabel');
     var periodicElementLabel = document.getElementById('periodicElementLabel');
@@ -5878,17 +5815,14 @@ header{
         if (display.name) parts.push(display.name);
         periodicElementLabel.textContent = parts.filter(Boolean).join(' · ');
       }
-      derivedKey = String(item.key || item.symbol || derivedKey || '').toUpperCase();
     }
 
-    if (derivedKey) {
-      document.body.setAttribute('data-el', String(derivedKey).toUpperCase());
-      try {
-        var url = new URL(window.location.href);
-        url.searchParams.set('el', String(derivedKey).toUpperCase());
-        window.history.replaceState({}, '', url.toString());
-      } catch(e){}
-    }
+    document.body.setAttribute('data-el', String(derivedKey).toUpperCase());
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.set('el', String(derivedKey).toUpperCase());
+      window.history.replaceState({}, '', url.toString());
+    } catch(e){}
     return derivedKey;
   }
 
@@ -6488,10 +6422,7 @@ header{
     })(storedRef) : '';
     if (storedRef) {
       var parsedRef = parseFlexibleDate(storedRef);
-      if (parsedRef) {
-        applyReferenceDate(parsedRef, true);
-        try { syncSelectionFromReferenceDate(parsedRef); } catch(e){}
-      }
+      if (parsedRef) applyReferenceDate(parsedRef, true);
     }
 
     window.PERIODIC_TURNS = {
@@ -6503,8 +6434,7 @@ header{
       showTurn: showTurn,
       clearTurn: clearTurn,
       stepReferenceDate: stepReferenceDate,
-      goToTodayReferenceDate: goToTodayReferenceDate,
-      syncSelectionFromReferenceDate: syncSelectionFromReferenceDate
+      goToTodayReferenceDate: goToTodayReferenceDate
     };
   }
 
@@ -6514,41 +6444,6 @@ header{
     initTurnExplorer();
   }
   window.addEventListener('load', initTurnExplorer);
-})();
-</script>
-
-
-<script>
-(function(){
-  function parseForceDate(str){
-    if(!str) return null;
-    var s=String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
-    var p=s.split('/');
-    if(p.length!==3) return null;
-    var a=parseInt(p[0],10), b=parseInt(p[1],10), c=parseInt(p[2],10);
-    if(!(a&&b&&c)) return null;
-    var y,m,d;
-    if(String(p[0]).length===4 || a>31){ y=a; m=b; d=c; }
-    else { d=a; m=b; y=c; }
-    if(!(y>=1&&m>=1&&m<=12&&d>=1&&d<=31)) return null;
-    return {y:y,m:m,d:d};
-  }
-  function forceHeaderSync(){
-    try{
-      var input=document.getElementById('turnRefDate');
-      var raw=(input && input.value) || localStorage.getItem('periodicTableRefDate') || '';
-      var parsed=parseForceDate(raw);
-      if(!parsed || !window.PERIODIC_TURNS || typeof window.PERIODIC_TURNS.applyReferenceDate!=='function') return;
-      window.PERIODIC_TURNS.applyReferenceDate(parsed, true);
-      if(typeof window.PERIODIC_TURNS.showTurn==='function') window.PERIODIC_TURNS.showTurn();
-    }catch(e){}
-  }
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded', function(){ setTimeout(forceHeaderSync, 0); });
-  } else {
-    setTimeout(forceHeaderSync, 0);
-  }
-  window.addEventListener('load', function(){ setTimeout(forceHeaderSync, 0); });
 })();
 </script>
 
@@ -6612,67 +6507,5 @@ header{
   document.addEventListener("keydown", function(e){ if(e.key==="Escape" && overlay.classList.contains("is-open")) closePeek(); });
 })();
 </script>
-
-<script>
-(function(){
-  function parseRef(str){
-    if(!str) return null;
-    var s = String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
-    var p = s.split('/');
-    if(p.length !== 3) return null;
-    var a = parseInt(p[0],10), b = parseInt(p[1],10), c = parseInt(p[2],10);
-    if([a,b,c].some(function(v){ return Number.isNaN(v); })) return null;
-    if(a > 31 || String(p[0]).length === 4) return { y:a, m:b, d:c };
-    return { y:c, m:b, d:a };
-  }
-
-  function getReferenceDate(){
-    var input = document.getElementById('turnRefDate');
-    var parsed = parseRef(input && input.value);
-    if(parsed) return parsed;
-    try{
-      parsed = parseRef(localStorage.getItem('periodicTableRefDate') || '');
-      if(parsed) return parsed;
-    }catch(e){}
-    var now = new Date();
-    return { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
-  }
-
-  function syncHeaderClean(){
-    try{
-      var ref = getReferenceDate();
-      if(window.PERIODIC_TURNS && typeof window.PERIODIC_TURNS.syncSelectionFromReferenceDate === 'function'){
-        window.PERIODIC_TURNS.syncSelectionFromReferenceDate(ref);
-      }
-      if(typeof window.renderPeriodicBadge === 'function'){
-        try { window.renderPeriodicBadge(); } catch(e){}
-      }
-    }catch(e){}
-  }
-
-  function scheduleHeaderSync(){
-    requestAnimationFrame(syncHeaderClean);
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', scheduleHeaderSync);
-  } else {
-    scheduleHeaderSync();
-  }
-  window.addEventListener('load', scheduleHeaderSync);
-
-  ['showTurnBtn','locateDateBtn','prevDateBtn','todayDateBtn','nextDateBtn','clearTurnBtn'].forEach(function(id){
-    var el = document.getElementById(id);
-    if(el) el.addEventListener('click', scheduleHeaderSync);
-  });
-
-  var input = document.getElementById('turnRefDate');
-  if(input){
-    input.addEventListener('input', scheduleHeaderSync);
-    input.addEventListener('change', scheduleHeaderSync);
-  }
-})();
-</script>
 </body>
 </html>
-
