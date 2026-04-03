@@ -1714,7 +1714,18 @@ body.noScroll{overflow:hidden}
     if(['Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'actinide';
     return 'transition';
   }
-  function overrideCategory(symbol,row){ var s=String(symbol||'').trim(); if(!s) return null; if(s==='Og') return 'top-gray'; if(s==='Cn') return 'top-green'; if(row===6&&s==='At') return 'metalloid'; if(row===6&&s==='Po') return 'post-transition'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Ts','Lv','Mc','Fl','Nh'].indexOf(s)>=0) return 'top-gray'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'top-blue'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Rf','Db','Sg','Bh','Hs'].indexOf(s)>=0) return 'top-green'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Mt','Ds','Rg'].indexOf(s)>=0) return 'top-gray'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Ac','Th','Pa','U','Np'].indexOf(s)>=0) return 'top-blue'; if([4,5,6].indexOf(row)>=0&&['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].indexOf(s)>=0) return 'top-green'; if([2,3,4,5].indexOf(row)>=0&&['F','Cl','Br','I'].indexOf(s)>=0) return 'nonmetal'; return null; }
+  function overrideCategory(symbol,row){
+    var s=String(symbol||'').trim();
+    if(!s) return null;
+    if(['Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'top-blue';
+    if(['Rf','Db','Sg','Bh','Hs','Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].indexOf(s)>=0) return 'top-green';
+    if(['Mt','Ds','Rg','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return 'top-gray';
+    if(['H','F','Cl','Br'].indexOf(s)>=0) return 'nonmetal';
+    if(s==='Cn') return 'top-green';
+    if(row===6&&s==='At') return 'metalloid';
+    if(row===6&&s==='Po') return 'post-transition';
+    return null;
+  }
   function nameColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return '#009b39'; if(['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].indexOf(s)>=0) return '#ff1f1f'; if(s==='Br') return '#123f9e'; return null; }
   function symbolColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
   function massColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
