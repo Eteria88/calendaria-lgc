@@ -1279,10 +1279,11 @@ body.noScroll{overflow:hidden}
   </script>
 
 
+<script src="./periodic-data.js"></script>
 <!-- ELEMENT_BADGE_LOGIC_START -->
 <script>
 (function(){
-const MAP = {
+  const MAP = {
     "01-01": {img:"hydrogen.png",  title:"Hydrogen — 1"},
     "01-02": {img:"helium.png",    title:"Helium — 2"},
     "01-03": {img:"lithium.png",   title:"Lithium — 3"},
@@ -1639,114 +1640,69 @@ const MAP = {
     "12-18": {img:"Ri-128.png", title:"Ri — 128"},
   };
 
+  const FILE_TO_KEY = {
+    hydrogen:'H', helium:'He', lithium:'Li', beryllium:'Be', boron:'B', carbon:'C', nitrogen:'N', oxygen:'O', fluorine:'F', neon:'Ne',
+    sodium:'Na', magnesium:'Mg', aluminium:'Al', silicon:'Si', phosphorus:'P', sulphur:'S', chlorine:'Cl', argon:'Ar', potassium:'K', calcium:'Ca',
+    scandium:'Sc', titanium:'Ti', vanadium:'V', chromium:'Cr', manganese:'Mn', iron:'Fe', cobalt:'Co', nickel:'Ni', copper:'Cu', zinc:'Zn',
+    gallium:'Ga', germanium:'Ge', arsenic:'As', selenium:'Se', bromine:'Br', krypton:'Kr', rubidium:'Rb', strontium:'Sr', yttrium:'Y', zirconium:'Zr',
+    niobium:'Nb', molybdenum:'Mo', technetium:'Tc', ruthenium:'Ru', rhodium:'Rh', palladium:'Pd', silver:'Ag', cadmium:'Cd', indium:'In', tin:'Sn',
+    antimony:'Sb', tellurium:'Te', iodine:'I', xenon:'Xe', caesium:'Cs', barium:'Ba', lanthanum:'La', cerium:'Ce', praseodymium:'Pr', neodymium:'Nd',
+    promethium:'Pm', samarium:'Sm', europium:'Eu', gadolinium:'Gd', terbium:'Tb', dysprosium:'Dy', holmium:'Ho', erbium:'Er', thulium:'Tm', ytterbium:'Yb',
+    lutetium:'Lu', hafnium:'Hf', tantalum:'Ta', tungsten:'W', rhenium:'Re', osmium:'Os', iridium:'Ir', platinum:'Pt', gold:'Au', mercury:'Hg',
+    thallium:'Tl', lead:'Pb', bismuth:'Bi', polonium:'Po', astatine:'At', radon:'Rn', francium:'Fr', radium:'Ra', actinium:'Ac', thorium:'Th',
+    protactinium:'Pa', uranium:'U', neptunium:'Np', plutonium:'Pu', americium:'Am', curium:'Cm', berkelium:'Bk', californium:'Cf', einsteinium:'Es', fermium:'Fm',
+    mendelevium:'Md', nobelium:'No', lawrencium:'Lr', rutherfordium:'Rf', dubnium:'Db', seaborgium:'Sg', bohrium:'Bh', hassium:'Hs', meitnerium:'Mt', darmstadtium:'Ds',
+    roentgenium:'Rg', copernicium:'Cn', nihonium:'Nh', flerovium:'Fl', moscovium:'Mc', livermorium:'Lv', tennessine:'Ts', oganesson:'Og'
+  };
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
-  const ref   = document.getElementById('ref');
-
-  const FILE_TO_KEY = {
-    hydrogen:'H', helium:'HE', lithium:'LI', beryllium:'BE', boron:'B', carbon:'C', nitrogen:'N', oxygen:'O', fluorine:'F', neon:'NE',
-    sodium:'NA', magnesium:'MG', aluminium:'AL', silicon:'SI', phosphorus:'P', sulphur:'S', chlorine:'CL', argon:'AR', potassium:'K', calcium:'CA',
-    scandium:'SC', titanium:'TI', vanadium:'V', chromium:'CR', manganese:'MN', iron:'FE', cobalt:'CO', nickel:'NI', copper:'CU', zinc:'ZN',
-    gallium:'GA', germanium:'GE', arsenic:'AS', selenium:'SE', bromine:'BR', krypton:'KR', rubidium:'RB', strontium:'SR', yttrium:'Y', zirconium:'ZR',
-    niobium:'NB', molybdenum:'MO', technetium:'TC', ruthenium:'RU', rhodium:'RH', palladium:'PD', silver:'AG', cadmium:'CD', indium:'IN', tin:'SN',
-    antimony:'SB', tellurium:'TE', iodine:'I', xenon:'XE', caesium:'CS', barium:'BA', lanthanum:'LA', cerium:'CE', praseodymium:'PR', neodymium:'ND',
-    promethium:'PM', samarium:'SM', europium:'EU', gadolinium:'GD', terbium:'TB', dysprosium:'DY', holmium:'HO', erbium:'ER', thulium:'TM', ytterbium:'YB',
-    lutetium:'LU', hafnium:'HF', tantalum:'TA', tungsten:'W', rhenium:'RE', osmium:'OS', iridium:'IR', platinum:'PT', gold:'AU', mercury:'HG',
-    thallium:'TL', lead:'PB', bismuth:'BI', polonium:'PO', astatine:'AT', radon:'RN', francium:'FR', radium:'RA', actinium:'AC', thorium:'TH',
-    protactinium:'PA', uranium:'U', neptunium:'NP', plutonium:'PU', americium:'AM', curium:'CM', berkelium:'BK', californium:'CF', einsteinium:'ES', fermium:'FM',
-    mendelevium:'MD', nobelium:'NO', lawrencium:'LR', rutherfordium:'RF', dubnium:'DB', seaborgium:'SG', bohrium:'BH', hassium:'HS', meitnerium:'MT', darmstadtium:'DS',
-    roentgenium:'RG', copernicium:'CN', nihonium:'NH', flerovium:'FL', moscovium:'MC', livermorium:'LV', tennessine:'TS', oganesson:'OG'
+  const link  = document.getElementById('openPeriodicLink');
+  const refInput = document.getElementById('ref');
+  const MASS_MAP = {
+    H:'1.008', He:'4.003', Li:'6.94', Be:'9.012', B:'10.81', C:'12.011', N:'14.007', O:'15.999', F:'18.998', Ne:'20.180',
+    Na:'22.990', Mg:'24.305', Al:'26.982', Si:'28.085', P:'30.974', S:'32.06', Cl:'35.45', Ar:'39.948', K:'39.098', Ca:'40.078',
+    Sc:'44.956', Ti:'47.867', V:'50.942', Cr:'51.996', Mn:'54.938', Fe:'55.845', Co:'58.933', Ni:'58.693', Cu:'63.546', Zn:'65.38',
+    Ga:'69.723', Ge:'72.630', As:'74.922', Se:'78.971', Br:'79.904', Kr:'83.798', Rb:'85.468', Sr:'87.62', Y:'88.906', Zr:'91.224',
+    Nb:'92.906', Mo:'95.95', Tc:'(98)', Ru:'101.07', Rh:'102.91', Pd:'106.42', Ag:'107.87', Cd:'112.41', In:'114.82', Sn:'118.71',
+    Sb:'121.76', Te:'127.60', I:'126.90', Xe:'131.29', Cs:'132.91', Ba:'137.33', La:'138.91', Ce:'140.12', Pr:'140.91', Nd:'144.24',
+    Pm:'(145)', Sm:'150.36', Eu:'151.96', Gd:'157.25', Tb:'158.93', Dy:'162.50', Ho:'164.93', Er:'167.26', Tm:'168.93', Yb:'173.05',
+    Lu:'174.97', Hf:'178.49', Ta:'180.95', W:'183.84', Re:'186.21', Os:'190.23', Ir:'192.22', Pt:'195.08', Au:'196.97', Hg:'200.59',
+    Tl:'204.38', Pb:'207.2', Bi:'208.98', Po:'(209)', At:'(210)', Rn:'(222)', Fr:'(223)', Ra:'(226)', Ac:'(227)', Th:'232.04',
+    Pa:'231.04', U:'238.03', Np:'(237)', Pu:'(244)', Am:'(243)', Cm:'(247)', Bk:'(247)', Cf:'(251)', Es:'(252)', Fm:'(257)',
+    Md:'(258)', No:'(259)', Lr:'(262)', Rf:'(267)', Db:'(270)', Sg:'(271)', Bh:'(270)', Hs:'(277)', Mt:'(278)', Ds:'(281)',
+    Rg:'(282)', Cn:'(285)', Nh:'(286)', Fl:'(289)', Mc:'(290)', Lv:'(293)', Ts:'(294)', Og:'(294)'
   };
-  const KEY_TO_SYMBOL = Object.fromEntries(Object.entries(FILE_TO_KEY).map(([k,v])=>[v,v[0]+v.slice(1).toLowerCase? v : v]));
-  const ELEMENT_DATA = {};
-  Object.keys(MAP).forEach(function(md){
-    var entry = MAP[md];
-    if(!entry || !entry.img) return;
-    var base = String(entry.img).replace(/\.png$/i,'').toLowerCase();
-    var key = FILE_TO_KEY[base];
-    if(!key) return;
-    var titleParts = String(entry.title || '').split('—');
-    var name = (titleParts[0] || '').trim();
-    var atomic = parseInt((titleParts[1] || '').trim(), 10);
-    if(!atomic) return;
-    ELEMENT_DATA[key] = { key:key, symbol:key, name:name, atomic:atomic };
-  });
-
-  var L_FORWARD_SYMBOLS = ['Fr','Ra','Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'];
-  var L_REVERSE_SYMBOLS = ['Og','Ts','Lv','Mc','Fl','Nh','Cn','Rg','Ds','Mt','Hs','Bh','Sg','Db','Rf','Lr','No','Md','Fm','Es','Cf','Bk','Cm','Am','Pu','Np','U','Pa','Th','Ac','Ra','Fr'];
-  var DECIDE_TURN_KEYS = {
-    15:[3,7,11,15,19,23,27,31,35,39,43,47,51,55,59,63],16:[67,71,75,79,83,87,91,95,99,103,107,111,115,119,123,127],17:[4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64],18:[68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128],19:[2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62],20:[66,70,74,78,82,86,90,94,98,102,106,110,114,118,122,126],21:[125,121,117,113,109,105,101,97,93,89,85,81,77,73,69,65],22:[61,57,53,49,45,41,37,33,29,25,21,17,13,9,5,1]
-  };
-
+  function getStoredIso(){ try{ return localStorage.getItem('periodicTableRefDate') || ''; }catch(e){ return ''; } }
   function esc(str){ return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function parseBadgeDate(str){
-    if(!str) return null;
-    var s = String(str).trim().replace(/\./g,'/').replace(/-/g,'/');
-    var p = s.split('/');
-    if(p.length !== 3) return null;
-    if(!/^\d{1,4}$/.test(p[0]) || !/^\d{1,2}$/.test(p[1]) || !/^\d{1,4}$/.test(p[2])) return null;
-    var a = parseInt(p[0],10), b = parseInt(p[1],10), c = parseInt(p[2],10);
-    var y,m,d;
-    if(a > 31){ y=a; m=b; d=c; } else { d=a; m=b; y=c; }
-    if(!(y>=1 && y<=9999 && m>=1 && m<=12 && d>=1 && d<=31)) return null;
-    var greg = (y > 1582) || (y === 1582 && (m > 10 || (m === 10 && d >= 15)));
-    var leap = greg ? ((y % 4 === 0) && (y % 100 !== 0 || y % 400 === 0)) : (y % 4 === 0);
-    var dim = m === 2 ? (leap ? 29 : 28) : ([4,6,9,11].indexOf(m) >= 0 ? 30 : 31);
-    if(d > dim) return null;
-    return { y:y, m:m, d:d };
+    if(!str) return null; var s=String(str).trim().replace(/\./g,'/').replace(/-/g,'/'); var p=s.split('/'); if(p.length!==3) return null;
+    if(!/^\d{1,4}$/.test(p[0])||!/^\d{1,2}$/.test(p[1])||!/^\d{1,4}$/.test(p[2])) return null; var a=parseInt(p[0],10), b=parseInt(p[1],10), c=parseInt(p[2],10), y,m,d;
+    if(a>31){ y=a; m=b; d=c; } else { d=a; m=b; y=c; }
+    if(!(y>=1&&y<=9999&&m>=1&&m<=12&&d>=1&&d<=31)) return null; var greg=(y>1582)||(y===1582&&(m>10||(m===10&&d>=15))); var leap=greg?((y%4===0)&&(y%100!==0||y%400===0)):(y%4===0); var dim=m===2?(leap?29:28):([4,6,9,11].indexOf(m)>=0?30:31); if(d>dim) return null; return {y:y,m:m,d:d};
   }
   function isoToMD(iso){
-    if(!iso) return null;
-    var parsed = parseBadgeDate(iso);
-    if(!parsed) return null;
-    var y = parsed.y, m = parsed.m, d = parsed.d;
-    function isLeap(year){ return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0); }
-    function daysInMonth(y,m){ if (m === 2) return isLeap(y) ? 29 : 28; return [4,6,9,11].indexOf(m) >= 0 ? 30 : 31; }
-    if(isLeap(y)){ if(m === 12 && d >= 18) return null; } else { if(m === 12 && d >= 19) return null; }
-    if(isLeap(y)){
-      var inShiftRange = (m === 2 && d === 29) || (m > 2 && (m < 12 || (m === 12 && d <= 17)));
-      if(inShiftRange){ d += 1; if(d > daysInMonth(y,m)){ d = 1; m += 1; if(m > 12){ m = 1; y += 1; } } }
-    }
-    return String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    var parsed=parseBadgeDate(iso); if(!parsed) return null; var y=parsed.y,m=parsed.m,d=parsed.d;
+    function isLeap(year){ return (year%4===0)&&(year%100!==0||year%400===0); }
+    function dim(y,m){ if(m===2) return isLeap(y)?29:28; return [4,6,9,11].indexOf(m)>=0?30:31; }
+    if(isLeap(y)){ if(m===12&&d>=18) return null; } else { if(m===12&&d>=19) return null; }
+    if(isLeap(y)){ var inShift=(m===2&&d===29)||(m>2&&(m<12||(m===12&&d<=17))); if(inShift){ d+=1; if(d>dim(y,m)){ d=1; m+=1; if(m>12){ m=1; y+=1; } } } }
+    return String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
   }
-  function todayISO(){ var d=new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
-  function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
-  function inferBadgeKey(entry){
-    if(!entry || !entry.img) return null;
-    var base = String(entry.img).replace(/\.png$/i,'');
-    var m;
-    if((m=/^promesa-(\d+)$/i.exec(base))) return 'P' + m[1];
-    if((m=/^vacio-(\d+)$/i.exec(base))) return 'BN' + m[1];
-    if((m=/^Ri-(\d+)$/i.exec(base))) return 'L' + m[1];
-    return FILE_TO_KEY[base.toLowerCase()] || null;
+  function activeISO(){ var v=(refInput&&refInput.value)||getStoredIso(); if(v) return v; var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function inferBadgeKey(entry){ if(!entry||!entry.img) return null; var base=String(entry.img).replace(/\.png$/i,''); var m; if((m=/^promesa-(\d+)$/i.exec(base))) return 'P'+m[1]; if((m=/^vacio-(\d+)$/i.exec(base))) return 'BN'+m[1]; if((m=/^Ri-(\d+)$/i.exec(base))) return 'L'+m[1]; return FILE_TO_KEY[base.toLowerCase()]||null; }
+  var L_FORWARD_SYMBOLS=['Fr','Ra','Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'];
+  var L_REVERSE_SYMBOLS=['Og','Ts','Lv','Mc','Fl','Nh','Cn','Rg','Ds','Mt','Hs','Bh','Sg','Db','Rf','Lr','No','Md','Fm','Es','Cf','Bk','Cm','Am','Pu','Np','U','Pa','Th','Ac','Ra','Fr'];
+  var DECIDE_TURN_KEYS={15:[3,7,11,15,19,23,27,31,35,39,43,47,51,55,59,63],16:[67,71,75,79,83,87,91,95,99,103,107,111,115,119,123,127],17:[4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64],18:[68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128],19:[2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62],20:[66,70,74,78,82,86,90,94,98,102,106,110,114,118,122,126],21:[125,121,117,113,109,105,101,97,93,89,85,81,77,73,69,65],22:[61,57,53,49,45,41,37,33,29,25,21,17,13,9,5,1]};
+  function phaseNameFromIso(iso){ var p=parseBadgeDate(iso), y=p?p.y:null; if(!(y>=1)) return 'asume'; var aStartY=y-((y-1)%4); var phase=Math.max(1,Math.min(4,y-aStartY+1)); return ['asume','asimila','desafia','decide'][phase-1]||'asume'; }
+  function resolveBadgeKey(entry, iso){ var fallback=inferBadgeKey(entry); if(!entry||!entry.img) return fallback; var md=isoToMD(iso), ordinal=md?(Object.keys(MAP).indexOf(md)+1):null; if(!ordinal) return fallback; if(ordinal<225||ordinal>352) return fallback; var turn=Math.ceil(ordinal/16), offset=(ordinal-1)%16, phase=phaseNameFromIso(iso); if(phase==='decide'&&turn>=15&&turn<=22){ var seq=DECIDE_TURN_KEYS[turn]; if(seq&&seq[offset]!=null) return 'L'+seq[offset]; } return 'L'+(ordinal-224); }
+  function buildElementData(){
+    var data={}; Object.keys(FILE_TO_KEY).forEach(function(file){ var key=FILE_TO_KEY[file], title=''; for(var md in MAP){ if(MAP[md].img.replace(/\.png$/i,'')===file){ title=MAP[md].title; break; } } var name=(title.split('—')[0]||'').trim()||file; data[String(key).toUpperCase()]={ key:key, symbol:key, name:name, atomic:parseInt((title.split('—')[1]||'').trim(),10)||'', mass:MASS_MAP[key]||'', category:'' }; });
+    return data;
   }
-  function phaseNameFromIso(iso){
-    if(!iso) return 'asume';
-    var parsed = parseBadgeDate(iso); var y = parsed ? parsed.y : null;
-    if(!(y >= 1)) return 'asume';
-    var aStartY = y - ((y - 1) % 4);
-    var phase = Math.max(1, Math.min(4, y - aStartY + 1));
-    return ['asume','asimila','desafia','decide'][phase - 1] || 'asume';
-  }
-  function resolveBadgeKey(entry, iso){
-    var fallbackKey = inferBadgeKey(entry);
-    if(!entry || !entry.img) return fallbackKey;
-    var md = isoToMD(iso);
-    var ordinal = md ? (Object.keys(MAP).indexOf(md) + 1) : null;
-    if(!ordinal) return fallbackKey;
-    if(ordinal < 225 || ordinal > 352) return fallbackKey;
-    var turn = Math.ceil(ordinal / 16);
-    var offset = (ordinal - 1) % 16;
-    var phase = phaseNameFromIso(iso);
-    if(phase === 'decide' && turn >= 15 && turn <= 22){
-      var seq = DECIDE_TURN_KEYS[turn];
-      if(seq && seq[offset] != null) return 'L' + seq[offset];
-    }
-    return 'L' + (ordinal - 224);
-  }
+  const ELEMENT_DATA=buildElementData();
   function categoryForSymbol(symbol){
-    var s = String(symbol||'');
-    if(['Li','Na','K','Rb','Cs','Fr'].indexOf(s)>=0) return 'alkali';
+    var s=String(symbol||'').trim();
+    if(['H','Li','Na','K','Rb','Cs','Fr'].indexOf(s)>=0) return 'alkali';
     if(['Be','Mg','Ca','Sr','Ba','Ra'].indexOf(s)>=0) return 'alkaline';
     if(['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn'].indexOf(s)>=0) return 'transition';
     if(['Al','Ga','In','Tl','Sn','Pb','Bi','Po','Nh','Fl','Mc','Lv'].indexOf(s)>=0) return 'post-transition';
@@ -1758,81 +1714,32 @@ const MAP = {
     if(['Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'actinide';
     return 'transition';
   }
-  function overrideCategory(symbol, row){
-    var s = String(symbol||'');
-    if (!s) return null;
-    if (s === 'Og') return 'top-gray';
-    if (s === 'Cn') return 'top-green';
-    if (row === 6 && s === 'At') return 'metalloid';
-    if (row === 6 && s === 'Po') return 'post-transition';
-    if ([-2,-1,7,8,9].indexOf(row)>=0 && ['Ts','Lv','Mc','Fl','Nh'].indexOf(s)>=0) return 'top-gray';
-    if ([-2,-1,7,8,9].indexOf(row)>=0 && ['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'top-blue';
-    if ([-2,-1,7,8,9].indexOf(row)>=0 && ['Rf','Db','Sg','Bh','Hs'].indexOf(s)>=0) return 'top-green';
-    if ([-2,-1,7,8,9].indexOf(row)>=0 && ['Mt','Ds','Rg'].indexOf(s)>=0) return 'top-gray';
-    if ([-2,-1,7,8,9].indexOf(row)>=0 && ['Ac','Th','Pa','U','Np'].indexOf(s)>=0) return 'top-blue';
-    if ([4,5,6].indexOf(row)>=0 && ['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].indexOf(s)>=0) return 'top-green';
-    if ([2,3,4,5].indexOf(row)>=0 && ['F','Cl','Br','I'].indexOf(s)>=0) return 'nonmetal';
-    return null;
-  }
+  function overrideCategory(symbol,row){ var s=String(symbol||'').trim(); if(!s) return null; if(s==='Og') return 'top-gray'; if(s==='Cn') return 'top-green'; if(row===6&&s==='At') return 'metalloid'; if(row===6&&s==='Po') return 'post-transition'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Ts','Lv','Mc','Fl','Nh'].indexOf(s)>=0) return 'top-gray'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'top-blue'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Rf','Db','Sg','Bh','Hs'].indexOf(s)>=0) return 'top-green'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Mt','Ds','Rg'].indexOf(s)>=0) return 'top-gray'; if([-2,-1,7,8,9].indexOf(row)>=0&&['Ac','Th','Pa','U','Np'].indexOf(s)>=0) return 'top-blue'; if([4,5,6].indexOf(row)>=0&&['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].indexOf(s)>=0) return 'top-green'; if([2,3,4,5].indexOf(row)>=0&&['F','Cl','Br','I'].indexOf(s)>=0) return 'nonmetal'; return null; }
   function nameColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return '#009b39'; if(['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].indexOf(s)>=0) return '#ff1f1f'; if(s==='Br') return '#123f9e'; return null; }
   function symbolColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
-  function buildLBadgeModel(key){
-    var m = /^L(\d+)$/i.exec(String(key || '')); if(!m) return null;
-    var idx = parseInt(m[1], 10); if(!(idx >= 1 && idx <= 128)) return null;
-    var col = Math.floor((idx - 1) / 4) + 1; var slot = ((idx - 1) % 4) + 1;
-    var row = slot === 1 ? -2 : (slot === 2 ? -1 : (slot === 3 ? 7 : 9));
-    var symbol = row === -1 ? L_REVERSE_SYMBOLS[col - 1] : L_FORWARD_SYMBOLS[col - 1];
-    var baseItem = ELEMENT_DATA[String(symbol).toUpperCase()] || ELEMENT_DATA[symbol] || null;
-    var atomic = baseItem && baseItem.atomic != null ? Number(baseItem.atomic) : null;
-    var bandOrdinal = row === -1 ? (257 - col) : (224 + col);
-    return { key:'L'+idx, row:row, col:col, symbol:symbol, atomic:atomic, name:baseItem ? baseItem.name : symbol, category:categoryForSymbol(symbol), display:{ number:'', symbol:symbol, name:baseItem ? baseItem.name : symbol, mass:'', cornerTopLeft: row===-2 || row===-1 ? (atomic != null ? ('-' + String(atomic)) : '') : (row===7 ? ('-' + String(bandOrdinal)) : (atomic != null ? String(atomic) : '')), cornerTopRight: row===-2 || row===-1 ? String(bandOrdinal) : (row===9 ? ('-' + String(bandOrdinal)) : '') } };
-  }
-  function renderMiniBadge(key, title){
+  function massColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
+  function buildLBadgeModel(key){ var m=/^L(\d+)$/i.exec(String(key||'')); if(!m) return null; var idx=parseInt(m[1],10); if(!(idx>=1&&idx<=128)) return null; var col=Math.floor((idx-1)/4)+1, slot=((idx-1)%4)+1; var row=slot===1?-2:(slot===2?-1:(slot===3?7:9)); var symbol=row===-1?L_REVERSE_SYMBOLS[col-1]:L_FORWARD_SYMBOLS[col-1]; var baseItem=ELEMENT_DATA[String(symbol).toUpperCase()]||null; var atomic=baseItem&&baseItem.atomic!=null?Number(baseItem.atomic):null; var bandOrdinal=row===-1?(257-col):(224+col); return { key:'L'+idx, row:row, col:col, symbol:symbol, atomic:atomic, name:baseItem?baseItem.name:symbol, category:categoryForSymbol(symbol), display:{ number:'', symbol:symbol, name:baseItem?baseItem.name:symbol, mass:baseItem&&baseItem.mass?baseItem.mass:'', cornerTopLeft: row===-2 || row===-1 ? (atomic != null ? ('-' + String(atomic)) : '') : (row===7 ? ('-' + String(bandOrdinal)) : (atomic != null ? String(atomic) : '')), cornerTopRight: row===-2 || row===-1 ? String(bandOrdinal) : (row===9 ? ('-' + String(bandOrdinal)) : '') } }; }
+  function renderMiniBadge(key,title){
     if(!tile) return false;
-    if(/^P\d+$/i.test(String(key))){ var num = String(key).replace(/^P/i,''); tile.innerHTML = '<div class="mini-badge p-node p-orb"><span class="orb-top">'+esc(num)+'</span><span class="orb-main">'+esc(String(Number(num)-118))+'</span></div>'; tile.dataset.key = String(key); tile.setAttribute('aria-label', title || ('Promesa · ' + num)); return true; }
-    if(/^BN\d+$/i.test(String(key))){ var bnNum = String(key).replace(/^BN/i,''); tile.innerHTML = '<div class="mini-badge p-node p-slab">'+esc(bnNum)+'</div>'; tile.dataset.key = String(key); tile.setAttribute('aria-label', title || ('Espacio en negro · ' + bnNum)); return true; }
-    var item = /^L\d+$/i.test(String(key || '')) ? buildLBadgeModel(key) : (ELEMENT_DATA[String(key||'').toUpperCase()] || null);
-    if(!item) return false;
-    var display = item.display || {number:String(item.atomic||''), symbol:item.symbol, name:item.name || item.symbol, mass:''};
-    var category = /^L\d+$/i.test(String(key || '')) ? (overrideCategory(item.symbol, item.row) || item.category || categoryForSymbol(item.symbol)) : (item.category || categoryForSymbol(item.symbol));
-    var classes = ['mini-badge','p-node','p-el','is-'+category];
-    if (display.cornerTopLeft || display.cornerTopRight) classes.push('p-el--corners');
-    if (display.cornerTopLeft && display.cornerTopRight) classes.push('p-el--corners-dual');
-    if (/^L\d+$/i.test(String(key || ''))) classes.push('p-el--band-tight');
-    var styles=[]; var nameColor=nameColorForSymbol(display.symbol || item.symbol); var symbolColor=symbolColorForSymbol(display.symbol || item.symbol); if(nameColor) styles.push('--name-color:'+nameColor); if(symbolColor) styles.push('--symbol-color:'+symbolColor,'--mass-color:'+symbolColor); var inlineStyle = styles.length ? ' style="'+styles.join(';')+'"' : '';
-    tile.innerHTML = '<div class="'+classes.join(' ')+'">'
-      + (display.number ? '<span class="p-el__atomic">'+esc(display.number)+'</span>' : '')
-      + (display.cornerTopLeft ? '<span class="p-el__corner p-el__corner--left">'+esc(display.cornerTopLeft)+'</span>' : '')
-      + (display.cornerTopRight ? '<span class="p-el__corner p-el__corner--right">'+esc(display.cornerTopRight)+'</span>' : '')
-      + '<span class="p-el__symbol"'+inlineStyle+'>'+esc(display.symbol || item.symbol)+'</span>'
-      + '<span class="p-el__name"'+inlineStyle+'>'+esc(display.name || item.name || item.symbol)+'</span>'
-      + (display.mass ? '<span class="p-el__mass"'+inlineStyle+'>'+esc(display.mass)+'</span>' : '')
-      + '</div>';
-    tile.dataset.key = String(key);
-    tile.setAttribute('aria-label', title || ((display.symbol || item.symbol) + ' · ' + (display.name || item.name || item.symbol)));
-    return true;
+    if(/^P\d+$/i.test(String(key))){ var num=String(key).replace(/^P/i,''); tile.innerHTML='<div class="mini-badge p-node p-orb"><span class="orb-top">'+esc(num)+'</span><span class="orb-main">'+esc(String(Number(num)-118))+'</span></div>'; tile.dataset.key=String(key); tile.setAttribute('aria-label', title||('Promesa · '+num)); return true; }
+    if(/^BN\d+$/i.test(String(key))){ var bn=String(key).replace(/^BN/i,''); tile.innerHTML='<div class="mini-badge p-node p-slab">'+esc(bn)+'</div>'; tile.dataset.key=String(key); tile.setAttribute('aria-label', title||('Espacio en negro · '+bn)); return true; }
+    var item=/^L\d+$/i.test(String(key||''))?buildLBadgeModel(key):(ELEMENT_DATA[String(key||'').toUpperCase()]||null); if(!item) return false;
+    var display=item.display||{number:String(item.atomic||''),symbol:item.symbol,name:item.name||item.symbol,mass:item.mass||''};
+    var category=/^L\d+$/i.test(String(key||''))?(overrideCategory(item.symbol,item.row)||item.category||categoryForSymbol(item.symbol)):(item.category||categoryForSymbol(item.symbol));
+    var classes=['mini-badge','p-node','p-el','is-'+category]; if(display.cornerTopLeft||display.cornerTopRight) classes.push('p-el--corners'); if(display.cornerTopLeft&&display.cornerTopRight) classes.push('p-el--corners-dual'); if(/^L\d+$/i.test(String(key||''))) classes.push('p-el--band-tight');
+    var styles=[]; var nameColor=nameColorForSymbol(display.symbol||item.symbol), symbolColor=symbolColorForSymbol(display.symbol||item.symbol), massColor=massColorForSymbol(display.symbol||item.symbol); if(nameColor) styles.push('--name-color:'+nameColor); if(symbolColor) styles.push('--symbol-color:'+symbolColor); if(massColor) styles.push('--mass-color:'+massColor); var inlineStyle=styles.length?' style="'+styles.join(';')+';"':'';
+    tile.innerHTML='<div class="'+classes.join(' ')+'">'+(display.number?'<span class="p-el__atomic">'+esc(display.number)+'</span>':'')+(display.cornerTopLeft?'<span class="p-el__corner p-el__corner--left">'+esc(display.cornerTopLeft)+'</span>':'')+(display.cornerTopRight?'<span class="p-el__corner p-el__corner--right">'+esc(display.cornerTopRight)+'</span>':'')+'<span class="p-el__symbol"'+inlineStyle+'>'+esc(display.symbol||item.symbol)+'</span>'+'<span class="p-el__name"'+inlineStyle+'>'+esc(display.name||item.name||item.symbol)+'</span>'+(display.mass?'<span class="p-el__mass"'+inlineStyle+'>'+esc(display.mass)+'</span>':'')+'</div>';
+    tile.dataset.key=String(key); tile.setAttribute('aria-label', title||((display.symbol||item.symbol)+' · '+(display.name||item.name||item.symbol))); return true;
   }
   function renderBadge(){
-    if(!badge || !tile) return;
-    var iso = activeISO();
-    var md = isoToMD(iso);
-    var entry = md ? MAP[md] : null;
-    var key = resolveBadgeKey(entry, iso);
-    if(entry && key && renderMiniBadge(key, entry.title)){
-      badge.title = entry.title;
-      badge.style.display = 'block';
-      badge.setAttribute('aria-hidden','false');
-    } else {
-      badge.style.display = 'none';
-      badge.setAttribute('aria-hidden','true');
-      tile.innerHTML = '';
-      delete tile.dataset.key;
-    }
+    if(!badge||!tile) return; var iso=activeISO(), md=isoToMD(iso), entry=md?MAP[md]:null; if(!entry){ badge.style.display='none'; badge.setAttribute('aria-hidden','true'); if(link) link.href='/periodic.html'; return; }
+    var key=resolveBadgeKey(entry,iso)||inferBadgeKey(entry); var title=entry.title||''; var ok=renderMiniBadge(key,title); if(ok){ badge.style.display='block'; badge.setAttribute('aria-hidden','false'); badge.title=title; } else { badge.style.display='none'; badge.setAttribute('aria-hidden','true'); }
+    if(link) link.href='/periodic.html?el='+encodeURIComponent(key||'');
   }
-  if(ref){ ref.addEventListener('change',renderBadge); ref.addEventListener('input',renderBadge); }
+  if(refInput){ refInput.addEventListener('change',renderBadge); refInput.addEventListener('input',renderBadge); }
   document.addEventListener('DOMContentLoaded', renderBadge);
   window.addEventListener('load', function(){ setTimeout(renderBadge,0); });
-  window.CAL_BADGE_UTILS = { MAP:MAP, isoToMD:isoToMD, activeISO:activeISO, inferBadgeKey:inferBadgeKey, resolveBadgeKey:resolveBadgeKey, renderBadge:renderBadge };
+  window.CAL_BADGE_UTILS={MAP:MAP,isoToMD:isoToMD,activeISO:activeISO,inferBadgeKey:inferBadgeKey,resolveBadgeKey:resolveBadgeKey,renderBadge:renderBadge};
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
@@ -1849,31 +1756,7 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-<script>
-(function(){
-  const ref = document.getElementById('ref');
-  const link = document.getElementById('openPeriodicLink');
-  function updatePeriodicLink(){
-    if(!link || !window.CAL_BADGE_UTILS) return;
-    var iso = window.CAL_BADGE_UTILS.activeISO();
-    var md = window.CAL_BADGE_UTILS.isoToMD(iso);
-    var entry = md ? window.CAL_BADGE_UTILS.MAP[md] : null;
-    var key = window.CAL_BADGE_UTILS.resolveBadgeKey(entry, iso);
-    if(!entry || !key){
-      link.style.display = 'none';
-      link.removeAttribute('href');
-      link.setAttribute('aria-disabled','true');
-      return;
-    }
-    link.style.display = '';
-    link.removeAttribute('aria-disabled');
-    link.href = '/periodic.html?el=' + encodeURIComponent(key);
-  }
-  if(ref){ ref.addEventListener('change', updatePeriodicLink); ref.addEventListener('input', updatePeriodicLink); }
-  document.addEventListener('DOMContentLoaded', updatePeriodicLink);
-  window.addEventListener('load', function(){ setTimeout(updatePeriodicLink, 0); });
-})();
-</script>
+
 
 
 <!-- Modal zoom (mobile) -->
