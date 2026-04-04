@@ -206,6 +206,78 @@ body.noScroll{overflow:hidden}
 }
 
 
+
+/* CTA abrir tabla periódica */
+.periodicCtaWrap{
+  position:absolute;
+  top:108px;
+  right:16px;
+  z-index:11;
+}
+.periodicCta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid rgba(124,199,255,.34);
+  text-decoration:none;
+  text-transform:uppercase;
+  letter-spacing:.11em;
+  font-size:10px;
+  font-weight:700;
+  color:#eaf4ff;
+  background:linear-gradient(180deg,rgba(124,199,255,.18),rgba(124,199,255,.08));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 8px 20px rgba(0,0,0,.22);
+  transition:border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease, color .18s ease;
+  white-space:nowrap;
+  backdrop-filter:saturate(120%) blur(4px);
+}
+.periodicCta:hover{
+  border-color:rgba(124,199,255,.58);
+  background:linear-gradient(180deg,rgba(124,199,255,.26),rgba(124,199,255,.12));
+  color:#ffffff;
+  transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 12px 24px rgba(0,0,0,.28);
+}
+.periodicCta:focus-visible{
+  outline:none;
+  border-color:rgba(124,199,255,.72);
+  box-shadow:0 0 0 3px rgba(124,199,255,.18), inset 0 1px 0 rgba(255,255,255,.12), 0 12px 24px rgba(0,0,0,.28);
+}
+.periodicCta::after{
+  content:"→";
+  display:inline-block;
+  margin-left:8px;
+  font-size:12px;
+  line-height:1;
+  transform:translateY(-.5px);
+  opacity:.9;
+}
+@media (max-width:599px){
+  .periodicCtaWrap{
+    top:auto;
+    right:10px;
+    bottom:10px;
+  }
+  .periodicCta{
+    min-height:32px;
+    padding:7px 11px;
+    font-size:9px;
+    letter-spacing:.09em;
+    max-width:150px;
+    white-space:normal;
+    text-align:center;
+    line-height:1.15;
+  }
+  .periodicCta::after{
+    margin-left:6px;
+    font-size:11px;
+  }
+}
+
+
 /* Periodic element badge (overlay, non-intrusive) */
 .top-card{position:relative}
 .elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
@@ -943,8 +1015,8 @@ body.noScroll{overflow:hidden}
     <div class="elementBadge" title="" aria-hidden="true">
       <div id="elementTile" class="elementBadgeMount" role="button" tabindex="0" aria-label="Elemento actual"></div>
     </div>
-    <div style="position:absolute;top:110px;right:16px;">
-      <a href="/periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
+    <div class="periodicCtaWrap">
+      <a href="/periodic.html?el=H" id="openPeriodicLink" class="periodicCta">Abrir tabla periódica</a>
     </div>
 
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
