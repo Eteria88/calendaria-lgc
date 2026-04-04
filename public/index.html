@@ -206,64 +206,6 @@ body.noScroll{overflow:hidden}
 }
 
 
-
-/* CTA abrir tabla periódica */
-.periodicCtaWrap{
-  position:absolute;
-  top:112px;
-  right:16px;
-  z-index:11;
-}
-.periodicCta{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:31px;
-  padding:7px 12px;
-  border-radius:999px;
-  border:1px solid rgba(124,199,255,.30);
-  text-decoration:none;
-  text-transform:uppercase;
-  letter-spacing:.10em;
-  font-size:9px;
-  font-weight:700;
-  color:#eaf4ff;
-  background:linear-gradient(180deg,rgba(124,199,255,.16),rgba(124,199,255,.07));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.07), 0 6px 16px rgba(0,0,0,.18);
-  transition:border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease, color .18s ease;
-  white-space:nowrap;
-  backdrop-filter:saturate(120%) blur(4px);
-}
-.periodicCta:hover{
-  border-color:rgba(124,199,255,.52);
-  background:linear-gradient(180deg,rgba(124,199,255,.22),rgba(124,199,255,.10));
-  color:#ffffff;
-  transform:translateY(-1px);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 10px 20px rgba(0,0,0,.22);
-}
-.periodicCta:focus-visible{
-  outline:none;
-  border-color:rgba(124,199,255,.68);
-  box-shadow:0 0 0 3px rgba(124,199,255,.16), inset 0 1px 0 rgba(255,255,255,.10), 0 10px 20px rgba(0,0,0,.22);
-}
-@media (max-width:599px){
-  .periodicCtaWrap{
-    top:82px;
-    right:10px;
-  }
-  .periodicCta{
-    min-height:29px;
-    padding:6px 10px;
-    font-size:8px;
-    letter-spacing:.08em;
-    max-width:132px;
-    white-space:normal;
-    text-align:center;
-    line-height:1.12;
-  }
-}
-
-
 /* Periodic element badge (overlay, non-intrusive) */
 .top-card{position:relative}
 .elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
@@ -1001,8 +943,8 @@ body.noScroll{overflow:hidden}
     <div class="elementBadge" title="" aria-hidden="true">
       <div id="elementTile" class="elementBadgeMount" role="button" tabindex="0" aria-label="Elemento actual"></div>
     </div>
-    <div class="periodicCtaWrap">
-      <a href="/periodic.html?el=H" id="openPeriodicLink" class="periodicCta">Abrir tabla periódica</a>
+    <div style="position:absolute;top:110px;right:16px;">
+      <a href="/periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
     </div>
 
     <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
