@@ -3956,6 +3956,10 @@ header{
     var refDateLabel = document.getElementById('refDateLabel');
     var apHeaderLabel = document.getElementById('apHeaderLabel');
     var solarDaysLabel = document.getElementById('solarDaysLabel');
+    var shouldHighlight = arguments.length > 1 ? !!arguments[1] : true;
+    var options = (arguments.length > 2 && arguments[2] && typeof arguments[2] === 'object') ? arguments[2] : null;
+    var preserveYearType = !!(options && options.preserveYearType);
+    var preservedYearType = preserveYearType && yearSelect ? String(yearSelect.value || '').trim() : '';
 
     if (dateInput) dateInput.value = formatRefDate(refObj);
     if (refDateLabel) refDateLabel.textContent = 'Fecha de referencia: ' + formatRefDate(refObj);
@@ -3964,7 +3968,7 @@ header{
     updateBadgeFromRef(refObj);
 
     var phase = getPhaseFromYear(formatIso(refObj));
-    if (yearSelect) yearSelect.value = phase;
+    if (yearSelect) yearSelect.value = preservedYearType || phase;
 
     var md = normalizedMonthDayFromRef(refObj);
     var ordinal = md ? monthDayOrdinal(md) : null;
@@ -3973,8 +3977,6 @@ header{
     try {
       localStorage.setItem('periodicTableRefDate', formatIso(refObj));
     } catch(e){}
-
-    var shouldHighlight = arguments.length > 1 ? !!arguments[1] : true;
 
     if (!md || !ordinal) {
       setStatus('La fecha cae en Anillo de Fuego o fuera del tramo activo del año.');
@@ -4014,12 +4016,17 @@ header{
     var current = parseFlexibleDate(dateInput && dateInput.value);
     if (!current) current = todayRefDate();
     var solar = solarDaysNumber(current);
-    var next = calendarFromSolarDay(solar + Number(delta || 0));
+    var nextSolar = solar + Number(delta || 0);
+    if (!(nextSolar >= 1)) {
+      setStatus('No se pudo mover la fecha de referencia.');
+      return;
+    }
+    var next = calendarFromSolarDay(nextSolar);
     if (!next) {
       setStatus('No se pudo mover la fecha de referencia.');
       return;
     }
-    applyReferenceDate(next, true);
+    applyReferenceDate(next, true, { preserveYearType:true });
   }
 
   function goToTodayReferenceDate(){
