@@ -251,8 +251,9 @@ header{
   max-width:90%;
 }
 .elementBadgeMount .mini-badge .p-el__mass{
-  font-size:4.6px;
-  bottom:5px;
+  font-size:5.4px;
+  font-weight:900;
+  bottom:4px;
 }
 .elementBadgeMount .mini-badge.p-el--band-tight{
   padding:7px 4px 10px;
@@ -303,6 +304,7 @@ header{
   .elementBadgeMount .mini-badge{width:64px;height:64px;}
   .elementBadgeMount .mini-badge .p-el__symbol{font-size:21px;margin-top:9px;}
   .elementBadgeMount .mini-badge .p-el__name{font-size:6.8px;font-weight:800;line-height:1.05;}
+  .elementBadgeMount .mini-badge .p-el__mass{font-size:5px;font-weight:900;bottom:4px;}
   .elementBadgeMount .mini-badge.p-orb::before{width:50px;height:50px;}
 }
 
@@ -1622,25 +1624,20 @@ header{
   }
 
   function mobileEpochRefDate(){
-    return { y:1, m:1, d:1 };
+    return todayRefDate();
   }
 
   var refRaw = '';
   var refDate = (function(){
+    var base = todayRefDate();
     try{
-      var stored = localStorage.getItem('periodicTableRefDate') || '';
-      var parsed = parseFlexDate(stored);
-      if(parsed) return parsed;
-      var base = isMobileLike() ? mobileEpochRefDate() : todayRefDate();
       localStorage.setItem('periodicTableRefDate', [
         String(base.y).padStart(4,'0'),
         pad2(base.m),
         pad2(base.d)
       ].join('-'));
-      return base;
-    }catch(e){
-      return isMobileLike() ? mobileEpochRefDate() : todayRefDate();
-    }
+    }catch(e){}
+    return base;
   })();
 
   var refLabel = document.getElementById('refDateLabel');
@@ -3567,7 +3564,7 @@ header{
   }
 
   function mobileEpochRefDateTurn(){
-    return { y:1, m:1, d:1 };
+    return todayRefDate();
   }
 
   function normalizeDateDigits(value){
@@ -4541,17 +4538,15 @@ header{
     if (mobileMode) bindMobileDateMask(dateInput);
 
     var today = new Date();
-    var fallbackRef = mobileMode
-      ? '0001-01-01'
-      : [
-          String(today.getFullYear()).padStart(4,'0'),
-          String(today.getMonth() + 1).padStart(2,'0'),
-          String(today.getDate()).padStart(2,'0')
-        ].join('-');
+    var fallbackRef = [
+      String(today.getFullYear()).padStart(4,'0'),
+      String(today.getMonth() + 1).padStart(2,'0'),
+      String(today.getDate()).padStart(2,'0')
+    ].join('-');
     var storedRef = fallbackRef;
     try {
-      storedRef = localStorage.getItem('periodicTableRefDate') || fallbackRef;
-      if (mobileMode && !storedRef) storedRef = '0001-01-01';
+      localStorage.setItem('periodicTableRefDate', fallbackRef);
+      storedRef = fallbackRef;
     } catch(e) {}
     yearSelect.value = getPhaseFromYear(storedRef);
 
