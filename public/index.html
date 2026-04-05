@@ -211,8 +211,58 @@ body.noScroll{overflow:hidden}
 .elementBadge{position:absolute;top:12px;right:12px;border:1px solid var(--ol);border-radius:14px;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
   padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;pointer-events:none;z-index:10}
-.elementBadge img{display:block;width:76px;height:auto;border-radius:10px;border:1px solid var(--ol)}
-@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadge img{width:64px}}
+.elementBadgeMount{width:76px;height:76px;display:flex;align-items:center;justify-content:center}
+.elementBadgeMount .mini-badge{width:76px;height:76px;border-radius:10px;overflow:hidden}
+.elementBadgeMount .mini-badge.p-node{border-width:1px}
+.elementBadgeMount .mini-badge .p-el__atomic,
+.elementBadgeMount .mini-badge .p-el__corner{font-size:9px;top:6px}
+.elementBadgeMount .mini-badge .p-el__corner--left{left:5px}
+.elementBadgeMount .mini-badge .p-el__corner--right{right:5px}
+.elementBadgeMount .mini-badge .p-el__symbol{font-size:25px;margin-top:10px}
+.elementBadgeMount .mini-badge .p-el__name{font-size:7.3px;font-weight:800;line-height:1.05;margin-top:3px;max-width:90%}
+.elementBadgeMount .mini-badge .p-el__mass{font-size:5.8px;font-weight:900;bottom:5px}
+.elementBadgeMount .mini-badge.p-el--band-tight{padding:7px 4px 10px}
+.elementBadgeMount .mini-badge.p-el--band-tight .p-el__symbol{margin-top:11px;font-size:24px}
+.elementBadgeMount .mini-badge.p-el--band-tight .p-el__name{font-size:7.3px;font-weight:800;line-height:1.05;margin-top:3px}
+.elementBadgeMount .mini-badge.p-orb{font-size:20px;background:linear-gradient(180deg,rgba(12,12,16,1),rgba(18,18,23,1));border-color:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.03)}
+.elementBadgeMount .mini-badge.p-orb::before{width:60px;height:60px;background:radial-gradient(circle at 30% 28%, rgba(255,198,218,1) 0%, rgba(241,143,178,.99) 42%, rgba(214,102,142,.98) 100%);border:1px solid rgba(255,239,247,.62);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 0 0 1px rgba(255,182,210,.10)}
+.elementBadgeMount .mini-badge .orb-top{font-size:10px;top:7px;color:rgba(34,24,31,.98);text-shadow:none}
+.elementBadgeMount .mini-badge .orb-main{font-size:18px;transform:translateY(1px);color:rgba(233,239,255,.92);text-shadow:none}
+.elementBadgeMount .mini-badge.p-slab{font-size:18px;padding-top:10px}
+.p-node{position:relative;border-radius:6px;border:1px solid rgba(135,160,188,.22);color:#eaf3ff;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.018));box-shadow:none}
+.p-el{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;padding:11px 3px 7px;text-align:center}
+.p-el__atomic,.p-el__corner{position:absolute;top:4px;font-size:8.4px;font-weight:700;line-height:1;color:var(--topnum-color, rgba(22,18,20,.94))}
+.p-el__atomic{left:4px}
+.p-el__corner--left{left:3px}
+.p-el__corner--right{right:3px;text-align:right}
+.p-el--corners .p-el__corner{top:5px;font-size:7.8px;line-height:1;font-weight:700;letter-spacing:-0.04em;opacity:.96}
+.p-el--corners-dual .p-el__corner--left{left:4px}
+.p-el--corners-dual .p-el__corner--right{right:4px}
+.p-el--band-tight{justify-content:flex-start;padding:6px 3px 12px;gap:0}
+.p-el__symbol{font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:15.8px;font-weight:800;line-height:1;letter-spacing:-.04em;margin-top:3px;color:var(--symbol-color, inherit)}
+.p-el__name{font-size:6.65px;font-weight:800;line-height:1.05;letter-spacing:-0.01em;color:var(--name-color, rgba(28,23,25,.92));max-width:96%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2.8px}
+.p-el__mass{position:absolute;bottom:4px;left:3px;right:3px;font-size:5px;font-weight:900;line-height:1;opacity:.98;color:var(--mass-color, inherit);letter-spacing:0}
+.p-slab{display:flex;align-items:flex-start;justify-content:center;padding-top:0;background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));border-color:rgba(255,255,255,.10);color:#d9cb6b;font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:12px;font-weight:700;line-height:1}
+.p-orb{display:flex;align-items:center;justify-content:center;position:relative;width:100%;height:100%;margin:0;box-sizing:border-box;border-radius:6px;background:linear-gradient(180deg,rgba(14,14,18,.96),rgba(18,18,23,.98));border-color:rgba(255,255,255,.10);box-shadow:none;color:#fff8fe;font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:14px;font-weight:800;overflow:hidden;z-index:0}
+.p-orb::before{content:"";position:absolute;width:calc(76px - 7px);height:calc(76px - 7px);left:50%;top:50%;transform:translate(-50%,-50%);border-radius:999px;background:radial-gradient(circle at 30% 28%, rgba(255,186,206,.96), rgba(223,106,144,.92));border:1px solid rgba(255,235,248,.44);box-shadow:inset 0 1px 0 rgba(255,255,255,.42);z-index:-1}
+.p-orb .orb-main{position:relative;z-index:1;line-height:1}
+.p-orb .orb-top{position:absolute;top:5px;left:50%;transform:translateX(-50%);z-index:1;font-size:8.2px;line-height:1;color:rgba(15,15,18,.92);font-weight:800;letter-spacing:-0.01em;pointer-events:none}
+.p-node.is-alkali{background:linear-gradient(180deg,rgba(237,104,77,.95),rgba(177,77,53,.88))}
+.p-node.is-alkaline{background:linear-gradient(180deg,rgba(249,185,52,.96),rgba(197,135,20,.90));color:#241a03}
+.p-node.is-transition{background:linear-gradient(180deg,rgba(171,211,244,.96),rgba(118,156,192,.90));color:#102032}
+.p-node.is-post-transition{background:linear-gradient(180deg,rgba(205,163,236,.96),rgba(151,108,190,.90));color:#1f1129}
+.p-node.is-metalloid{background:linear-gradient(180deg,rgba(253,221,58,.96),rgba(214,170,14,.90));color:#261f03}
+.p-node.is-nonmetal{background:linear-gradient(180deg,rgba(188,220,255,.96),rgba(141,177,209,.90));color:#112134}
+.p-node.is-halogen{background:linear-gradient(180deg,rgba(253,222,57,.96),rgba(223,181,12,.90));color:#241f03}
+.p-node.is-noble{background:linear-gradient(180deg,rgba(247,212,224,.98),rgba(236,188,206,.96));color:#2a1420}
+.p-node.is-lanthanide{background:linear-gradient(180deg,rgba(109,206,182,.96),rgba(55,138,120,.90));color:#061915}
+.p-node.is-actinide{background:linear-gradient(180deg,rgba(135,229,131,.96),rgba(70,157,66,.91));color:#081b08}
+.p-node.is-top-red{background:linear-gradient(180deg,rgba(235,92,78,.96),rgba(173,59,50,.90))}
+.p-node.is-top-orange{background:linear-gradient(180deg,rgba(251,186,45,.96),rgba(194,131,16,.90));color:#291d03}
+.p-node.is-top-blue{background:linear-gradient(180deg,rgba(156,201,242,.96),rgba(103,149,191,.90));color:#102033}
+.p-node.is-top-green{background:linear-gradient(180deg,rgba(186,224,178,.98),rgba(153,199,145,.96));color:#081b09}
+.p-node.is-top-gray{background:linear-gradient(180deg,rgba(211,211,211,.95),rgba(149,149,149,.90));color:#181818}
+@media (max-width:599px){.elementBadge{top:6px;right:6px}.elementBadgeMount{width:64px;height:64px}.elementBadgeMount .mini-badge{width:64px;height:64px}.elementBadgeMount .mini-badge .p-el__symbol{font-size:21px;margin-top:9px}.elementBadgeMount .mini-badge .p-el__name{font-size:6.8px;font-weight:800;line-height:1.05}.elementBadgeMount .mini-badge.p-orb::before{width:50px;height:50px}}
 .anilloTitle{
   text-align:center;
   margin-top:6px;
@@ -890,8 +940,8 @@ body.noScroll{overflow:hidden}
       <div id="dbg" class="status">estado: cargando…</div>
 
       <section class="card top-card">
-    <div class="elementBadge" title="Hydrogen — 1">
-      <img id="elementTile" src="/hydrogen.png" alt="Hydrogen element tile">
+    <div class="elementBadge" title="" aria-hidden="true">
+      <div id="elementTile" class="elementBadgeMount" role="button" tabindex="0" aria-label="Elemento actual"></div>
     </div>
     <div style="position:absolute;top:110px;right:16px;">
       <a href="/periodic.html?el=H" id="openPeriodicLink" class="badge" style="cursor:pointer;text-decoration:none">Ver tabla periódica</a>
@@ -1229,6 +1279,7 @@ body.noScroll{overflow:hidden}
   </script>
 
 
+<script src="./periodic-data.js"></script>
 <!-- ELEMENT_BADGE_LOGIC_START -->
 <script>
 (function(){
@@ -1589,74 +1640,118 @@ body.noScroll{overflow:hidden}
     "12-18": {img:"Ri-128.png", title:"Ri — 128"},
   };
 
+  const FILE_TO_KEY = {
+    hydrogen:'H', helium:'He', lithium:'Li', beryllium:'Be', boron:'B', carbon:'C', nitrogen:'N', oxygen:'O', fluorine:'F', neon:'Ne',
+    sodium:'Na', magnesium:'Mg', aluminium:'Al', silicon:'Si', phosphorus:'P', sulphur:'S', chlorine:'Cl', argon:'Ar', potassium:'K', calcium:'Ca',
+    scandium:'Sc', titanium:'Ti', vanadium:'V', chromium:'Cr', manganese:'Mn', iron:'Fe', cobalt:'Co', nickel:'Ni', copper:'Cu', zinc:'Zn',
+    gallium:'Ga', germanium:'Ge', arsenic:'As', selenium:'Se', bromine:'Br', krypton:'Kr', rubidium:'Rb', strontium:'Sr', yttrium:'Y', zirconium:'Zr',
+    niobium:'Nb', molybdenum:'Mo', technetium:'Tc', ruthenium:'Ru', rhodium:'Rh', palladium:'Pd', silver:'Ag', cadmium:'Cd', indium:'In', tin:'Sn',
+    antimony:'Sb', tellurium:'Te', iodine:'I', xenon:'Xe', caesium:'Cs', barium:'Ba', lanthanum:'La', cerium:'Ce', praseodymium:'Pr', neodymium:'Nd',
+    promethium:'Pm', samarium:'Sm', europium:'Eu', gadolinium:'Gd', terbium:'Tb', dysprosium:'Dy', holmium:'Ho', erbium:'Er', thulium:'Tm', ytterbium:'Yb',
+    lutetium:'Lu', hafnium:'Hf', tantalum:'Ta', tungsten:'W', rhenium:'Re', osmium:'Os', iridium:'Ir', platinum:'Pt', gold:'Au', mercury:'Hg',
+    thallium:'Tl', lead:'Pb', bismuth:'Bi', polonium:'Po', astatine:'At', radon:'Rn', francium:'Fr', radium:'Ra', actinium:'Ac', thorium:'Th',
+    protactinium:'Pa', uranium:'U', neptunium:'Np', plutonium:'Pu', americium:'Am', curium:'Cm', berkelium:'Bk', californium:'Cf', einsteinium:'Es', fermium:'Fm',
+    mendelevium:'Md', nobelium:'No', lawrencium:'Lr', rutherfordium:'Rf', dubnium:'Db', seaborgium:'Sg', bohrium:'Bh', hassium:'Hs', meitnerium:'Mt', darmstadtium:'Ds',
+    roentgenium:'Rg', copernicium:'Cn', nihonium:'Nh', flerovium:'Fl', moscovium:'Mc', livermorium:'Lv', tennessine:'Ts', oganesson:'Og'
+  };
   const badge = document.querySelector('.elementBadge');
   const tile  = document.getElementById('elementTile');
-  const ref   = document.getElementById('ref');
+  const link  = document.getElementById('openPeriodicLink');
+  const refInput = document.getElementById('ref');
+  const MASS_MAP = {
+    H:'1.008', He:'4.003', Li:'6.94', Be:'9.012', B:'10.81', C:'12.011', N:'14.007', O:'15.999', F:'18.998', Ne:'20.180',
+    Na:'22.990', Mg:'24.305', Al:'26.982', Si:'28.085', P:'30.974', S:'32.06', Cl:'35.45', Ar:'39.948', K:'39.098', Ca:'40.078',
+    Sc:'44.956', Ti:'47.867', V:'50.942', Cr:'51.996', Mn:'54.938', Fe:'55.845', Co:'58.933', Ni:'58.693', Cu:'63.546', Zn:'65.38',
+    Ga:'69.723', Ge:'72.630', As:'74.922', Se:'78.971', Br:'79.904', Kr:'83.798', Rb:'85.468', Sr:'87.62', Y:'88.906', Zr:'91.224',
+    Nb:'92.906', Mo:'95.95', Tc:'(98)', Ru:'101.07', Rh:'102.91', Pd:'106.42', Ag:'107.87', Cd:'112.41', In:'114.82', Sn:'118.71',
+    Sb:'121.76', Te:'127.60', I:'126.90', Xe:'131.29', Cs:'132.91', Ba:'137.33', La:'138.91', Ce:'140.12', Pr:'140.91', Nd:'144.24',
+    Pm:'(145)', Sm:'150.36', Eu:'151.96', Gd:'157.25', Tb:'158.93', Dy:'162.50', Ho:'164.93', Er:'167.26', Tm:'168.93', Yb:'173.05',
+    Lu:'174.97', Hf:'178.49', Ta:'180.95', W:'183.84', Re:'186.21', Os:'190.23', Ir:'192.22', Pt:'195.08', Au:'196.97', Hg:'200.59',
+    Tl:'204.38', Pb:'207.2', Bi:'208.98', Po:'(209)', At:'(210)', Rn:'(222)', Fr:'(223)', Ra:'(226)', Ac:'(227)', Th:'232.04',
+    Pa:'231.04', U:'238.03', Np:'(237)', Pu:'(244)', Am:'(243)', Cm:'(247)', Bk:'(247)', Cf:'(251)', Es:'(252)', Fm:'(257)',
+    Md:'(258)', No:'(259)', Lr:'(262)', Rf:'(267)', Db:'(270)', Sg:'(271)', Bh:'(270)', Hs:'(277)', Mt:'(278)', Ds:'(281)',
+    Rg:'(282)', Cn:'(285)', Nh:'(286)', Fl:'(289)', Mc:'(290)', Lv:'(293)', Ts:'(294)', Og:'(294)'
+  };
+  function getStoredIso(){ try{ return localStorage.getItem('periodicTableRefDate') || ''; }catch(e){ return ''; } }
+  function esc(str){ return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function parseBadgeDate(str){
+    if(!str) return null; var s=String(str).trim().replace(/\./g,'/').replace(/-/g,'/'); var p=s.split('/'); if(p.length!==3) return null;
+    if(!/^\d{1,4}$/.test(p[0])||!/^\d{1,2}$/.test(p[1])||!/^\d{1,4}$/.test(p[2])) return null; var a=parseInt(p[0],10), b=parseInt(p[1],10), c=parseInt(p[2],10), y,m,d;
+    if(a>31){ y=a; m=b; d=c; } else { d=a; m=b; y=c; }
+    if(!(y>=1&&y<=9999&&m>=1&&m<=12&&d>=1&&d<=31)) return null; var greg=(y>1582)||(y===1582&&(m>10||(m===10&&d>=15))); var leap=greg?((y%4===0)&&(y%100!==0||y%400===0)):(y%4===0); var dim=m===2?(leap?29:28):([4,6,9,11].indexOf(m)>=0?30:31); if(d>dim) return null; return {y:y,m:m,d:d};
+  }
   function isoToMD(iso){
-    if(!iso) return null;
-    const parts = iso.split('-');
-    if(parts.length !== 3) return null;
-
-    let y, m, d;
-    if(parts[0].length === 4){
-      // Formato aaaa-mm-dd
-      y = parseInt(parts[0], 10);
-      m = parseInt(parts[1], 10);
-      d = parseInt(parts[2], 10);
-    } else if(parts[2].length === 4){
-      // Formato dd-mm-aaaa
-      y = parseInt(parts[2], 10);
-      m = parseInt(parts[1], 10);
-      d = parseInt(parts[0], 10);
-    } else {
-      return null;
-    }
-
-    function isLeap(year){
-      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
-    }
-
-    // Fechas de Anillo de Fuego para el badge:
-    // - Bisiestos: 18/12 al 31/12
-    // - No bisiestos: 19/12 al 31/12
-    if(isLeap(y)){
-      if(m === 12 && d >= 18){
-        return null;
-      }
-    } else {
-      if(m === 12 && d >= 19){
-        return null;
-      }
-    }
-
-    // Ajuste bisiesto: del 29/02 al 17/12 inclusive
-    // se corre un día hacia adelante.
-    if(isLeap(y)){
-      const inShiftRange =
-        (m === 2 && d === 29) ||
-        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
-      if(inShiftRange){
-        const date = new Date(y, m - 1, d);
-        date.setDate(date.getDate() + 1);
-        m = date.getMonth() + 1;
-        d = date.getDate();
-      }
-    }
-
-    const mm = String(m).padStart(2, "0");
-    const dd = String(d).padStart(2, "0");
-    return mm + "-" + dd;
+    var parsed=parseBadgeDate(iso); if(!parsed) return null; var y=parsed.y,m=parsed.m,d=parsed.d;
+    function isLeap(year){ return (year%4===0)&&(year%100!==0||year%400===0); }
+    function dim(y,m){ if(m===2) return isLeap(y)?29:28; return [4,6,9,11].indexOf(m)>=0?30:31; }
+    if(isLeap(y)){ if(m===12&&d>=18) return null; } else { if(m===12&&d>=19) return null; }
+    if(isLeap(y)){ var inShift=(m===2&&d===29)||(m>2&&(m<12||(m===12&&d<=17))); if(inShift){ d+=1; if(d>dim(y,m)){ d=1; m+=1; if(m>12){ m=1; y+=1; } } } }
+    return String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
   }
-
-function todayISO(){ const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
-  function activeISO(){ if(ref && ref.value) return ref.value; return todayISO(); }
-  function renderBadge(){ if(!badge||!tile) return; const md=isoToMD(activeISO()); const el=md?MAP[md]:null;
-    if(el){ tile.src="/"+el.img; badge.title=el.title; badge.style.display="block"; badge.setAttribute("aria-hidden","false"); tile.alt=el.title+" element tile"; }
-    else { badge.style.display="none"; badge.setAttribute("aria-hidden","true"); }
+  function activeISO(){ var v=(refInput&&refInput.value)||getStoredIso(); if(v) return v; var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function inferBadgeKey(entry){ if(!entry||!entry.img) return null; var base=String(entry.img).replace(/\.png$/i,''); var m; if((m=/^promesa-(\d+)$/i.exec(base))) return 'P'+m[1]; if((m=/^vacio-(\d+)$/i.exec(base))) return 'BN'+m[1]; if((m=/^Ri-(\d+)$/i.exec(base))) return 'L'+m[1]; return FILE_TO_KEY[base.toLowerCase()]||null; }
+  var L_FORWARD_SYMBOLS=['Fr','Ra','Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'];
+  var L_REVERSE_SYMBOLS=['Og','Ts','Lv','Mc','Fl','Nh','Cn','Rg','Ds','Mt','Hs','Bh','Sg','Db','Rf','Lr','No','Md','Fm','Es','Cf','Bk','Cm','Am','Pu','Np','U','Pa','Th','Ac','Ra','Fr'];
+  var DECIDE_TURN_KEYS={15:[3,7,11,15,19,23,27,31,35,39,43,47,51,55,59,63],16:[67,71,75,79,83,87,91,95,99,103,107,111,115,119,123,127],17:[4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64],18:[68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128],19:[2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62],20:[66,70,74,78,82,86,90,94,98,102,106,110,114,118,122,126],21:[125,121,117,113,109,105,101,97,93,89,85,81,77,73,69,65],22:[61,57,53,49,45,41,37,33,29,25,21,17,13,9,5,1]};
+  function phaseNameFromIso(iso){ var p=parseBadgeDate(iso), y=p?p.y:null; if(!(y>=1)) return 'asume'; var aStartY=y-((y-1)%4); var phase=Math.max(1,Math.min(4,y-aStartY+1)); return ['asume','asimila','desafia','decide'][phase-1]||'asume'; }
+  function resolveBadgeKey(entry, iso){ var fallback=inferBadgeKey(entry); if(!entry||!entry.img) return fallback; var md=isoToMD(iso), ordinal=md?(Object.keys(MAP).indexOf(md)+1):null; if(!ordinal) return fallback; if(ordinal<225||ordinal>352) return fallback; var turn=Math.ceil(ordinal/16), offset=(ordinal-1)%16, phase=phaseNameFromIso(iso); if(phase==='decide'&&turn>=15&&turn<=22){ var seq=DECIDE_TURN_KEYS[turn]; if(seq&&seq[offset]!=null) return 'L'+seq[offset]; } return 'L'+(ordinal-224); }
+  function buildElementData(){
+    var data={}; Object.keys(FILE_TO_KEY).forEach(function(file){ var key=FILE_TO_KEY[file], title=''; for(var md in MAP){ if(MAP[md].img.replace(/\.png$/i,'')===file){ title=MAP[md].title; break; } } var name=(title.split('—')[0]||'').trim()||file; data[String(key).toUpperCase()]={ key:key, symbol:key, name:name, atomic:parseInt((title.split('—')[1]||'').trim(),10)||'', mass:MASS_MAP[key]||'', category:'' }; });
+    return data;
   }
-  if(ref){ ref.addEventListener('change',renderBadge); ref.addEventListener('input',renderBadge); }
+  const ELEMENT_DATA=buildElementData();
+  function categoryForSymbol(symbol){
+    var s=String(symbol||'').trim();
+    if(['H','Li','Na','K','Rb','Cs','Fr'].indexOf(s)>=0) return 'alkali';
+    if(['Be','Mg','Ca','Sr','Ba','Ra'].indexOf(s)>=0) return 'alkaline';
+    if(['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn'].indexOf(s)>=0) return 'transition';
+    if(['Al','Ga','In','Tl','Sn','Pb','Bi','Po','Nh','Fl','Mc','Lv'].indexOf(s)>=0) return 'post-transition';
+    if(['B','Si','Ge','As','Sb','Te','At'].indexOf(s)>=0) return 'metalloid';
+    if(['H','C','N','O','P','S','Se'].indexOf(s)>=0) return 'nonmetal';
+    if(['F','Cl','Br','I','Ts'].indexOf(s)>=0) return 'halogen';
+    if(['He','Ne','Ar','Kr','Xe','Rn','Og'].indexOf(s)>=0) return 'noble';
+    if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu'].indexOf(s)>=0) return 'lanthanide';
+    if(['Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'actinide';
+    return 'transition';
+  }
+  function overrideCategory(symbol,row){
+    var s=String(symbol||'').trim();
+    if(!s) return null;
+    if(['Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr'].indexOf(s)>=0) return 'top-blue';
+    if(['Rf','Db','Sg','Bh','Hs','Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg'].indexOf(s)>=0) return 'top-green';
+    if(['Mt','Ds','Rg','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return 'top-gray';
+    if(['H','F','Cl','Br','I'].indexOf(s)>=0) return 'nonmetal';
+    if(s==='Cn') return 'top-green';
+    if(row===6&&s==='At') return 'metalloid';
+    if(row===6&&s==='Po') return 'post-transition';
+    return null;
+  }
+  function nameColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'].indexOf(s)>=0) return '#009b39'; if(['He','N','O','F','Ne','Cl','Ar','Kr','Xe','Rn'].indexOf(s)>=0) return '#ff1f1f'; if(s==='Br') return '#123f9e'; return null; }
+  function topNumberColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['Fr','Ra','Li','Be','Na','Mg','K','Ca','Rb','Sr','Cs','Ba','La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu'].indexOf(s)>=0) return '#f8fbff'; return null; }
+  function symbolColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
+  function massColorForSymbol(symbol){ var s=String(symbol||'').trim(); if(['La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Ra','Be','Mg','Ca','Sr','Ba'].indexOf(s)>=0) return '#f8fbff'; return null; }
+  function buildLBadgeModel(key){ var m=/^L(\d+)$/i.exec(String(key||'')); if(!m) return null; var idx=parseInt(m[1],10); if(!(idx>=1&&idx<=128)) return null; var col=Math.floor((idx-1)/4)+1, slot=((idx-1)%4)+1; var row=slot===1?-2:(slot===2?-1:(slot===3?7:9)); var symbol=row===-1?L_REVERSE_SYMBOLS[col-1]:L_FORWARD_SYMBOLS[col-1]; var baseItem=ELEMENT_DATA[String(symbol).toUpperCase()]||null; var atomic=baseItem&&baseItem.atomic!=null?Number(baseItem.atomic):null; var bandOrdinal=row===-1?(257-col):(224+col); return { key:'L'+idx, row:row, col:col, symbol:symbol, atomic:atomic, name:baseItem?baseItem.name:symbol, category:categoryForSymbol(symbol), display:{ number:'', symbol:symbol, name:baseItem?baseItem.name:symbol, mass:baseItem&&baseItem.mass?baseItem.mass:'', cornerTopLeft: row===-2 || row===-1 ? (atomic != null ? ('-' + String(atomic)) : '') : (row===7 ? ('-' + String(bandOrdinal)) : (atomic != null ? String(atomic) : '')), cornerTopRight: row===-2 || row===-1 ? String(bandOrdinal) : (row===9 ? ('-' + String(bandOrdinal)) : '') } }; }
+  function renderMiniBadge(key,title){
+    if(!tile) return false;
+    if(/^P\d+$/i.test(String(key))){ var num=String(key).replace(/^P/i,''); tile.innerHTML='<div class="mini-badge p-node p-orb"><span class="orb-top">'+esc(num)+'</span><span class="orb-main">'+esc(String(Number(num)-118))+'</span></div>'; tile.dataset.key=String(key); tile.setAttribute('aria-label', title||('Promesa · '+num)); return true; }
+    if(/^BN\d+$/i.test(String(key))){ var bn=String(key).replace(/^BN/i,''); tile.innerHTML='<div class="mini-badge p-node p-slab">'+esc(bn)+'</div>'; tile.dataset.key=String(key); tile.setAttribute('aria-label', title||('Espacio en negro · '+bn)); return true; }
+    var item=/^L\d+$/i.test(String(key||''))?buildLBadgeModel(key):(ELEMENT_DATA[String(key||'').toUpperCase()]||null); if(!item) return false;
+    var display=item.display||{number:String(item.atomic||''),symbol:item.symbol,name:item.name||item.symbol,mass:item.mass||''};
+    var category=(overrideCategory(item.symbol,item.row)||item.category||categoryForSymbol(item.symbol));
+    var classes=['mini-badge','p-node','p-el','is-'+category]; if(display.cornerTopLeft||display.cornerTopRight) classes.push('p-el--corners'); if(display.cornerTopLeft&&display.cornerTopRight) classes.push('p-el--corners-dual'); if(/^L\d+$/i.test(String(key||''))) classes.push('p-el--band-tight');
+    var styles=[]; var resolvedSymbol=(display.symbol||item.symbol), nameColor=nameColorForSymbol(resolvedSymbol), topNumberColor=topNumberColorForSymbol(resolvedSymbol), symbolColor=symbolColorForSymbol(resolvedSymbol), massColor=massColorForSymbol(resolvedSymbol); if(nameColor) styles.push('--name-color:'+nameColor); if(topNumberColor) styles.push('--topnum-color:'+topNumberColor); if(symbolColor) styles.push('--symbol-color:'+symbolColor); if(massColor) styles.push('--mass-color:'+massColor); var containerStyle=styles.length?' style="'+styles.join(';')+';"':'';
+    tile.innerHTML='<div class="'+classes.join(' ')+'"'+containerStyle+'>'+(display.number?'<span class="p-el__atomic">'+esc(display.number)+'</span>':'')+(display.cornerTopLeft?'<span class="p-el__corner p-el__corner--left">'+esc(display.cornerTopLeft)+'</span>':'')+(display.cornerTopRight?'<span class="p-el__corner p-el__corner--right">'+esc(display.cornerTopRight)+'</span>':'')+'<span class="p-el__symbol">'+esc(display.symbol||item.symbol)+'</span>'+'<span class="p-el__name">'+esc(display.name||item.name||item.symbol)+'</span>'+(display.mass?'<span class="p-el__mass">'+esc(display.mass)+'</span>':'')+'</div>';
+    tile.dataset.key=String(key); tile.setAttribute('aria-label', title||((display.symbol||item.symbol)+' · '+(display.name||item.name||item.symbol))); return true;
+  }
+  function renderBadge(){
+    if(!badge||!tile) return; var iso=activeISO(), md=isoToMD(iso), entry=md?MAP[md]:null; if(!entry){ badge.style.display='none'; badge.setAttribute('aria-hidden','true'); if(link) link.href='/periodic.html'; return; }
+    var key=resolveBadgeKey(entry,iso)||inferBadgeKey(entry); var title=entry.title||''; var ok=renderMiniBadge(key,title); if(ok){ badge.style.display='block'; badge.setAttribute('aria-hidden','false'); badge.title=title; } else { badge.style.display='none'; badge.setAttribute('aria-hidden','true'); }
+    if(link) link.href='/periodic.html?el='+encodeURIComponent(key||'');
+  }
+  if(refInput){ refInput.addEventListener('change',renderBadge); refInput.addEventListener('input',renderBadge); }
   document.addEventListener('DOMContentLoaded', renderBadge);
-  window.addEventListener('load', ()=>setTimeout(renderBadge,0));
+  window.addEventListener('load', function(){ setTimeout(renderBadge,0); });
+  window.CAL_BADGE_UTILS={MAP:MAP,isoToMD:isoToMD,activeISO:activeISO,inferBadgeKey:inferBadgeKey,resolveBadgeKey:resolveBadgeKey,renderBadge:renderBadge};
 })();
 </script>
 <!-- ELEMENT_BADGE_LOGIC_END -->
@@ -1673,1170 +1768,7 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-<script>
-(function(){
-  const ref = document.getElementById('ref');
-  const link = document.getElementById('openPeriodicLink');
 
-  function isoToMD(iso){
-    if(!iso) return null;
-    var parts = iso.split('-');
-    if(parts.length !== 3) return null;
-
-    var y, m, d;
-    if(parts[0].length === 4){
-      // aaaa-mm-dd
-      y = parseInt(parts[0], 10);
-      m = parseInt(parts[1], 10);
-      d = parseInt(parts[2], 10);
-    } else if(parts[2].length === 4){
-      // dd-mm-aaaa
-      y = parseInt(parts[2], 10);
-      m = parseInt(parts[1], 10);
-      d = parseInt(parts[0], 10);
-    } else {
-      return null;
-    }
-
-    function isLeap(year){
-      return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
-    }
-
-    // Anillo de Fuego: sin elemento/tabla
-    if(isLeap(y)){
-      if(m === 12 && d >= 18){
-        return null;
-      }
-    } else {
-      if(m === 12 && d >= 19){
-        return null;
-      }
-    }
-
-    // Ajuste bisiesto de corrimiento desde 29/02 hasta 17/12 inclusive
-    if(isLeap(y)){
-      var inShiftRange =
-        (m === 2 && d === 29) ||
-        (m > 2 && (m < 12 || (m === 12 && d <= 17)));
-      if(inShiftRange){
-        var date = new Date(y, m - 1, d);
-        date.setDate(date.getDate() + 1);
-        m = date.getMonth() + 1;
-        d = date.getDate();
-      }
-    }
-
-    var mm = String(m).padStart(2,'0');
-    var dd = String(d).padStart(2,'0');
-    return mm + '-' + dd;
-  }
-
-  function todayISO(){
-    var d = new Date();
-    var y = d.getFullYear();
-    var m = String(d.getMonth()+1).padStart(2,'0');
-    var day = String(d.getDate()).padStart(2,'0');
-    return y + '-' + m + '-' + day;
-  }
-
-  function activeISO(){
-    if(ref && ref.value) return ref.value;
-    return todayISO();
-  }
-
-  function updatePeriodicLink(){
-    if(!link) return;
-    var md = isoToMD(activeISO());
-
-    // Fechas sin elemento (Anillo de Fuego): ocultar botón
-    if(!md){
-      link.style.display = 'none';
-      link.removeAttribute('href');
-      link.setAttribute('aria-disabled','true');
-      return;
-    }
-
-    // Asegurar que el botón esté visible cuando hay elemento
-    link.style.display = '';
-    link.removeAttribute('aria-disabled');
-
-    var symbol = 'H'; // por defecto
-    if(md === '01-01'){
-      symbol = 'H';
-    }
-    else if(md === '01-02'){
-      symbol = 'He';
-    }
-    else if(md === '01-03'){
-      symbol = 'Li';
-    }
-    else if(md === '01-04'){
-      symbol = 'Be';
-    }
-    else if(md === '01-05'){
-      symbol = 'B';
-    }
-    else if(md === '01-06'){
-      symbol = 'C';
-    }
-    else if(md === '01-07'){
-      symbol = 'N';
-    }
-    else if(md === '01-08'){
-      symbol = 'O';
-    }
-    else if(md === '01-09'){
-      symbol = 'F';
-    }
-    else if(md === '01-10'){
-      symbol = 'Ne';
-    }
-    else if(md === '01-11'){
-      symbol = 'Na';
-    }
-    else if(md === '01-12'){
-      symbol = 'Mg';
-    }
-    else if(md === '01-13'){
-      symbol = 'Al';
-    }
-    else if(md === '01-14'){
-      symbol = 'Si';
-    }
-    else if(md === '01-15'){
-      symbol = 'P';
-    }
-    else if(md === '01-16'){
-      symbol = 'S';
-    }
-    else if(md === '01-17'){
-      symbol = 'Cl';
-    }
-    else if(md === '01-18'){
-      symbol = 'Ar';
-    }
-    else if(md === '01-19'){
-      symbol = 'K';
-    }
-    else if(md === '01-20'){
-      symbol = 'Ca';
-    }
-    else if(md === '01-21'){
-      symbol = 'Sc';
-    }
-    else if(md === '01-22'){
-      symbol = 'Ti';
-    }
-    else if(md === '01-23'){
-      symbol = 'V';
-    }
-    else if(md === '01-24'){
-      symbol = 'Cr';
-    }
-    else if(md === '01-25'){
-      symbol = 'Mn';
-    }
-    else if(md === '01-26'){
-      symbol = 'Fe';
-    }
-    else if(md === '01-27'){
-      symbol = 'Co';
-    }
-    else if(md === '01-28'){
-      symbol = 'Ni';
-    }
-    else if(md === '01-29'){
-      symbol = 'Cu';
-    }
-    else if(md === '01-30'){
-      symbol = 'Zn';
-    }
-    else if(md === '01-31'){
-      symbol = 'Ga';
-    }
-    else if(md === '02-01'){
-      symbol = 'Ge';
-    }
-    else if(md === '02-02'){
-      symbol = 'As';
-    }
-    else if(md === '02-03'){
-      symbol = 'Se';
-    }
-    else if(md === '02-04'){
-      symbol = 'Br';
-    }
-    else if(md === '02-05'){
-      symbol = 'Kr';
-    }
-    else if(md === '02-06'){
-      symbol = 'Rb';
-    }
-    else if(md === '02-07'){
-      symbol = 'Sr';
-    }
-    else if(md === '02-08'){
-      symbol = 'Y';
-    }
-    else if(md === '02-09'){
-      symbol = 'Zr';
-    }
-    else if(md === '02-10'){
-      symbol = 'Nb';
-    }
-    else if(md === '02-11'){
-      symbol = 'Mo';
-    }
-    else if(md === '02-12'){
-      symbol = 'Tc';
-    }
-    else if(md === '02-13'){
-      symbol = 'Ru';
-    }
-    else if(md === '02-14'){
-      symbol = 'Rh';
-    }
-    else if(md === '02-15'){
-      symbol = 'Pd';
-    }
-    else if(md === '02-16'){
-      symbol = 'Ag';
-    }
-    else if(md === '02-17'){
-      symbol = 'Cd';
-    }
-    else if(md === '02-18'){
-      symbol = 'In';
-    }
-    else if(md === '02-19'){
-      symbol = 'Sn';
-    }
-    else if(md === '02-20'){
-      symbol = 'Sb';
-    }
-    else if(md === '02-21'){
-      symbol = 'Te';
-    }
-    else if(md === '02-22'){
-      symbol = 'I';
-    }
-    else if(md === '02-23'){
-      symbol = 'Xe';
-    }
-    else if(md === '02-24'){
-      symbol = 'Cs';
-    }
-    else if(md === '02-25'){
-      symbol = 'Ba';
-    }
-    else if(md === '02-26'){
-      symbol = 'La';
-    }
-    else if(md === '02-27'){
-      symbol = 'Ce';
-    }
-    else if(md === '02-28'){
-      symbol = 'Pr';
-    }
-    else if(md === '03-01'){
-      symbol = 'Nd';
-    }
-    else if(md === '03-02'){
-      symbol = 'Pm';
-    }
-    else if(md === '03-03'){
-      symbol = 'Sm';
-    }
-    else if(md === '03-04'){
-      symbol = 'Eu';
-    }
-    else if(md === '03-05'){
-      symbol = 'Gd';
-    }
-    else if(md === '03-06'){
-      symbol = 'Tb';
-    }
-    else if(md === '03-07'){
-      symbol = 'Dy';
-    }
-    else if(md === '03-08'){
-      symbol = 'Ho';
-    }
-    else if(md === '03-09'){
-      symbol = 'Er';
-    }
-    else if(md === '03-10'){
-      symbol = 'Tm';
-    }
-    else if(md === '03-11'){
-      symbol = 'Yb';
-    }
-    else if(md === '03-12'){
-      symbol = 'Lu';
-    }
-    else if(md === '03-13'){
-      symbol = 'Hf';
-    }
-    else if(md === '03-14'){
-      symbol = 'Ta';
-    }
-    else if(md === '03-15'){
-      symbol = 'W';
-    }
-    else if(md === '03-16'){
-      symbol = 'Re';
-    }
-    else if(md === '03-17'){
-      symbol = 'Os';
-    }
-    else if(md === '03-18'){
-      symbol = 'Ir';
-    }
-    else if(md === '03-19'){
-      symbol = 'Pt';
-    }
-    else if(md === '03-20'){
-      symbol = 'Au';
-    }
-    else if(md === '03-21'){
-      symbol = 'Hg';
-    }
-    else if(md === '03-22'){
-      symbol = 'Tl';
-    }
-    else if(md === '03-23'){
-      symbol = 'Pb';
-    }
-    else if(md === '03-24'){
-      symbol = 'Bi';
-    }
-    else if(md === '03-25'){
-      symbol = 'Po';
-    }
-    else if(md === '03-26'){
-      symbol = 'At';
-    }
-    else if(md === '03-27'){
-      symbol = 'Rn';
-    }
-
-        else if(md === '03-28'){
-      symbol = 'Fr';
-    }
-    else if(md === '03-29'){
-      symbol = 'Ra';
-    }
-    else if(md === '03-30'){
-      symbol = 'Ac';
-    }
-    else if(md === '03-31'){
-      symbol = 'Th';
-    }
-    else if(md === '04-01'){
-      symbol = 'Pa';
-    }
-    else if(md === '04-02'){
-      symbol = 'U';
-    }
-    else if(md === '04-03'){
-      symbol = 'Np';
-    }
-    else if(md === '04-04'){
-      symbol = 'Pu';
-    }
-    else if(md === '04-05'){
-      symbol = 'Am';
-    }
-    else if(md === '04-06'){
-      symbol = 'Cm';
-    }
-    else if(md === '04-07'){
-      symbol = 'Bk';
-    }
-    else if(md === '04-08'){
-      symbol = 'Cf';
-    }
-    else if(md === '04-09'){
-      symbol = 'Es';
-    }
-    else if(md === '04-10'){
-      symbol = 'Fm';
-    }
-    else if(md === '04-11'){
-      symbol = 'Md';
-    }
-    else if(md === '04-12'){
-      symbol = 'No';
-    }
-    else if(md === '04-13'){
-      symbol = 'Lr';
-    }
-    else if(md === '04-14'){
-      symbol = 'Rf';
-    }
-    else if(md === '04-15'){
-      symbol = 'Db';
-    }
-    else if(md === '04-16'){
-      symbol = 'Sg';
-    }
-    else if(md === '04-17'){
-      symbol = 'Bh';
-    }
-    else if(md === '04-18'){
-      symbol = 'Hs';
-    }
-    else if(md === '04-19'){
-      symbol = 'Mt';
-    }
-    else if(md === '04-20'){
-      symbol = 'Ds';
-    }
-    else if(md === '04-21'){
-      symbol = 'Rg';
-    }
-    else if(md === '04-22'){
-      symbol = 'Cn';
-    }
-    else if(md === '04-23'){
-      symbol = 'Nh';
-    }
-    else if(md === '04-24'){
-      symbol = 'Fl';
-    }
-    else if(md === '04-25'){
-      symbol = 'Mc';
-    }
-    else if(md === '04-26'){
-      symbol = 'Lv';
-    }
-    else if(md === '04-27'){
-      symbol = 'Ts';
-    }
-    else if(md === '04-28'){
-      symbol = 'Og';
-    }
-    else if(md === '04-29'){
-      symbol = 'P119';
-    }
-    else if(md === '04-30'){
-      symbol = 'P120';
-    }
-    else if(md === '05-01'){
-      symbol = 'P121';
-    }
-    else if(md === '05-02'){
-      symbol = 'P122';
-    }
-    else if(md === '05-03'){
-      symbol = 'P123';
-    }
-    else if(md === '05-04'){
-      symbol = 'P124';
-    }
-    else if(md === '05-05'){
-      symbol = 'P125';
-    }
-    else if(md === '05-06'){
-      symbol = 'P126';
-    }
-    else if(md === '05-07'){
-      symbol = 'P127';
-    }
-    else if(md === '05-08'){
-      symbol = 'P128';
-    }
-    else if(md === '05-09'){
-      symbol = 'P129';
-    }
-    else if(md === '05-10'){
-      symbol = 'P130';
-    }
-    else if(md === '05-11'){
-      symbol = 'P131';
-    }
-    else if(md === '05-12'){
-      symbol = 'P132';
-    }
-    else if(md === '05-13'){
-      symbol = 'P133';
-    }
-    else if(md === '05-14'){
-      symbol = 'P134';
-    }
-    else if(md === '05-15'){
-      symbol = 'P135';
-    }
-    else if(md === '05-16'){
-      symbol = 'P136';
-    }
-    else if(md === '05-17'){
-      symbol = 'P137';
-    }
-    else if(md === '05-18'){
-      symbol = 'P138';
-    }
-    else if(md === '05-19'){
-      symbol = 'P139';
-    }
-    else if(md === '05-20'){
-      symbol = 'P140';
-    }
-    else if(md === '05-21'){
-      symbol = 'P141';
-    }
-    else if(md === '05-22'){
-      symbol = 'P142';
-    }
-    else if(md === '05-23'){
-      symbol = 'P143';
-    }
-    else if(md === '05-24'){
-      symbol = 'P144';
-    }
-    else if(md === '05-25'){
-      symbol = 'P145';
-    }
-    else if(md === '05-26'){
-      symbol = 'P146';
-    }
-    else if(md === '05-27'){
-      symbol = 'P147';
-    }
-    else if(md === '05-28'){
-      symbol = 'P148';
-    }
-    else if(md === '05-29'){
-      symbol = 'BN149';
-    }
-    else if(md === '05-30'){
-      symbol = 'BN150';
-    }
-    else if(md === '05-31'){
-      symbol = 'BN151';
-    }
-    else if(md === '06-01'){
-      symbol = 'BN152';
-    }
-    else if(md === '06-02'){
-      symbol = 'BN153';
-    }
-    else if(md === '06-03'){
-      symbol = 'BN154';
-    }
-    else if(md === '06-04'){
-      symbol = 'BN155';
-    }
-    else if(md === '06-05'){
-      symbol = 'BN156';
-    }
-    else if(md === '06-06'){
-      symbol = 'BN157';
-    }
-    else if(md === '06-07'){
-      symbol = 'BN158';
-    }
-    else if(md === '06-08'){
-      symbol = 'BN159';
-    }
-    else if(md === '06-09'){
-      symbol = 'BN160';
-    }
-    else if(md === '06-10'){
-      symbol = 'BN161';
-    }
-    else if(md === '06-11'){
-      symbol = 'BN162';
-    }
-    else if(md === '06-12'){
-      symbol = 'BN163';
-    }
-    else if(md === '06-13'){
-      symbol = 'BN164';
-    }
-    else if(md === '06-14'){
-      symbol = 'BN165';
-    }
-    else if(md === '06-15'){
-      symbol = 'BN166';
-    }
-    else if(md === '06-16'){
-      symbol = 'BN167';
-    }
-    else if(md === '06-17'){
-      symbol = 'BN168';
-    }
-    else if(md === '06-18'){
-      symbol = 'BN169';
-    }
-    else if(md === '06-19'){
-      symbol = 'BN170';
-    }
-    else if(md === '06-20'){
-      symbol = 'BN171';
-    }
-    else if(md === '06-21'){
-      symbol = 'BN172';
-    }
-    else if(md === '06-22'){
-      symbol = 'BN173';
-    }
-    else if(md === '06-23'){
-      symbol = 'BN174';
-    }
-    else if(md === '06-24'){
-      symbol = 'BN175';
-    }
-    else if(md === '06-25'){
-      symbol = 'BN176';
-    }
-    else if(md === '06-26'){
-      symbol = 'BN177';
-    }
-    else if(md === '06-27'){
-      symbol = 'BN178';
-    }
-    else if(md === '06-28'){
-      symbol = 'BN179';
-    }
-    else if(md === '06-29'){
-      symbol = 'BN180';
-    }
-    else if(md === '06-30'){
-      symbol = 'BN181';
-    }
-    else if(md === '07-01'){
-      symbol = 'BN182';
-    }
-    else if(md === '07-02'){
-      symbol = 'BN183';
-    }
-    else if(md === '07-03'){
-      symbol = 'BN184';
-    }
-    else if(md === '07-04'){
-      symbol = 'BN185';
-    }
-    else if(md === '07-05'){
-      symbol = 'BN186';
-    }
-    else if(md === '07-06'){
-      symbol = 'BN187';
-    }
-    else if(md === '07-07'){
-      symbol = 'BN188';
-    }
-    else if(md === '07-08'){
-      symbol = 'BN189';
-    }
-    else if(md === '07-09'){
-      symbol = 'BN190';
-    }
-    else if(md === '07-10'){
-      symbol = 'BN191';
-    }
-    else if(md === '07-11'){
-      symbol = 'BN192';
-    }
-    else if(md === '07-12'){
-      symbol = 'BN193';
-    }
-    else if(md === '07-13'){
-      symbol = 'BN194';
-    }
-    else if(md === '07-14'){
-      symbol = 'BN195';
-    }
-    else if(md === '07-15'){
-      symbol = 'BN196';
-    }
-    else if(md === '07-16'){
-      symbol = 'BN197';
-    }
-    else if(md === '07-17'){
-      symbol = 'BN198';
-    }
-    else if(md === '07-18'){
-      symbol = 'BN199';
-    }
-    else if(md === '07-19'){
-      symbol = 'BN200';
-    }
-    else if(md === '07-20'){
-      symbol = 'BN201';
-    }
-    else if(md === '07-21'){
-      symbol = 'BN202';
-    }
-    else if(md === '07-22'){
-      symbol = 'BN203';
-    }
-    else if(md === '07-23'){
-      symbol = 'BN204';
-    }
-    else if(md === '07-24'){
-      symbol = 'BN205';
-    }
-    else if(md === '07-25'){
-      symbol = 'BN206';
-    }
-    else if(md === '07-26'){
-      symbol = 'BN207';
-    }
-    else if(md === '07-27'){
-      symbol = 'BN208';
-    }
-    else if(md === '07-28'){
-      symbol = 'BN209';
-    }
-    else if(md === '07-29'){
-      symbol = 'BN210';
-    }
-    else if(md === '07-30'){
-      symbol = 'BN211';
-    }
-    else if(md === '07-31'){
-      symbol = 'BN212';
-    }
-    else if(md === '08-01'){
-      symbol = 'BN213';
-    }
-    else if(md === '08-02'){
-      symbol = 'BN214';
-    }
-    else if(md === '08-03'){
-      symbol = 'BN215';
-    }
-    else if(md === '08-04'){
-      symbol = 'BN216';
-    }
-    else if(md === '08-05'){
-      symbol = 'BN217';
-    }
-    else if(md === '08-06'){
-      symbol = 'BN218';
-    }
-    else if(md === '08-07'){
-      symbol = 'BN219';
-    }
-    else if(md === '08-08'){
-      symbol = 'BN220';
-    }
-    else if(md === '08-09'){
-      symbol = 'BN221';
-    }
-    else if(md === '08-10'){
-      symbol = 'BN222';
-    }
-    else if(md === '08-11'){
-      symbol = 'BN223';
-    }
-    else if(md === '08-12'){
-      symbol = 'BN224';
-    }
-
-    else if(md === '08-13'){
-      symbol = 'L1';
-    }
-    else if(md === '08-14'){
-      symbol = 'L2';
-    }
-    else if(md === '08-15'){
-      symbol = 'L3';
-    }
-    else if(md === '08-16'){
-      symbol = 'L4';
-    }
-    else if(md === '08-17'){
-      symbol = 'L5';
-    }
-    else if(md === '08-18'){
-      symbol = 'L6';
-    }
-    else if(md === '08-19'){
-      symbol = 'L7';
-    }
-    else if(md === '08-20'){
-      symbol = 'L8';
-    }
-    else if(md === '08-21'){
-      symbol = 'L9';
-    }
-    else if(md === '08-22'){
-      symbol = 'L10';
-    }
-    else if(md === '08-23'){
-      symbol = 'L11';
-    }
-    else if(md === '08-24'){
-      symbol = 'L12';
-    }
-    else if(md === '08-25'){
-      symbol = 'L13';
-    }
-    else if(md === '08-26'){
-      symbol = 'L14';
-    }
-    else if(md === '08-27'){
-      symbol = 'L15';
-    }
-    else if(md === '08-28'){
-      symbol = 'L16';
-    }
-    else if(md === '08-29'){
-      symbol = 'L17';
-    }
-    else if(md === '08-30'){
-      symbol = 'L18';
-    }
-    else if(md === '08-31'){
-      symbol = 'L19';
-    }
-    else if(md === '09-01'){
-      symbol = 'L20';
-    }
-    else if(md === '09-02'){
-      symbol = 'L21';
-    }
-    else if(md === '09-03'){
-      symbol = 'L22';
-    }
-    else if(md === '09-04'){
-      symbol = 'L23';
-    }
-    else if(md === '09-05'){
-      symbol = 'L24';
-    }
-    else if(md === '09-06'){
-      symbol = 'L25';
-    }
-    else if(md === '09-07'){
-      symbol = 'L26';
-    }
-    else if(md === '09-08'){
-      symbol = 'L27';
-    }
-    else if(md === '09-09'){
-      symbol = 'L28';
-    }
-    else if(md === '09-10'){
-      symbol = 'L29';
-    }
-    else if(md === '09-11'){
-      symbol = 'L30';
-    }
-    else if(md === '09-12'){
-      symbol = 'L31';
-    }
-    else if(md === '09-13'){
-      symbol = 'L32';
-    }
-    else if(md === '09-14'){
-      symbol = 'L33';
-    }
-    else if(md === '09-15'){
-      symbol = 'L34';
-    }
-    else if(md === '09-16'){
-      symbol = 'L35';
-    }
-    else if(md === '09-17'){
-      symbol = 'L36';
-    }
-    else if(md === '09-18'){
-      symbol = 'L37';
-    }
-    else if(md === '09-19'){
-      symbol = 'L38';
-    }
-    else if(md === '09-20'){
-      symbol = 'L39';
-    }
-    else if(md === '09-21'){
-      symbol = 'L40';
-    }
-    else if(md === '09-22'){
-      symbol = 'L41';
-    }
-    else if(md === '09-23'){
-      symbol = 'L42';
-    }
-    else if(md === '09-24'){
-      symbol = 'L43';
-    }
-    else if(md === '09-25'){
-      symbol = 'L44';
-    }
-    else if(md === '09-26'){
-      symbol = 'L45';
-    }
-    else if(md === '09-27'){
-      symbol = 'L46';
-    }
-    else if(md === '09-28'){
-      symbol = 'L47';
-    }
-    else if(md === '09-29'){
-      symbol = 'L48';
-    }
-    else if(md === '09-30'){
-      symbol = 'L49';
-    }
-    else if(md === '10-01'){
-      symbol = 'L50';
-    }
-    else if(md === '10-02'){
-      symbol = 'L51';
-    }
-    else if(md === '10-03'){
-      symbol = 'L52';
-    }
-    else if(md === '10-04'){
-      symbol = 'L53';
-    }
-    else if(md === '10-05'){
-      symbol = 'L54';
-    }
-    else if(md === '10-06'){
-      symbol = 'L55';
-    }
-    else if(md === '10-07'){
-      symbol = 'L56';
-    }
-    else if(md === '10-08'){
-      symbol = 'L57';
-    }
-    else if(md === '10-09'){
-      symbol = 'L58';
-    }
-    else if(md === '10-10'){
-      symbol = 'L59';
-    }
-    else if(md === '10-11'){
-      symbol = 'L60';
-    }
-    else if(md === '10-12'){
-      symbol = 'L61';
-    }
-    else if(md === '10-13'){
-      symbol = 'L62';
-    }
-    else if(md === '10-14'){
-      symbol = 'L63';
-    }
-    else if(md === '10-15'){
-      symbol = 'L64';
-    }
-    else if(md === '10-16'){
-      symbol = 'L65';
-    }
-    else if(md === '10-17'){
-      symbol = 'L66';
-    }
-    else if(md === '10-18'){
-      symbol = 'L67';
-    }
-    else if(md === '10-19'){
-      symbol = 'L68';
-    }
-    else if(md === '10-20'){
-      symbol = 'L69';
-    }
-    else if(md === '10-21'){
-      symbol = 'L70';
-    }
-    else if(md === '10-22'){
-      symbol = 'L71';
-    }
-    else if(md === '10-23'){
-      symbol = 'L72';
-    }
-    else if(md === '10-24'){
-      symbol = 'L73';
-    }
-    else if(md === '10-25'){
-      symbol = 'L74';
-    }
-    else if(md === '10-26'){
-      symbol = 'L75';
-    }
-    else if(md === '10-27'){
-      symbol = 'L76';
-    }
-    else if(md === '10-28'){
-      symbol = 'L77';
-    }
-    else if(md === '10-29'){
-      symbol = 'L78';
-    }
-    else if(md === '10-30'){
-      symbol = 'L79';
-    }
-    else if(md === '10-31'){
-      symbol = 'L80';
-    }
-    else if(md === '11-01'){
-      symbol = 'L81';
-    }
-
-    else if(md === '11-02'){
-      symbol = 'L82';
-    }
-    else if(md === '11-03'){
-      symbol = 'L83';
-    }
-    else if(md === '11-04'){
-      symbol = 'L84';
-    }
-    else if(md === '11-05'){
-      symbol = 'L85';
-    }
-    else if(md === '11-06'){
-      symbol = 'L86';
-    }
-    else if(md === '11-07'){
-      symbol = 'L87';
-    }
-    else if(md === '11-08'){
-      symbol = 'L88';
-    }
-    else if(md === '11-09'){
-      symbol = 'L89';
-    }
-    else if(md === '11-10'){
-      symbol = 'L90';
-    }
-    else if(md === '11-11'){
-      symbol = 'L91';
-    }
-    else if(md === '11-12'){
-      symbol = 'L92';
-    }
-    else if(md === '11-13'){
-      symbol = 'L93';
-    }
-    else if(md === '11-14'){
-      symbol = 'L94';
-    }
-    else if(md === '11-15'){
-      symbol = 'L95';
-    }
-    else if(md === '11-16'){
-      symbol = 'L96';
-    }
-    else if(md === '11-17'){
-      symbol = 'L97';
-    }
-    else if(md === '11-18'){
-      symbol = 'L98';
-    }
-    else if(md === '11-19'){
-      symbol = 'L99';
-    }
-    else if(md === '11-20'){
-      symbol = 'L100';
-    }
-    else if(md === '11-21'){
-      symbol = 'L101';
-    }
-    else if(md === '11-22'){
-      symbol = 'L102';
-    }
-    else if(md === '11-23'){
-      symbol = 'L103';
-    }
-    else if(md === '11-24'){
-      symbol = 'L104';
-    }
-    else if(md === '11-25'){
-      symbol = 'L105';
-    }
-    else if(md === '11-26'){
-      symbol = 'L106';
-    }
-    else if(md === '11-27'){
-      symbol = 'L107';
-    }
-    else if(md === '11-28'){
-      symbol = 'L108';
-    }
-    else if(md === '11-29'){
-      symbol = 'L109';
-    }
-    else if(md === '11-30'){
-      symbol = 'L110';
-    }
-    else if(md === '12-01'){
-      symbol = 'L111';
-    }
-    else if(md === '12-02'){
-      symbol = 'L112';
-    }
-    else if(md === '12-03'){
-      symbol = 'L113';
-    }
-    else if(md === '12-04'){
-      symbol = 'L114';
-    }
-    else if(md === '12-05'){
-      symbol = 'L115';
-    }
-    else if(md === '12-06'){
-      symbol = 'L116';
-    }
-    else if(md === '12-07'){
-      symbol = 'L117';
-    }
-    else if(md === '12-08'){
-      symbol = 'L118';
-    }
-    else if(md === '12-09'){
-      symbol = 'L119';
-    }
-    else if(md === '12-10'){
-      symbol = 'L120';
-    }
-    else if(md === '12-11'){
-      symbol = 'L121';
-    }
-    else if(md === '12-12'){
-      symbol = 'L122';
-    }
-    else if(md === '12-13'){
-      symbol = 'L123';
-    }
-    else if(md === '12-14'){
-      symbol = 'L124';
-    }
-    else if(md === '12-15'){
-      symbol = 'L125';
-    }
-    else if(md === '12-16'){
-      symbol = 'L126';
-    }
-    else if(md === '12-17'){
-      symbol = 'L127';
-    }
-    else if(md === '12-18'){
-      symbol = 'L128';
-    }
-
-        var iso = activeISO();
-        var href = '/periodic.html?el=' + encodeURIComponent(symbol);
-        if(iso){
-          href += '&ref=' + encodeURIComponent(iso);
-        }
-        link.href = href;
-  }
-
-  if(ref){
-    ref.addEventListener('change', updatePeriodicLink);
-    ref.addEventListener('input', updatePeriodicLink);
-  }
-  document.addEventListener('DOMContentLoaded', updatePeriodicLink);
-  window.addEventListener('load', function(){ setTimeout(updatePeriodicLink, 0); });
-})();
-</script>
 
 
 <!-- Modal zoom (mobile) -->
