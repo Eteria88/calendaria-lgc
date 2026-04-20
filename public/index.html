@@ -76,6 +76,13 @@ th:first-child,td:first-child{text-align:left}
 .btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
 .btn:hover{background:rgba(124,199,255,.25)}
 .dayNav{display:flex;gap:10px;flex-wrap:wrap}
+
+.clearDatesRow{display:flex;justify-content:flex-end;margin-top:10px}
+.clearDatesBtn{min-width:120px}
+@media(max-width:599px){
+  .clearDatesRow{justify-content:center}
+  .clearDatesBtn{width:100%}
+}
 .btnLabelShort{display:none}
 @media(max-width:599px){
   .dayNav{flex-wrap:nowrap}
@@ -1092,6 +1099,9 @@ body.noScroll{overflow:hidden}
             <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
             <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente"><span class="btnLabelLong">Día siguiente</span><span class="btnLabelShort">Siguiente</span></button>
           </div>
+          <div class="clearDatesRow">
+            <button class="btn clearDatesBtn" id="btnClearDates" type="button" title="Limpiar fechas trabajadas">Limpiar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1883,6 +1893,37 @@ if ('serviceWorker' in navigator) {
   }
 })();
 </script>
+
+<script>
+(function(){
+  const btn = document.getElementById('btnClearDates');
+  const dob = document.getElementById('dob');
+  const ref = document.getElementById('ref');
+  if(!btn || !dob || !ref) return;
+
+  function dispatchRefresh(el){
+    el.dispatchEvent(new Event('input', { bubbles:true }));
+    el.dispatchEvent(new Event('change', { bubbles:true }));
+  }
+
+  btn.addEventListener('click', function(){
+    dob.value = '';
+    ref.value = '';
+    dispatchRefresh(dob);
+    dispatchRefresh(ref);
+
+    if(window.CAL_BADGE_UTILS && typeof window.CAL_BADGE_UTILS.renderBadge === 'function'){
+      window.CAL_BADGE_UTILS.renderBadge();
+    }
+
+    const todayBtn = document.getElementById('btnToday');
+    if(todayBtn){
+      setTimeout(function(){ todayBtn.click(); }, 0);
+    }
+  });
+})();
+</script>
+
 <script>window.CAL_MENU_CONFIG={current:"inicio"};</script>
 <script src="/shared-menu.js"></script>
 </body></html>
