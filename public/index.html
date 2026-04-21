@@ -76,6 +76,13 @@ th:first-child,td:first-child{text-align:left}
 .btn{background:rgba(124,199,255,.15);border:1px solid var(--ol);border-radius:999px;color:var(--text);padding:6px 12px;cursor:pointer;min-height:var(--tap)}
 .btn:hover{background:rgba(124,199,255,.25)}
 .dayNav{display:flex;gap:10px;flex-wrap:wrap}
+
+.clearDatesRow{display:flex;justify-content:flex-start;margin-top:10px}
+.clearDatesBtn{min-width:158px}
+@media(max-width:599px){
+  .clearDatesRow{justify-content:flex-start}
+  .clearDatesBtn{width:auto;min-width:142px}
+}
 .btnLabelShort{display:none}
 @media(max-width:599px){
   .dayNav{flex-wrap:nowrap}
@@ -1092,6 +1099,9 @@ body.noScroll{overflow:hidden}
             <button class="btn" id="btnToday" type="button" title="Ir a hoy">Hoy</button>
             <button class="btn" id="btnNextDay" type="button" title="Ir al día siguiente"><span class="btnLabelLong">Día siguiente</span><span class="btnLabelShort">Siguiente</span></button>
           </div>
+          <div class="clearDatesRow">
+            <button class="btn clearDatesBtn" id="btnClearDates" type="button" title="Limpiar fechas trabajadas">Limpiar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1673,6 +1683,10 @@ body.noScroll{overflow:hidden}
     Rg:'(282)', Cn:'(285)', Nh:'(286)', Fl:'(289)', Mc:'(290)', Lv:'(293)', Ts:'(294)', Og:'(294)'
   };
   function getStoredIso(){ try{ return localStorage.getItem('periodicTableRefDate') || ''; }catch(e){ return ''; } }
+  function todayIso(){
+    var d=new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
   function esc(str){ return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function parseBadgeDate(str){
     if(!str) return null; var s=String(str).trim().replace(/\./g,'/').replace(/-/g,'/'); var p=s.split('/'); if(p.length!==3) return null;
@@ -1688,7 +1702,11 @@ body.noScroll{overflow:hidden}
     if(isLeap(y)){ var inShift=(m===2&&d===29)||(m>2&&(m<12||(m===12&&d<=17))); if(inShift){ d+=1; if(d>dim(y,m)){ d=1; m+=1; if(m>12){ m=1; y+=1; } } } }
     return String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
   }
-  function activeISO(){ var v=(refInput&&refInput.value)||getStoredIso(); if(v) return v; var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function activeISO(){
+    var refValue=(refInput&&refInput.value)?String(refInput.value).trim():'';
+    if(refValue) return refValue;
+    return todayIso();
+  }
   function inferBadgeKey(entry){ if(!entry||!entry.img) return null; var base=String(entry.img).replace(/\.png$/i,''); var m; if((m=/^promesa-(\d+)$/i.exec(base))) return 'P'+m[1]; if((m=/^vacio-(\d+)$/i.exec(base))) return 'BN'+m[1]; if((m=/^Ri-(\d+)$/i.exec(base))) return 'L'+m[1]; return FILE_TO_KEY[base.toLowerCase()]||null; }
   var L_FORWARD_SYMBOLS=['Fr','Ra','Ac','Th','Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'];
   var L_REVERSE_SYMBOLS=['Og','Ts','Lv','Mc','Fl','Nh','Cn','Rg','Ds','Mt','Hs','Bh','Sg','Db','Rf','Lr','No','Md','Fm','Es','Cf','Bk','Cm','Am','Pu','Np','U','Pa','Th','Ac','Ra','Fr'];
@@ -1748,9 +1766,22 @@ body.noScroll{overflow:hidden}
     var key=resolveBadgeKey(entry,iso)||inferBadgeKey(entry); var title=entry.title||''; var ok=renderMiniBadge(key,title); if(ok){ badge.style.display='block'; badge.setAttribute('aria-hidden','false'); badge.title=title; } else { badge.style.display='none'; badge.setAttribute('aria-hidden','true'); }
     if(link) link.href='/periodic.html?el='+encodeURIComponent(key||'');
   }
-  if(refInput){ refInput.addEventListener('change',renderBadge); refInput.addEventListener('input',renderBadge); }
-  document.addEventListener('DOMContentLoaded', renderBadge);
-  window.addEventListener('load', function(){ setTimeout(renderBadge,0); });
+  function syncBadgeWithCurrentRef(){
+    renderBadge();
+    setTimeout(renderBadge,0);
+    setTimeout(renderBadge,120);
+    setTimeout(renderBadge,320);
+  }
+  if(refInput){
+    refInput.addEventListener('change',renderBadge);
+    refInput.addEventListener('input',renderBadge);
+  }
+  document.addEventListener('DOMContentLoaded', syncBadgeWithCurrentRef);
+  window.addEventListener('load', syncBadgeWithCurrentRef);
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden) syncBadgeWithCurrentRef();
+  });
+  window.addEventListener('pageshow', syncBadgeWithCurrentRef);
   window.CAL_BADGE_UTILS={MAP:MAP,isoToMD:isoToMD,activeISO:activeISO,inferBadgeKey:inferBadgeKey,resolveBadgeKey:resolveBadgeKey,renderBadge:renderBadge};
 })();
 </script>
@@ -1862,6 +1893,37 @@ if ('serviceWorker' in navigator) {
   }
 })();
 </script>
+
+<script>
+(function(){
+  const btn = document.getElementById('btnClearDates');
+  const dob = document.getElementById('dob');
+  const ref = document.getElementById('ref');
+  if(!btn || !dob || !ref) return;
+
+  function dispatchRefresh(el){
+    el.dispatchEvent(new Event('input', { bubbles:true }));
+    el.dispatchEvent(new Event('change', { bubbles:true }));
+  }
+
+  btn.addEventListener('click', function(){
+    dob.value = '';
+    ref.value = '';
+    dispatchRefresh(dob);
+    dispatchRefresh(ref);
+
+    if(window.CAL_BADGE_UTILS && typeof window.CAL_BADGE_UTILS.renderBadge === 'function'){
+      window.CAL_BADGE_UTILS.renderBadge();
+    }
+
+    const todayBtn = document.getElementById('btnToday');
+    if(todayBtn){
+      setTimeout(function(){ todayBtn.click(); }, 0);
+    }
+  });
+})();
+</script>
+
 <script>window.CAL_MENU_CONFIG={current:"inicio"};</script>
 <script src="/shared-menu.js"></script>
 </body></html>
