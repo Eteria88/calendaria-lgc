@@ -83,6 +83,177 @@ th:first-child,td:first-child{text-align:left}
   .clearDatesRow{justify-content:flex-start}
   .clearDatesBtn{width:auto;min-width:142px}
 }
+
+
+/* === Días conciliados: aviso contextual 30/09 → 15/10 === */
+.clearDatesRow{gap:10px;align-items:center;flex-wrap:wrap}
+.conciliatedBtn{
+  display:none;
+  min-width:192px;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  border-color:rgba(255,209,102,.58);
+  color:#fff6cf;
+  background:linear-gradient(180deg,rgba(255,209,102,.22),rgba(124,199,255,.09));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 18px rgba(255,209,102,.10);
+}
+.conciliatedBtn.is-visible{display:inline-flex}
+.conciliatedBtn:hover{background:linear-gradient(180deg,rgba(255,209,102,.30),rgba(124,199,255,.13));border-color:rgba(255,209,102,.78)}
+.conciliatedBtn::before{content:"";width:8px;height:8px;border-radius:999px;background:var(--accent);box-shadow:0 0 12px rgba(255,209,102,.85);flex:0 0 auto}
+.conciliatedBtn[hidden]{display:none!important}
+@media(max-width:599px){
+  .clearDatesRow{display:grid;grid-template-columns:1fr;gap:8px}
+  .clearDatesBtn,.conciliatedBtn{width:100%;min-width:0}
+}
+body.conciliatedModalOpen{overflow:hidden}
+.conciliatedModal{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.conciliatedModal.isOpen{display:flex}
+.conciliatedModalBackdrop{position:absolute;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(5px)}
+.conciliatedModalCard{
+  position:relative;
+  width:min(96vw,1060px);
+  max-height:92dvh;
+  overflow:auto;
+  border:1px solid rgba(255,209,102,.32);
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(13,18,24,.98),rgba(8,11,16,.96));
+  box-shadow:0 26px 80px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.05);
+}
+.conciliatedClose{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:2;
+  width:38px;
+  height:38px;
+  border-radius:14px;
+  border:1px solid rgba(20,20,20,.18);
+  background:rgba(0,0,0,.72);
+  color:#fff;
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.conciliatedClose:hover{background:rgba(0,0,0,.86);border-color:rgba(255,255,255,.26)}
+.conciliatedIntro{
+  padding:16px 18px 0;
+  color:rgba(230,241,255,.88);
+  font-size:12px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.conciliatedPlateWrap{overflow:auto;padding:14px 18px 18px;-webkit-overflow-scrolling:touch}
+.conciliatedPlate{
+  min-width:900px;
+  border-radius:18px;
+  padding:18px 20px 20px;
+  color:#050505;
+  background:
+    radial-gradient(900px 420px at 20% 0%,rgba(255,255,255,.26),transparent 52%),
+    linear-gradient(180deg,#ffd166 0%,#f4b83b 56%,#eaa22f 100%);
+  border:1px solid rgba(255,255,255,.38);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.36),0 14px 42px rgba(0,0,0,.42);
+}
+.conciliatedPlateHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+  margin-bottom:22px;
+  font-weight:900;
+  letter-spacing:-.02em;
+}
+.conciliatedPlateTitle{font-size:clamp(22px,3vw,34px);line-height:1.05}
+.conciliatedPlateTurn{font-size:clamp(18px,2.3vw,28px);line-height:1.05;text-align:right}
+.conciliatedTimeline{display:grid;grid-template-columns:repeat(6,minmax(118px,1fr));gap:10px;align-items:end}
+.conciliatedCol{display:flex;flex-direction:column;gap:10px;align-items:stretch;justify-content:flex-end;min-height:420px}
+.conciliatedSpacer{flex:1;min-height:250px}
+.conciliatedStack{display:flex;flex-direction:column;gap:8px}
+.conciliatedDoc,.conciliatedZero{
+  border:2px solid rgba(0,0,0,.78);
+  background:rgba(255,255,255,.88);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+  text-align:center;
+  font-weight:900;
+  line-height:1.05;
+}
+.conciliatedDoc{min-height:58px;padding:7px 5px;font-size:16px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.conciliatedDoc span{font-size:15px}
+.conciliatedZero{min-height:300px;padding:14px 8px;font-size:18px;display:flex;align-items:center;justify-content:center}
+.conciliatedDayCard{
+  overflow:hidden;
+  border:2px solid rgba(0,0,0,.78);
+  border-radius:16px;
+  background:#fff;
+  min-height:160px;
+  box-shadow:0 8px 18px rgba(0,0,0,.18);
+}
+.conciliatedDayTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  min-height:44px;
+  padding:8px 12px;
+  background:#050505;
+  color:#dfff75;
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:20px;
+  font-weight:900;
+}
+.conciliatedDow{color:#9ee982;font-family:system-ui,-apple-system,Segoe UI,Roboto;font-size:20px}
+.conciliatedDayBody{
+  min-height:86px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:900;
+}
+.conciliatedDate{
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-top:1px solid rgba(0,0,0,.10);
+  border-radius:14px 14px 0 0;
+  background:#55b8ff;
+  color:#050505;
+  font-size:19px;
+  font-weight:900;
+}
+.conciliatedFootnote{
+  margin-top:14px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(0,0,0,.10);
+  color:rgba(0,0,0,.82);
+  font-size:13px;
+  line-height:1.35;
+  font-weight:700;
+}
+@media(max-width:599px){
+  .conciliatedModal{padding:10px}
+  .conciliatedModalCard{border-radius:18px;max-height:94dvh}
+  .conciliatedIntro{padding:14px 14px 0;font-size:11px;padding-right:54px}
+  .conciliatedPlateWrap{padding:12px 12px 14px}
+  .conciliatedPlate{min-width:840px;padding:16px}
+  .conciliatedPlateTitle{font-size:24px}
+  .conciliatedPlateTurn{font-size:20px}
+}
+
 .btnLabelShort{display:none}
 @media(max-width:599px){
   .dayNav{flex-wrap:nowrap}
@@ -1101,6 +1272,9 @@ body.noScroll{overflow:hidden}
           </div>
           <div class="clearDatesRow">
             <button class="btn clearDatesBtn" id="btnClearDates" type="button" title="Limpiar fechas trabajadas">Limpiar</button>
+            <button class="btn conciliatedBtn" id="btnConciliatedDays" type="button" title="Ver placa de días conciliados" aria-controls="conciliatedDaysModal" hidden>
+              <span class="btnLabelLong">Días conciliados</span><span class="btnLabelShort">Conciliados</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1816,6 +1990,88 @@ if ('serviceWorker' in navigator) {
 </div>
 
 
+
+
+<!-- Modal Días conciliados -->
+<div id="conciliatedDaysModal" class="conciliatedModal" aria-hidden="true">
+  <div class="conciliatedModalBackdrop" data-conciliated-close></div>
+  <div class="conciliatedModalCard" role="dialog" aria-modal="true" aria-label="Días conciliados">
+    <button class="conciliatedClose" type="button" aria-label="Cerrar" data-conciliated-close>×</button>
+    <div class="conciliatedIntro mono">30/09 → 15/10 · Documentación anual de los 10 días debitados</div>
+    <div class="conciliatedPlateWrap">
+      <div class="conciliatedPlate">
+        <div class="conciliatedPlateHead">
+          <div class="conciliatedPlateTitle">APARATO 396<br>Año Asimila 1582</div>
+          <div class="conciliatedPlateTurn">Vuelta 18</div>
+        </div>
+        <div class="conciliatedTimeline">
+          <div class="conciliatedCol">
+            <div class="conciliatedSpacer"></div>
+            <div class="conciliatedDayCard">
+              <div class="conciliatedDayTop"><span>577733</span><span class="conciliatedDow">Lu</span></div>
+              <div class="conciliatedDayBody">Día 1</div>
+              <div class="conciliatedDate">30/9/1582</div>
+            </div>
+          </div>
+          <div class="conciliatedCol">
+            <div class="conciliatedSpacer"></div>
+            <div class="conciliatedDayCard">
+              <div class="conciliatedDayTop"><span>577734</span><span class="conciliatedDow">Ma</span></div>
+              <div class="conciliatedDayBody">Día 2</div>
+              <div class="conciliatedDate">1/10/1582</div>
+            </div>
+          </div>
+          <div class="conciliatedCol">
+            <div class="conciliatedSpacer"></div>
+            <div class="conciliatedDayCard">
+              <div class="conciliatedDayTop"><span>577735</span><span class="conciliatedDow">Mi</span></div>
+              <div class="conciliatedDayBody">Día 3</div>
+              <div class="conciliatedDate">2/10/1582</div>
+            </div>
+          </div>
+          <div class="conciliatedCol">
+            <div class="conciliatedStack" aria-label="Documentos conciliados 5 al 9 de octubre">
+              <div class="conciliatedDoc">Doc 9/10<span>Cada año<br>siguiente</span></div>
+              <div class="conciliatedDoc">Doc 8/10<span>Cada año<br>siguiente</span></div>
+              <div class="conciliatedDoc">Doc 7/10<span>Cada año<br>siguiente</span></div>
+              <div class="conciliatedDoc">Doc 6/10<span>Cada año<br>siguiente</span></div>
+              <div class="conciliatedDoc">Doc 5/10<span>Cada año<br>siguiente</span></div>
+            </div>
+            <div class="conciliatedDayCard">
+              <div class="conciliatedDayTop"><span>577736</span><span class="conciliatedDow">Ju</span></div>
+              <div class="conciliatedDayBody">Día 4</div>
+              <div class="conciliatedDate">3/10/1582</div>
+            </div>
+          </div>
+          <div class="conciliatedCol">
+            <div class="conciliatedStack" aria-label="Documentos conciliados 10 al 14 de octubre">
+              <div class="conciliatedDoc">Doc 10/10<span>Cada año<br>siguiente</span></div>
+              <div class="conciliatedDoc">Doc 11/10<span>Cada año<br>siguiente</span></div>
+              <div class="conciliatedDoc">Doc 12/10<span>Cada año<br>siguiente</span></div>
+              <div class="conciliatedDoc">Doc 13/10<span>Cada año<br>siguiente</span></div>
+              <div class="conciliatedDoc">Doc 14/10<span>Cada año<br>siguiente</span></div>
+            </div>
+            <div class="conciliatedDayCard">
+              <div class="conciliatedDayTop"><span>577737</span><span class="conciliatedDow">Vi</span></div>
+              <div class="conciliatedDayBody">Día 5</div>
+              <div class="conciliatedDate">4/10/1582</div>
+            </div>
+          </div>
+          <div class="conciliatedCol">
+            <div class="conciliatedZero">Día “cero”<br>del calendario<br>“Agrego RI a<br>Solariano”</div>
+            <div class="conciliatedDayCard">
+              <div class="conciliatedDayTop"><span>577738</span><span class="conciliatedDow">Sa</span></div>
+              <div class="conciliatedDayBody">Día 6</div>
+              <div class="conciliatedDate">15/10/1582</div>
+            </div>
+          </div>
+        </div>
+        <div class="conciliatedFootnote">Esta placa se activa cada año cuando la fecha de referencia entra en la ventana 30/09–15/10, para recordar la conciliación de los 10 días debitados del calendario y su capitalización en RI.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 (function () {
   function stripSpacesOnDateInput(id) {
@@ -1921,6 +2177,76 @@ if ('serviceWorker' in navigator) {
       setTimeout(function(){ todayBtn.click(); }, 0);
     }
   });
+})();
+</script>
+
+
+
+<script>
+/* === Días conciliados: mostrar botón del 30/09 al 15/10 y abrir placa === */
+(function(){
+  const btn = document.getElementById('btnConciliatedDays');
+  const modal = document.getElementById('conciliatedDaysModal');
+  const ref = document.getElementById('ref');
+  if(!btn || !modal) return;
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function todayIso(){
+    const d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  }
+  function parseIsoLike(value){
+    if(!value) return null;
+    const s = String(value).trim();
+    let m = /^(\d{1,4})-(\d{1,2})-(\d{1,2})$/.exec(s);
+    if(m) return {y:+m[1], m:+m[2], d:+m[3]};
+    m = /^(\d{1,2})[\/\.\-](\d{1,2})[\/\.\-](\d{1,4})$/.exec(s);
+    if(m) return {y:+m[3], m:+m[2], d:+m[1]};
+    return null;
+  }
+  function activeRefParts(){
+    const value = ref && ref.value ? ref.value : todayIso();
+    return parseIsoLike(value);
+  }
+  function isConciliatedWindow(parts){
+    if(!parts) return false;
+    return (parts.m === 9 && parts.d >= 30) || (parts.m === 10 && parts.d <= 15);
+  }
+  function setVisible(visible){
+    btn.hidden = !visible;
+    btn.classList.toggle('is-visible', !!visible);
+    btn.setAttribute('aria-hidden', visible ? 'false' : 'true');
+  }
+  function refresh(){ setVisible(isConciliatedWindow(activeRefParts())); }
+  function openModal(){
+    modal.classList.add('isOpen');
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('conciliatedModalOpen');
+  }
+  function closeModal(){
+    modal.classList.remove('isOpen');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('conciliatedModalOpen');
+    btn.focus({preventScroll:true});
+  }
+  btn.addEventListener('click', openModal);
+  modal.querySelectorAll('[data-conciliated-close]').forEach(function(el){ el.addEventListener('click', closeModal); });
+  document.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape' && modal.classList.contains('isOpen')) closeModal();
+  });
+  if(ref){
+    ref.addEventListener('input', refresh);
+    ref.addEventListener('change', refresh);
+  }
+  ['btnPrevDay','btnToday','btnNextDay','btnClearDates'].forEach(function(id){
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('click', function(){ setTimeout(refresh, 0); setTimeout(refresh, 120); });
+  });
+  document.addEventListener('DOMContentLoaded', refresh);
+  window.addEventListener('load', function(){ refresh(); setTimeout(refresh, 250); });
+  window.addEventListener('pageshow', refresh);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) refresh(); });
+  refresh();
 })();
 </script>
 
