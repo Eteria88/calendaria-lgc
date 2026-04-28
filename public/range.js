@@ -106,6 +106,62 @@
       var y = String(ymd.y).padStart(4,'0');
       return d + '/' + m + '/' + y;
     }
+    
+    // --- Excepción histórica 1582: del 05/10 al 14/10 no existe en la ruta visible documentada ---
+    var DATE_INPUT_IDS = ['startA','endA','startB','endB','birth','ref'];
+    function isMissing1582(P){
+      return !!(P && P.y === 1582 && P.m === 10 && P.d >= 5 && P.d <= 14);
+    }
+    function inConciliatedWindow(P){
+      return !!(P && ((P.m === 9 && P.d >= 30) || (P.m === 10 && P.d <= 15)));
+    }
+    function todayParts(){
+      var d = new Date();
+      return { y:d.getFullYear(), m:d.getMonth()+1, d:d.getDate() };
+    }
+    function setInputYMD(el, P){
+      if(!el || !P) return;
+      var y = String(P.y).padStart(4,'0');
+      var m = String(P.m).padStart(2,'0');
+      var d = String(P.d).padStart(2,'0');
+      if(String(el.type).toLowerCase() === 'date'){
+        el.value = y + '-' + m + '-' + d;
+      }else{
+        el.value = d + '/' + m + '/' + y;
+      }
+    }
+    function enforce1582GapInput(el){
+      if(!el) return false;
+      var P = flex(el.value);
+      if(!isMissing1582(P)) return false;
+      setInputYMD(el, {y:1582,m:10,d:15});
+      el.classList.add('date1582Invalid');
+      setTimeout(function(){ el.classList.remove('date1582Invalid'); }, 1200);
+      return true;
+    }
+    function enforce1582GapAll(){
+      var changed = false;
+      DATE_INPUT_IDS.forEach(function(id){
+        var el = $(id);
+        if(enforce1582GapInput(el)) changed = true;
+      });
+      return changed;
+    }
+    function refreshConciliatedAccess(){
+      var btn = $('btnConciliatedDays');
+      if(!btn) return;
+      var visible = false;
+      DATE_INPUT_IDS.forEach(function(id){
+        var el = $(id);
+        var P = el ? flex(el.value) : null;
+        if(inConciliatedWindow(P)) visible = true;
+      });
+      if(!visible) visible = inConciliatedWindow(todayParts());
+      btn.hidden = !visible;
+      btn.classList.toggle('is-visible', !!visible);
+      btn.setAttribute('aria-hidden', visible ? 'false' : 'true');
+    }
+
     function setTodayTo(id){
       var el = $(id);
       if(!el) return;
@@ -186,6 +242,7 @@ function calcRangeAuto(startId, endId){
   var eI = $(endId) ? $(endId).value : '';
   var S = flex(sI), E = flex(eI);
   if(!(S && E)) return null;
+  if(isMissing1582(S) || isMissing1582(E)) return null;
 
   var ex = jdnMixed(E.y,E.m,E.d) - jdnMixed(S.y,S.m,S.d);
 
@@ -220,6 +277,7 @@ function calcYearsAuto(startId, endId){
   var eI = $(endId) ? $(endId).value : '';
   var S = flex(sI), E = flex(eI);
   if(!(S && E)) return null;
+  if(isMissing1582(S) || isMissing1582(E)) return null;
   return fullYearsBetween(S, E);
 }
 
@@ -249,9 +307,11 @@ function calcBandas(){
 
   var B = flex(birthEl.value);
   if(!B) return { ok:false, msg:'Falta fecha de nacimiento.' };
+  if(isMissing1582(B)) return { ok:false, msg:'Fecha no disponible en 1582.' };
 
   var R = flex(refEl.value);
   if(!R) return { ok:false, msg:'Falta fecha de referencia.' };
+  if(isMissing1582(R)) return { ok:false, msg:'Fecha no disponible en 1582.' };
 
   var jBirth = jdnMixed(B.y,B.m,B.d);
   var jRef = jdnMixed(R.y,R.m,R.d);
@@ -335,6 +395,9 @@ function renderBandSchedule(){
 
 
     function render(){
+      enforce1582GapAll();
+      refreshConciliatedAccess();
+
       // Días de la semana (badges)
       function setDow(inputId, outId){
         var el = $(inputId);
@@ -415,6 +478,7 @@ renderBandSchedule();
         var el = $(id); if(el) el.value = '';
       });
       render();
+      refreshConciliatedAccess();
       status('ok (limpio)', true);
     }
 
@@ -487,9 +551,9 @@ function bind(){
       ['startA','endA','startB','endB','birth','ref'].forEach(function(id){
         var el = $(id);
         if(el){
-          el.addEventListener('input', function(){ sanitizeDateInputLite(el); render(); });
-          el.addEventListener('change', function(){ normalizeDateInput(el); render(); });
-          el.addEventListener('blur', function(){ normalizeDateInput(el); render(); });
+          el.addEventListener('input', function(){ sanitizeDateInputLite(el); enforce1582GapInput(el); render(); refreshConciliatedAccess(); });
+          el.addEventListener('change', function(){ normalizeDateInput(el); enforce1582GapInput(el); render(); refreshConciliatedAccess(); });
+          el.addEventListener('blur', function(){ normalizeDateInput(el); enforce1582GapInput(el); render(); refreshConciliatedAccess(); });
       // Botones "Hoy" (compat móvil + inputs texto)
       var map = [
         ['btnStartTodayA','startA'],
@@ -504,6 +568,7 @@ function bind(){
           b.addEventListener('click', function(){
             setTodayTo(p[1]);
             render();
+            refreshConciliatedAccess();
           });
         }
       });
@@ -530,8 +595,10 @@ function bind(){
       refEl.value = day + '/' + m + '/' + y;
     }
   }
+  enforce1582GapAll();
+  refreshConciliatedAccess();
 })();
-    document.addEventListener('DOMContentLoaded', function(){ bind(); render(); }, {once:true});
+    document.addEventListener('DOMContentLoaded', function(){ bind(); render(); refreshConciliatedAccess(); }, {once:true});
     setTimeout(function(){ bind(); }, 250);
 
   }catch(e){

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Días conciliados · Calendaria</title>
+<meta http-equiv="Cache-Control" content="no-store">
+<meta name="theme-color" content="#0b0d10">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/calendaria-512.png">
+<link rel="stylesheet" href="/shared-menu.css">
+<style>
+:root{
+  --accent:#ffd166;
+  --bg:#0b0d10;
+  --text:#e6f1ff;
+  --muted:#9fb3c8;
+  --ol:#2a3642;
+  --cyan:#7cc7ff;
+  --tap:42px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100dvh;
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:
+    radial-gradient(900px 620px at 92% -10%,rgba(124,199,255,.10),transparent 58%),
+    radial-gradient(900px 640px at 0% 110%,rgba(255,209,102,.07),transparent 56%),
+    #0b0d10;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:20px}
+header{position:sticky;top:0;z-index:10;padding:8px 0 12px;isolation:isolate}
+header::before{
+  content:"";
+  position:absolute;
+  inset:0 0 2px 0;
+  border-bottom:1px solid rgba(111,138,166,.08);
+  border-bottom-right-radius:18px;
+  background:linear-gradient(90deg,rgba(8,13,20,.82),rgba(8,13,20,.64) 72%,rgba(8,13,20,0));
+  backdrop-filter:saturate(130%) blur(8px);
+}
+.headerBar{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:16px;
+  min-height:48px;
+}
+.headerBrand{display:flex;align-items:center;gap:10px;min-width:0}
+.headerBrand h1{margin:0;font-size:clamp(23px,2.45vw,30px);line-height:1;font-weight:750;letter-spacing:-.035em;white-space:nowrap}
+.sun{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#ffd166,#ff8c42 60%,transparent 61%);
+  box-shadow:0 0 18px #ffb347;
+  flex:0 0 auto;
+}
+.headerContext{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.headerLabel{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(159,179,200,.42)}
+.headerValue{font-size:12px;color:rgba(230,241,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.header-actions{display:flex;gap:10px;align-items:center;justify-self:end}
+.header-actions a,.menuBtn,.btn{
+  min-height:var(--tap);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  color:rgba(230,241,255,.90);
+  border:1px solid rgba(111,138,166,.25);
+  border-radius:999px;
+  padding:8px 13px;
+  text-decoration:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+  cursor:pointer;
+}
+.header-actions a{font-size:12px;text-transform:uppercase;letter-spacing:.10em;border-radius:12px}
+.header-actions a:hover,.btn:hover,.menuBtn:hover{border-color:rgba(124,199,255,.42);background:rgba(124,199,255,.10)}
+.menuBtn{display:none;border-radius:10px}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
+.sidenav{
+  position:sticky;
+  top:70px;
+  height:calc(100dvh - 86px);
+  border:1px solid rgba(111,138,166,.26);
+  border-radius:16px;
+  padding:14px 12px;
+  background:linear-gradient(180deg,rgba(7,11,17,.68),rgba(7,11,17,.44));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 10px 28px rgba(0,0,0,.16);
+}
+main{min-width:0}
+.card{
+  position:relative;
+  border:1px solid rgba(111,138,166,.26);
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  overflow:hidden;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:10.5px;
+  color:var(--muted);
+  border:1px solid rgba(111,138,166,.30);
+  border-radius:999px;
+  padding:5px 10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  background:rgba(255,255,255,.025);
+}
+.badge::before{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:var(--accent);
+  box-shadow:0 0 12px rgba(255,209,102,.75);
+}
+.hero{
+  padding:18px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(250px,.72fr);
+  gap:14px;
+  align-items:stretch;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(580px 280px at 10% 0%,rgba(124,199,255,.11),transparent 58%),
+    radial-gradient(560px 280px at 90% 0%,rgba(255,209,102,.09),transparent 60%);
+  pointer-events:none;
+}
+.hero>*{position:relative}
+.kicker{margin-bottom:12px}
+h2,h3,p{margin-top:0}
+.hero h2{
+  margin:0;
+  max-width:520px;
+  font-size:clamp(22px,3vw,34px);
+  line-height:1;
+  letter-spacing:-.04em;
+  font-weight:850;
+}
+.hero h2 span{color:var(--accent)}
+.lead{
+  margin:12px 0 0;
+  max-width:640px;
+  color:rgba(230,241,255,.78);
+  font-size:14px;
+  line-height:1.48;
+}
+.heroSide{display:grid;gap:10px;align-content:stretch}
+.infoBox{
+  padding:12px 14px;
+  border:1px solid rgba(111,138,166,.22);
+  border-radius:16px;
+  background:rgba(0,0,0,.16);
+}
+.infoBoxLabel{font-size:10px;color:var(--muted);letter-spacing:.10em;text-transform:uppercase}
+.infoBoxValue{margin-top:7px;color:#f4f8ff;font-size:18px;line-height:1.12;font-weight:780}
+.infoBoxValue small{font-size:12px;color:var(--muted);font-weight:600}
+.statusPill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:9px;
+  padding:6px 9px;
+  border-radius:999px;
+  border:1px solid rgba(111,138,166,.26);
+  background:rgba(255,255,255,.03);
+  color:var(--muted);
+  font-size:11.5px;
+}
+.statusPill.is-active{border-color:rgba(255,209,102,.40);color:#fff4c5;background:rgba(255,209,102,.08)}
+.statusPill::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(159,179,200,.55)}
+.statusPill.is-active::before{background:var(--accent);box-shadow:0 0 12px rgba(255,209,102,.85)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btnPrimary{border-color:rgba(255,209,102,.34);color:#fff2bf;background:linear-gradient(180deg,rgba(255,209,102,.17),rgba(124,199,255,.07))}
+.btnSecondary{border-color:rgba(124,199,255,.28)}
+.section{margin-top:14px;padding:15px}
+.sectionHead{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
+  margin-bottom:11px;
+}
+.sectionTitle{
+  margin:0;
+  font-size:clamp(18px,2vw,24px);
+  line-height:1.05;
+  letter-spacing:-.025em;
+}
+.sectionSub{margin:6px 0 0;max-width:780px;color:var(--muted);font-size:13.5px;line-height:1.45}
+.plateScroll{position:relative;overflow:visible;padding-bottom:0}
+.conciliatedPlate{
+  position:relative;
+  width:100%;
+  min-width:0;
+  border-radius:20px;
+  padding:13px 13px 15px;
+  color:var(--text);
+  background:
+    radial-gradient(700px 300px at 8% 0%,rgba(124,199,255,.12),transparent 58%),
+    radial-gradient(640px 260px at 100% 0%,rgba(255,209,102,.11),transparent 52%),
+    linear-gradient(180deg,rgba(14,21,31,.98),rgba(9,14,21,.98));
+  border:1px solid rgba(111,138,166,.26);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px rgba(255,255,255,.02),0 18px 42px rgba(0,0,0,.28);
+  overflow:hidden;
+}
+.conciliatedPlate::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:36px 36px;
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.35),transparent 82%);
+  pointer-events:none;
+  opacity:.35;
+}
+.conciliatedPlateHead{
+  position:relative;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:10px;
+  padding:10px 12px;
+  border:1px solid rgba(111,138,166,.22);
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+}
+.conciliatedPlateKicker{
+  margin-bottom:5px;
+  color:rgba(159,179,200,.84);
+  font-size:8.5px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+}
+.conciliatedPlateTitle{
+  font-size:clamp(14px,1.4vw,18px);
+  line-height:1.04;
+  font-weight:850;
+  letter-spacing:-.018em;
+  color:#f7fbff;
+}
+.conciliatedPlateTitle span{color:#ffd166}
+.conciliatedPlateTurn{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  justify-content:center;
+  min-width:80px;
+  padding:8px 10px;
+  border-radius:14px;
+  border:1px solid rgba(255,209,102,.22);
+  background:linear-gradient(180deg,rgba(255,209,102,.12),rgba(124,199,255,.05));
+}
+.conciliatedPlateTurn span{font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(230,241,255,.70)}
+.conciliatedPlateTurn strong{margin-top:3px;font-size:20px;line-height:1;color:#ffd166}
+.conciliatedTimeline{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:8px;
+  align-items:start;
+}
+.conciliatedCol{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:stretch;
+  justify-content:flex-start;
+  min-height:auto;
+}
+.conciliatedSpacer{flex:0 0 263px;min-height:263px}
+.conciliatedStack{height:263px;flex:0 0 263px;display:flex;flex-direction:column;gap:7px}
+.conciliatedDoc,.conciliatedZero{
+  position:relative;
+  border:1px solid rgba(111,138,166,.30);
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,209,102,.10),rgba(255,255,255,.03));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  text-align:center;
+  font-weight:780;
+  color:#eef6ff;
+}
+.conciliatedDoc{
+  height:47px;
+  min-height:47px;
+  flex:0 0 47px;
+  padding:6px 5px;
+  font-size:12.5px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  line-height:1.02;
+}
+.conciliatedDoc span{
+  margin-top:3px;
+  font-size:9.5px;
+  line-height:1.12;
+  color:rgba(230,241,255,.72);
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.025em;
+}
+.conciliatedZero{
+  height:263px;
+  min-height:0;
+  flex:0 0 263px;
+  padding:12px 7px;
+  font-size:14px;
+  line-height:1.12;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(180deg,rgba(124,199,255,.14),rgba(255,209,102,.10));
+  color:#f7fbff;
+}
+.conciliatedDayCard{
+  overflow:hidden;
+  border:1px solid rgba(111,138,166,.28);
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(13,18,24,.98),rgba(9,14,21,.98));
+  min-height:118px;
+  box-shadow:0 10px 22px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);
+}
+.conciliatedDayTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:6px;
+  min-height:36px;
+  padding:7px 8px;
+  background:linear-gradient(180deg,rgba(5,8,11,.98),rgba(11,16,23,.98));
+  color:#ffd166;
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:13.5px;
+  font-weight:850;
+  border-bottom:1px solid rgba(111,138,166,.20);
+}
+.conciliatedDow{
+  color:#9ed4ff;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  font-size:12px;
+  padding:3px 7px;
+  border-radius:999px;
+  border:1px solid rgba(124,199,255,.22);
+  background:rgba(124,199,255,.06);
+}
+.conciliatedDayBody{
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16.5px;
+  font-weight:800;
+  color:#eef6ff;
+}
+.conciliatedDate{
+  margin:0 7px 7px;
+  min-height:29px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:9px;
+  background:linear-gradient(180deg,rgba(83,118,145,.36),rgba(38,58,76,.50));
+  border:1px solid rgba(124,199,255,.17);
+  color:#d8eaff;
+  font-size:13.5px;
+  font-weight:850;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+}
+.gridCards{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+.gridCard{
+  grid-column:span 4;
+  padding:12px 13px;
+  border:1px solid rgba(111,138,166,.22);
+  border-radius:15px;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+}
+.gridCard h3{margin:0 0 7px;font-size:14px;color:#f3f8ff}
+.gridCard p{margin:0;color:var(--muted);line-height:1.45;font-size:12.8px}
+footer{margin-top:14px;color:rgba(159,179,200,.74);font-size:12px}
+@media(max-width:839px){
+  .layout{grid-template-columns:1fr}
+  .sidenav{display:none}
+  .menuBtn{display:inline-flex;grid-area:right;justify-self:end}
+  .header-actions{display:none}
+  .headerBar{grid-template-columns:1fr auto;grid-template-areas:"brand right" "center center";gap:10px 12px}
+  .headerBrand{grid-area:brand}
+  .headerContext{grid-area:center;align-items:flex-start}
+  .hero{grid-template-columns:1fr;padding:17px}
+  .plateScroll{overflow:auto;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:#7cc7ff rgba(255,255,255,.06)}
+  .plateScroll::-webkit-scrollbar{height:10px}
+  .plateScroll::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:999px}
+  .plateScroll::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#5b86a7,#7cc7ff);border-radius:999px}
+  .conciliatedPlate{min-width:790px}
+  .gridCard{grid-column:span 6}
+}
+@media(max-width:599px){
+  .wrap{padding:14px}
+  .section{padding:14px}
+  .hero h2{font-size:clamp(24px,8vw,34px)}
+  .sectionTitle{font-size:22px}
+  .gridCards{grid-template-columns:1fr}
+  .gridCard{grid-column:1}
+  .conciliatedPlate{min-width:780px;padding:13px}
+  .conciliatedPlateTitle{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div data-cal-menu="mobile"></div>
+  <header>
+    <div class="headerBar">
+      <div class="headerBrand"><span class="sun"></span><h1>Calendaria-LGC</h1></div>
+      <div class="headerContext"><span class="headerLabel">Módulo</span><span class="headerValue">Días conciliados · Aparato 396</span></div>
+      <button class="menuBtn" id="menuBtn" aria-label="Abrir menú" title="Menú">☰</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidenav" data-cal-menu="desktop"></aside>
+    <main>
+      <section class="card hero" aria-labelledby="pageTitle">
+        <div>
+          <div class="badge kicker">Días conciliados · Ventana anual 30/09 al 15/10</div>
+          <h2 id="pageTitle">Días <span>conciliados</span></h2>
+          <p class="lead">Este módulo documenta la interpretación de la Vuelta 18 del año 1582, año Asimila del Aparato 396. El criterio de la instrucción es aumentar y organizar: no alterar la ruta visible del calendario, sino aumentar crédito de espacio para almacenar y ordenar los días ausentes dentro de Calendaria.</p>
+        </div>
+        <div class="heroSide">
+          <div class="infoBox"><div class="infoBoxLabel">Ventana anual</div><div class="infoBoxValue">30/09 <small>al</small> 15/10</div><div class="statusPill" id="windowStatus">Comprobando ventana actual…</div></div>
+          <div class="infoBox"><div class="infoBoxLabel">Referencia del módulo</div><div class="infoBoxValue">Aparato 396<br><small>Año Asimila 1582 · Vuelta 18</small></div></div>
+          <div class="infoBox"><div class="infoBoxLabel">Centro conceptual</div><div class="infoBoxValue">Día “cero”<br><small>Código solar · RI · Solariano · SO</small></div></div>
+        </div>
+      </section>
+      <section class="card section" id="placa">
+        <div class="sectionHead"><div><h3 class="sectionTitle">Módulo de conciliación</h3><p class="sectionSub">El módulo conserva la ruta visible documentada: 30/9, 1/10, 2/10, 3/10, 4/10 y 15/10; y organiza los espacios documentales agregados para los días 5/10 al 14/10.</p></div><div class="badge">RI / Solariano</div></div>
+        <div class="plateScroll">
+          <div class="conciliatedPlate">
+            <div class="conciliatedPlateHead">
+              <div><div class="conciliatedPlateKicker mono">Ventana histórica · RI / Solariano</div><div class="conciliatedPlateTitle">APARATO 396<br><span>Año Asimila 1582</span></div></div>
+              <div class="conciliatedPlateTurn"><span>Vuelta</span><strong>18</strong></div>
+            </div>
+<div class="conciliatedTimeline">
+              <div class="conciliatedCol"><div class="conciliatedSpacer"></div><div class="conciliatedDayCard"><div class="conciliatedDayTop"><span>577733</span><span class="conciliatedDow">Lu</span></div><div class="conciliatedDayBody">Día 1</div><div class="conciliatedDate">30/9/1582</div></div></div>
+              <div class="conciliatedCol"><div class="conciliatedSpacer"></div><div class="conciliatedDayCard"><div class="conciliatedDayTop"><span>577734</span><span class="conciliatedDow">Ma</span></div><div class="conciliatedDayBody">Día 2</div><div class="conciliatedDate">1/10/1582</div></div></div>
+              <div class="conciliatedCol"><div class="conciliatedSpacer"></div><div class="conciliatedDayCard"><div class="conciliatedDayTop"><span>577735</span><span class="conciliatedDow">Mi</span></div><div class="conciliatedDayBody">Día 3</div><div class="conciliatedDate">2/10/1582</div></div></div>
+              <div class="conciliatedCol"><div class="conciliatedStack" aria-label="Documentos conciliados 5 al 9 de octubre"><div class="conciliatedDoc">Doc 9/10<span>Cada año<br>siguiente</span></div><div class="conciliatedDoc">Doc 8/10<span>Cada año<br>siguiente</span></div><div class="conciliatedDoc">Doc 7/10<span>Cada año<br>siguiente</span></div><div class="conciliatedDoc">Doc 6/10<span>Cada año<br>siguiente</span></div><div class="conciliatedDoc">Doc 5/10<span>Cada año<br>siguiente</span></div></div><div class="conciliatedDayCard"><div class="conciliatedDayTop"><span>577736</span><span class="conciliatedDow">Ju</span></div><div class="conciliatedDayBody">Día 4</div><div class="conciliatedDate">3/10/1582</div></div></div>
+              <div class="conciliatedCol"><div class="conciliatedStack" aria-label="Documentos conciliados 10 al 14 de octubre"><div class="conciliatedDoc">Doc 10/10<span>Cada año<br>siguiente</span></div><div class="conciliatedDoc">Doc 11/10<span>Cada año<br>siguiente</span></div><div class="conciliatedDoc">Doc 12/10<span>Cada año<br>siguiente</span></div><div class="conciliatedDoc">Doc 13/10<span>Cada año<br>siguiente</span></div><div class="conciliatedDoc">Doc 14/10<span>Cada año<br>siguiente</span></div></div><div class="conciliatedDayCard"><div class="conciliatedDayTop"><span>577737</span><span class="conciliatedDow">Vi</span></div><div class="conciliatedDayBody">Día 5</div><div class="conciliatedDate">4/10/1582</div></div></div>
+              <div class="conciliatedCol"><div class="conciliatedZero">Día “cero”<br>del calendario<br>“Agregó RI a<br>Solariano”</div><div class="conciliatedDayCard"><div class="conciliatedDayTop"><span>577738</span><span class="conciliatedDow">Sa</span></div><div class="conciliatedDayBody">Día 6</div><div class="conciliatedDate">15/10/1582</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="card section">
+        <div class="sectionHead"><div><h3 class="sectionTitle">Criterio de la instrucción</h3><p class="sectionSub">Módulo documental alineado con el EN RED 111.</p></div></div>
+        <div class="gridCards">
+          <article class="gridCard"><h3>1 · No modificar</h3><p>La ruta visible no se altera: se documenta como 30/9, 1/10, 2/10, 3/10, 4/10 y 15/10. El módulo no corrige el salto histórico: lo organiza como información legible.</p></article>
+          <article class="gridCard"><h3>2 · Aumentar espacio</h3><p>El sentido operativo es aumentar crédito de espacio para almacenar lo que falta, organizando la documentación de los días ausentes.</p></article>
+          <article class="gridCard"><h3>3 · Conciliar</h3><p>Los 10 documentos agregados más los 6 días visibles recuperan 16 espacios para interpretar la Vuelta 18 sin romper la estructura.</p></article>
+        </div>
+      </section>
+
+      <section class="card section">
+        <div class="sectionHead"><div><h3 class="sectionTitle">3/10 · 4/10 · Día cero</h3><p class="sectionSub">Tres puntos de lectura del módulo dentro de Calendaria.</p></div></div>
+        <div class="gridCards">
+          <article class="gridCard"><h3>3/10</h3><p>El 3/10 se trabaja como lugar de aprovechamiento: darle espacio permite capitalizar la interferencia sin perder memoria de la estructura espaciotemporal.</p></article>
+          <article class="gridCard"><h3>4/10</h3><p>El 4/10 queda como punto donde se carga el Destino apoyado en la documentación agregada de los días faltantes.</p></article>
+          <article class="gridCard"><h3>Día cero</h3><p>El 15/10/1582 queda señalado como Día “cero” del calendario: “Agregó RI a Solariano”. La instrucción vincula este punto con el código solar, Solariano, las notas musicales y la cardinalidad SO.</p></article>
+        </div>
+      </section>
+      <footer>Hecho en el navegador · Calendaria-LGC</footer>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function inWindow(d){
+    const m = d.getMonth() + 1;
+    const day = d.getDate();
+    return (m === 9 && day >= 30) || (m === 10 && day <= 15);
+  }
+  const el = document.getElementById('windowStatus');
+  if(!el) return;
+  const now = new Date();
+  const label = pad(now.getDate()) + '/' + pad(now.getMonth()+1) + '/' + now.getFullYear();
+  if(inWindow(now)){
+    el.classList.add('is-active');
+    el.textContent = 'Ventana activa hoy · ' + label;
+  } else {
+    el.textContent = 'Ventana no activa hoy · ' + label;
+  }
+})();
+</script>
+<script>window.CAL_MENU_CONFIG={current:"dias-conciliados"};</script>
+<script src="/shared-menu.js"></script>
+</body>
+</html>
